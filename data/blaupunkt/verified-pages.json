@@ -1,0 +1,32 @@
+{
+  "_readme": [
+    "Catalogue pages whose image-to-product pairing has been checked by eye.",
+    "",
+    "The importer pairs products with photographs by reading order wherever a page",
+    "has exactly one photograph per product. That is strong evidence, not proof —",
+    "so those products stay in the verification queue until their page is listed",
+    "here. Listing a page means someone has opened the extracted images for it and",
+    "confirmed that image N really is product N.",
+    "",
+    "To verify a page: open public/blaupunkt/catalogue/bp-<page>-<n>.jpg, check the",
+    "model printed on the product against the parsed order in",
+    "src/lib/data/blaupunkt/catalog.generated.json, then add the page number here",
+    "and re-run `npm run import:blaupunkt`.",
+    "",
+    "This file is hand-maintained and survives a re-import. Corrections never go",
+    "into the parser."
+  ],
+  "verified": [24, 25],
+  "notes": [
+    {
+      "page": 24,
+      "checked": "2026-08-11",
+      "note": "Position 1 is printed VA 1004 and position 4 is the monoblock, matching the spec table's 1-channel column. Order confirmed at both ends of the row."
+    },
+    {
+      "page": 25,
+      "checked": "2026-08-11",
+      "note": "Position 1 pairs to the 2.100D. The product label reads 'CDx 2.100D' where the PDF text layer gives 'ODx 2.100D' — model number matches, series letter does not. Confirm with Blaupunkt which is correct before this SKU is advertised."
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+# Anchored to the repo root on purpose: an unanchored `build` pattern also
+# matches src/components/build, which silently hides that directory from
+# Tailwind's source scanner.
+/node_modules
+/.next
+/out
+/build
+/dist
+
+.env*
+!.env.example
+*.tsbuildinfo
+next-env.d.ts
+.DS_Store
+
+# Claude Code local permission overrides — personal, not shared.
+.claude/settings.local.json

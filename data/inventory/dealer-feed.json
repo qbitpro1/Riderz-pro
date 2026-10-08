@@ -1,0 +1,25 @@
+{
+  "_readme": [
+    "Partner dealer inventory feed.",
+    "",
+    "This file is EMPTY on purpose. Motorbotz has no signed dealer inventory",
+    "agreement on file yet, and the system will not invent vehicles to look",
+    "stocked. `agreementRef` must be set to the signed agreement reference",
+    "before the connector imports anything at all.",
+    "",
+    "To onboard a dealer:",
+    "  1. Sign the Motorbotz Dealer Inventory Agreement (grants display rights).",
+    "  2. Put the agreement reference in `agreementRef`.",
+    "  3. Have the dealer push vehicles into `vehicles[]`, or point",
+    "     scripts/inventory-refresh.mjs at their feed URL.",
+    "  4. Run `npm run inventory:refresh` to validate and import.",
+    "",
+    "Per-vehicle image rights are explicit: a vehicle without",
+    "\"imageRights\": \"granted\" displays no photographs. See the",
+    "DealerFeedVehicle type in src/lib/inventory/connectors/dealer-feed.ts",
+    "for the full schema."
+  ],
+  "agreementRef": null,
+  "generatedAt": null,
+  "vehicles": []
+}

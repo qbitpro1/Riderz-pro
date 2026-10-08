@@ -1,0 +1,155 @@
+# RECOIL Installation Accessories Price List — May 2026
+# Verbatim transcription of the supplied PDF. Same schema as the car audio
+# list. Blank dp/mrp/masterPack mean the PDF cell was empty — never inferred.
+sku|category|subcategory|series|name|specs|dp|mrp|masterPack|status|flags
+DMBK|Damping|Damping Kits|Damping|Damping Kit|Sheets of 550mm x 800mm;Pack of 9 sheets|5310|10620|1|ACTIVE|
+XLBK|Damping|Damping Kits|Damping|9-Sheets Light-Weight Dampening Mats|Professional Grade 0.086" (2.2mm) dampening mat;100% pure black butyl;Weight 0.35 lbs/ft2 (1.74 kg/m2);Sheet Size 18" x 32" (457mm x 812mm)|10500|20000|1|ACTIVE|
+DABK|Damping|Damping Kits|Damping|Recoil Pro Damping Mat 8MM with Acoustic Foam Bulk Kit|3-in-1 Kit - Acoustic Foam, Aluminium Foil, Rubber Butyl;9 Sheets|9500|19000|1|ACTIVE|
+WFBK|Damping|Acoustic Foam|Damping|Wavy Foam Bulk Kit (20 Sheets)|Appearance Black thick wavy foam and craft paper release liner;Consists of high-density closed cell foam;Thickness 0.59" (15mm);Weight 0.13 lbs/ft2 (0.62 kg/m2);Temperature Range -40F to +320F (-40C to 160C);20 Sheets 20" x 35.4" (500mm x 900mm);Total coverage 98.34 sq ft (9 m2)|22500|45000|1|ACTIVE|MRP_IS_SET_PRICE
+SABK|Damping|Acoustic Cotton|Damping|Recoil Premium Sound Absorbing Cotton Black|500 x 700mm;400g;25 pcs/Box|12500|25000|1|ACTIVE|MRP_IS_SET_PRICE
+EHBK|Damping|Heat Shield|Damping|Engine Hood Sound Deadening & Heat Shield Kit|Appearance Silver aluminum, high-density closed cell foam and craft paper release liner;Thickness 0.39" (10mm);Weight 0.13 lbs/ft2 (0.65 kg/m2);Temperature Range -40F to +320F (-40C to 160C);1 Sheet 54" x 35.4" (1372mm x 900mm);Total coverage 13.28 sq ft (1.23 m2)|2250|4500|1|ACTIVE|
+VRK-Q|Damping|Speaker Rings|Damping|Foam Speaker Ring Kit|4 x 27" wave strips & 4 x wave foam pads;Fits 4 speakers any size;Sold in two Pairs (4)|2000|4000||ACTIVE|MISSING_MASTER_PACK
+SR65-K4|Installation|Speaker Pods|Installation|Universal Double Speaker Pods for 6.5" Speakers|Include Bottom Cover, Black|1800|||COMING_SOON|NO_MRP
+SP65 Loose|Installation|Speaker Baffles|Installation|6.5-Inch Speaker Baffle Kits|Fits 6" & 6.5" speakers;Sold in pairs (without foam damp & without box packing)|495|990|20|ACTIVE|SKU_AS_PRINTED
+IH-R3|Tools|Installation Tools|Tools|Dampening Mat Roller|Short anatomical and ergonomic handle;Easily moves across the surface and presses|450|900|50|ACTIVE|
+IH-K1|Tools|Installation Tools|Tools|Dampening Mat Knife|To trim dampening mat into pieces to fit panels;Reliable high carbon stainless steel blade;Black aluminum handle|700|1400|100|ACTIVE|
+RLOC46-LC|Signal|Line Output Converters|High-Low Convertors|4-Channel Adjustable LOC with 6-Channel RCA Outputs|Four channel adjustable speaker level inputs;Six channel RCA level outputs;Handles 50 watts maximum input per channel;Utilises audio transformer for noise isolation;Features +/-0.5 dB linearity from 20-20,000 Hz|3250|6500|20|ACTIVE|
+RLOC2-LC|Signal|Line Output Converters|High-Low Convertors|Two Channel Speaker Cable to RCA Adjustable Line Output Converter|With Bass Level Controller|1600|3200|25|ACTIVE|
+MLOC2|Signal|Line Output Converters|High-Low Convertors|2-CH Line Output Converter|2-channel micro LOC;80 Watts maximum input per channel;Features 60 Ohm Load;12-volt for amplifier remote turn on and clipping LED|600|1200|50|ACTIVE|SHARED_ROW_PRICING
+ALOC2|Signal|Line Output Converters|High-Low Convertors|2-CH Line Output Converter|2-channel micro LOC;80 Watts maximum input per channel;Features 60 Ohm Load;12-volt for amplifier remote turn on and clipping LED|600|1200|50|ACTIVE|SHARED_ROW_PRICING
+MLOC4|Signal|Line Output Converters|High-Low Convertors|4-CH Line Output Converter|4-channel micro LOC;80 Watts maximum input per channel;Features 60 Ohm Loads;12-volt for amplifier remote turn on and clipping LED|1000|2000|50|ACTIVE|
+ALOC4|Signal|Line Output Converters|High-Low Convertors|4-CH Adjustable Line Output Converter|4-channel adjustable LOC;50 watts maximum input per channel|2000|4000|20|ACTIVE|
+GLIRCA|Signal|Noise Filters|Noise Filter|RCA Ground Loop Isolator|Eliminates ground loop noise;RCA input and RCA output|750|1500|50|ACTIVE|
+PCK8|Wiring|Amplifier Kits|Echo Pro|8 AWG 2-CH Complete Amplifier Installation Kit|Oxygen free copper strands;Complete 8 AWG kit|7000|14000|8|ACTIVE|
+RCK4|Wiring|Amplifier Kits|Echo|4 AWG 2-CH Amplifier Installation Kit|Copper clad aluminum strands;Complete 4 AWG kit|3150|6300|10|ACTIVE|
+8CKCOMP|Wiring|Amplifier Kits|Echo|8 AWG 2-CH Amplifier Installation Kit|Copper clad aluminum strands;Complete 8 AWG kit|2150|4300|16|ACTIVE|
+RCI21|Wiring|RCA Cables|Echo|Pure Copper RCA 2-Channel 1FT (0.5 Meter)|OFC strands|250|500|100|ACTIVE|ROW_AMBIGUOUS
+RCI23|Wiring|RCA Cables|Echo|Pure Copper RCA 2-Channel 3FT (1 Meter)|OFC strands|300|600|50|ACTIVE|
+RCI26|Wiring|RCA Cables|Echo|Pure Copper RCA 2-Channel 6FT (2 Meter)|OFC strands|350|700|50|ACTIVE|
+RCI29|Wiring|RCA Cables|Echo|Pure Copper RCA 2-Channel 9FT (3 Meter)|OFC strands|400|800|40|ACTIVE|
+RCI217|Wiring|RCA Cables|Echo|Pure Copper RCA 2-Channel 17FT (5 Meter)|OFC strands|450|900|30|ACTIVE|
+R1M2F|Wiring|RCA Cables|Echo|RCA Splitter 1 Male 2 Female Pair|Colour zip bag package;OFC strands (2pcs)|300|600|100|ACTIVE|
+R1F2M|Wiring|RCA Cables|Echo|RCA Splitter 1 Female 2 Male Pair|Colour zip bag package;OFC strands (2pcs)|300|600|100|ACTIVE|
+PCI23|Wiring|RCA Cables|Echo Pro|Echo Pro Series RCA Interconnect Cable 2-Channel 1 Meter|Brass RCA connectors;OFC strands;Double shielding & nylon braiding|750|1500|50|ACTIVE|
+PCI26|Wiring|RCA Cables|Echo Pro|Echo Pro Series RCA Interconnect Cable 2-Channel 2 Meter|Brass RCA connectors;OFC strands;Double shielding & nylon braiding|900|1800|40|ACTIVE|
+PCI29|Wiring|RCA Cables|Echo Pro|Echo Pro Series RCA Interconnect Cable 2-Channel 3 Meter|Brass RCA connectors;OFC strands;Double shielding & nylon braiding|1200|2400|33|ACTIVE|
+PCI217|Wiring|RCA Cables|Echo Pro|Echo Pro Series RCA Interconnect Cable 2-Channel 5 Meter|Brass RCA connectors;OFC strands;Double shielding & nylon braiding|1400|2800|25|ACTIVE|
+PCI1F|Wiring|RCA Cables|Echo Pro|Echo Pro Series RCA Splitter 1 Female 2 Male Pair (2pcs)||800|1600|50|ACTIVE|
+PCI1M|Wiring|RCA Cables|Echo Pro|Echo Pro Series RCA Splitter 1 Male 2 Female Pair (2pcs)||800|1600|50|ACTIVE|
+RCC-F8|Wiring|RCA Cables|Accessories|RCA Coupler Female to Female - 8pcs||450|900|50|ACTIVE|
+RCC-M8|Wiring|RCA Cables|Accessories|RCA Coupler Male to Male - 8pcs||450|900|50|ACTIVE|
+PW0-50|Wiring|Power Wire|Echo Pro|Echo Pro Series Spool Wire 50 Feet of 0 AWG|4704 strands of OFC;Frosted red jacket;Common spool|35000|70000|1|ACTIVE|
+PW4-80|Wiring|Power Wire|Echo Pro|Echo Pro Series Spool Wire 80 Feet of 4 AWG|1862 strands of OFC (Pure Copper);Frosted red jacket|28000|56000|1|ACTIVE|
+PW8-150|Wiring|Power Wire|Echo Pro|Echo Pro Series Spool Wire 150 Feet of 8 AWG|735 strands of OFC (Pure Copper);Frosted red jacket|22500|45000|1|ACTIVE|
+RW4-80|Wiring|Power Wire|Echo|Echo Series Spool Wire 80 Feet of 4 AWG|1862 strands of CCA;Frosted blue jacket|5700|11400|2|ACTIVE|
+RW8-150|Wiring|Power Wire|Echo|Echo Series Spool Wire 150 Feet of 8 AWG|735 strands of CCA;Frosted blue jacket|4500|9000|2|ACTIVE|
+SW12-25|Wiring|Speaker Wire|Premium|Recoil Premium True-Spec 12AWG OFC Speaker Wire, 25ft/Spool||2500|5000|12|ACTIVE|
+SW12-200|Wiring|Speaker Wire|Echo Pro|Echo Pro Spool Speaker Wire 200 Feet of 12 AWG|294 strands of OFC (Pure Copper);Frosted red & black jacket|21500|43000|1|ACTIVE|
+SW16-60|Wiring|Speaker Wire|Premium|Recoil Premium True-Spec 16AWG OFC Speaker Wire, 60ft/Spool|Pure Copper|2500|5000|12|ACTIVE|
+SW16-300|Wiring|Speaker Wire|Echo Pro|Echo Pro Spool Speaker Wire 300 Feet of 16 AWG|111 strands of OFC (Pure Copper);Frosted red & black jacket|11500|23000|1|ACTIVE|
+RS12-25|Wiring|Speaker Wire|Echo|Recoil True-Spec 12AWG CCA Speaker Wire, 25ft/Spool||1000|2000|12|ACTIVE|
+RS12-200|Wiring|Speaker Wire|Echo|True-Spec 12AWG CCA Speaker Wire (Woofer Wire) 200 Feet of 12 AWG|294 strands of CCA;Frosted blue & black jacket|5800|11600|2|ACTIVE|
+RS16-60|Wiring|Speaker Wire|Echo|True Spec 16 Gauge Speaker Wire, 60 Feet/Spool|Copper Clad Aluminum Conductors;Super Flexible Jacket|1000|2000|12|ACTIVE|
+RS16-300|Wiring|Speaker Wire|Echo|True-Spec 16AWG CCA Speaker Wire 300 Feet of 16 AWG|111 strands of CCA;Frosted blue & black jacket|3800|7600|2|ACTIVE|
+TS16GN-250|Wiring|Speaker Wire|Twisted|Recoil Twisted Speaker Wire, 16AWG, OFC, Green & Black, 250ft/Spool||18000|||COMING_SOON|NO_MRP
+TS16PUR-250|Wiring|Speaker Wire|Twisted|Recoil Twisted Speaker Wire, 16AWG, OFC, Purple & Black, 250ft/Spool||18000|||COMING_SOON|NO_MRP
+TS16WH-250|Wiring|Speaker Wire|Twisted|Recoil Twisted Speaker Wire, 16AWG, OFC, White & Black, 250ft/Spool||18000|||COMING_SOON|NO_MRP
+TS16GY-250|Wiring|Speaker Wire|Twisted|Recoil Twisted Speaker Wire, 16AWG, OFC, Grey & Black, 250ft/Spool||18000|||COMING_SOON|NO_MRP
+SW9C18-20|Wiring|Speaker Wire|Multi-Conductor|9-Conductor 18AWG Speaker Wire, 20 Feet|18-gauge conductors;8 x speaker leads & 1 x remote turn-on lead;Easy Peel Jacket|3200|6400|10|ACTIVE|
+SW9C18-100|Wiring|Speaker Wire|Multi-Conductor|Recoil Audio OFC 9-Conductor 18AWG Speaker Wire, 100ft/Spool||11500|23000|10|ACTIVE|
+SG-65|Installation|Grilles|Grilles|6-Inch Woofer Grille|Heavy duty stamped steel with powder-coated black finish;Designed for high excursion midrange speaker and subwoofers|1000|2000|20|ACTIVE|
+SG-8|Installation|Grilles|Grilles|8-Inch Woofer Grille|Heavy duty stamped steel with powder-coated black finish;Designed for high excursion midrange speaker and subwoofers|1600|3200|20|ACTIVE|
+SG-10|Installation|Grilles|Grilles|10-Inch Woofer Grille|Heavy duty stamped steel with powder-coated black finish;Designed for high excursion midrange speaker and subwoofers|2000|4000|10|ACTIVE|
+SG-12|Installation|Grilles|Grilles|12-Inch Woofer Grille|Heavy duty stamped steel with powder-coated black finish;Designed for high excursion midrange speaker and subwoofers|2200|4400|10|ACTIVE|
+ZSDB14|Power|Distribution Blocks|Zinc|4-Way Distribution Block|1 x 4/8 AWG in, 4 x 8/10 AWG out;Forged and machined brass construction;Single|500|1000|50|ACTIVE|
+ZDDB12|Power|Distribution Blocks|Zinc|Zinc Dual Distribution Block|Two 1 x 4/8 AWG input;2 x 4/8 AWG outputs;Power & Ground|700|1400|50|ACTIVE|
+ZDB14P|Power|Distribution Blocks|Zinc|Power Distribution Block|1 x 0/4 AWG in & 4 x 4/8 AWG out;Zinc die cast;Sold in pair (2)|1200|2400|30|ACTIVE|MRP_IS_SET_PRICE
+PBT-2028|Power|Battery Terminals|Zinc|Battery Clamps|2 x 0/2/4 AWG and 2 x 4/8 AWG out;Sold in pair|1800|3600|30|ACTIVE|MRP_IS_SET_PRICE
+ZMFH-3|Power|Fuse Blocks|Zinc|Inline Mini-ANL Fuse Blocks (3 Pieces)|4/8 AWG in & out;Zinc die cast;Three pieces (3), total 6 fuses inside|750|1500|25|ACTIVE|MRP_IS_SET_PRICE,PRICE_NOTE
+ZAFH2-100|Power|Fuse Blocks|Zinc|Inline ANL Fuse Blocks (Pair)|0/2/4 AWG in & out;Zinc die cast;Sold in pairs with 2 x 100A fuses (2)|1000|2000|40|ACTIVE|MRP_IS_SET_PRICE
+ZSFH11-3|Power|Fuse Blocks|Zinc|Inline Mini-ANL/ANL Fuse Blocks (3 Pieces)|4/8 AWG in & out;Zinc die cast;Three pieces (3)|750|1500|30|ACTIVE|MRP_IS_SET_PRICE
+ZMFH12|Power|Fuse Blocks|Zinc|2-Way Mini-ANL Fuse Block|1 x 0/2/4 AWG in, 2 x 4/8 AWG out;Forged and machined brass construction;Single|1200|2400|50|ACTIVE|
+ZMFH13|Power|Fuse Blocks|Zinc|3-Way Mini-ANL Fuse Block|3 x 0/2/4 AWG in, 3 x 4/8 AWG out;Forged and machined brass construction;Single|2000|4000|30|ACTIVE|
+ZMPG4|Power|Distribution Blocks|Zinc|4-Way Mini-ANL Fused Distribution & Ground Block|2 x 0/2/4 AWG in & 4 x 4/8 AWG out;Zinc die cast;Single|1350|2700|50|ACTIVE|
+S-MPG4|Power|Distribution Blocks|Smart|4-Way Mini-ANL Fused Distribution & Ground Block with Timer|Adjustable 4-way remote outputs turn-on and turn-off timer up to 30 seconds;Built-in voltage meter;2 x 0/2/4 AWG inputs & 4 x 4/8 AWG outputs;Mini Fuse Option 40A, 60A, 80A, 100A, 120A|8000|16000|20|ACTIVE|
+MANL40-2|Power|Fuses|Mini-ANL|40A Mini-ANL (AFS) Fuse, 2pcs/pack||200|400|100|ACTIVE|SHARED_ROW_PRICING
+MANL60-2|Power|Fuses|Mini-ANL|60A Mini-ANL (AFS) Fuse, 2pcs/pack||200|400|100|ACTIVE|SHARED_ROW_PRICING
+MANL80-2|Power|Fuses|Mini-ANL|80A Mini-ANL (AFS) Fuse, 2pcs/pack||200|400|100|ACTIVE|SHARED_ROW_PRICING
+MANL100-2|Power|Fuses|Mini-ANL|100A Mini-ANL (AFS) Fuse, 2pcs/pack||200|400|100|ACTIVE|SHARED_ROW_PRICING
+MANL120-2|Power|Fuses|Mini-ANL|120A Mini-ANL (AFS) Fuse, 2pcs/pack||200|400|100|ACTIVE|SHARED_ROW_PRICING
+ANLF100-2|Power|Fuses|ANL|100A ANL Fuse Gold Plated, 2 Pack||500|1000|100|ACTIVE|SHARED_ROW_PRICING
+ANLF120-2|Power|Fuses|ANL|120A ANL Fuse Gold Plated, 2 Pack||500|1000|100|ACTIVE|SHARED_ROW_PRICING
+ANLF150-2|Power|Fuses|ANL|150A ANL Fuse Gold Plated, 2 Pack||500|1000|100|ACTIVE|SHARED_ROW_PRICING
+ANLF200-2|Power|Fuses|ANL|200A ANL Fuse Gold Plated, 2 Pack||500|1000|100|ACTIVE|SHARED_ROW_PRICING
+AF12|Power|Fuse Blocks|ATC/ATO|12-Circuit Fuse Block|Works for ATC/ATO fuses|1500|3000|20|ACTIVE|
+RT0516-10|Power|Terminals|Ring Terminals|1/0 AWG Ring Terminals, 5/16" Opening, 10pcs Pack|5 x red & 5 black boots|1000|2000|70|ACTIVE|DUPLICATE_SKU
+ST408-20|Power|Terminals|Spade Terminals|4 AWG Spade Terminals, #8 Opening, 20pcs Pack|10 x red & 10 black boots|600|1200|50|ACTIVE|
+RT038-10|Power|Terminals|Ring Terminals|1/0 AWG Ring Terminals, 3/8" Opening, 10pcs Pack|5 x red & 5 black boots||2000|50|COMING_SOON|NO_DP
+RT438-20|Power|Terminals|Ring Terminals|4 AWG Ring Terminals, 3/8" Opening, 20pcs Pack|10 x red & 10 black boots||1600|50|COMING_SOON|NO_DP
+RT8516-20|Power|Terminals|Ring Terminals|8 AWG Ring Terminals, 5/16" Opening, 20pcs Pack|10 x red & 10 black boots||1000|70|COMING_SOON|NO_DP
+RT838-20|Power|Terminals|Ring Terminals|8 AWG Ring Terminals, 3/8" Opening, 20pcs Pack|10 x red & 10 black boots||1200|70|COMING_SOON|NO_DP
+RT4516-20|Power|Terminals|Ring Terminals|4 AWG Ring Terminals, 5/16" Opening|5 x red & 5 black boots||1800|50|COMING_SOON|NO_DP,SKU_SPEC_MISMATCH
+RT0516-10 (2)|Power|Terminals|Ring Terminals|1/0 AWG Ring Terminals, 5/16" Opening, 10pcs Pack|5 x red & 5 black boots||2000|70|COMING_SOON|DUPLICATE_SKU,NO_DP
+ST808-20|Power|Terminals|Spade Terminals|8 AWG Ring Terminals, #8 Opening, 20pcs Pack|10 x red & 10 black boots|400|800|70|ACTIVE|HEADING_CONFLICT
+ST1008-20|Power|Terminals|Spade Terminals|10 AWG Ring Terminals, #8 Opening, 20pcs Pack|10 x red & 10 black boots|400|800|70|ACTIVE|HEADING_CONFLICT
+WF012|Wiring|Ferrules|Ferrules|1/0 AWG Wire Ferrules (12pcs) & Heat Shrink Tubing Kit|6 pieces of each red & black heat shrink tubes||900|50|COMING_SOON|NO_DP
+WF412|Wiring|Ferrules|Ferrules|4 AWG Wire Ferrules (12pcs) & Heat Shrink Tubing Kit|6 pieces of each red & black heat shrink tubes||700|50|COMING_SOON|NO_DP
+WF820|Wiring|Ferrules|Ferrules|8 AWG Wire Ferrules (20pcs) & Heat Shrink Tubing Kit|10 pieces of each red & black heat shrink tubes||900|50|COMING_SOON|NO_DP
+WF1660|Wiring|Ferrules|Ferrules|16 AWG Wire Ferrules (60pcs) & Heat Shrink Tubing Kit|30 pieces of each red & black heat shrink tubes||900|50|COMING_SOON|NO_DP
+WF1860|Wiring|Ferrules|Ferrules|18 AWG Wire Ferrules (60pcs) & Heat Shrink Tubing Kit|30 pieces of each red & black heat shrink tubes||900|50|COMING_SOON|NO_DP
+WRD00|Wiring|Wire Reducers|Reducers|Dual 1/0 AWG to 1/0 AWG Wire Reducers|Sold in pair with red/black silicone covers;Machined brass construction||4500|30|COMING_SOON|NO_DP
+WRD04|Wiring|Wire Reducers|Reducers|Dual 1/0 AWG to 4 AWG Wire Reducers|Sold in pair with red/black silicone covers;Machined brass construction||4500|30|COMING_SOON|NO_DP
+WR04P|Wiring|Wire Reducers|Reducers|1/0 AWG to 4 AWG Wire Reducers|Sold in pair with red/black silicone covers;Machined brass construction||2500|100|COMING_SOON|NO_DP
+WR48P|Wiring|Wire Reducers|Reducers|4 AWG to 8 AWG Wire Reducers|Sold in pair with red/black silicone covers;Machined brass construction||1500|100|COMING_SOON|NO_DP
+WRD88|Wiring|Wire Reducers|Reducers|Amplifier Input Wire Reducers|Dual 8 Gauge to single 8 gauge||2500|100|COMING_SOON|NO_DP
+HSK200|Wiring|Heat Shrink|Heat Shrink|Heat Shrink Tube Kit, 200pcs|Total 200pcs of 6 sizes heat shrink tubes;2 colors red & black;10 x 1/0AWG, 20 x 4 AWG, 20 x 8 AWG, 10 x 10 AWG, 20 x 12 AWG, 120 x 16 AWG|600|1200|34|ACTIVE|
+HSK380|Wiring|Heat Shrink|Heat Shrink|Heat Shrink Tube Kit, 380pcs|Total 380pcs of 6 sizes heat shrink tubes;2 colors red & black;20 x 1/0AWG, 30 x 4 AWG, 30 x 8 AWG, 20 x 10 AWG, 40 x 12 AWG, 240 x 16 AWG|1100|2200|25|ACTIVE|
+QR0|Wiring|Connectors|Quick Release|Quick Release Connectors, 1/0 to 4 Gauge|1/0 to 4 gauge wire inputs;Power / remote / ground wire connections;Male & female connectors|2500|5000|50|ACTIVE|
+QR4|Wiring|Connectors|Quick Release|Quick Release Connectors, 4 to 8 Gauge|4 to 8 gauge wire inputs;Power / remote / ground wire connections;Male & female connectors|1800|3600|50|ACTIVE|
+REC10HB|Power|Capacitors|Capacitors|10F Hybrid Power Capacitor|True 10 farad capacitor;Hybrid carbon & electrolytic capacitor;Built-in distribution block;3 x 0/4 AWG power and 3 x 0/4 AWG ground|22500|45000|8|ACTIVE|
+REC5D|Power|Capacitors|Capacitors|True Spec 5.0 Farad Capacitor|3 x 0/2/4 AWG inputs and 3 x 0/2/4 AWG outputs|11000|22000|6|ACTIVE|PDF_TYPO
+R1D|Power|Capacitors|Capacitors|1F Power Capacitor|Accepts ring terminals|4500|9000|12|ACTIVE|SPEC_CONFLICT
+R2D|Power|Capacitors|Capacitors|2F Power Capacitor|Accepts ring terminals|6000|12000|12|ACTIVE|
+MST1|Tools|Test Equipment|Testers|Multifunctional Audio Tester||13500|27000|40|ACTIVE|
+MAT-1|Tools|Test Equipment|Testers|Multifunctional Audio Tester|DC voltage detection with max/min recording (+/-100V);Audio multimeter measuring AC voltage (0-150V RMS), current (0-100A RMS), frequency, impedance and power metrics|16000|32000|40|ACTIVE|
+TGSP|Tools|Test Equipment|Testers|Recoil Basic Tone Generator & Speaker Tester V2||4000|||COMING_SOON|NO_MRP
+SCHK2|Electrical|Hardwire Kits|Sockets & Relays|Dual Outputs Dash Camera Hardwire Kit|Connector Micro-USB & Mini-USB;Input 9V-24V DC;Output 2 x 5V DC / 2.5A|2250|4500|30|ACTIVE|
+RL3040-K2|Electrical|Relays|Sockets & Relays|12VDC 5-Pin SPDT Relay Kit|40A/30A high switching capability;Relay socket harness with OFC 12" pigtail leads;Included ATC/ATO in-line fuse-holders;2pcs per kit|900|1800|30|ACTIVE|MRP_IS_SET_PRICE
+FTR1-10|Electrical|Fuse Taps|Sockets & Relays|ATC/ATO (ACU) Fuse Taps, 10pcs|Right direction|800|1600|40|ACTIVE|
+FTR2-10|Electrical|Fuse Taps|Sockets & Relays|Mini ATS/ATM (ACS) Fuse Taps, 10pcs|Right direction|800|1600|40|ACTIVE|
+FTR3-10|Electrical|Fuse Taps|Sockets & Relays|Low Profile Mini (ACN) Fuse Taps, 10pcs|Right direction|800|1600|40|ACTIVE|
+FTR4-10|Electrical|Fuse Taps|Sockets & Relays|Micro 2 (ACZ) Fuse Taps, 10pcs|Right direction|800|1600|40|ACTIVE|
+ES6|Electrical|Switch Panels|Sockets & Relays|Recoil 6 Gang Switch Box with App and Snap-in Button Controller||10000|20000||ACTIVE|MISSING_MASTER_PACK
+ATT4|Electrical|Remote Trigger|Sockets & Relays|Remote Trigger Delay|Four channels remote outputs;Adjustable turn-on and turn-off timer;Up to 30 seconds timer setup|1500|3000|50|ACTIVE|
+CT3450-10|Wiring|Tapes|Cotton Tapes|Electrical Wire Harness Cloth Tape, 3/4" x 50ft|Total 10 rolls|1500|3000|1|ACTIVE|
+DIS-65C|Display|Retail Display|Display|Display for 6.5-Inch Single Speaker||3500|7000|1|ACTIVE|TRADE_ITEM
+DIS-65C2|Display|Retail Display|Display|Display for 6.5-Inch 2-Way Component Speaker||3500|7000|1|ACTIVE|TRADE_ITEM
+DIS-65C3|Display|Retail Display|Display|Display for 6.5-Inch 3-Way Component Speaker||3500|7000|1|ACTIVE|TRADE_ITEM
+LC-3|Signal|Level Controllers|Level Controllers|Level Controller|Flush mount through a hole;Precise machined aluminum knob|1000|2000|50|ACTIVE|
+ZTM19-K400|Installation|Cable Management|Zip Tie Mounts|Zip Tie Mount Kit 0.75" x 0.75" (19mm x 19mm), 400pcs|Designed to hold 4 to 8 AWG wire;95pcs zip tie mounts & 5pcs joint pieces;200pcs zip ties & 100pcs M3 stainless steel screws|1200|2400|10|ACTIVE|
+ZTM25-K400|Installation|Cable Management|Zip Tie Mounts|Zip Tie Mount Kit 1" x 1" (25mm x 25mm), 400pcs|Designed to hold 1/0 to 4 AWG wire;95pcs zip tie mounts & 5pcs joint pieces;200pcs zip ties & 100pcs M3 stainless steel screws|1600|3200|10|ACTIVE|
+BRL500|Electrical|Battery Isolators|Isolators|Battery Isolator 500A|500 Amps continuous at 12V DC;700 Amps surge|5000|10000|24|ACTIVE|
+SRL500|Electrical|Battery Isolators|Isolators|Smart Battery Isolator 500A|500 Amps continuous at 12V DC;700 Amps surge at 12V DC|7500|15000|24|ACTIVE|
+PTK11|Tools|Installation Tools|Tools|11-Piece Auto Trim Removal Tool Kit|No-scratch pry tool set for car audio installation;Dashboard, window molding and panel fastener remover kit;Blue;Carry bag included|1100|2200||ACTIVE|MISSING_MASTER_PACK
+PSI-1|Tools|Soldering|Tools|Cordless Soldering Iron Kit|Rapid heating up to in 20 seconds;Built-in 2000mAh lithium battery for long-lasting performance|8500|17000|25|ACTIVE|
+STT-M|Tools|Workshop|Tools|Silicone Non-Slip Medium Tool Tray||1500|3000||ACTIVE|MISSING_MASTER_PACK
+STT-L|Tools|Workshop|Tools|Silicone Non-Slip Large Tool Tray||2500|5000||ACTIVE|MISSING_MASTER_PACK
+SWSL|Tools|Soldering|Tools|9-Slot Wire Soldering Station|Holds 30 AWG to 12 AWG wire|500|1000|30|ACTIVE|
+SWS-TC|Tools|Soldering|Tools|4-Slot Wire Soldering Station|Include tip clean kit;Soldering iron stand|500|1000||ACTIVE|MISSING_MASTER_PACK
+IH-HC2|Tools|Installation Tools|Tools|Recoil Installation Hammer Crimper V2||1000|2000|14|ACTIVE|
+NG|Tools|Workshop|Tools|Recoil Micro-Foam Nitrile Coated Work Gloves||300|600||ACTIVE|MISSING_MASTER_PACK
+BAN-1|Display|Marketing|Display|Recoil 3x8-Feet Banner Style-1||4000|8000||ACTIVE|TRADE_ITEM,MISSING_MASTER_PACK
+EHB2|Damping|Heat Shield|Damping|Recoil Engine Hood Blanket||1000|2000||ACTIVE|MISSING_MASTER_PACK
+CCK10|Tools|Workshop|Tools|10pcs Car Microfiber Cleaning Kit||900|1800||ACTIVE|MISSING_MASTER_PACK
+BWS1125-BB|Wiring|Wire Sleeves|Braided Sleeve|Recoil Braided Wire Sleeve||4000|||COMING_SOON|NO_MRP,SPEC_MISSING
+BWS12300-BB|Wiring|Wire Sleeves|Braided Sleeve|Recoil Braided Wire Sleeve||5000|||COMING_SOON|NO_MRP,SPEC_MISSING
+BWS14300-BB|Wiring|Wire Sleeves|Braided Sleeve|Recoil Braided Wire Sleeve||4000|||COMING_SOON|NO_MRP,SPEC_MISSING
+BWS38300-BB|Wiring|Wire Sleeves|Braided Sleeve|Recoil Braided Wire Sleeve||5000|||COMING_SOON|NO_MRP,SPEC_MISSING
+BWS1125-BK|Wiring|Wire Sleeves|Braided Sleeve|Recoil Braided Wire Sleeve||4000|||COMING_SOON|NO_MRP,SPEC_MISSING
+BWS12300-BK|Wiring|Wire Sleeves|Braided Sleeve|Recoil Braided Wire Sleeve||5000|||COMING_SOON|NO_MRP,SPEC_MISSING
+BWS14300-BK|Wiring|Wire Sleeves|Braided Sleeve|Recoil Braided Wire Sleeve||4000|||COMING_SOON|NO_MRP,SPEC_MISSING
+BWS38300-BK|Wiring|Wire Sleeves|Braided Sleeve|Recoil Braided Wire Sleeve||5000|||COMING_SOON|NO_MRP,SPEC_MISSING
+FHS1220|Wiring|Heat Shrink|Fabric Heat Shrink|Recoil Fabric Heat Shrink 2:1||3000|||COMING_SOON|NO_MRP,SPEC_MISSING
+FHS1020|Wiring|Heat Shrink|Fabric Heat Shrink|Recoil Fabric Heat Shrink 2:1||3000|||COMING_SOON|NO_MRP,SPEC_MISSING
+FHS3420|Wiring|Heat Shrink|Fabric Heat Shrink|Recoil Fabric Heat Shrink 2:1||3000|||COMING_SOON|NO_MRP,SPEC_MISSING
+FHS3820|Wiring|Heat Shrink|Fabric Heat Shrink|Recoil Fabric Heat Shrink 2:1||3000|||COMING_SOON|NO_MRP,SPEC_MISSING

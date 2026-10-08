@@ -1,0 +1,108 @@
+# RECOIL Car Audio Price List — May 2026
+# Verbatim transcription of the supplied PDF. This file is the catalogue's
+# source of truth; drop in a new price list, re-run `npm run import:recoil`.
+# Pipe-delimited. `specs` holds the PDF's own detail lines, separated by ";".
+# Blank dp/mrp/masterPack mean the PDF cell was empty — never inferred.
+# flags: see scripts/import-recoil.mjs FLAG_MEANINGS
+sku|category|subcategory|series|name|specs|dp|mrp|masterPack|status|flags
+SPL4200.4|Amplifiers|4-Channel|Black Myth|4200 Watts Class-D 4-Channel Amplifier|Power @1Ohm (14.4V) 1050W x 4;Power @2Ohm (14.4V) 720W x 4;Power @4Ohm (14.4V) 420W x 4;Power (Bridged) @4Ohm (14.4V) 1400W x 2;Power (Bridged) @2Ohm (14.4V) 2150W x 2|45000|90000|2|ACTIVE|
+SPL6500.1|Amplifiers|Mono|Black Myth|6500 Watts Class-D Mono Amplifier|Power @1Ohm (14.4V) 6500W x 1;Power @2Ohm (14.4V) 4000W x 1;Power @4Ohm (14.4V) 2150W x 1|75000|150000|2|ACTIVE|
+DII1400.5|Amplifiers|5-Channel|Dii|Dii Series 5-Channel Amplifier|RMS 100W x 4 @4Ohm + 500W x 1 @4Ohm;RMS 160W x 4 @2Ohm + 800W x 1 @2Ohm|22500|45000|5|ACTIVE|
+DII700.4|Amplifiers|4-Channel|Dii|700 Watts Class-D 4-Channel Amplifier|Power @2Ohm (14.4V) 160W x 4;Power @4Ohm (14.4V) 110W x 4;Power (Bridged) @4Ohm (14.4V) 340W x 2|17500|35000|5|ACTIVE|PDF_TYPO
+DII3300.1|Amplifiers|Mono|Dii|Dii Series Mono Amplifier|RMS 3300W @1Ohm;2050W @2Ohm;1000W @4Ohm|25000|50000|4|ACTIVE|
+DII5000.1|Amplifiers|Mono|Dii|5000 Watts Class-D Mono Amplifier|Power @1Ohm (14.4V) 5200W x 1;Power @2Ohm (14.4V) 3180W x 1;Power @4Ohm (14.4V) 1800W x 1|30000|60000|4|ACTIVE|SPEC_CONFLICT
+REA600.4|Amplifiers|4-Channel|Echo|600 Watts Class A/B 4-Channel Amplifier|Power @2Ohm (14.4V) 130W x 4;Power @4Ohm (14.4V) 95W x 4;Power (Bridged) @4Ohm (14.4V) 260W x 2|16000|32000|3|ACTIVE|
+M1200.6|Amplifiers|6-Channel|Echo Pro|1200 Watts Class-D 6-Channel Amplifier (Marine)|Power @2Ohm (14.4V) 210W x 6;Power @4Ohm (14.4V) 110W x 6;Power (Bridged) @4Ohm (14.4V) 240W x 3|18000|36000|5|ACTIVE|
+M1600.8|Amplifiers|8-Channel|Echo Pro|1600 Watts Class-D 8-Channel Amplifier (Marine)|Power @2Ohm (14.4V) 200W x 8;Power @4Ohm (14.4V) 120W x 8;Power (Bridged) @4Ohm (14.4V) 320W x 4;Power (Bridged) @2Ohm (14.4V) N/A|22500|45000|5|ACTIVE|
+ATC500.1|Amplifiers|Mono|Echo Pro|500 Watts Class-D Mono Amplifier|RMS power @4Ohm (14.4V) 1 x 300W;RMS power @2Ohm (14.4V) 1 x 520W;RMS power @1Ohm (14.4V) N/A|12500|25000|10|ACTIVE|
+RL680.4|Amplifiers|4-Channel|L3|680 Watts Full Range Class-D 4-Channel Amplifier|Pocket Size;Power @2Ohm (14.4V) 170W x 4;Power @4Ohm (14.4V) 95W x 4;Power (Bridged) @4Ohm (14.4V) 250W x 2|8900|17800|10|ACTIVE|
+RL880.4|Amplifiers|4-Channel|L3|880 Watts Full Range Class-D 4-Channel Amplifier|Pocket Size;Power @2Ohm (14.4V) 220W x 4;Power @4Ohm (14.4V) 140W x 4;Power (Bridged) @4Ohm (14.4V) 380W x 2|9900|19800|10|ACTIVE|
+RL1200.4|Amplifiers|4-Channel|L3|4-Channel RMS 1200 Watts Amplifier|Compact Size;RMS 4 x 300W @2Ohm;RMS 4 x 190W @4Ohm;2 x 520W @4Ohm (Bridged)|15000|30000|10|ACTIVE|
+RL680.1|Amplifiers|Mono|L3|680 Watts Class-D Mono Amplifier|Pocket Size;Power @1Ohm (14.4V) 680W x 1;Power @2Ohm (14.4V) 500W x 1;Power @4Ohm (14.4V) 260W x 1|9900|19800|10|ACTIVE|
+RL1600.1|Amplifiers|Mono|L3|L-3 Series Mono Amplifier|RMS 1 x 1500W @1Ohm;RMS 1 x 900W @2Ohm;RMS 1 x 510W @4Ohm|14500|29000|8|ACTIVE|SKU_SPEC_MISMATCH
+RL1100.5|Amplifiers|5-Channel|L3|1100 Watts Class-D Amplifier|Power @2Ohm (14.4V) 140W x 4 + 420W x 1;Power @4Ohm (14.4V) 80W x 4 + 250W x 1|15000|30000||ACTIVE|HEADING_CONFLICT,MISSING_MASTER_PACK
+SAM365|Speakers|Component|L1|L-1 Series 6.5" 3-Way Component Speakers||35000|70000|4|ACTIVE|
+SAM265|Speakers|Component|L1|L-1 Series 6.5" 2-Way Component Speakers||22500|45000|4|ACTIVE|
+SAM65|Speakers|Component|L1|L-1 Series 6.5" 2-Way Component Speakers||13500|27000|4|ACTIVE|DUPLICATE_DESCRIPTION
+RPT28|Speakers|Tweeters|L1|Hi-Fi Rear Chamber Tweeter (28mm Silk Dome) for Premium Car Audio||7500|15000|66|ACTIVE|
+RD365|Speakers|Component|Echo Pro|3-Way Component Speaker|RMS Power 80 Watts;Peak Power 160 Watts|17500|35000|4|ACTIVE|
+RD65|Speakers|Component|Echo Pro|6.5-Inch 2-Way Component Speakers|RMS Power 60 Watts;Peak Power 150 Watts|13500|27000|4|ACTIVE|
+RD35|Speakers|Midrange|Echo Pro|Midrange Speaker|RMS Power 30 Watts;Peak Power 60 Watts|6000|12000|12|ACTIVE|
+RX65|Speakers|Coaxial|Echo Pro|2-Way Coaxial Speaker|RMS Power 70 Watts;Peak Power 140 Watts|7000|14000|4|ACTIVE|
+RX69|Speakers|Coaxial|Echo Pro|2-Way Coaxial Speaker|RMS Power 90 Watts;Peak Power 180 Watts|9500|19000|3|ACTIVE|
+RMM65|Speakers|Component|Echo Plus|2-Way Component Speaker|RMS Power 80 Watts;Peak Power 160 Watts|7500|15000|6|ACTIVE|
+RMX65|Speakers|Coaxial|Echo Plus|2-Way Coaxial Speaker|RMS Power 80 Watts;Peak Power 160 Watts|4500|9000|6|ACTIVE|
+REM65|Speakers|Component|Echo|6.5-Inch 2-Way Component Speakers|RMS Power 50 Watts;Peak Power 100 Watts|5750|11500|6|ACTIVE|
+RCX65|Speakers|Coaxial|Echo|6.5-Inch 2-Way Coaxial Speakers|RMS Power 50 Watts;Peak Power 100 Watts|3250|6500|6|ACTIVE|
+RCX4|Speakers|Coaxial|Echo|4-Inch 2-Way Coaxial Speakers|RMS Power 25 Watts;Peak Power 50 Watts|2500|5000|6|ACTIVE|
+RCX525|Speakers|Coaxial|Echo|5.25-Inch 2-Way Coaxial Speakers|RMS Power 40 Watts;Peak Power 80 Watts|3000|6000|6|ACTIVE|
+REM525|Speakers|Component|Echo|5.25-Inch 2-Way Component Speakers|RMS Power 40 Watts;Peak Power 80 Watts|5750|11500|6|ACTIVE|
+RCX694|Speakers|Coaxial|Echo|6x9-Inch 4-Way Coaxial Speakers|RMS Power 60 Watts;Peak Power 120 Watts|4750|9500|4|ACTIVE|
+RET1|Speakers|Tweeters|Echo|Component Tweeter|RMS Power 15 Watts;Peak Power 30 Watts|2250|4500|42|ACTIVE|
+MC25|Speakers|Midrange|Echo|Midrange Speaker (Pods for 3-way or Satellite Speaker or Centre Speaker)|RMS Power 25 Watts;Peak Power 50 Watts;Per Piece|4500|9000|48|ACTIVE|SOLD_PER_PIECE
+MS275|Speakers|Midrange|Echo|Recoil Echo Series 2.75" Midrange Speakers, Pair|Engineered specifically for Dolby Atmos and DTS:X immersive soundscapes;Compact 2.75-inch sky channel speaker installs discreetly in headliners or pillar panels;Projects overhead effects like rainfall, helicopter panning or orchestral heights|8000|16000|12|ACTIVE|
+RLM65|Speakers|Component|L3|6.5-Inch 2-Way Component Speaker|RMS Power 40 Watts;Peak Power 80 Watts|4500|9000|8|ACTIVE|
+RLX65|Speakers|Coaxial|L3|6.5-Inch 2-Way Coaxial Speaker|RMS Power 40 Watts;Peak Power 80 Watts|2500|5000|8|ACTIVE|
+RLM525|Speakers|Component|L3|Level-3 Series 5.25" Component Speaker||4500|9000|8|ACTIVE|
+RLX402|Speakers|Coaxial|L3|Recoil Level-3 Series 2-Way 4" Coaxial Speaker||2000|4000|10|ACTIVE|
+RLX693|Speakers|Coaxial|L3|Recoil Level-3 Series 3-Way 6x9" Coaxial Speaker||3950|7900|4|ACTIVE|
+RM65-4P|Speakers|Pro Midrange|Red Storm|6.5" Pro Midrange Speaker|Max Power 200 Watts each;RMS Power 100 Watts each;4 Ohm;93dB Sensitivity;Pressed Paper Cone & KSV Voice Coil|3750|7500|6|ACTIVE|
+RM8-4P|Speakers|Pro Midrange|Red Storm|8" Pro Midrange Speaker|Max Power 300 Watts each;RMS Power 150 Watts each;4 Ohm;93dB Sensitivity;Pressed Paper Cone & KSV Voice Coil|5000|10000|4|ACTIVE|
+MS65-4P|Speakers|Pro Midrange|Pro Audio|6.5-Inch Midrange Speakers|RMS Power 150 Watts each;Peak Power 300 Watts|5000|10000|4|ACTIVE|
+RST250|Speakers|Tweeters|Pro Audio|Bullet Super Tweeter (Shallow Horn Tweeter, 1" Voice Coil)|Max Power 120 Watts;RMS Power 60 Watts each|2500|5000|12|ACTIVE|DUAL_SKU_CELL
+TW250|Speakers|Tweeters|Pro Audio|3-Inch Bullet Super Tweeter|RMS Power 100 Watts each;Peak Power 200 Watts|4500|9000|12|ACTIVE|
+RX65-4P|Speakers|Pro Coaxial|Pro Audio|Pro Coaxial Speaker 2-Way|Max Power 200 Watts;RMS Power 100 Watts each|5000|10000|6|ACTIVE|
+MX65|Speakers|Pro Coaxial|Pro Audio|2-Way Mid-Range Coaxial Speaker|RMS Power 140 Watts each;Peak Power 280 Watts each|8500|17000|4|ACTIVE|
+MX8|Speakers|Pro Coaxial|Pro Audio|Pro Audio Coaxial Speaker 8"|Peak Power 350 Watts;RMS Power 175 Watts each|11000|22000|4|ACTIVE|
+MX69|Speakers|Pro Coaxial|Pro Audio|Pro Audio Coaxial Speaker|RMS Power 280 Watts;Peak Power 560 Watts|11000|22000|4|ACTIVE|
+PX65.4|Speakers|Pro Coaxial|Pro Audio|2-Way Mid-Range Coaxial Speaker (with Bullet Tweeter)|RMS Power 150 Watts;Peak Power 300 Watts|18000|36000|4|ACTIVE|
+XM65.4|Speakers|Pro Midrange|Echo Max|Recoil Echo Max Series 6.5" Midrange Speaker, Pair|RMS 350W|20000|40000|4|ACTIVE|
+RBMW-8W|Speakers|Vehicle Specific|BMW Specific|9-Inch Subwoofer|RMS Power 70 Watts;Peak Power 140 Watts|20000|40000|2|ACTIVE|SKU_SPEC_MISMATCH
+RBMW-T4M|Speakers|Vehicle Specific|BMW Specific|4-Inch 2-Way Component Speakers|RMS Power 70 Watts;Peak Power 140 Watts|20000|40000|4|ACTIVE|
+RBMW-T45M|Speakers|Vehicle Specific|BMW Specific|4.5-Inch 2-Way Component Speakers|RMS Power 50 Watts;Peak Power 100 Watts|20000|40000|4|ACTIVE|
+SXS10D2|Subwoofers|Shallow|Echo Shallow|10-Inch Dual 2-Ohm Shallow Subwoofer|RMS Power 300 Watts;Peak Power 600 Watts;Voice Coil Size 2.0" 6-Layer;Voice Coil Impedance Dual 2+2 Ohm|10000|20000|2|ACTIVE|
+SXS12D2|Subwoofers|Shallow|Echo Shallow|12-Inch Dual 2-Ohm Shallow Subwoofer|RMS Power 400 Watts;Peak Power 800 Watts;Voice Coil Size 2.0" 6-Layer;Voice Coil Impedance Dual 2+2 Ohm|10000|200000|2|ACTIVE|PRICE_ANOMALY
+PW65D4|Subwoofers|Component|Echo Pro|6.5-Inch Dual 4-Ohm Subwoofer|RMS Power 200 Watts;Peak Power 400 Watts;Voice Coil Size 2.0";Voice Coil Impedance Dual 2+2 Ohm|6000|12000|4|ACTIVE|SPEC_CONFLICT
+PW8D4|Subwoofers|Component|Echo Pro|8-Inch Dual 4-Ohm Subwoofer|RMS Power 500 Watts;Peak Power 1000 Watts;Voice Coil Size 2.5";Voice Coil Impedance Dual 4+4 Ohm|6500|13000|2|ACTIVE|
+PWS8D4|Subwoofers|Shallow|Echo Pro|8-Inch Dual 4-Ohm Subwoofer - Shallow|Peak Power 500 Watts;RMS Power 250 Watts|10000|20000|2|ACTIVE|
+PW10D4|Subwoofers|Component|Echo Pro|10-Inch Dual 4-Ohm Subwoofer|RMS Power 600 Watts;Peak Power 1200 Watts;Voice Coil Size 2.5";Voice Coil Impedance Dual 4+4 Ohm|10000|20000|2|ACTIVE|
+PW12D4|Subwoofers|Component|Echo Pro|12-Inch Dual 4-Ohm Subwoofer|RMS Power 700 Watts;Peak Power 1400 Watts;Voice Coil Size 2.0";Voice Coil Impedance Dual 4+4 Ohm|11500|23000|2|ACTIVE|
+PW15D4|Subwoofers|Component|Echo Pro|15-Inch Dual 4-Ohm Subwoofer|Peak Power 1600 Watts;RMS Power 800 Watts|19000|36000|2|ACTIVE|MARGIN_ANOMALY
+RW10D4|Subwoofers|Component|Echo|10-Inch Dual 4-Ohm Subwoofer|RMS Power 250 Watts;Peak Power 500 Watts;Voice Coil Size 2.0";Voice Coil Impedance Dual 4+4 Ohm|5500|11000|2|ACTIVE|
+RW12D4|Subwoofers|Component|Echo|12-Inch Dual 4-Ohm Subwoofer|RMS Power 300 Watts;Peak Power 600 Watts;Voice Coil Size 2.0";Voice Coil Impedance Dual 4+4 Ohm|6000|12000|2|ACTIVE|
+LW8S4|Subwoofers|Component|L3|8-Inch Single 4-Ohm Subwoofer|Peak Power 160 Watts;RMS Power 80 Watts|3500|7000|4|ACTIVE|
+LW12S4|Subwoofers|Component|L3|12-Inch Single 4-Ohm Subwoofer|Peak Power 300 Watts;RMS Power 150 Watts|4750|9500|2|ACTIVE|
+SW2.5|Subwoofers|Mini|Toy|Recoil Audio 2.5" Toy Subs||2500|5000|6|ACTIVE|
+SS2.5|Subwoofers|Mini|Toy|2.5-Inch Dual 2-Ohm Subwoofer|Subwoofer Size Mini Subwoofer 2.75";Power Handling 20 Watts|4500|9000|45|ACTIVE|SPEC_CONFLICT
+SPL15D2|Subwoofers|SPL|SPL High End|15-Inch Dual 2-Ohm SPL Subwoofer|Peak Power 5000 Watts;RMS Power 2500 Watts|75000|150000|1|ACTIVE|
+SPL12D2|Subwoofers|SPL|SPL High End|12-Inch Dual 2-Ohm SPL Subwoofer|Peak Power 5000 Watts;RMS Power 2500 Watts|70000|140000|1|ACTIVE|
+SW12D2|Subwoofers|SPL|SPL High End|12-Inch Dual 2-Ohm Subwoofer|Peak Power 2000 Watts;RMS Power 1000 Watts|25000|50000|1|ACTIVE|
+SW10D2|Subwoofers|SPL|SPL High End|10-Inch Dual 2-Ohm Subwoofer|Peak Power 2000 Watts;RMS Power 1000 Watts|22500|45000|1|ACTIVE|
+SL1708|Subwoofers|Active Enclosure|Active Enclosure|8" Low Profile Amplified Subwoofer|Built-in 8" subwoofer;Built-in class-A/B amplifier;Built-in amplifier Peak 500 Watts / RMS 120 Watts|13500|27000|2|ACTIVE|
+RLS10|Subwoofers|Active Enclosure|Active Enclosure|10" Low Profile Amplified Subwoofer|Built-in 10" subwoofer;Built-in class-A/B amplifier;Built-in amplifier Peak 300 Watts / RMS 150 Watts|11000|22000|3|ACTIVE|
+SW10P|Subwoofers|Active Enclosure|Active Enclosure|10" Active Subwoofer with Passive Radiator|Active 10" subwoofer enclosure;10" passive radiator;Built-in amplifier Peak 600 Watts / RMS 300 Watts|20000|40000|1|ACTIVE|
+LAS10|Subwoofers|Active Enclosure|Active Enclosure|10" Shallow Active Subwoofer|Power Handling 200 Watts;Impedance 2 Ohm;Frequency Response 30 Hz - 150 Hz|14500|29000|1|ACTIVE|
+RST11|Subwoofers|Spare Tire|Active Enclosure|11-Inch Active Spare Tire Subwoofer|Active 11" spare tire subwoofer;Built-in 11" subwoofer;Built-in amplifier Peak 600 Watts / RMS 300 Watts|27500|55000|2|ACTIVE|
+PST12|Subwoofers|Spare Tire|Active Enclosure|12-Inch Passive Spare Tire Subwoofer (Non-Active)|Passive 12" spare tire subwoofer;Built-in 12" subwoofer;Power Peak 900 Watts / RMS 450 Watts|20000|40000|2|ACTIVE|
+S810|Processors|DSP|Processor|8-CH Inputs & 10-CH Outputs DSP|Inputs 8 x high level, 2 x auxiliary, 1 x optical SPDIF, 1 x coaxial;Outputs 10 x RCA;Power Rating (14.4V) @4Ohm RMS 8 x 25 Watts + 2 x 100 Watts (Bridged 1 x 300 Watts);@2Ohm RMS 8 x 40 Watts + 2 x 160 Watts|20000|40000|4|ACTIVE|
+P610-PRO|Processors|DSP|Processor|6-CH Inputs & 10-CH Outputs DSP|Inputs 6 x RCA, 6 x high level, 1 x optical SPDIF;Outputs 10 x RCA;Power Rating RMS 4 x 40 Watts @4Ohm / Peak 4 x 80 Watts @4Ohm;Built-in Bluetooth Audio Streaming;Windows PC software and App tuning|14500|29000|10|ACTIVE|
+R46|Processors|DSP|Processor|4-CH Inputs & 6-CH Outputs DSP|Inputs 4 x RCA, 4 x high level, 1 x optical SPDIF;Outputs 4 x high level & 6 x RCA;Power Rating (14.4V) @4Ohm RMS 4 x 25 Watts / Peak 4 x 50 Watts;@2Ohm RMS 4 x 40 Watts / Peak 4 x 80 Watts|8900|17800|10|ACTIVE|
+DRC|Processors|Remote Control|Processor|Recoil Remote Control (for R46)||4500|9000|3|ACTIVE|
+DRC1|Processors|Remote Control|Processor|Recoil Remote Control (for P610 & P610-PRO)||5000|10000|10|ACTIVE|
+DRC2|Processors|Remote Control|Processor|Recoil Digital Remote Controller V2.0 (for S810)||4500|9000|18|ACTIVE|
+DH03|Processors|DSP Harness|Plug & Play Sockets|DSP Plug & Play Socket - Hyundai|Hyundai|2000|4000|10|ACTIVE|DUPLICATE_SKU
+DH03 (2)|Processors|DSP Harness|Plug & Play Sockets|DSP Plug & Play Socket - Hyundai New|Hyundai New|2000|4000|10|ACTIVE|DUPLICATE_SKU,SKU_AS_PRINTED
+DH04|Processors|DSP Harness|Plug & Play Sockets|DSP Plug & Play Socket - Volkswagen|Volkswagen|2000|4000|10|ACTIVE|
+DH07 Toyota|Processors|DSP Harness|Plug & Play Sockets|DSP Plug & Play Socket - Toyota|Toyota|2000|4000|10|ACTIVE|SKU_AS_PRINTED
+DH50 Toyota|Processors|DSP Harness|Plug & Play Sockets|DSP Plug & Play Socket - Toyota|Toyota|2000|4000|10|ACTIVE|SKU_AS_PRINTED,ROW_AMBIGUOUS
+DH11 Honda|Processors|DSP Harness|Plug & Play Sockets|DSP Plug & Play Socket - Honda|Honda|2000|4000|10|ACTIVE|SKU_AS_PRINTED
+DH 41 Honda|Processors|DSP Harness|Plug & Play Sockets|DSP Plug & Play Socket - Honda|Honda|2000|4000|10|ACTIVE|SKU_AS_PRINTED
+R3B-P|Two Wheeler|Speaker Kit|Two Wheeler|Pair of 3-Inch Speaker Audio Kit|A pair of matt black 3" speaker pods R3B;Micro full-range 2-channel Bluetooth amplifier IC2A;Waterproof wireless remote controller;Plug-n-play installation accessories|18000|36000|1|ACTIVE|
+BTR-20|Marine|Bluetooth|Marine|Waterproof Bluetooth Receiver|RCA female outputs 4V RMS output;IPX7 waterproof rating|4500|9000|40|ACTIVE|
+BTR-19|Marine|Bluetooth|Marine|Waterproof 3-Zone Bluetooth Controller|LED illumination for zone volume adjustment identification;4V RMS output;IPX7 waterproof rating||15000|40|COMING_SOON|NO_DP
+M1-65|Marine|Speakers|Marine|6.5-Inch Marine Speakers|RMS Power 60 Watts;Max Power 120 Watts||15000|6|COMING_SOON|NO_DP
+R4-P|Marine|Speaker Kit|Marine|Pair of 4-Inch Speaker Audio Kit|A pair of 4" speaker pods with passive radiators R4;Waterproof 250W full range class-D 2-channel amplifier AMP250.2;Waterproof Bluetooth controller RB1||79000|1|COMING_SOON|NO_DP
+PSB6|Soundbars|Soundbar|Marine|21-Inch All-In-One Sound Bar|Power Output 200 Watts @14.4V, <10% THD+DN;Frequency Response 20 Hz - 20 kHz|42500|85000|1|ACTIVE|
+REQ7|Processors|Equalizer|Misc|7-Band Equalizer|Seven equalization bands;Frequency adjustable from -12 to +12dB;2 channels of speaker level inputs;6 channels of RCA outputs (front, rear, sub);Separate level controls|7000|14000|20|ACTIVE|
+CRX-PRO|Processors|Crossover|Misc|Electronic 5-Way Crossover|5-Way Crossover System;Adjustable HPF/LPF on All Channels;Phase Inversion (0/180) & Mute;Subsonic Filter & 40Hz Bass Boost;High-Voltage RCA Inputs & Outputs|5500|11000||ACTIVE|MISSING_MASTER_PACK
+PLC44PRO|Processors|Line Output Converter|Misc|4-CH In & 4-CH Out LOC|4 channels of speaker level inputs (up to 40V input handling);4 channels of RCA level outputs;Low pass filter (rear channels);Bass boost (0-12dB);2 or 4 channels input selection;Retains fader 4-ch in/out;Remote level controller|6500|13000|10|ACTIVE|

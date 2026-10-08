@@ -1,0 +1,277 @@
+
+===== PAGE 1 =====
+R
+ONE
+MotoriN
+www.one-motor.in
+EXCLUSIVE INDIA OFFICIAL PARTNER
+
+===== PAGE 2 =====
+EVO4-400.4
+INPUT
+OUTPUT
+A: | 4.4 IN / 11.3 CM
+B: | 4.3 IN / 10.9 CM
+C: | 2.0 IN / 5.1 CM
+SPECIFICATIONS
+Power @ 4 | Ω | : 4 x 66W RMS | Total Efficiency: 82%
+Power @ 2 | Ω | : 4 x 100W RMS
+Damping Factor: 200
+Power @ 1 | Ω | : N/A | Frequency Response (-3dB): 10Hz- 22kHz
+Bridge Power @ 4 | Ω | : 2 x 200W RMS | SNR: 88dB
+Crossover HPF: 45Hz- 80Hz
+Bridge Power @ 2 | Ω | : N/A
+Crossover LPF: 45Hz- 80Hz
+Operating Voltage: 8V - 16V
+Weight: 0.46kg
+Current Draw (MUSIC): 19A
+14,990/-
+THD + N (10% RATED POWER): 0.1%
+Recommended Fuse (MUSIC): 20A
+EVO5-600.4
+INPUT
+OUTPUT
+A: | 4.45 IN / 11.3 CM
+B: | 5.33 IN / 13.5 CM
+C: | 2.0 IN / 5.09 CM
+SPECIFICATIONS
+600:4 EO 4.0 4 | Ω | Crossover LP / HP: 80Hz
+Power @ 12.6V @ 2 | Ω | : 4 x 150W RMS
+Damping Factor: 200
+Power @ 12.6V @ 4 | Ω | : 4 x 100W RMS | SNR: 88dB
+Bridge Power @ 4 | Ω | :2 x 300W RMS | Weight: 0.66 kg
+Bridge Power @ 8 | Ω | :2 x 198W RMS | Frequency Response(-3dB): 10Hz - 20kHz
+THD + N - (10% of rated power): 0.1% | Total Efficiency: 88%
+THD + N - (100% of rated power):1% | 24,990/-
+Operating Voltage: 8V - 16V
+Current Draw (MUSIC): 27A
+Recommended Fuse (MUSIC): 35A
+2
+
+===== PAGE 3 =====
+EVO4-800.4
+INPUT
+A: | 4.4 in / 11,3 CM
+B: | 5.8 IN / 14.8 CM
+C: | 2.0 IN / 5.1 CM
+OUTPUT
+SPECIFICATIONS
+Power @ 1 | Ω: N/A | Total Efficiency: 79%
+Power @ 2 | Ω: 4 X 200W RMS | Damping Factor: 200
+Power @ 4 | Ω: 4 X 132W RMS
+Frequency Response: 10Hz – 20kHz
+Bridge Power @ 2 | Ω: N/A
+SNR: 88dB
+4
+Bridge Power @ 4 | Ω: 2 X 400W RMS
+Crossover LPF / HPF: 80Hz
+Operating Voltage: 8V - 16V
+Width: 11.3cm
+Current Draw (MUSIC): 40A
+Length: 14.8 cm
+Current Draw (Max): 80A
+Height: 5.1 cm
+Recommended Fuse (MUSIC):40A
+Weight: 0.70 kg
+32,990/-
+EVO5 800.1-2 | Ω
+INPUT
+A: | 4.4 IN / 11.3 CM
+B: | 5.8 IN / 14.8 CM
+OUTPUT
+SPECIFICATIONS
+C: | 2.0 IN / 5.1 CM
+Power @ 2Ω: 800W | Total Efficiency: 79%
+Power @ 4Ω: 528W | Damping Factor: 200
+Power @ 8Ω: 348W | Frequency Response (-3dB): 10Hz - 20kHz
+SNR: 96dB
+Operating Voltage: 8V - 16V
+Current Draw (MUSIC): 40A | Subsonic: 10Hz - 80Hz
+Current Draw With Resistive Load (1kHz @ 12.6V): 125A | Crossover LPF: 50Hz - 20kHZ
+Recommended Fuse (MUSIC): 40A | Weight: 0.7kg
+THD + N (10% Rated Power): 0.1%
+27,990/-
+3
+
+===== PAGE 4 =====
+EVO5-1200.1-1 | Ω
+INPUT
+A: | 5.4 IN / 13.6 CM
+OUTPUT
+B: | 7.1 IN / 18 CM
+C: | 2.1 IN / 5.48 CM
+SPECIFICATIONS
+Frequency Response (-3dB): 5Hz - 20kHz
+Power @ 1Ω: 1 X 1200W RMS
+Power @ 2Ω: 1 X 792W RMS | Crossover: LP 50Hz - 1kHz
+Power @ 4Ω: 1 X 522W RMS
+Damping Factor: >2000
+Power @ 1Ω: 1 x N/A
+Total Efficiency: 88%
+Power @ 2Ω: 1 x 1200W RMS
+Dimensions (LxWxH): 20.5 X 18.1 X 5.7 CM
+Power @ 4Ω: 1 x 796W RMS
+Weight: 1.12kg
+Operating Voltage: 9V - 16V
+SNR: 95dB
+Current Draw (Music): 54A
+Current Draw (Max): 108A
+34,990/-
+Recommended Fuse (Music): 70A
+EVO5-1200.1-2 | Ω
+INPUT
+A: | 5.4 IN / 13.6 CM
+B: | 6.7 IN / 17CM
+C: | 2.2 IN / 5.5 CM
+OUTPUT
+SPECIFICATIONS
+Power @ 1Ω: 2 X 600W RMS | Frequency Response (-3dB): 5Hz - 22kHz
+Power @ 2Ω: 2 X 396W RMS
+Crossover: LPF: 80Hz / HPF: 80Hz
+Power @ 4Ω: 2 X 262W RMS
+Damping Factor: 200
+Operating Voltage: 8V - 16V
+Total Efficiency: 83%127A
+Current Draw (Music): 115A
+SNR: 91dB
+Current Draw (Max): 57A
+Weight: 1.14kg
+Recommended Fuse (Music): 60A
+2
+34,990/-
+4
+
+===== PAGE 5 =====
+EVO5- 1600.1-1 | Ω
+INPUT
+A: | 5.4 IN / 13.6 CM
+SPECIFICATIONS
+OUTPUT
+B: | 7.1 IN / 18 CM
+Power @ 4Ω: 1 X 697W RMS
+C: | 2.1 IN / 5.8 CM
+Power @ 2Ω: 1 X 1056W RMS
+Power @ 1Ω: 1 X 1600W RMS | Total Efficiency: 85%
+Damping Factor: >2000
+Operating Voltage: 9V - 16V
+Frequency Response (-3dB): 5Hz - 25kHz
+Current Draw (MUSIC): 75A
+SNR: 93.7dB
+Current Draw (MAX): 149A
+Crossover LPF: 50Hz - 1kHz
+Recommended Fuse (MUSIC): 80A
+Subsonic: 5Hz - 80Hz
+1
+Weight: 1.13kg
+41,990/-
+EVO5-1600.1-2 | Ω
+INPUT
+A: | 5.4 IN / 13.6 CM
+B: | 7.1 IN / 18 CM
+OUTPUT
+C: | 2.1 IN / 5.8 CM
+SPECIFICATIONS
+Power @ 4Ω: 1 X 1600 WRMS | Total Efficiency: 89%
+Power @ 2Ω: 1 X 1056 WRMS
+Damping Factor: >2000
+Power @ 1 | Ω: N/A | Frequency Response (-3dB): 5Hz - 25kHz
+Operating Voltage: 9V - 16V | SNR: 95dB
+Current Draw (MUSIC): 71A
+Crossover LPF: 50Hz - 1KHz
+2
+Current Draw (MAX): 143A | Subsonic: 5Hz - 80Hz
+Recommended Fuse (MUSIC): 80A | THD + N (10% Rated Power): 0.1%
+41,990/-
+5
+
+===== PAGE 6 =====
+EVOX 400.4
+INPUT
+OUTPUT
+A: | 4.4 IN / 11.3 CM
+SPECIFICATIONS
+B: | 7.3 IN / 18.1 CM
+Power @ 1Ω: N/A
+C: | 2.2 IN / 5.5 CM
+Power @ 2Ω: 4 X 100WRMS
+Power @ 4Ω: 4 X 66WRMS
+Frequency Response(-3dB): 5Hz - 22kHz
+Bridge Power @ 2Ω: N/A
+Crossover: LPF / HPF: 45Hz – 850Hz
+Bridge Power @ 4Ω: 2 X 200W RMS
+Operating Voltage: 8V - 16V | Damping Factor: 200
+4
+Total Efficiency: 82%
+Current Draw (Music): 19A
+Current Draw (Max): 39A | SNR: 88dB
+Recommended Fuse (Music): 20A | 45,990/-
+Weight: 0.47kg
+EVOX2- 800.4-4
+INPUT
+OUTPUT
+A: | 4.4 IN / 11.3 CM
+B: | 5.8 IN / 14.8 CM
+SPECIFICATIONS | C: | 2.0 IN / 5.1 CM
+Power @ 2Ω: 4 X 200W | Total Efficiency: 80%
+Power @ 4Ω: 4 X 132WRMS | Damping Factor: 200
+Frequency Response (-3dB): 5Hz - 22kHz
+Bridge Power @ 4 | Ω | : 2 X 400W
+Bridge Power @ 8 | Ω | : 2 X 264W | SNR: 91dB
+Operating Voltage: 8V - 16V | Crossover LPF: 45Hz - 850Hz HPF: 45Hz - 850Hz
+Current Draw (MUSIC): 35A | Input Sensitivity: 0.2V - 4V
+Recommended Fuse (MUSIC): 40A
+4
+THD + N (10% Rated Power): 0.1%
+48,990/-
+8
+
+===== PAGE 7 =====
+EVOX2- 800.1-2 | Ω
+INPUT
+OUTPUT | A: | 5.8 IN / 14.8 CM
+B: | 4.4 IN / 11.3 CM
+SPECIFICATIONS | C: | 1.1 IN / 5.0 CM
+Power @ 12.6V @ 4Ω: 1 X 528W RMS
+Frequency Response (-3dB): 5Hz – 500 Hz
+Power @ 12.6V @ 2Ω: 1 X 800W RMS
+Crossover HPF: 5Hz – 30Hz
+Power @ 12.6V @ 1Ω: N/A
+Crossover LPF: 50Hz – 500Hz
+Power @ 14.4V @ 4Ω : 1 X 589W RMS
+Damping Factor: 200
+2 | Power @ 14.4V @ 2Ω: 1 X 892W RMS
+Total Efficiency: 81%
+Power @ 14.4V @ 1Ω: N/A
+Operating Voltage: 8V – 16V | SNR: 90dB
+Current Draw (Music): 38 A
+Current Draw (Max): 74 A
+Recommended Fuse (Music): 40 A | 30,990/-
+EVOX2 1000.1
+INPUT
+OUTPUT
+SPECIFICATIONS
+A: | 5.4 IN / 13.6 CM
+Power @ 1Ω: 1 X 1000 WRMS | B: | 7.1 IN / 18.1 CM
+Power @ 2Ω: 1 X 721WRMS
+C: | 2.2 IN / 5.4 CM
+Power @ 4Ω: 1 X 476WRMS
+Bridge Power @ 2Ω: 1 X 1000 WRMS
+Frequency Response(-3dB): 5Hz - 25kHz
+Bridge Power @ 4Ω: 1 X 739WRMS
+Low Pass Filter (12dB/oct): 50Hz - 500Hz
+Operating Voltage: 8V - 16V
+2
+Damping Factor (@100Hz nominal impedance): >3000
+Current Draw (Music): 1 | Ω | :44A | 2Ω:45A
+Total Efficiency: 1Ω: 89% 2Ω: 86%
+Current Draw (Max): 1 | Ω | : | 88 | A | 2Ω:90A
+Recommended Fuse (Music): 50A | SNR: 94dB
+Weight: 1.12 kg (2.46 lb)
+64,990/-
+9
+
+===== PAGE 8 =====
+ONE
+MotoriN
+www.one-motor.in
+INDIA EXCLUSIVE PARTNER

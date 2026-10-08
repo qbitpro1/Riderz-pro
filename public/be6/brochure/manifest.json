@@ -1,0 +1,76 @@
+{
+  "source": "data/be6/source/BE6_SPORTEQ_Brochure.pdf",
+  "pages": 8,
+  "images": [
+    {
+      "page": 1,
+      "order": 1,
+      "file": "be6-001.jpg",
+      "width": 2449,
+      "height": 3465,
+      "x": 0,
+      "y": -1,
+      "original": true
+    },
+    {
+      "page": 2,
+      "order": 1,
+      "file": "be6-002.jpg",
+      "width": 891,
+      "height": 898,
+      "x": -9,
+      "y": 636,
+      "original": true
+    },
+    {
+      "page": 3,
+      "order": 1,
+      "file": "be6-003.jpg",
+      "width": 891,
+      "height": 898,
+      "x": 35,
+      "y": 636,
+      "original": true
+    },
+    {
+      "page": 4,
+      "order": 1,
+      "file": "be6-004.jpg",
+      "width": 891,
+      "height": 898,
+      "x": -9,
+      "y": 635,
+      "original": true
+    },
+    {
+      "page": 5,
+      "order": 1,
+      "file": "be6-005.jpg",
+      "width": 891,
+      "height": 898,
+      "x": 248,
+      "y": 635,
+      "original": true
+    },
+    {
+      "page": 6,
+      "order": 1,
+      "file": "be6-006.jpg",
+      "width": 891,
+      "height": 898,
+      "x": -9,
+      "y": 635,
+      "original": true
+    },
+    {
+      "page": 7,
+      "order": 1,
+      "file": "be6-007.jpg",
+      "width": 891,
+      "height": 898,
+      "x": 248,
+      "y": 635,
+      "original": true
+    }
+  ]
+}

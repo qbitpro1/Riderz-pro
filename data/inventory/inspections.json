@@ -1,0 +1,23 @@
+{
+  "_readme": [
+    "Completed Motorbotz inspections, keyed by listing slug.",
+    "",
+    "This is the ONLY thing that can put the MOTORBOTZ VERIFIED badge on a car.",
+    "An entry here means an engineer physically inspected that vehicle and signed",
+    "the report. Nothing else — not a dealer's claim, not a source's badge, not a",
+    "customer's inspection request — may set it.",
+    "",
+    "Shape:",
+    "  \"<listing-slug>\": {",
+    "    \"inspectedAt\": \"2026-08-09T10:30:00.000Z\",",
+    "    \"inspector\": \"Name, Motorbotz Bengaluru\",",
+    "    \"results\": [ { \"point\": \"Exterior\", \"pass\": true, \"note\": null }, ... ]",
+    "  }",
+    "",
+    "Valid points: Exterior, Interior, Engine, Transmission, Suspension, Brakes,",
+    "Tyres, Electrical, AC, Accident damage, Odometer, Documents.",
+    "",
+    "Empty because no inspection has been carried out on the sample records."
+  ],
+  "inspections": {}
+}

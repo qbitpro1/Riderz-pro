@@ -1,0 +1,35 @@
+{
+  "name": "motorbotz",
+  "version": "1.0.0",
+  "private": true,
+  "description": "MOTORBOTZ — Buy. Build. Drive. India's automotive ecosystem.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "sync:recoil": "node scripts/sync-recoil-manufacturer.mjs",
+    "verify:recoil": "node scripts/verify-price-list.mjs",
+    "import:recoil": "node scripts/import-recoil.mjs",
+    "import:blaupunkt": "node scripts/import-blaupunkt.mjs",
+    "extract:pdf-images": "node scripts/extract-pdf-images.mjs",
+    "catalog:rebuild": "npm run sync:recoil && npm run verify:recoil && npm run import:recoil",
+    "inventory:refresh": "node scripts/inventory-refresh.mjs",
+    "inventory:check-robots": "node scripts/check-robots.mjs"
+  },
+  "dependencies": {
+    "next": "^16.3.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "4.1.13",
+    "@types/node": "24.5.2",
+    "@types/react": "19.1.13",
+    "@types/react-dom": "19.1.9",
+    "pdfjs-dist": "^6.2.108",
+    "tailwindcss": "4.1.13",
+    "typescript": "5.9.2"
+  }
+}

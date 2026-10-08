@@ -1,0 +1,4225 @@
+{
+  "summary": {
+    "generatedAt": "2026-08-11T13:54:30.980Z",
+    "source": {
+      "doc": "Blaupunkt Brochure 2026",
+      "edition": "2026-27",
+      "supplied": "Supplied by the customer, 11 August 2026",
+      "pages": 73
+    },
+    "totals": {
+      "parsed": 125,
+      "published": 18,
+      "held": 107,
+      "withImage": 69,
+      "skippedRows": 8
+    },
+    "flagCounts": {
+      "MODEL_UNCERTAIN": 46,
+      "IMAGE_ORDER_ASSUMED": 38,
+      "IMAGE_COUNT_MISMATCH": 56,
+      "IMAGE_ORDER_VERIFIED": 8,
+      "DUPLICATE_LISTING": 7,
+      "SPEC_MISSING": 11
+    },
+    "flagMeanings": {
+      "NO_IMAGE": "No photograph could be taken from this catalogue page.",
+      "IMAGE_ORDER_ASSUMED": "The page carries one photograph per product and both run in the same reading order, so the pairing is likely but has not been checked by eye.",
+      "IMAGE_ORDER_VERIFIED": "The image-to-product pairing on this page has been checked against the printed model names.",
+      "IMAGE_COUNT_MISMATCH": "The page has a different number of photographs than products, so no image can be attributed to this model.",
+      "MODEL_UNCERTAIN": "The parsed model name may be a fragment of the specification table rather than the model itself.",
+      "SPEC_MISSING": "No specification lines were printed for this model.",
+      "DUPLICATE_LISTING": "This model appears more than once in the catalogue."
+    },
+    "skipped": [
+      {
+        "page": 19,
+        "reason": "COLUMN_COUNT_MISMATCH",
+        "models": 5,
+        "prices": 3,
+        "line": "MRP: ` 19990 R-41171263 MRP: ` 21990 www.bis.gov.in MRP: ` 12990 R-41171263"
+      },
+      {
+        "page": 20,
+        "reason": "COLUMN_COUNT_MISMATCH",
+        "models": 3,
+        "prices": 2,
+        "line": "MRP: ` 27999 MRP: ` 59999"
+      },
+      {
+        "page": 23,
+        "reason": "NO_MODEL_NAME",
+        "line": "MRP: ` 34,990/-"
+      },
+      {
+        "page": 35,
+        "reason": "COLUMN_COUNT_MISMATCH",
+        "models": 3,
+        "prices": 2,
+        "line": "MRP: ` 12990 MRP: ` 1990"
+      },
+      {
+        "page": 37,
+        "reason": "COLUMN_COUNT_MISMATCH",
+        "models": 7,
+        "prices": 4,
+        "line": "MRP: ` 2450 MRP: ` 2450 MRP: ` 3290 MRP: ` 3500"
+      },
+      {
+        "page": 65,
+        "reason": "COLUMN_COUNT_MISMATCH",
+        "models": 4,
+        "prices": 2,
+        "line": "1Female - 2Male 1Male - 2 Female MRP: ` 1490 MRP: ` 1890"
+      },
+      {
+        "page": 65,
+        "reason": "COLUMN_COUNT_MISMATCH",
+        "models": 6,
+        "prices": 2,
+        "line": "MRP: ` 675 MRP: ` 675"
+      },
+      {
+        "page": 66,
+        "reason": "COLUMN_COUNT_MISMATCH",
+        "models": 2,
+        "prices": 5,
+        "line": "MRP: ` 199 MRP: ` 199 MRP: ` 399 MRP: ` 499 MRP: ` 599"
+      }
+    ]
+  },
+  "products": [
+    {
+      "model": "LOS ANGELES 1050",
+      "variant": "9.5inch",
+      "name": "LOS ANGELES 1050 9.5inch",
+      "slug": "blaupunkt-los-angeles-1050-9-5inch",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Android head units",
+      "group": "Multimedia",
+      "mrp": 42990,
+      "sellingPrice": 38690,
+      "discountPct": 10,
+      "specs": [
+        "Android v13.0 6 GB RAM 128 GB Flash Storage",
+        "9.5” Capacitive Touch Car Multimedia PhoneLINK Phone / Mobile Hotspot tethering Time Alignment",
+        "Audio System (2000 x 1200) .flac Compatible Audio, Video, Picture from USB supported",
+        "Virtual Center Channel",
+        "Android 13.0 Fast Boot Bluetooth v5.0",
+        "Sound Field Selector",
+        "Octa Core with 4 x A73 @ 2.0GHz / 4xA53 @ Centre channel out Built-in Bluetooth (HFP, PBAP, A2DP)",
+        "Built-in HPF and LPF",
+        "1.8GHz 5.1 Sound System Output/Virtual Internal & External Microphone",
+        "Tuned for-Seat Selector Option",
+        "6GB DDR4 Memory Central Speaker 360 camera input",
+        "44 Band Equalizer",
+        "128GB Flash Storage Built- in WIFI with 2.4G/5G Dual band 3x Rear USB (standard A-type)",
+        "Equalizer / Amplifier",
+        "2.5G IPS Screen Built- in 4G with LTE Cat 12 Rear AV input",
+        "High-grade styling Optical Fiber Output (TOSLINK) Front & Rear camera input - AHD & CVBS 4V - 4 channel pre amp Output",
+        "Intuitive Blaupunkt User Interface HDMI Output Front & Rear camera recording possible Sub out",
+        "High-end tuner, FM (RDS) / AM tuner Gesture control Steering Wheel Control input 4x65 watts max. power",
+        "Ready for Navigation App controlled Cooling Fan Velocity Sound Engine",
+        "Split screen (some apps) Wi-Fi Ready",
+        "Individual Speaker Level Adjustment",
+        "Car Specific Fascia to be purchased separately",
+        "Octa Core 2.0G+1.8GHz HDMI Camera Built- in WIFI",
+        "Bluetooth v5.0 3x Rear Velocity Sound with 2.4G/5G Built- in 4G"
+      ],
+      "heading": "AR AUDIO",
+      "page": 3,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-003-2.jpg",
+        "width": 708,
+        "height": 1270,
+        "source": "Blaupunkt Brochure 2026 p.3"
+      },
+      "flags": [],
+      "published": true,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "LOS ANGELES 1050",
+      "variant": "12.6inch",
+      "name": "LOS ANGELES 1050 12.6inch",
+      "slug": "blaupunkt-los-angeles-1050-12-6inch",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Android head units",
+      "group": "Multimedia",
+      "mrp": 59990,
+      "sellingPrice": 53990,
+      "discountPct": 10,
+      "specs": [
+        "Android v13.0 6 GB RAM 128 GB Flash Storage",
+        "12.6” Capacitive Touch Car Multimedia PhoneLINK Phone / Mobile Hotspot tethering",
+        "Time Alignment",
+        "Audio System (2400 x 900) .flac Compatible Audio, Video, Picture from USB supported",
+        "Virtual Center Channel",
+        "Android 13.0 Fast Boot Bluetooth v5.0",
+        "Sound Field Selector",
+        "Octa Core with 4 x A73 @ 2.0GHz / 4xA53 @ Centre channel out Built-in Bluetooth (HFP, PBAP, A2DP)",
+        "Built-in HPF and LPF",
+        "1.8GHz 5.1 Sound System Output/Virtual Internal & External Microphone",
+        "Tuned for-Seat Selector Option",
+        "6GB DDR4 Memory Central Speaker 360 camera input",
+        "44 Band Equalizer",
+        "128GB Flash Storage Built- in WIFI with 2.4G/5G Dual band 3x Rear USB (standard A-type)",
+        "Equalizer / Amplifier",
+        "2.5G IPS Screen Built- in 4G with LTE Cat 12 Rear AV input",
+        "High-grade styling Optical Fiber Output (TOSLINK) Front & Rear camera input - AHD & CVBS 4V - 4 channel pre amp Output",
+        "Intuitive Blaupunkt User Interface HDMI Output Front & Rear camera recording possible Sub out",
+        "High-end tuner, FM (RDS) / AM tuner Gesture control Steering Wheel Control input 4x65 watts max. power",
+        "Ready for Navigation App controlled Cooling Fan",
+        "Velocity Sound Engine",
+        "Split screen (some apps) Wi-Fi Ready",
+        "Individual Speaker Level Adjustment",
+        "Car Specific Fascia to be purchased separately"
+      ],
+      "heading": "AR AUDIO",
+      "page": 4,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-004-2.jpg",
+        "width": 1119,
+        "height": 1098,
+        "source": "Blaupunkt Brochure 2026 p.4"
+      },
+      "flags": [],
+      "published": true,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "SAN JOSE 1000",
+      "variant": "9inch & 10.1inch",
+      "name": "SAN JOSE 1000 9inch & 10.1inch",
+      "slug": "blaupunkt-san-jose-1000-9inch-10-1inch",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Android head units",
+      "group": "Multimedia",
+      "mrp": 39990,
+      "sellingPrice": 35990,
+      "discountPct": 10,
+      "specs": [
+        "Android v13.0 4 GB RAM 64 GB Flash Storage",
+        "10.1 & 9” Capacitive Touch Car Multimedia Split screen (some apps) 360 camera input ( Half Kit)",
+        "Audio System (1280 x 800) PhoneLINK 2x Rear USB (standard A-type)",
+        "Android 13.0 .flac Compatible Rear AV input",
+        "Octa Core Cortex A75 - 2.0 GHz processor Fast Boot Front & Rear camera input - AHD & CVBS",
+        "4GB DDR4 Memory Time Alignment / Crossover (HPF / LPF) Front & Rear camera recording possible",
+        "64GB Flash Storage Wi-Fi Ready Steering Wheel Control input",
+        "2.5G IPS Screen Phone / Mobile Hotspot tethering",
+        "Digital Signal Processor (DSP) Built-in",
+        "High-grade styling Audio, Video, Picture from USB supported",
+        "16 band equalizer",
+        "Intuitive Blaupunkt User Interface Bluetooth v5.0",
+        "5.1 channel pre amp Output",
+        "Vario colour Key illumination Built-in Bluetooth (HFP, PBAP, A2DP)",
+        "Sub out with variable gain control",
+        "High-end tuner, FM (RDS) / AM tuner Internal & External Microphone",
+        "4x52 watts max. power",
+        "Ready for Navigation Twin Connect",
+        "Car Specific Fascia to be purchased separately",
+        "Octa Core Cortex Camera",
+        "A75-2.0 GHz Bluetooth v5.0 2x Rear",
+        "4GB DDR4 Memory Support Split screen",
+        "Android 13.0 PhoneLINK Twin Connect Wi-Fi Ready Time Alignment",
+        "64GB Flash Storage"
+      ],
+      "heading": "AR AUDIO",
+      "page": 5,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-005-2.jpg",
+        "width": 708,
+        "height": 1270,
+        "source": "Blaupunkt Brochure 2026 p.5"
+      },
+      "flags": [],
+      "published": true,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "SAN JOSE 1000 - 12.33",
+      "variant": "4 + 64",
+      "name": "SAN JOSE 1000 - 12.33 4 + 64",
+      "slug": "blaupunkt-san-jose-1000-12-33-4-64",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Android head units",
+      "group": "Multimedia",
+      "mrp": 55990,
+      "sellingPrice": 50390,
+      "discountPct": 10,
+      "specs": [
+        "Android v13.0 4 GB RAM 64 GB Flash Storage",
+        "12.33\" Capacitive Touch Car Multimedia High-end tuner, FM (RDS) / AM tuner Bluetooth v5.0 Front & Rear camera recording",
+        "Audio System (1920 x 720) Ready for Navigation Built-in Bluetooth (HFP, PBAP, A2DP)",
+        "Android 13.0 Split screen (some apps) Internal & External Microphone",
+        "Steering Wheel Control input",
+        "Octa Core Cortex A75 - 2.0 GHz processor PhoneLINK Twin Connect",
+        "Digital Signal Processor (DSP)",
+        "4GB DDR4 Memory .flac Compatible 360 camera input ( Half Kit)",
+        "64GB Flash Storage Fast Boot 2x Rear USB (standard A-type)",
+        "16 band equalizer",
+        "2.5G IPS Screen Time Alignment / Crossover (HPF / LPF) Rear AV input",
+        "5.1 channel pre amp Output",
+        "High-grade styling Wi-Fi Ready Front & Rear camera input - AHD &",
+        "Sub out with variable gain control",
+        "Intuitive Blaupunkt User Interface Phone / Mobile Hotspot tethering CVBS",
+        "4x52 watts max. power",
+        "Vario colour Key illumination Audio, Video, Picture from USB supported",
+        "Car Specific Fascia to be purchased separately",
+        "Octa Core Cortex Camera",
+        "A75-2.0 GHz Bluetooth v5.0 2x Rear",
+        "4GB DDR4 Memory Support Split screen",
+        "Android 13.0 PhoneLINK Twin Connect Wi-Fi Ready Time Alignment",
+        "64GB Flash Storage",
+        "Internal &"
+      ],
+      "heading": "AR AUDIO",
+      "page": 6,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-006-2.jpg",
+        "width": 1119,
+        "height": 1098,
+        "source": "Blaupunkt Brochure 2026 p.6"
+      },
+      "flags": [
+        "MODEL_UNCERTAIN"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "SANTA ROSA 985",
+      "variant": "9inch (2+32)",
+      "name": "SANTA ROSA 985 9inch (2+32)",
+      "slug": "blaupunkt-santa-rosa-985-9inch-2-32",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Android head units",
+      "group": "Multimedia",
+      "mrp": 23190,
+      "sellingPrice": 20870,
+      "discountPct": 10,
+      "specs": [
+        "9inch (4+64) - MRP: ` 37990",
+        "10.1inch (4+64) - MRP: ` 38990",
+        "Android v11.0 2/4 GB RAM 32/64 GB Flash Storage",
+        "Internal & External Microphone",
+        "10.1 & 9” Capacitive Touch Car Multimedia Ready for Navigation",
+        "Twin Connect",
+        "Audio System (1280 x 800) Split screen (some apps)",
+        "360 camera input ( Half Kit)",
+        "Android 11.0 PhoneLINK",
+        "3x Rear USB (standard A-type)",
+        "Octa Core 2.0 GHz processor .flac Compatible",
+        "Rear AV input",
+        "2/4GB DDR4 Memory",
+        "Fast Boot",
+        "Front & Rear camera input - AHD & CVBS",
+        "32/64GB Flash Storage",
+        "Time Alignment / Crossover (HPF / LPF)",
+        "Steering Wheel Control input",
+        "2.5G IPS Screen Wi-Fi Ready",
+        "16 band equalizer",
+        "High-grade styling Phone / Mobile Hotspot tethering",
+        "4V - 4 channel pre amp Output",
+        "Intuitive Blaupunkt User Interface Audio, Video, Picture from USB supported",
+        "Sub out with variable gain control"
+      ],
+      "heading": "AR AUDIO",
+      "page": 7,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-007-1.jpg",
+        "width": 1170,
+        "height": 669,
+        "source": "Blaupunkt Brochure 2026 p.7"
+      },
+      "flags": [
+        "MODEL_UNCERTAIN",
+        "IMAGE_ORDER_ASSUMED"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "SANTA ROSA 985",
+      "variant": "9inch (4+64)",
+      "name": "SANTA ROSA 985 9inch (4+64)",
+      "slug": "blaupunkt-santa-rosa-985-9inch-4-64",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Android head units",
+      "group": "Multimedia",
+      "mrp": 37990,
+      "sellingPrice": 34190,
+      "discountPct": 10,
+      "specs": [
+        "9inch (2+32) - MRP: ` 23190"
+      ],
+      "heading": "AR AUDIO",
+      "page": 7,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-007-2.jpg",
+        "width": 708,
+        "height": 1270,
+        "source": "Blaupunkt Brochure 2026 p.7"
+      },
+      "flags": [
+        "MODEL_UNCERTAIN",
+        "IMAGE_ORDER_ASSUMED"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "SANTA ROSA 985",
+      "variant": "10.1inch (4+64)",
+      "name": "SANTA ROSA 985 10.1inch (4+64)",
+      "slug": "blaupunkt-santa-rosa-985-10-1inch-4-64",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Android head units",
+      "group": "Multimedia",
+      "mrp": 38990,
+      "sellingPrice": 35090,
+      "discountPct": 10,
+      "specs": [
+        "9inch (2+32) - MRP: ` 23190",
+        "9inch (4+64) - MRP: ` 37990"
+      ],
+      "heading": "AR AUDIO",
+      "page": 7,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-007-3.jpg",
+        "width": 904,
+        "height": 361,
+        "source": "Blaupunkt Brochure 2026 p.7"
+      },
+      "flags": [
+        "MODEL_UNCERTAIN",
+        "IMAGE_ORDER_ASSUMED"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "SANTA ROSA 985 - 9.5",
+      "variant": null,
+      "name": "SANTA ROSA 985 - 9.5",
+      "slug": "blaupunkt-santa-rosa-985-9-5",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Android head units",
+      "group": "Multimedia",
+      "mrp": 39990,
+      "sellingPrice": 35990,
+      "discountPct": 10,
+      "specs": [
+        "Android v11.0 6 GB RAM 128 GB Flash Storage",
+        "9.5” Capacitive Touch Screen IPS Ready for Navigation Bluetooth v5.0 Steering Wheel Control input",
+        "Screen 2000X1200 pixels Split screen (some apps) Built-in Bluetooth (HFP, PBAP, A2DP) Digital Signal Processor (DSP)",
+        "Android 11.0 PhoneLINK Internal & External Microphone Built-in",
+        "Quad Core 2.0 GHz processor .flac Compatible Twin Connect 16 band equalizer",
+        "6GB DDR4 Memory Fast Boot 360 camera input 4 V - 4 c h a n n e l p r e a m p",
+        "128GB Flash Storage Time Alignment 2x Rear USB (standard A-type) Output",
+        "2.5G IPS Screen Wi-Fi Ready Rear AV input Sub out with variable gain",
+        "High-grade styling Phone / Mobile Hotspot tethering Front & Rear camera input - AHD & CVBS control",
+        "Intuitive Blaupunkt User Interface Audio, Video, Picture from USB supported Front & Rear camera recording possible 4x50 watts max. power",
+        "High-end tuner, FM (RDS) / AM tuner",
+        "Car Specific Fascia to be purchased separately",
+        "Octa Core 2.0 Ghz Digital Signal Camera",
+        "Bluetooth v5.0 2x Rear",
+        "6GB DDR4 Memory Processing Support Split screen",
+        "Android 11.0 128GB Flash Storage PhoneLINK Twin Connect Wi-Fi Ready",
+        "Internal &",
+        "4 Channel External Mic AHD Camera",
+        "2000 x 1200 Preamp-out Sub-out Support"
+      ],
+      "heading": "AR AUDIO",
+      "page": 8,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-008-4.jpg",
+        "width": 1119,
+        "height": 1098,
+        "source": "Blaupunkt Brochure 2026 p.8"
+      },
+      "flags": [],
+      "published": true,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "SANTA ROSA 985 - 10.33",
+      "variant": "4 + 64",
+      "name": "SANTA ROSA 985 - 10.33 4 + 64",
+      "slug": "blaupunkt-santa-rosa-985-10-33-4-64",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Android head units",
+      "group": "Multimedia",
+      "mrp": 39990,
+      "sellingPrice": 35990,
+      "discountPct": 10,
+      "specs": [
+        "Android v11.0 4 GB RAM 64 GB Flash Storage",
+        "Android v11.0 2 GB RAM 32 GB Flash Storage",
+        "10.33\" Capacitive Touch Car Multimedia Ready for Navigation Bluetooth v5.0 Front & Rear camera recording",
+        "Audio System (1600 x 720) Split screen (some apps) Built-in Bluetooth (HFP, PBAP, A2DP) possible",
+        "Android OS 11.0 PhoneLINK Internal & External microphone Steering Wheel Control input",
+        "4 GB DDR4 Memory .flac Compatible Twin Connect Digital Signal Processor (DSP)",
+        "64 GB Flash Storage Fast Boot 360 camera input ( Half Kit) Built-in",
+        "Octa Core 2.0 GHz processor Time Alignment / Crossover (HPF / LPF) 2x Rear USB (standard A-type) 16-band equalizer",
+        "2.5G IPS Screen Wi-Fi Ready Rear AV input 4V - 4 channel pre amp Output",
+        "High-grade styling Phone / Mobile Hotspot tethering Front & Rear camera input - AHD & Sub out with variable gain control",
+        "Intuitive Blaupunkt User Interfac Audio, Video, Picture from USB supported CVBS 4x50 watts max. power",
+        "High-end tuner, FM (RDS) / AM tuner",
+        "Car Specific Fascia to be purchased separately",
+        "Octa Core 2.0 Ghz Camera",
+        "2x Rear Rear Input",
+        "4GB DDR4 Memory Audio/Video Support Split screen",
+        "Android 11.0 64 GB Flash Storage PhoneLINK Wi-Fi Ready",
+        "4x50W D 2 Year",
+        "Internal &",
+        "Digital Signal",
+        "4V 4Channel External Mic AHD Camera WARRANTY",
+        "1600 x 720 Preamp-out 4V Sub-out Support Processing"
+      ],
+      "heading": "AR AUDIO",
+      "page": 9,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-009-3.jpg",
+        "width": 708,
+        "height": 1270,
+        "source": "Blaupunkt Brochure 2026 p.9"
+      },
+      "flags": [
+        "MODEL_UNCERTAIN"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "SANTA ROSA 985 - 12.33",
+      "variant": "4 + 64",
+      "name": "SANTA ROSA 985 - 12.33 4 + 64",
+      "slug": "blaupunkt-santa-rosa-985-12-33-4-64",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Android head units",
+      "group": "Multimedia",
+      "mrp": 52990,
+      "sellingPrice": 47690,
+      "discountPct": 10,
+      "specs": [
+        "Android v11.0 4 GB RAM 64 GB Flash Storage",
+        "Android v11.0 6 GB RAM 128 GB Flash Storage",
+        "12.33\" Capacitive Touch Car Multimedia Split screen (some apps) Built-in Bluetooth (HFP, PBAP, A2DP) possible",
+        "Audio System (1920 x 720) PhoneLINK Internal & External microphone Steering Wheel Control input",
+        "Android OS 11.0 .flac Compatible Twin Connect 16-band equalizer",
+        "4 GB DDR4 Memory 64 GB Flash Storage Fast Boot 360 camera input ( Half Kit) 4V - 4 channel pre amp Output",
+        "Octa Core 2.0 GHz processor Time Alignment / Crossover (HPF / LPF) 2x Rear USB (standard A-type) Sub out with variable gain control",
+        "2.5G IPS Screen Wi-Fi Ready Rear AV input 4x50 watts max. power",
+        "High-grade styling Phone / Mobile Hotspot tethering Front & Rear camera input - AHD &",
+        "Intuitive Blaupunkt User Interface Audio, Video, Picture from USB supported CVBS",
+        "High-end tuner, FM (RDS) / AM tuner Bluetooth v5.0 Front & Rear camera recording",
+        "Ready for Navigation",
+        "Car Specific Fascia to be purchased separately",
+        "Quad Core 2.0 Ghz 2x Rear Rear Input",
+        "4GB DDR4 Memory Audio/Video Support Split screen",
+        "Android 11.0 64GB Flash Storage PhoneLINK Wi-Fi Ready",
+        "Internal &",
+        "4V 4Channel External Mic AHD Camera",
+        "1920 x 720 Preamp-out 4V Sub-out Support"
+      ],
+      "heading": "AR AUDIO",
+      "page": 10,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-010-2.jpg",
+        "width": 1119,
+        "height": 1098,
+        "source": "Blaupunkt Brochure 2026 p.10"
+      },
+      "flags": [
+        "MODEL_UNCERTAIN"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "FT. LAUDERDALE 900 - 12.33",
+      "variant": "4 + 64",
+      "name": "FT. LAUDERDALE 900 - 12.33 4 + 64",
+      "slug": "blaupunkt-ft-lauderdale-900-12-33-4-64",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Android head units",
+      "group": "Multimedia",
+      "mrp": 49990,
+      "sellingPrice": 44990,
+      "discountPct": 10,
+      "specs": [
+        "Wireless Wireless",
+        "Android v13.0 4 GB RAM 64 GB Flash Storage",
+        "12.33\" Capacitive Touch Car Multimedia High-end tuner, FM (RDS) / AM tuner Audio, Video, Picture from USB Rear camera input",
+        "Audio System (1920 x 720) Wireless Android Auto supported Steering Wheel Control input",
+        "Android 13.0 Wireless Apple Car Play Bluetooth v5.0 16 band equalizer",
+        "Quad Core 2.0 GHz processor Ready for Navigation Built-in Bluetooth (HFP, PBAP, A2DP) 2V 4 Channel pre amp Output",
+        "4GB DDR4 Memory .flac Compatible Internal & External Microphone Sub out with variable gain control",
+        "64GB Flash Storage Fast Boot Twin Connect 4x50 watts max. power",
+        "2.5G IPS Screen Time Alignment / Crossover (HPF / LPF) 360 camera input",
+        "High-grade styling Wi-Fi Ready 3x Rear USB (standard A-type)",
+        "Intuitive Blaupunkt User Interface Phone / Mobile Hotspot tethering Rear AV input",
+        "Car Specific Fascia to be purchased separately",
+        "Wireless Wireless",
+        "Quad Core 2 Ghz Bluetooth v5.0 3x Rear",
+        "4 GB DDR4 Memory",
+        "Android 13.0 64 GB Flash Storage Twin Connect Wi-Fi Ready Time Alignment",
+        "Camera Internal &",
+        "Support 2V 4Channel External Mic",
+        "1920 x 720 Preamp-out 2V Sub-out WARRANTY"
+      ],
+      "heading": "AR AUDIO",
+      "page": 11,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-011-2.jpg",
+        "width": 1119,
+        "height": 1098,
+        "source": "Blaupunkt Brochure 2026 p.11"
+      },
+      "flags": [
+        "MODEL_UNCERTAIN"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "JAMAICA 990 - 9.5",
+      "variant": "6 + 128",
+      "name": "JAMAICA 990 - 9.5 6 + 128",
+      "slug": "blaupunkt-jamaica-990-9-5-6-128",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Android head units",
+      "group": "Multimedia",
+      "mrp": 39990,
+      "sellingPrice": 35990,
+      "discountPct": 10,
+      "specs": [
+        "Android v11.0 6 GB RAM 128 GB Flash Storage",
+        "12.33\" Capacitive Touch Car Multimedia Ready for Navigation Bluetooth v5.0 Front & Rear camera input - AHD &",
+        "Audio System (1920 x 720) Split screen (some apps) Built-in Bluetooth (HFP, PBAP, A2DP) CVBS",
+        "Android OS 11.0 PhoneLINK Internal & External microphone Front & Rear camera recording",
+        "4 GB DDR4 Memory 64 GB Flash Storage .flac Compatible Twin Connect possible",
+        "2 GB DDR4 Memory 32 GB Flash Storage Fast Boot Digital Signal Processor (DSP) Built- Steering Wheel Control input",
+        "Quad Core 2.0 GHz processor Time Alignment / Crossover (HPF / LPF) in (only available in 4+64) 16-band equalizer",
+        "2.5G IPS Screen Wi-Fi Ready 360 camera input ( Half Kit) 4V - 4 channel pre amp Output",
+        "High-grade styling Phone / Mobile Hotspot tethering 2x Rear USB (standard A-type) Sub out with variable gain control",
+        "Intuitive Blaupunkt User Interface Audio, Video, Picture from USB supported Rear AV input 4x50 watts max. power",
+        "High-end tuner, FM (RDS) / AM tuner",
+        "Car Specific Fascia to be purchased separately",
+        "Quad Core 2.0 Ghz Camera",
+        "2x Rear Rear Input",
+        "4GB DDR4 Memory Audio/Video Support Split screen",
+        "Android 11.0 64 GB Flash Storage PhoneLINK Wi-Fi Ready",
+        "Internal &",
+        "4V 4Channel External Mic AHD Camera",
+        "1600 x 720 Preamp-out 4V Sub-out Support"
+      ],
+      "heading": "AR AUDIO",
+      "page": 12,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-012-4.jpg",
+        "width": 708,
+        "height": 1270,
+        "source": "Blaupunkt Brochure 2026 p.12"
+      },
+      "flags": [
+        "MODEL_UNCERTAIN"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "JAMAICA 990 - 10.33",
+      "variant": "2 + 32",
+      "name": "JAMAICA 990 - 10.33 2 + 32",
+      "slug": "blaupunkt-jamaica-990-10-33-2-32",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Android head units",
+      "group": "Multimedia",
+      "mrp": 32190,
+      "sellingPrice": 28970,
+      "discountPct": 10,
+      "specs": [
+        "4 + 64 - MRP: ` 39990",
+        "IS 616:2017/IEC60065: 2014",
+        "R-41180831",
+        "www.bis.gov.in",
+        "Android v11.0 4 GB RAM 64 GB Flash Storage",
+        "10.33\" Capacitive Touch Car Multimedia High-end tuner, FM (RDS) / AM tuner Audio, Video, Picture from USB Front & Rear camera input - AHD &",
+        "Audio System (1600 x 720) Ready for Navigation supported CVBS",
+        "Android OS 11.0 Split screen (some apps) Bluetooth v5.0 Front & Rear camera recording",
+        "4 GB DDR4 Memory PhoneLINK Built-in Bluetooth (HFP, PBAP, A2DP) possible",
+        "64 GB Flash Storage .flac Compatible Internal & External microphone Steering Wheel Control input",
+        "Quad Core 2.0 GHz processor Fast Boot Twin Connect 16-band equalizer",
+        "2.5G IPS Screen Time Alignment / Crossover (HPF / LPF) 360 camera input ( Half Kit) 4V - 4 channel pre amp Output",
+        "High-grade styling Wi-Fi Ready 2x Rear USB (standard A-type) Sub out with variable gain control",
+        "Intuitive Blaupunkt User Interface Phone / Mobile Hotspot tethering Rear AV input 4x50 watts max. power",
+        "Vario colour key illumination",
+        "Car Specific Fascia to be purchased separately",
+        "Quad Core 2.0 Ghz Camera",
+        "2x Rear Rear Input",
+        "4GB DDR4 Memory Audio/Video Support Split screen",
+        "Android 11.0 64 GB Flash Storage PhoneLINK Wi-Fi Ready",
+        "Internal &",
+        "4V 4Channel External Mic AHD Camera",
+        "1600 x 720 Preamp-out 4V Sub-out Support"
+      ],
+      "heading": "AR AUDIO",
+      "page": 13,
+      "image": null,
+      "flags": [
+        "MODEL_UNCERTAIN",
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "JAMAICA 990 - 10.33",
+      "variant": "4 + 64",
+      "name": "JAMAICA 990 - 10.33 4 + 64",
+      "slug": "blaupunkt-jamaica-990-10-33-4-64",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Android head units",
+      "group": "Multimedia",
+      "mrp": 39990,
+      "sellingPrice": 35990,
+      "discountPct": 10,
+      "specs": [
+        "2 + 32 - MRP: ` 32190"
+      ],
+      "heading": "AR AUDIO",
+      "page": 13,
+      "image": null,
+      "flags": [
+        "MODEL_UNCERTAIN",
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "JAMAICA 990 - 12.33",
+      "variant": "2 + 32",
+      "name": "JAMAICA 990 - 12.33 2 + 32",
+      "slug": "blaupunkt-jamaica-990-12-33-2-32",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Android head units",
+      "group": "Multimedia",
+      "mrp": 41190,
+      "sellingPrice": 37070,
+      "discountPct": 10,
+      "specs": [
+        "4 + 64 - MRP: ` 52990",
+        "Android v11.0 4 GB RAM 64 GB Flash Storage",
+        "Android v11.0 2 GB RAM 32 GB Flash Storage",
+        "12.33\" Capacitive Touch Car Multimedia Ready for Navigation Bluetooth v5.0 Front & Rear camera input - AHD &",
+        "Audio System (1920 x 720) Split screen (some apps) Built-in Bluetooth (HFP, PBAP, A2DP) CVBS",
+        "Android OS 11.0 PhoneLINK Internal & External microphone Front & Rear camera recording",
+        "4 GB DDR4 Memory 64 GB Flash Storage .flac Compatible Twin Connect possible",
+        "2 GB DDR4 Memory 32 GB Flash Storage Fast Boot Digital Signal Processor (DSP) Built- Steering Wheel Control input",
+        "Quad Core 2.0 GHz processor Time Alignment / Crossover (HPF / LPF) in (only available in 4+64) 16-band equalizer",
+        "2.5G IPS Screen Wi-Fi Ready 360 camera input ( Half Kit) 4V - 4 channel pre amp Output",
+        "High-grade styling Phone / Mobile Hotspot tethering 2x Rear USB (standard A-type) Sub out with variable gain control",
+        "Intuitive Blaupunkt User Interface Audio, Video, Picture from USB supported Rear AV input 4x50 watts max. power",
+        "High-end tuner, FM (RDS) / AM tuner",
+        "Car Specific Fascia to be purchased separately",
+        "Quad Core 2.0 Ghz Camera",
+        "2x Rear Rear Input",
+        "4GB DDR4 Memory Audio/Video Support Split screen",
+        "Android 11.0 64 GB Flash Storage PhoneLINK Wi-Fi Ready",
+        "Internal &",
+        "4V 4Channel External Mic AHD Camera",
+        "1600 x 720 Preamp-out 4V Sub-out Support"
+      ],
+      "heading": "AR AUDIO",
+      "page": 14,
+      "image": null,
+      "flags": [
+        "MODEL_UNCERTAIN",
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "JAMAICA 990 - 12.33",
+      "variant": "4 + 64",
+      "name": "JAMAICA 990 - 12.33 4 + 64",
+      "slug": "blaupunkt-jamaica-990-12-33-4-64",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Android head units",
+      "group": "Multimedia",
+      "mrp": 52990,
+      "sellingPrice": 47690,
+      "discountPct": 10,
+      "specs": [
+        "2 + 32 - MRP: ` 41190"
+      ],
+      "heading": "AR AUDIO",
+      "page": 14,
+      "image": null,
+      "flags": [
+        "MODEL_UNCERTAIN",
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "PALM BAY 1000",
+      "variant": "9inch (2+32)",
+      "name": "PALM BAY 1000 9inch (2+32)",
+      "slug": "blaupunkt-palm-bay-1000-9inch-2-32",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Android head units",
+      "group": "Multimedia",
+      "mrp": 22190,
+      "sellingPrice": 19970,
+      "discountPct": 10,
+      "specs": [
+        "10.1inch (2+32) - MRP: ` 23190",
+        "9 & 10.1inch (4+64) - MRP: ` 32990",
+        "Front & Rear",
+        "Camera Recording",
+        "Android v11.0 2 / 4 GB RAM 32 / 64 GB Flash Storage",
+        "9 ” & 1 0 . 1 \" C a p a c i t i v e To u c h C a r Vario colour key illumination Audio, Video, Picture from USB supported Steering Wheel Control input",
+        "Multimedia Audio System (1280 x 800) High-end tuner, FM (RDS) / AM tuner Bluetooth v5.0 8 band equalizer",
+        "Android OS 11.0 Ready for Navigation Built-in Bluetooth (HFP, PBAP, A2DP) 4V-4 channel pre amp Output",
+        "Octa Core 2.0 GHz processor Split screen Internal & External microphone 4V Sub Out with variable gain",
+        "2 / 4 GB DDR4 Memory PhoneLINK 360 camera input control",
+        "32 / 64 GB Flash Storage .flac Compatible 2x Rear USB (standard A-type) 4 x 50 Watt Max. power",
+        "2.5G IPS Screen Fast Boot Rear AV input",
+        "High-grade styling Wi-Fi Ready Front & Rear camera input - AHD & CVBS",
+        "Intuitive Blaupunkt User Interface Phone / Mobile Hotspot tethering Front & Rear camera recording possible",
+        "Car Specific Fascia to be purchased separately",
+        "Quad Core 2 Ghz Camera",
+        "2/4 GB DDR4 Memory Support Split screen",
+        "Android 11.0 32/64 GB Flash Storage PhoneLINK Wi-Fi Ready",
+        "Internal &",
+        "Rear Input WARRANTY",
+        "4V-4Channel External Mic AHD Camera",
+        "Audio/Video Preamp-out 1280 x 800 4V Sub-out Support"
+      ],
+      "heading": "AR AUDIO",
+      "page": 15,
+      "image": null,
+      "flags": [
+        "MODEL_UNCERTAIN",
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "PALM BAY 1000",
+      "variant": "10.1inch (2+32)",
+      "name": "PALM BAY 1000 10.1inch (2+32)",
+      "slug": "blaupunkt-palm-bay-1000-10-1inch-2-32",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Android head units",
+      "group": "Multimedia",
+      "mrp": 23190,
+      "sellingPrice": 20870,
+      "discountPct": 10,
+      "specs": [
+        "9inch (2+32) - MRP: ` 22190"
+      ],
+      "heading": "AR AUDIO",
+      "page": 15,
+      "image": null,
+      "flags": [
+        "MODEL_UNCERTAIN",
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "PALM BAY 1000",
+      "variant": "9 & 10.1inch (4+64)",
+      "name": "PALM BAY 1000 9 & 10.1inch (4+64)",
+      "slug": "blaupunkt-palm-bay-1000-9-10-1inch-4-64",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Android head units",
+      "group": "Multimedia",
+      "mrp": 32990,
+      "sellingPrice": 29690,
+      "discountPct": 10,
+      "specs": [
+        "9inch (2+32) - MRP: ` 22190",
+        "10.1inch (2+32) - MRP: ` 23190"
+      ],
+      "heading": "AR AUDIO",
+      "page": 15,
+      "image": null,
+      "flags": [
+        "MODEL_UNCERTAIN",
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "San Marcos 370",
+      "variant": "10.1inch",
+      "name": "San Marcos 370 10.1inch",
+      "slug": "blaupunkt-san-marcos-370-10-1inch",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Android head units",
+      "group": "Multimedia",
+      "mrp": 15990,
+      "sellingPrice": 14390,
+      "discountPct": 10,
+      "specs": [
+        "IS 616:2017/IEC60065: 2014",
+        "R-41180831",
+        "www.bis.gov.in",
+        "WebLink Rear USB BT v4.2",
+        "High-end tuner",
+        "Audio & Video from USB Equalizer / Ampli\u0000er",
+        "FM (RDS), AM Tuner Bluetooth v4.2 7-band equalizer",
+        "Large 9.0\" & 10.1\" Capacitive Touch Screen Built-in Bluetooth hands-free calling, 4-channel pre-amp output",
+        "1024 x 600 pixels phone book sync & audio streaming Sub-out",
+        "Variable Background Wallpapers",
+        "Internal & External microphone 4 x 50 Watt Max. power",
+        ".\u0000ac Compatible Rear view camera input",
+        "Rear USB (Standard A-type) Steering Wheel Control input",
+        "Car Specific Fascia to be purchased separately",
+        "AUX IN - Rear USB Custom",
+        "Audio + Video wallpaper option",
+        "Mic Internal",
+        "4Channel WARRANTY",
+        "+ External",
+        "Preamp-out Sub-out"
+      ],
+      "heading": "AR AUDIO",
+      "page": 16,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-016-2.jpg",
+        "width": 708,
+        "height": 1270,
+        "source": "Blaupunkt Brochure 2026 p.16"
+      },
+      "flags": [],
+      "published": true,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "KEY LARGO 1010",
+      "variant": "9.0inch",
+      "name": "KEY LARGO 1010 9.0inch",
+      "slug": "blaupunkt-key-largo-1010-9-0inch",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Android head units",
+      "group": "Multimedia",
+      "mrp": 19990,
+      "sellingPrice": 17990,
+      "discountPct": 10,
+      "specs": [
+        "IS 616:2017/IEC60065: 2014",
+        "R-41180831",
+        "www.bis.gov.in",
+        "Android v11.0 2 GB RAM 32 GB Flash Storage",
+        "9” Capacitive Touch Car Multimedia Audio Navigation Ready Audio, Video, Picture from USB supported Video Output",
+        "System (1280 x 800) Split screen Bluetooth v5.0 10-band equalizer",
+        "2.5G IPS Screen PhoneLINK Built-in Bluetooth (HFP, PBAP, A2DP) 4 channel pre amp Output",
+        "Vario colour key illumination .\u0000ac Compatible Internal & External microphone Sub Out",
+        "Android 10.0 Fast Boot",
+        "2x Rear USB (standard A-type) 4 x 50 Watt Max. power",
+        "2GB DDR3 Memory 32GB Flash Storage",
+        "AHD camera input capable Rear AV input",
+        "Quad Core 1.5 Ghz Wi-Fi Ready - Phone / Mobile Rear view camera input",
+        "High-end tuner, FM (RDS) / AM tuner Hotspot tethering Steering Wheel Control input",
+        "Car Specific Fascia to be purchased separately",
+        "Quad Core 1.5 Ghz",
+        "Bluetooth v5.0 2x Rear Rear",
+        "2GB DDR4 Memory Split screen",
+        "Android v11.0 32 GB Flash Storage PhoneLINK Wi-Fi Ready Video OUT",
+        "Internal &",
+        "Rear Camera WARRANTY",
+        "4Channel External Mic AHD Camera",
+        "Input Preamp-out Sub-out Support"
+      ],
+      "heading": "AR AUDIO",
+      "page": 17,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-017-1.jpg",
+        "width": 1159,
+        "height": 668,
+        "source": "Blaupunkt Brochure 2026 p.17"
+      },
+      "flags": [],
+      "published": true,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "B910AU - SAN ANDREAS 970",
+      "variant": null,
+      "name": "B910AU - SAN ANDREAS 970",
+      "slug": "blaupunkt-b910au-san-andreas-970",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Android head units",
+      "group": "Multimedia",
+      "mrp": 34990,
+      "sellingPrice": 31490,
+      "discountPct": 10,
+      "specs": [
+        "powered by CVTE"
+      ],
+      "heading": "AR AUDIO",
+      "page": 18,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-018-3.jpg",
+        "width": 708,
+        "height": 1270,
+        "source": "Blaupunkt Brochure 2026 p.18"
+      },
+      "flags": [],
+      "published": true,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "R-41171263",
+      "variant": null,
+      "name": "R-41171263",
+      "slug": "blaupunkt-r-41171263",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Android head units",
+      "group": "Multimedia",
+      "mrp": 4990,
+      "sellingPrice": 4490,
+      "discountPct": 10,
+      "specs": [
+        "High end codem III with RDS Front Aux-in Front panel - Fixed",
+        "FM / AM Playback format: MP3, WMA Equalizer Internal Microphone",
+        "Bluetooth v4.1 Sound presets (3) IR handheld remote control",
+        "Bluetooth music streaming with ID3 Tag Amplifier",
+        "Hands free calling Pre-amplifier: 2-channel (0.8V)",
+        "Dual USB (type-A) - (Charging / Music) Max. power (Watt): 4 x 50",
+        "2 x Front Fast Charger WARRANTY",
+        "Rear Seat Entertainment",
+        "R-41180831",
+        "BP RSE AD 10.6 BP RSE AD 10.6 (11.6\")",
+        "Android Touchscreen WARRANTY Android Touchscreen - Primary + Primary",
+        "New Feature",
+        "Android 9.0",
+        "2GB DDR4 16GB ROM",
+        "HD Screen – 1920 x 1080",
+        "Mira Cast for Phone Mirroring",
+        "HDMI Input",
+        "Ultra - thin 10.6\" Capacitive Touch Screen Bluetooth for Headphone Ultra - thin 29.46 cm (11.6\") Capacitive Touch Bluetooth for Headphone",
+        "Android 9.0 OS Built-in Speakers Screen Built-in Speakers",
+        "Digital IPS screen, 64-bit true colour Built-in Wi-Fi Support 802.11 b/g/n Android 9.0 OS Built-in Wi-Fi Support 802.11 b/g/n",
+        "ARM Cortex-A55, 2.0 GHz ,Octa-core Headphone out 2.0 GB RAM - DDR3 256 Color Ambient Lighting (bottom of",
+        "2GB RAM - DDR4 16GB ROM AV-in - 1 Built-in 16GB FLASH storage screen) - vario color",
+        "Screen Resolution: 1920 x 1080 Audio out – 1 Power Supply: DC 12 V Headphone out",
+        "HDMI Input FM/IR Transmitter Digital IPS screen, 64 bit Octa Core processor AV-IN"
+      ],
+      "heading": "Car Radio - 1DIN",
+      "page": 20,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-020-2.jpg",
+        "width": 548,
+        "height": 338,
+        "source": "Blaupunkt Brochure 2026 p.20"
+      },
+      "flags": [
+        "MODEL_UNCERTAIN"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "3-way Triaxial Injected PP",
+      "variant": null,
+      "name": "3-way Triaxial Injected PP",
+      "slug": "blaupunkt-3-way-triaxial-injected-pp",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Coaxial",
+      "group": "Speakers",
+      "mrp": 6000,
+      "sellingPrice": 5400,
+      "discountPct": 10,
+      "specs": [
+        "6” x 9” 55 Watts RMS 520 Watts 92 dB 40 – 22,000 Hz 4 ohms 73 mm / 2.87”"
+      ],
+      "heading": "COAXIAL SPEAKER",
+      "page": 21,
+      "image": null,
+      "flags": [
+        "MODEL_UNCERTAIN",
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "ODx 625",
+      "variant": null,
+      "name": "ODx 625",
+      "slug": "blaupunkt-odx-625",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Coaxial",
+      "group": "Speakers",
+      "mrp": 9990,
+      "sellingPrice": 8990,
+      "discountPct": 10,
+      "specs": [
+        "PP Vacuum",
+        "2-way Coaxial 165mm 5 0 Watts RMS 340 Watts 88 dB 68 – 21,000 Hz 3 ohms 52 mm / 2.047\"",
+        "Formed"
+      ],
+      "heading": "COAXIAL SPEAKER",
+      "page": 21,
+      "image": null,
+      "flags": [
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "Tx 652",
+      "variant": null,
+      "name": "Tx 652",
+      "slug": "blaupunkt-tx-652",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Coaxial",
+      "group": "Speakers",
+      "mrp": 4990,
+      "sellingPrice": 4490,
+      "discountPct": 10,
+      "specs": [
+        "2-way Coaxial 165mm 5 0 Watts RMS 320 Watts 92 dB 70 – 20,000 Hz 4 ohms PEI DOME 65 mm / 2.56\""
+      ],
+      "heading": "COAXIAL SPEAKER",
+      "page": 21,
+      "image": null,
+      "flags": [
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "BGx 66.2",
+      "variant": null,
+      "name": "BGx 66.2",
+      "slug": "blaupunkt-bgx-66-2",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Coaxial",
+      "group": "Speakers",
+      "mrp": 2570,
+      "sellingPrice": 2310,
+      "discountPct": 10,
+      "specs": [
+        "2-way Coaxial 166mm / 6.5\" 40 Watts RMS 280 Watts 89 dB 110 – 22,000 Hz 4 ohms Injected PP 43 mm / 1.69\""
+      ],
+      "heading": "COAXIAL SPEAKER",
+      "page": 21,
+      "image": null,
+      "flags": [
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "Pure Coaxial 66.2",
+      "variant": null,
+      "name": "Pure Coaxial 66.2",
+      "slug": "blaupunkt-pure-coaxial-66-2",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Coaxial",
+      "group": "Speakers",
+      "mrp": 2450,
+      "sellingPrice": 2210,
+      "discountPct": 10,
+      "specs": [
+        "2-way Coaxial 165mm / 6.6\" 40 Watts RMS 280 Watts 90 dB 90 – 22,000 Hz 4 ohms Injected PP 40.4 mm / 1.6\""
+      ],
+      "heading": "COAXIAL SPEAKER",
+      "page": 21,
+      "image": null,
+      "flags": [
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "ICx 542",
+      "variant": null,
+      "name": "ICx 542",
+      "slug": "blaupunkt-icx-542",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Coaxial",
+      "group": "Speakers",
+      "mrp": 2440,
+      "sellingPrice": 2200,
+      "discountPct": 10,
+      "specs": [
+        "2-way Coaxial 5.25” / 130mm 30 Watts RMS 210 Watts 91 dB 70 – 22,000 Hz"
+      ],
+      "heading": "COAXIAL SPEAKER",
+      "page": 21,
+      "image": null,
+      "flags": [
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "2-way Coaxial",
+      "variant": null,
+      "name": "2-way Coaxial",
+      "slug": "blaupunkt-2-way-coaxial",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Coaxial",
+      "group": "Speakers",
+      "mrp": 2100,
+      "sellingPrice": 1890,
+      "discountPct": 10,
+      "specs": [
+        "4” / 100mm 25 Watts RMS 180 Watts 90 dB 80 – 22,000 Hz"
+      ],
+      "heading": "COAXIAL SPEAKER",
+      "page": 21,
+      "image": null,
+      "flags": [
+        "MODEL_UNCERTAIN",
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "2-way PP Vacuum",
+      "variant": null,
+      "name": "2-way PP Vacuum",
+      "slug": "blaupunkt-2-way-pp-vacuum",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Component speakers",
+      "group": "Speakers",
+      "mrp": 15990,
+      "sellingPrice": 14390,
+      "discountPct": 10,
+      "specs": [
+        "65 – 21,000 Hz",
+        "165mm 60 Watts RMS 430 Watts 88 dB 3ohms 52 mm / 2.047\"",
+        "Component Formed"
+      ],
+      "heading": "COMPONENT SPEAKER",
+      "page": 22,
+      "image": null,
+      "flags": [
+        "MODEL_UNCERTAIN",
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "Tx 65c 2-way",
+      "variant": null,
+      "name": "Tx 65c 2-way",
+      "slug": "blaupunkt-tx-65c-2-way",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Component speakers",
+      "group": "Speakers",
+      "mrp": 6990,
+      "sellingPrice": 6290,
+      "discountPct": 10,
+      "specs": [
+        "165mm 5 5 Watts RMS 390 Watts 92 dB 70 – 20,000 Hz 4 ohms Injected PP 61 mm / 2.40\"",
+        "Component"
+      ],
+      "heading": "COMPONENT SPEAKER",
+      "page": 22,
+      "image": null,
+      "flags": [
+        "MODEL_UNCERTAIN",
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "2-way",
+      "variant": null,
+      "name": "2-way",
+      "slug": "blaupunkt-2-way",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Component speakers",
+      "group": "Speakers",
+      "mrp": 5900,
+      "sellingPrice": 5310,
+      "discountPct": 10,
+      "specs": [
+        "66.2C 165mm / 6.6\" 45 Watts RMS 320 Watts 88 dB 60 – 20,000 Hz 4 ohms Paper Cone 64 mm / 2.52\"",
+        "Component"
+      ],
+      "heading": "COMPONENT SPEAKER",
+      "page": 22,
+      "image": null,
+      "flags": [
+        "MODEL_UNCERTAIN",
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "Tx 750T",
+      "variant": null,
+      "name": "Tx 750T",
+      "slug": "blaupunkt-tx-750t",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Component speakers",
+      "group": "Speakers",
+      "mrp": 4490,
+      "sellingPrice": 4040,
+      "discountPct": 10,
+      "specs": [
+        "Component Neodymium",
+        "15 – 20,000 Hz",
+        "20mm 30 Watts RMS 60 Watts 93 dB 6 ohms 46.5 mm / 1.83\"",
+        "Tweeter Dome"
+      ],
+      "heading": "COMPONENT SPEAKER",
+      "page": 22,
+      "image": null,
+      "flags": [
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "ODx C - 30A",
+      "variant": null,
+      "name": "ODx C - 30A",
+      "slug": "blaupunkt-odx-c-30a",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Component speakers",
+      "group": "Speakers",
+      "mrp": 5990,
+      "sellingPrice": 5390,
+      "discountPct": 10,
+      "specs": [
+        "Center channel speaker with matching Ampli\u0000er module",
+        "Speaker: Ampli\u0000er Module:",
+        "Size: 3.5 inches (89 mm) Power: 20 watts RMS,",
+        "60 watts Peak Power at 1000Hz",
+        "Power Handling: 20 watts RMS, 60 watts Peak Power",
+        "Impedance: 4 Ohms Fuse Rating: 5A",
+        "Sensitivity: 87dB (1 watt / 1 meter) Frequency Band: 300-3500Hz",
+        "Cone Material: Treated Paper Signal Input: RCA (Low Level)",
+        "Magnet: Neodymium Weight: 0.103kgs",
+        "Dimensions: 98 x 55 x 25.9 mm",
+        "Frequency Response: 300-3200Hz",
+        "Weight: 0.106kgs",
+        "Dimension: 124 x 40.3 x 92 mm"
+      ],
+      "heading": "COMPONENT SPEAKER",
+      "page": 22,
+      "image": null,
+      "flags": [
+        "MODEL_UNCERTAIN",
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "2-way Synthetic",
+      "variant": null,
+      "name": "2-way Synthetic",
+      "slug": "blaupunkt-2-way-synthetic",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Component speakers",
+      "group": "Speakers",
+      "mrp": 14990,
+      "sellingPrice": 13490,
+      "discountPct": 10,
+      "specs": [
+        "165mm 60 Watts RMS 540 Watts 87 dB 63 – 22,000 Hz 4 ohms 36 mm / 1.42”",
+        "Component Fiberglass"
+      ],
+      "heading": "HYUNDAI SPEAKER",
+      "page": 23,
+      "image": null,
+      "flags": [
+        "MODEL_UNCERTAIN",
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "GTx 1662 HY Synthetic",
+      "variant": null,
+      "name": "GTx 1662 HY Synthetic",
+      "slug": "blaupunkt-gtx-1662-hy-synthetic",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Component speakers",
+      "group": "Speakers",
+      "mrp": 9990,
+      "sellingPrice": 8990,
+      "discountPct": 10,
+      "specs": [
+        "2-way Coaxial 165mm 60 Watts RMS 540 Watts 87 dB 63 – 22,000 Hz 4 ohms 36 mm / 1.42”",
+        "Fiberglass"
+      ],
+      "heading": "HYUNDAI SPEAKER",
+      "page": 23,
+      "image": null,
+      "flags": [
+        "MODEL_UNCERTAIN",
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "GTx 1522 HY",
+      "variant": null,
+      "name": "GTx 1522 HY",
+      "slug": "blaupunkt-gtx-1522-hy",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Component speakers",
+      "group": "Speakers",
+      "mrp": 9490,
+      "sellingPrice": 8540,
+      "discountPct": 10,
+      "specs": [
+        "Synthetic",
+        "2-way Coaxial 130mm 50 Watts RMS 450 Watts 87 dB 75 – 20,000 Hz 4 ohms 42 mm / 1.65”",
+        "Fiberglass"
+      ],
+      "heading": "HYUNDAI SPEAKER",
+      "page": 23,
+      "image": null,
+      "flags": [
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "MPA 24120 H Damping Factor : >88",
+      "variant": null,
+      "name": "MPA 24120 H Damping Factor : >88",
+      "slug": "blaupunkt-mpa-24120-h-damping-factor-88",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Component speakers",
+      "group": "Speakers",
+      "mrp": 54990,
+      "sellingPrice": 49490,
+      "discountPct": 10,
+      "specs": [
+        "PCB Layer :2 Max. Output Power : 1,000W",
+        "Max Output Power @ 4 Ohms : 250W x 4 Frequency Response : 10Hz-40kHz"
+      ],
+      "heading": "HYUNDAI SPEAKER",
+      "page": 23,
+      "image": null,
+      "flags": [
+        "MODEL_UNCERTAIN",
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "VA 1004",
+      "variant": null,
+      "name": "VA 1004",
+      "slug": "blaupunkt-va-1004",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Amplifiers",
+      "group": "Amplifiers",
+      "mrp": 19990,
+      "sellingPrice": 17990,
+      "discountPct": 10,
+      "specs": [
+        "Technical concept: Class D",
+        "Number of channels: 4/2",
+        "Max. total power: 720 watts",
+        "RMS power 4 ohms: 4 x 60 watts, 2 x 180 watts",
+        "RMS power 2 ohms: 4 x 90 watts",
+        "Signal / noise ratio: > 95 dB/A @ RMS power (4",
+        "Gain adjust: 0.2 - 10 V",
+        "Bass Boost: 0/6/12 dB @ 45 Hz",
+        "High pass filter: 60 / 80 / 120 Hz @ 24dB",
+        "Dimensions W x H x D: 86.4 x 48.3 x 210.8 mm",
+        "Crossovers: Yes",
+        "D C Offset: Yes"
+      ],
+      "heading": "Amplifiers",
+      "page": 24,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-024-1.jpg",
+        "width": 326,
+        "height": 202,
+        "source": "Blaupunkt Brochure 2026 p.24"
+      },
+      "flags": [
+        "IMAGE_ORDER_VERIFIED"
+      ],
+      "published": true,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "THA 485",
+      "variant": null,
+      "name": "THA 485",
+      "slug": "blaupunkt-tha-485",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Amplifiers",
+      "group": "Amplifiers",
+      "mrp": 10990,
+      "sellingPrice": 9890,
+      "discountPct": 10,
+      "specs": [
+        "Technical concept: Class A/B",
+        "Number of channels: 4/2",
+        "Max. total power: 720 watts",
+        "RMS power 4 ohms: 4 x 120 watts, 2 x 170 watts",
+        "RMS power 2 ohms: 4 x 85 watts",
+        "Signal / noise ratio: W",
+        "Dimensions W x H x D: 340 x 190 x 55 mm",
+        "Crossovers: Yes",
+        "D C Offset: Yes"
+      ],
+      "heading": "Amplifiers",
+      "page": 24,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-024-2.jpg",
+        "width": 314,
+        "height": 236,
+        "source": "Blaupunkt Brochure 2026 p.24"
+      },
+      "flags": [
+        "IMAGE_ORDER_VERIFIED"
+      ],
+      "published": true,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "THA 285",
+      "variant": null,
+      "name": "THA 285",
+      "slug": "blaupunkt-tha-285",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Amplifiers",
+      "group": "Amplifiers",
+      "mrp": 8990,
+      "sellingPrice": 8090,
+      "discountPct": 10,
+      "specs": [
+        "Technical concept: Class A/B",
+        "Number of channels: 2/1",
+        "Max. total power: 720 watts",
+        "RMS power 4 ohms: 4 x 120 watts, 2 x 170 watts",
+        "RMS power 2 ohms: 4 x 85 watts",
+        "Signal / noise ratio: )",
+        "Dimensions W x H x D: 240 x 190 x 55mm",
+        "Crossovers: Yes",
+        "D C Offset: Yes"
+      ],
+      "heading": "Amplifiers",
+      "page": 24,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-024-3.jpg",
+        "width": 306,
+        "height": 223,
+        "source": "Blaupunkt Brochure 2026 p.24"
+      },
+      "flags": [
+        "IMAGE_ORDER_VERIFIED"
+      ],
+      "published": true,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "THA 500.1",
+      "variant": null,
+      "name": "THA 500.1",
+      "slug": "blaupunkt-tha-500-1",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Amplifiers",
+      "group": "Amplifiers",
+      "mrp": 16990,
+      "sellingPrice": 15290,
+      "discountPct": 10,
+      "specs": [
+        "Number of channels: 1",
+        "Max. total power: 720 watts",
+        "RMS power 4 ohms: 250W x 1",
+        "RMS power 2 ohms: 500W x 1",
+        "Signal / noise ratio: > 90 dB/A @ RMS power (4",
+        "Dimensions W x H x D: 185 x 54 x 184mm",
+        "Crossovers: Yes",
+        "D C Offset: Yes"
+      ],
+      "heading": "Amplifiers",
+      "page": 24,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-024-4.jpg",
+        "width": 199,
+        "height": 200,
+        "source": "Blaupunkt Brochure 2026 p.24"
+      },
+      "flags": [
+        "IMAGE_ORDER_VERIFIED"
+      ],
+      "published": true,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "ODx 2.100D",
+      "variant": null,
+      "name": "ODx 2.100D",
+      "slug": "blaupunkt-odx-2-100d",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Amplifiers",
+      "group": "Amplifiers",
+      "mrp": 11500,
+      "sellingPrice": 10350,
+      "discountPct": 10,
+      "specs": [
+        "Technical concept: Class D",
+        "Number of channels: 2/1",
+        "Max. total power: 600 watts",
+        "RMS power 4 ohms: 2 x 100 watts, 1 x 300 watts",
+        "RMS power 2 ohms: 2 x 150 watts",
+        "Signal / noise ratio: >95dB",
+        "Dimensions W x H x D: 160mm x 112mm x 53mm"
+      ],
+      "heading": "Amplifiers",
+      "page": 25,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-025-1.jpg",
+        "width": 346,
+        "height": 213,
+        "source": "Blaupunkt Brochure 2026 p.25"
+      },
+      "flags": [
+        "IMAGE_ORDER_VERIFIED"
+      ],
+      "published": true,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "ODx 4.100D",
+      "variant": null,
+      "name": "ODx 4.100D",
+      "slug": "blaupunkt-odx-4-100d",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Amplifiers",
+      "group": "Amplifiers",
+      "mrp": 13990,
+      "sellingPrice": 12590,
+      "discountPct": 10,
+      "specs": [
+        "Technical concept: Class D",
+        "Number of channels: 4/3/2",
+        "Max. total power: 1200 watts",
+        "RMS power 4 ohms: 4 x 100 watts, 2 x 300 watts",
+        "RMS power 2 ohms: 4 x 150 watts",
+        "Signal / noise ratio: >95dB",
+        "Dimensions W x H x D: 200mm x 112mm x 53mm"
+      ],
+      "heading": "Amplifiers",
+      "page": 25,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-025-2.jpg",
+        "width": 424,
+        "height": 213,
+        "source": "Blaupunkt Brochure 2026 p.25"
+      },
+      "flags": [
+        "IMAGE_ORDER_VERIFIED"
+      ],
+      "published": true,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "PDx 2.120D",
+      "variant": null,
+      "name": "PDx 2.120D",
+      "slug": "blaupunkt-pdx-2-120d",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Amplifiers",
+      "group": "Amplifiers",
+      "mrp": 11500,
+      "sellingPrice": 10350,
+      "discountPct": 10,
+      "specs": [
+        "Technical concept: Class D",
+        "Number of channels: 2/1",
+        "Max. total power: 720 watts",
+        "RMS power 4 ohms: 2 x 120 watts, 1 x 320 watts",
+        "RMS power 2 ohms: 2 x 160 watts",
+        "Signal / noise ratio: >95dB",
+        "Dimensions W x H x D: 160mm x 112mm x 53mm"
+      ],
+      "heading": "Amplifiers",
+      "page": 25,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-025-3.jpg",
+        "width": 346,
+        "height": 237,
+        "source": "Blaupunkt Brochure 2026 p.25"
+      },
+      "flags": [
+        "IMAGE_ORDER_VERIFIED"
+      ],
+      "published": true,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "PDx 4.120D",
+      "variant": null,
+      "name": "PDx 4.120D",
+      "slug": "blaupunkt-pdx-4-120d",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Amplifiers",
+      "group": "Amplifiers",
+      "mrp": 13990,
+      "sellingPrice": 12590,
+      "discountPct": 10,
+      "specs": [
+        "Technical concept: Class D",
+        "Number of channels: 4/3/2",
+        "Max. total power: 1400 watts",
+        "RMS power 4 ohms: 4 x 120 watts, 2 x 320 watts",
+        "RMS power 2 ohms: 4 x 160 watts",
+        "Signal / noise ratio: >95dB",
+        "Dimensions W x H x D: 200mm x 112mm x 53mm"
+      ],
+      "heading": "Amplifiers",
+      "page": 25,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-025-4.jpg",
+        "width": 416,
+        "height": 236,
+        "source": "Blaupunkt Brochure 2026 p.25"
+      },
+      "flags": [
+        "IMAGE_ORDER_VERIFIED"
+      ],
+      "published": true,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "Coated Paper 0 – 180° / – (10.0 x 10.2 x",
+      "variant": null,
+      "name": "Coated Paper 0 – 180° / – (10.0 x 10.2 x",
+      "slug": "blaupunkt-coated-paper-0-180-10-0-x-10-2-x",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Subwoofers",
+      "group": "Subwoofers",
+      "mrp": 10990,
+      "sellingPrice": 9890,
+      "discountPct": 10,
+      "specs": [
+        "system remote signal",
+        "10.7/8.0”)",
+        "Active 167.6 x 149.9",
+        "254 mm / 10” / High level,",
+        "Xlf 10 A Underseat 0 / 0 – 180° / x 96.5mm",
+        "Aluminum Class-AB 150 / 600 watts > 90 dB 32 – 5K Hz 50 – 150 Hz low level,",
+        "Subwoofer + 12 dB (6.6 x 5.9 x",
+        "Compound Cone remote signal",
+        "system 3.8\" )",
+        "Active High level, 500 x",
+        "0 / 0 – 180° /",
+        "Subwoofer low level,",
+        "250 mm / 10” Class-D 120 / 480 watts - 40 – 170 Hz 50 – 150 Hz 320 x",
+        "system remote signal 170/100 mm",
+        "ODx 350 AW High level, 360 x",
+        "Subwoofer 279 mm / 11” Class-D 350 watts 88 dB 30 – 150 Hz 50 – 150 Hz -",
+        "remote signal 164 mm",
+        "Active 20.08\" x",
+        "0 / 0 – 180° / High level,",
+        "Subwoofer",
+        "203 mm / 8” Class-D 200 / 600 watts - 10 – 180 Hz 40 – 180 Hz 11.02\" x",
+        "remote signal",
+        "system 5.12\"",
+        "Active High level,"
+      ],
+      "heading": "Active / Passive Subwoofers",
+      "page": 26,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-026-1.jpg",
+        "width": 262,
+        "height": 269,
+        "source": "Blaupunkt Brochure 2026 p.26"
+      },
+      "flags": [
+        "MODEL_UNCERTAIN",
+        "IMAGE_ORDER_ASSUMED"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "Active 167.6 x 149.9",
+      "variant": null,
+      "name": "Active 167.6 x 149.9",
+      "slug": "blaupunkt-active-167-6-x-149-9",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Subwoofers",
+      "group": "Subwoofers",
+      "mrp": 19990,
+      "sellingPrice": 17990,
+      "discountPct": 10,
+      "specs": [
+        "254 mm / 10” / High level,",
+        "Xlf 10 A Underseat 0 / 0 – 180° / x 96.5mm",
+        "Aluminum Class-AB 150 / 600 watts > 90 dB 32 – 5K Hz 50 – 150 Hz low level,",
+        "Subwoofer + 12 dB (6.6 x 5.9 x"
+      ],
+      "heading": "Active / Passive Subwoofers",
+      "page": 26,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-026-2.jpg",
+        "width": 321,
+        "height": 254,
+        "source": "Blaupunkt Brochure 2026 p.26"
+      },
+      "flags": [
+        "MODEL_UNCERTAIN",
+        "IMAGE_ORDER_ASSUMED"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "TWb1000A",
+      "variant": null,
+      "name": "TWb1000A",
+      "slug": "blaupunkt-twb1000a",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Subwoofers",
+      "group": "Subwoofers",
+      "mrp": 19990,
+      "sellingPrice": 17990,
+      "discountPct": 10,
+      "specs": [
+        "0 / 0 – 180° /",
+        "Subwoofer low level,",
+        "250 mm / 10” Class-D 120 / 480 watts - 40 – 170 Hz 50 – 150 Hz 320 x",
+        "+ 12 dB"
+      ],
+      "heading": "Active / Passive Subwoofers",
+      "page": 26,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-026-3.jpg",
+        "width": 358,
+        "height": 221,
+        "source": "Blaupunkt Brochure 2026 p.26"
+      },
+      "flags": [
+        "IMAGE_ORDER_ASSUMED"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "ODx 350 AW High level, 360 x",
+      "variant": null,
+      "name": "ODx 350 AW High level, 360 x",
+      "slug": "blaupunkt-odx-350-aw-high-level-360-x",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Subwoofers",
+      "group": "Subwoofers",
+      "mrp": 25990,
+      "sellingPrice": 23390,
+      "discountPct": 10,
+      "specs": [
+        "Subwoofer 279 mm / 11” Class-D 350 watts 88 dB 30 – 150 Hz 50 – 150 Hz -",
+        "remote signal 164 mm"
+      ],
+      "heading": "Active / Passive Subwoofers",
+      "page": 26,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-026-4.jpg",
+        "width": 261,
+        "height": 224,
+        "source": "Blaupunkt Brochure 2026 p.26"
+      },
+      "flags": [
+        "MODEL_UNCERTAIN",
+        "IMAGE_ORDER_ASSUMED"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "0 / 0 – 180° / High level,",
+      "variant": null,
+      "name": "0 / 0 – 180° / High level,",
+      "slug": "blaupunkt-0-0-180-high-level",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Subwoofers",
+      "group": "Subwoofers",
+      "mrp": 19990,
+      "sellingPrice": 17990,
+      "discountPct": 10,
+      "specs": [
+        "Subwoofer",
+        "203 mm / 8” Class-D 200 / 600 watts - 10 – 180 Hz 40 – 180 Hz 11.02\" x",
+        "remote signal"
+      ],
+      "heading": "Active / Passive Subwoofers",
+      "page": 26,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-026-5.jpg",
+        "width": 358,
+        "height": 200,
+        "source": "Blaupunkt Brochure 2026 p.26"
+      },
+      "flags": [
+        "MODEL_UNCERTAIN",
+        "IMAGE_ORDER_ASSUMED"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "ODx 10A",
+      "variant": null,
+      "name": "ODx 10A",
+      "slug": "blaupunkt-odx-10a",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Subwoofers",
+      "group": "Subwoofers",
+      "mrp": 21990,
+      "sellingPrice": 19790,
+      "discountPct": 10,
+      "specs": [
+        "0 / 0 – 180° /",
+        "Subwoofer 254 mm / 10” Class-D 150 / 600 watts - 500 – 5KHz - low level, 10.7\" x",
+        "- 12dB"
+      ],
+      "heading": "Active / Passive Subwoofers",
+      "page": 26,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-026-6.jpg",
+        "width": 321,
+        "height": 225,
+        "source": "Blaupunkt Brochure 2026 p.26"
+      },
+      "flags": [
+        "IMAGE_ORDER_ASSUMED"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "AR AUDIO",
+      "variant": null,
+      "name": "AR AUDIO",
+      "slug": "blaupunkt-ar-audio",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Subwoofers",
+      "group": "Subwoofers",
+      "mrp": 5990,
+      "sellingPrice": 5390,
+      "discountPct": 10,
+      "specs": [
+        "Tw1600.4 Twb1500",
+        "Maximum Nominal Diameter Thiele Thiele Small Thiele Thiele",
+        "Nominal Frequency Efficiency Recommended",
+        "power power Installation Small Parameter Small Small",
+        "System Diameter impedance response (dB / 2.83V / sealed",
+        "handling handling hole Parameter Qts / Qes / Parameter Parameter",
+        "(Ohms) (Hz) 1m) enclosure size",
+        "(Watts) (RMS) (mm/inch) fs (Hz) Qms Vas (l) Xmax (mm)",
+        "Tw1600.4 Subwoofer 300 mm / 0.62 / 0.61 / 1.2 cubic ft.",
+        "1500W 250W 4 30-300 87dB 299 / 11.8 29.8 93.25 8",
+        "system 12\" 7.08 (34 Liters)",
+        "Enclosed 300 mm / 0.62 / 0.61 /",
+        "1500W 250W 4 30-300 - 29.8 93.25 8 -",
+        "Subwoofer 12\" 7.08"
+      ],
+      "heading": "Subwoofers",
+      "page": 27,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-027-1.jpg",
+        "width": 294,
+        "height": 291,
+        "source": "Blaupunkt Brochure 2026 p.27"
+      },
+      "flags": [
+        "IMAGE_ORDER_ASSUMED"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "1500W 250W 4 30-300 - 29.8 93.25 8 -",
+      "variant": null,
+      "name": "1500W 250W 4 30-300 - 29.8 93.25 8 -",
+      "slug": "blaupunkt-1500w-250w-4-30-300-29-8-93-25-8",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Subwoofers",
+      "group": "Subwoofers",
+      "mrp": 9990,
+      "sellingPrice": 8990,
+      "discountPct": 10,
+      "specs": [
+        "87dB",
+        "Subwoofer 12\" 7.08"
+      ],
+      "heading": "Subwoofers",
+      "page": 27,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-027-2.jpg",
+        "width": 339,
+        "height": 275,
+        "source": "Blaupunkt Brochure 2026 p.27"
+      },
+      "flags": [
+        "MODEL_UNCERTAIN",
+        "IMAGE_ORDER_ASSUMED"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "Txt 10A - Active Bass Tube",
+      "variant": null,
+      "name": "Txt 10A - Active Bass Tube",
+      "slug": "blaupunkt-txt-10a-active-bass-tube",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Subwoofers",
+      "group": "Subwoofers",
+      "mrp": 12990,
+      "sellingPrice": 11690,
+      "discountPct": 10,
+      "specs": [
+        "Maximum power handling (Watts): 1200W",
+        "Nominal power handling (RMS): 250W",
+        "Nominal impedance (Ohms): 3",
+        "Frequency response (Hz): 25-250",
+        "Crossover Controls: Variable 40Hz – 250Hz",
+        "Phase Selectable: 0 – 180",
+        "Fuse Rating: 30A",
+        "External Bass Controller: Included in Box"
+      ],
+      "heading": "Bass Tubes",
+      "page": 28,
+      "image": null,
+      "flags": [
+        "MODEL_UNCERTAIN",
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "ODx 200T - Bass Tube",
+      "variant": null,
+      "name": "ODx 200T - Bass Tube",
+      "slug": "blaupunkt-odx-200t-bass-tube",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Subwoofers",
+      "group": "Subwoofers",
+      "mrp": 8990,
+      "sellingPrice": 8090,
+      "discountPct": 10,
+      "specs": [
+        "Maximum power handling (Watts): 450W",
+        "Nominal power handling (RMS): 150W",
+        "Nominal impedance (Ohms): 4",
+        "Frequency response (Hz): 45Hz - 2KHz",
+        "Efficiency (dB / 2.83V / 1m): 88dB",
+        "Thiele Small Parameter Qts / Qes / Qms: 0.331 / 0.353 / 5.158",
+        "Thiele Small Parameter Vas (l): 39.110",
+        "Thiele Small Parameter Xmax (mm): 7.5mm"
+      ],
+      "heading": "Bass Tubes",
+      "page": 28,
+      "image": null,
+      "flags": [
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "ODx 300T - Bass Tube",
+      "variant": null,
+      "name": "ODx 300T - Bass Tube",
+      "slug": "blaupunkt-odx-300t-bass-tube",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Subwoofers",
+      "group": "Subwoofers",
+      "mrp": 10990,
+      "sellingPrice": 9890,
+      "discountPct": 10,
+      "specs": [
+        "Maximum power handling (Watts): 900W",
+        "Nominal power handling (RMS): 300W",
+        "Nominal impedance (Ohms): 4",
+        "Frequency response (Hz): 32Hz - 2KHz",
+        "Efficiency (dB / 2.83V / 1m): 88dB",
+        "Thiele Small Parameter Qts / Qes / Qms: 0.433 / 0.490 / 3.760",
+        "Thiele Small Parameter Vas (l): 84.803",
+        "Thiele Small Parameter Xmax (mm): 12.5mm"
+      ],
+      "heading": "Bass Tubes",
+      "page": 28,
+      "image": null,
+      "flags": [
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "S95 CH CHROME HORN",
+      "variant": null,
+      "name": "S95 CH CHROME HORN",
+      "slug": "blaupunkt-s95-ch-chrome-horn",
+      "brand": "BLAUPUNKT",
+      "category": "exterior",
+      "subcategory": "Horns",
+      "group": "Accessories",
+      "mrp": 1999,
+      "sellingPrice": 1800,
+      "discountPct": 10,
+      "specs": [
+        "Ÿ: Current: 4.5 - 5.0A X 2",
+        "Ÿ: Decibels: 105 - 118 dB",
+        "Ÿ: Low Frequency: 410 ± 20 Hz",
+        "Ÿ: Diameter:",
+        "Ÿ: Stylish Design",
+        "Ÿ: Horn Relay included"
+      ],
+      "heading": "Horns – for every application",
+      "page": 29,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-029-1.jpg",
+        "width": 394,
+        "height": 269,
+        "source": "Blaupunkt Brochure 2026 p.29"
+      },
+      "flags": [
+        "IMAGE_ORDER_ASSUMED"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "S92 BLK HORN",
+      "variant": null,
+      "name": "S92 BLK HORN",
+      "slug": "blaupunkt-s92-blk-horn",
+      "brand": "BLAUPUNKT",
+      "category": "exterior",
+      "subcategory": "Horns",
+      "group": "Accessories",
+      "mrp": 999,
+      "sellingPrice": 900,
+      "discountPct": 10,
+      "specs": [
+        "Ÿ: Ÿ",
+        "Ÿ: Ÿ",
+        "Ÿ: Ÿ",
+        "Ÿ: φ",
+        "Ÿ: Ÿ",
+        "Ÿ: Ÿ"
+      ],
+      "heading": "Horns – for every application",
+      "page": 29,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-029-2.jpg",
+        "width": 481,
+        "height": 224,
+        "source": "Blaupunkt Brochure 2026 p.29"
+      },
+      "flags": [
+        "IMAGE_ORDER_ASSUMED"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "Car Vacuum Cleaner - VC - 2008 BLK VC 3008 GY",
+      "variant": null,
+      "name": "Car Vacuum Cleaner - VC - 2008 BLK VC 3008 GY",
+      "slug": "blaupunkt-car-vacuum-cleaner-vc-2008-blk-vc-3008-gy",
+      "brand": "BLAUPUNKT",
+      "category": "interior",
+      "subcategory": "Car care",
+      "group": "Accessories",
+      "mrp": 1990,
+      "sellingPrice": 1790,
+      "discountPct": 10,
+      "specs": [
+        "Rated Voltage – DC 12 V",
+        "Rated Power – 100 W",
+        "Power Suction – 4.5 KPA",
+        "Max Current – 8A",
+        "Cable length – 3 meters",
+        "Accessories – Flexible Hose Pipe, Brush Suction Nozzle, Long Suction Nozzle & Storage Pouch - 1 each",
+        "Cordless Car Vacuum Cleaner - VC 6006 - PRO",
+        "Speci\u0000cation:",
+        "Input Voltage - 12V",
+        "Powerful Motor: 100W motor for strong suction power",
+        "6000mAh Batteries capacity - Equipped with 3 x 2000mAh lithium",
+        "batteries for extended runtime and reliability.",
+        "Three Suction modes to handle different cleaning needs:",
+        "- Low - 40W (7Kpa) pa±10% with 40 minutes run time",
+        "- Medium- 70W (12Kpa) pa±10% with 20 minutes run time",
+        "- High - 100W (15Kpa) pa±10% with 12 minutes run time",
+        "HEPA Filter",
+        "200ml dust collector capacity for dry debris collection",
+        "Compact & lightweight - suited car use",
+        "Indicator for easy monitoring of charging status",
+        "Supports Type-C charging for convenient and universal charging options",
+        "Accessories Included: 7 nozzle variants for versatile cleaning applications",
+        "Storage pouch included."
+      ],
+      "heading": "Keep it Clean",
+      "page": 30,
+      "image": null,
+      "flags": [
+        "MODEL_UNCERTAIN",
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "Cordless Car Vacuum Cleaner - VC 6006 - PRO",
+      "variant": null,
+      "name": "Cordless Car Vacuum Cleaner - VC 6006 - PRO",
+      "slug": "blaupunkt-cordless-car-vacuum-cleaner-vc-6006-pro",
+      "brand": "BLAUPUNKT",
+      "category": "interior",
+      "subcategory": "Car care",
+      "group": "Accessories",
+      "mrp": 4990,
+      "sellingPrice": 4490,
+      "discountPct": 10,
+      "specs": [
+        "Speci\u0000cation:",
+        "Input Voltage - 12V",
+        "Powerful Motor: 100W motor for strong suction power",
+        "6000mAh Batteries capacity - Equipped with 3 x 2000mAh lithium",
+        "batteries for extended runtime and reliability.",
+        "Three Suction modes to handle different cleaning needs:",
+        "- Low - 40W (7Kpa) pa±10% with 40 minutes run time",
+        "- Medium- 70W (12Kpa) pa±10% with 20 minutes run time",
+        "- High - 100W (15Kpa) pa±10% with 12 minutes run time",
+        "HEPA Filter",
+        "200ml dust collector capacity for dry debris collection",
+        "Compact & lightweight - suited car use",
+        "Indicator for easy monitoring of charging status",
+        "Supports Type-C charging for convenient and universal charging options",
+        "Accessories Included: 7 nozzle variants for versatile cleaning applications",
+        "Storage pouch included."
+      ],
+      "heading": "Keep it Clean",
+      "page": 30,
+      "image": null,
+      "flags": [
+        "MODEL_UNCERTAIN",
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "R-41246409",
+      "variant": null,
+      "name": "R-41246409",
+      "slug": "blaupunkt-r-41246409",
+      "brand": "BLAUPUNKT",
+      "category": "interior",
+      "subcategory": "Charging accessories",
+      "group": "Accessories",
+      "mrp": 1990,
+      "sellingPrice": 1790,
+      "discountPct": 10,
+      "specs": [
+        "www.bis.gov.in",
+        "QUICK CAR PHONE CHARGER CC508Q2 - USB-C Type / Lightning Cable Included"
+      ],
+      "heading": "IS 13252 (Part 1)/IEC 60950-1",
+      "page": 32,
+      "image": null,
+      "flags": [
+        "MODEL_UNCERTAIN",
+        "DUPLICATE_LISTING",
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "AR ACCESSORIES",
+      "variant": null,
+      "name": "AR ACCESSORIES",
+      "slug": "blaupunkt-ar-accessories",
+      "brand": "BLAUPUNKT",
+      "category": "interior",
+      "subcategory": "Charging accessories",
+      "group": "Accessories",
+      "mrp": 1190,
+      "sellingPrice": 1070,
+      "discountPct": 10,
+      "specs": [
+        "Charging on the Go",
+        "AR ACCESSORIES",
+        "R-41246409",
+        "www.bis.gov.in",
+        "QUICK CAR PHONE CHARGER CC508Q2 - USB-C Type / Lightning Cable Included",
+        "Qualcomm 3.0: Quick charge certified",
+        "Adapt high quality energy management protocol like IC & PD, Auto identify the",
+        "Smart Microchip TOTAL POWER",
+        "charging device & distribute the current intelligently, Safe, fast & durable, Charging",
+        "without damaging the battery.",
+        "Dual USB ports can charge fast simultaneously, Max output reach up to 38W.",
+        "Output: QC 3.0 (5V/3A) + PD Type (5V/3A or 9V/2A or 12v/1.5A 3)",
+        "Ports: USB port (QC 3.0) – 1 C Type port (PD Type)- 1",
+        "Meets several safety standards - it’s smart microchip is capable of multiple",
+        "protection systems like over-current, over-voltage, over-temperature, short circuit &",
+        "anti-electromagnetic interference protection.",
+        "Total power: 38 watts, intelligent charging",
+        "Made of Zinc Alloy material & Stainless Steel",
+        "Compatible with Android devices, iPhone, iPad, Macbook, iPad Pro, iPhone, iPhone X",
+        "Certification: QUALCOMM LICENSE /CE/FCC /UL",
+        "Cable inside is not covered under Warranty",
+        "CAR PHONE CHARGER BP CC 263 PD - 2 in 1 USB Cable Included",
+        "Input: 12V",
+        "PD Port Output: 5V-3A, 9V-2A, 12V-1.5A = 18Watts + ="
+      ],
+      "heading": "IS 13252 (Part 1)/IEC 60950-1",
+      "page": 32,
+      "image": null,
+      "flags": [
+        "DUPLICATE_LISTING",
+        "DUPLICATE_LISTING",
+        "DUPLICATE_LISTING",
+        "DUPLICATE_LISTING",
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "BP W2WL - Mini - Wired to Wireless USB Adapter",
+      "variant": null,
+      "name": "BP W2WL - Mini - Wired to Wireless USB Adapter",
+      "slug": "blaupunkt-bp-w2wl-mini-wired-to-wireless-usb-adapter",
+      "brand": "BLAUPUNKT",
+      "category": "interior",
+      "subcategory": "Charging accessories",
+      "group": "Accessories",
+      "mrp": 4990,
+      "sellingPrice": 4490,
+      "discountPct": 10,
+      "specs": [
+        "USB Dongle to convert wired Apple CarPlay/Android Auto to wireless"
+      ],
+      "heading": "Charging on the Go",
+      "page": 34,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-034-3.jpg",
+        "width": 650,
+        "height": 756,
+        "source": "Blaupunkt Brochure 2026 p.34"
+      },
+      "flags": [
+        "MODEL_UNCERTAIN"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "Set of 2 pieces",
+      "variant": null,
+      "name": "Set of 2 pieces",
+      "slug": "blaupunkt-set-of-2-pieces",
+      "brand": "BLAUPUNKT",
+      "category": "interior",
+      "subcategory": "Reverse cameras",
+      "group": "Accessories",
+      "mrp": 1990,
+      "sellingPrice": 1790,
+      "discountPct": 10,
+      "specs": [
+        "Material – Flex sheet",
+        "Per sheet Size – 14 ft x 3.5 ft",
+        "Left Right",
+        "Camera Camera",
+        "Rear Camera",
+        "Compatible with Audio Systems equipped with 360 camera system input capability",
+        "360˚ Wide Angle View Parking Assistance Cameras",
+        "With the Blaupunkt 360 ˚ camera system you get a perfect view of the car’s surroundings, say goodbye to all your",
+        "parking difficulties. 360˚ around view system captures images simultaneously from all four wide angle cameras",
+        "mounted in the front, rear, left and right of the vehicle. Through advanced image processing, the system",
+        "generates a bird’s eye view picture that focuses on the car and its immediate surroundings. This camera system",
+        "helps the driver to see everything around the car and can make driving and parking safe and easy.",
+        "Speci\u0000cations:",
+        "Camera Supply Voltage: 4.1V Current Consumption: 300mA@12V",
+        "Operating Temperature: -25 C-75 C Video input current: 120mA",
+        "Video signal: 1.0 vp-p, 75 Ω Storage Temperature: -25 C-75 C",
+        "Video Input: 4-Channels 1080P/720PAHI Contents in Box: 4 cameras / wiring harness / installation",
+        "accessories",
+        "Half Kit. It’s not a standalone kit."
+      ],
+      "heading": "IS 616:2017/IEC60065: 2014",
+      "page": 35,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-035-5.jpg",
+        "width": 216,
+        "height": 470,
+        "source": "Blaupunkt Brochure 2026 p.35"
+      },
+      "flags": [
+        "MODEL_UNCERTAIN"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "BC DH2.1",
+      "variant": null,
+      "name": "BC DH2.1",
+      "slug": "blaupunkt-bc-dh2-1",
+      "brand": "BLAUPUNKT",
+      "category": "interior",
+      "subcategory": "Reverse cameras",
+      "group": "Accessories",
+      "mrp": 2190,
+      "sellingPrice": 1970,
+      "discountPct": 10,
+      "specs": [
+        "Ÿ: Power Supply: DC12V±3V",
+        "Ÿ: Current Consumption: 70mA",
+        "Ÿ: Optical Format: 1/3”",
+        "Ÿ: Video System: SD/CVBS",
+        "Ÿ: Image Sensor: CMOS",
+        "Ÿ: Effective Pixels: 733x493",
+        "Ÿ: Lens Angle: 170° (D), 110° (H), 100° (V)",
+        "Ÿ: White Balance: Auto",
+        "Ÿ: Water Resistant",
+        "Ÿ: Illumination Min.: 0.01 Lux",
+        "Ÿ: Operating Temperature: -20",
+        "Ÿ: Humidity: up to 95%",
+        "Ÿ: Signal System: SD/CVBS",
+        "Ÿ: Video Signal : 1.0 Vp-p at 75 ohm"
+      ],
+      "heading": "IS 616:2017/IEC60065: 2014",
+      "page": 36,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-036-1.jpg",
+        "width": 458,
+        "height": 251,
+        "source": "Blaupunkt Brochure 2026 p.36"
+      },
+      "flags": [
+        "IMAGE_ORDER_ASSUMED"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "BC DH3.1 AHD",
+      "variant": null,
+      "name": "BC DH3.1 AHD",
+      "slug": "blaupunkt-bc-dh3-1-ahd",
+      "brand": "BLAUPUNKT",
+      "category": "interior",
+      "subcategory": "Reverse cameras",
+      "group": "Accessories",
+      "mrp": 3190,
+      "sellingPrice": 2870,
+      "discountPct": 10,
+      "specs": [
+        "Ÿ: Ÿ",
+        "Ÿ: Ÿ",
+        "Ÿ: Ÿ",
+        "Ÿ: Ÿ",
+        "Ÿ: Ÿ",
+        "Ÿ: Ÿ",
+        "Ÿ: Ÿ",
+        "Ÿ: Ÿ",
+        "Ÿ: Ÿ",
+        "Ÿ: Ÿ",
+        "Ÿ: ℃",
+        "Ÿ: Ÿ",
+        "Ÿ: Ÿ",
+        "Ÿ: Ÿ"
+      ],
+      "heading": "IS 616:2017/IEC60065: 2014",
+      "page": 36,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-036-2.jpg",
+        "width": 253,
+        "height": 198,
+        "source": "Blaupunkt Brochure 2026 p.36"
+      },
+      "flags": [
+        "IMAGE_ORDER_ASSUMED"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "BC DH2.3 AHD",
+      "variant": null,
+      "name": "BC DH2.3 AHD",
+      "slug": "blaupunkt-bc-dh2-3-ahd",
+      "brand": "BLAUPUNKT",
+      "category": "interior",
+      "subcategory": "Reverse cameras",
+      "group": "Accessories",
+      "mrp": 3290,
+      "sellingPrice": 2960,
+      "discountPct": 10,
+      "specs": [
+        "Ÿ: Power Supply: DC12V±3V",
+        "Ÿ: Video System: AHD (PAL)",
+        "Ÿ: Current Consumption: 50mA",
+        "Ÿ: Optical Format: 1/3\"",
+        "Ÿ: Image Sensor: CMOS lens",
+        "Ÿ: Effective Pixels: 1280(H) x 720(V) 25fps",
+        "Ÿ: Video Signal: 1.0 Vp-p / 75ohm",
+        "Ÿ: Lens Angle: 170° (D), 110° (H),100° (V)",
+        "Ÿ: Electronic Shutter: 1/60 ~ 1/100000 sec",
+        "Ÿ: White Balance: Auto",
+        "Ÿ: ~+70",
+        "Ÿ: Water Resistant: IP67",
+        "Ÿ: Illumination Min.: 0.01Lux",
+        "Ÿ: Operating Temperature: -20°C ~ +70°C"
+      ],
+      "heading": "IS 616:2017/IEC60065: 2014",
+      "page": 36,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-036-3.jpg",
+        "width": 455,
+        "height": 244,
+        "source": "Blaupunkt Brochure 2026 p.36"
+      },
+      "flags": [
+        "IMAGE_ORDER_ASSUMED"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "BC DH2.4",
+      "variant": null,
+      "name": "BC DH2.4",
+      "slug": "blaupunkt-bc-dh2-4",
+      "brand": "BLAUPUNKT",
+      "category": "interior",
+      "subcategory": "Reverse cameras",
+      "group": "Accessories",
+      "mrp": 3290,
+      "sellingPrice": 2960,
+      "discountPct": 10,
+      "specs": [
+        "Ÿ: Ÿ",
+        "Ÿ: Ÿ",
+        "Ÿ: Ÿ",
+        "Ÿ: Ÿ",
+        "Ÿ: Ÿ",
+        "Ÿ: Ÿ",
+        "Ÿ: Ÿ",
+        "Ÿ: Ÿ",
+        "Ÿ: Ÿ",
+        "Ÿ: Ÿ",
+        "Ÿ: ℃",
+        "Ÿ: Ÿ",
+        "Ÿ: Ÿ",
+        "Ÿ: Ÿ"
+      ],
+      "heading": "IS 616:2017/IEC60065: 2014",
+      "page": 36,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-036-4.jpg",
+        "width": 455,
+        "height": 244,
+        "source": "Blaupunkt Brochure 2026 p.36"
+      },
+      "flags": [
+        "IMAGE_ORDER_ASSUMED"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "BC DH05",
+      "variant": null,
+      "name": "BC DH05",
+      "slug": "blaupunkt-bc-dh05",
+      "brand": "BLAUPUNKT",
+      "category": "interior",
+      "subcategory": "Reverse cameras",
+      "group": "Accessories",
+      "mrp": 3290,
+      "sellingPrice": 2960,
+      "discountPct": 10,
+      "specs": [
+        "Camera integrated",
+        "with Number Plate Light -",
+        "Creta & Similar"
+      ],
+      "heading": "IS 616:2017/IEC60065: 2014",
+      "page": 38,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-038-2.jpg",
+        "width": 980,
+        "height": 737,
+        "source": "Blaupunkt Brochure 2026 p.38"
+      },
+      "flags": [],
+      "published": true,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "AQUA SPLASH",
+      "variant": null,
+      "name": "AQUA SPLASH",
+      "slug": "blaupunkt-aqua-splash",
+      "brand": "BLAUPUNKT",
+      "category": "interior",
+      "subcategory": "Car care",
+      "group": "Accessories",
+      "mrp": 399,
+      "sellingPrice": 360,
+      "discountPct": 10,
+      "specs": [
+        "·: Chemical Free organic solvent",
+        "·: Essential oil Infused Gel"
+      ],
+      "heading": "Car Air Fresheners",
+      "page": 39,
+      "image": null,
+      "flags": [
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "LEMON TWIST",
+      "variant": null,
+      "name": "LEMON TWIST",
+      "slug": "blaupunkt-lemon-twist",
+      "brand": "BLAUPUNKT",
+      "category": "interior",
+      "subcategory": "Car care",
+      "group": "Accessories",
+      "mrp": 399,
+      "sellingPrice": 360,
+      "discountPct": 10,
+      "specs": [
+        "·: ·",
+        "·: ·"
+      ],
+      "heading": "Car Air Fresheners",
+      "page": 39,
+      "image": null,
+      "flags": [
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "MUSK",
+      "variant": null,
+      "name": "MUSK",
+      "slug": "blaupunkt-musk",
+      "brand": "BLAUPUNKT",
+      "category": "interior",
+      "subcategory": "Car care",
+      "group": "Accessories",
+      "mrp": 399,
+      "sellingPrice": 360,
+      "discountPct": 10,
+      "specs": [
+        "·: No Harmful chemicals",
+        "·: Pleasant fragrance"
+      ],
+      "heading": "Car Air Fresheners",
+      "page": 39,
+      "image": null,
+      "flags": [
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "PARADISE",
+      "variant": null,
+      "name": "PARADISE",
+      "slug": "blaupunkt-paradise",
+      "brand": "BLAUPUNKT",
+      "category": "interior",
+      "subcategory": "Car care",
+      "group": "Accessories",
+      "mrp": 399,
+      "sellingPrice": 360,
+      "discountPct": 10,
+      "specs": [
+        "·: ·",
+        "·: ·"
+      ],
+      "heading": "Car Air Fresheners",
+      "page": 39,
+      "image": null,
+      "flags": [
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "TROPICAL FLORAL",
+      "variant": null,
+      "name": "TROPICAL FLORAL",
+      "slug": "blaupunkt-tropical-floral",
+      "brand": "BLAUPUNKT",
+      "category": "interior",
+      "subcategory": "Car care",
+      "group": "Accessories",
+      "mrp": 399,
+      "sellingPrice": 360,
+      "discountPct": 10,
+      "specs": [
+        "·: Safe for Children",
+        "·: Lasts up to 30 days"
+      ],
+      "heading": "Car Air Fresheners",
+      "page": 39,
+      "image": null,
+      "flags": [
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "AP 1.1 AIRPURE UM - 110",
+      "variant": null,
+      "name": "AP 1.1 AIRPURE UM - 110",
+      "slug": "blaupunkt-ap-1-1-airpure-um-110",
+      "brand": "BLAUPUNKT",
+      "category": "interior",
+      "subcategory": "Car care",
+      "group": "Accessories",
+      "mrp": 9290,
+      "sellingPrice": 8360,
+      "discountPct": 10,
+      "specs": [
+        "Universal Rear Seat Car Mount"
+      ],
+      "heading": "Air Purifier & Filter Display Holder",
+      "page": 40,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-040-1.jpg",
+        "width": 489,
+        "height": 339,
+        "source": "Blaupunkt Brochure 2026 p.40"
+      },
+      "flags": [
+        "IMAGE_ORDER_ASSUMED"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "for 7-11” tablets",
+      "variant": null,
+      "name": "for 7-11” tablets",
+      "slug": "blaupunkt-for-7-11-tablets",
+      "brand": "BLAUPUNKT",
+      "category": "interior",
+      "subcategory": "Car care",
+      "group": "Accessories",
+      "mrp": 6990,
+      "sellingPrice": 6290,
+      "discountPct": 10,
+      "specs": [
+        "Indicator Display: PM2.5 Level, Filter Replacement Reminder,",
+        "Auto/Manual Fan Speed",
+        "Pre-packed with Blaupunkt AirPure Filter (APF1)",
+        "Noise Level: <35dB",
+        "Fan Type: Double inlet DC Turbo Fan",
+        "HEPA Filter Grade: H11",
+        "Ultraviolet Wavelength: 253.7nm",
+        "Applicable for space: 3m2-5m2",
+        "Input Voltage: 5V",
+        "Current: 1A Automotive OE Grade Rear Seat Entertainment Mount for 7-11” tablets with 2XUSB (Type A)",
+        "Power: <5W Power Supply connector to charge tablet and another device simultaneously – with",
+        "Accessories: USB Power Cable certification for crash test worthiness and Emission compliance",
+        "Power Input DC 12-15V / Power Output (Charging) 5V – 3.4A, +5V – 1A",
+        "Premium Rubberized finish with safe rounded edges",
+        "Built in 2XUSB (Type A) ports to charge tablet on the go & another device simultaneously",
+        "Easy to Install, no tools required, fits most Standard headrests",
+        "Swivel adjustable viewing angle",
+        "Convenient smart design – allows for removal of tablet in seconds",
+        "Extendable Holder, universal solution for 7-11” tablets sound experience",
+        "AIRPURE FILTER APF1- Replacement Filter",
+        "Filter HEPA (PM2.5), Activated Carbon",
+        "Polypropylene (PP) Cotton Aromatherapy",
+        "Replacement Filter for AIRPURE AP 3.0",
+        "Removes Volatile Organic Compounds Viruses & Bacteria"
+      ],
+      "heading": "Air Purifier & Filter Display Holder",
+      "page": 40,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-040-2.jpg",
+        "width": 198,
+        "height": 539,
+        "source": "Blaupunkt Brochure 2026 p.40"
+      },
+      "flags": [
+        "IMAGE_ORDER_ASSUMED"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "AIRPURE FILTER APF1- Replacement Filter",
+      "variant": null,
+      "name": "AIRPURE FILTER APF1- Replacement Filter",
+      "slug": "blaupunkt-airpure-filter-apf1-replacement-filter",
+      "brand": "BLAUPUNKT",
+      "category": "interior",
+      "subcategory": "Car care",
+      "group": "Accessories",
+      "mrp": 900,
+      "sellingPrice": 810,
+      "discountPct": 10,
+      "specs": [
+        "Filter HEPA (PM2.5), Activated Carbon",
+        "Polypropylene (PP) Cotton Aromatherapy",
+        "Replacement Filter for AIRPURE AP 3.0",
+        "Removes Volatile Organic Compounds Viruses & Bacteria",
+        "Filters Hazardous Smoke",
+        "Improves Air Quality"
+      ],
+      "heading": "Air Purifier & Filter Display Holder",
+      "page": 40,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-040-3.jpg",
+        "width": 270,
+        "height": 336,
+        "source": "Blaupunkt Brochure 2026 p.40"
+      },
+      "flags": [
+        "MODEL_UNCERTAIN",
+        "IMAGE_ORDER_ASSUMED"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "DAMP 3.0",
+      "variant": null,
+      "name": "DAMP 3.0",
+      "slug": "blaupunkt-damp-3-0",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Sound deadening",
+      "group": "Installation",
+      "mrp": 6200,
+      "sellingPrice": 5580,
+      "discountPct": 10,
+      "specs": [
+        "Size: 800mm x 460mm / 31.4”: x 18.1”",
+        "Ÿ: Weight: 6.2 Kg per box",
+        "Ÿ: Quantity: 5 sheets"
+      ],
+      "heading": "Keeping it quiet",
+      "page": 41,
+      "image": null,
+      "flags": [
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "DPVA 2.0",
+      "variant": null,
+      "name": "DPVA 2.0",
+      "slug": "blaupunkt-dpva-2-0",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Sound deadening",
+      "group": "Installation",
+      "mrp": 4000,
+      "sellingPrice": 3600,
+      "discountPct": 10,
+      "specs": [
+        "Size: 800mm x 460mm / 31.4”: Sound absorption coefficient NRC = 0.85; Standard level (level I)",
+        "Ÿ: Ÿ",
+        "Ÿ: Ÿ"
+      ],
+      "heading": "Keeping it quiet",
+      "page": 41,
+      "image": null,
+      "flags": [
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "BONNET DAMP 600",
+      "variant": null,
+      "name": "BONNET DAMP 600",
+      "slug": "blaupunkt-bonnet-damp-600",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Sound deadening",
+      "group": "Installation",
+      "mrp": 2700,
+      "sellingPrice": 2430,
+      "discountPct": 10,
+      "specs": [
+        "Size: 800mm x 460mm / 31.4”: Size - 1000mm x 1400mm / 55.12 inches x 39.37 inches",
+        "Ÿ: Fire test: the combustion performance of the material reaches the",
+        "Ÿ: Coverage Area: 15 sq ft"
+      ],
+      "heading": "Keeping it quiet",
+      "page": 41,
+      "image": null,
+      "flags": [
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "DAMP 2000",
+      "variant": null,
+      "name": "DAMP 2000",
+      "slug": "blaupunkt-damp-2000",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Sound deadening",
+      "group": "Installation",
+      "mrp": 10000,
+      "sellingPrice": 9000,
+      "discountPct": 10,
+      "specs": [
+        "Car Damping Sheets"
+      ],
+      "heading": "Keeping it quiet",
+      "page": 41,
+      "image": null,
+      "flags": [
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "TPMS In-Dash USB 4.2",
+      "variant": null,
+      "name": "TPMS In-Dash USB 4.2",
+      "slug": "blaupunkt-tpms-in-dash-usb-4-2",
+      "brand": "BLAUPUNKT",
+      "category": "interior",
+      "subcategory": "Dashboard accessories",
+      "group": "Accessories",
+      "mrp": 9990,
+      "sellingPrice": 8990,
+      "discountPct": 10,
+      "specs": [
+        "TPMS - Solar Powered",
+        "Wireless USB receiver compatible",
+        "Multi-colo r Solar Powered Display",
+        "with Android radios"
+      ],
+      "heading": "Driver Assistance",
+      "page": 42,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-042-2.jpg",
+        "width": 585,
+        "height": 305,
+        "source": "Blaupunkt Brochure 2026 p.42"
+      },
+      "flags": [
+        "DUPLICATE_LISTING"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "TIF 22 DA",
+      "variant": null,
+      "name": "TIF 22 DA",
+      "slug": "blaupunkt-tif-22-da",
+      "brand": "BLAUPUNKT",
+      "category": "off-road",
+      "subcategory": "Air compressors",
+      "group": "Accessories",
+      "mrp": 3400,
+      "sellingPrice": 3060,
+      "discountPct": 10,
+      "specs": [
+        "Ÿ: Inflator with Digital Gauge & AutoStop",
+        "Ÿ: Input: DC 12V",
+        "Ÿ: Rated Power: 100W",
+        "Ÿ: Rated Current: 8 A",
+        "Ÿ: Max Pressure: 150 PSI / 10.3 BAR",
+        "Ÿ: Cylinder diameter: 19mm",
+        "Ÿ: Max. Duty Cycle: 8 min",
+        "Ÿ: Recommended for Sedans & Hatchback vehicles",
+        "Ÿ: Additional Function: LED work light",
+        "Ÿ: Power Cord length: 3 meter with cigarette lighter plug.",
+        "Ÿ: Air hose: 16cm rubber hose with quick release valve",
+        "connector: Ÿ",
+        "nozzle & 1 Storage pouch: Ÿ",
+        "19: 1",
+        "Auto Stop: Auto Stop",
+        "Digital Gauge: LED Light"
+      ],
+      "heading": "Tyre Inflators",
+      "page": 43,
+      "image": null,
+      "flags": [
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "TIF 777 PRO DA",
+      "variant": null,
+      "name": "TIF 777 PRO DA",
+      "slug": "blaupunkt-tif-777-pro-da",
+      "brand": "BLAUPUNKT",
+      "category": "off-road",
+      "subcategory": "Air compressors",
+      "group": "Accessories",
+      "mrp": 4890,
+      "sellingPrice": 4400,
+      "discountPct": 10,
+      "specs": [
+        "Ÿ: Ÿ",
+        "Ÿ: Ÿ",
+        "Ÿ: Ÿ",
+        "Ÿ: reliability. Can also be used for charging phones",
+        "Ÿ: Ÿ",
+        "Ÿ: Ÿ",
+        "Ÿ: Ÿ",
+        "Ÿ: Ÿ",
+        "Ÿ: Ÿ",
+        "Ÿ: Ÿ",
+        "Ÿ: Ÿ",
+        "connector: Clear Digital Display : Large digital display shows accurate tyre pressure readings. Easily switchable",
+        "nozzle & 1 Storage pouch: With LED Light, Built-in \u0000ashlight provides super bright light in the dark",
+        "19: 50",
+        "Auto Stop: Multiple Adaptors",
+        "Digital Gauge: Energy Efficient"
+      ],
+      "heading": "Tyre Inflators",
+      "page": 43,
+      "image": null,
+      "flags": [
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "TIF 30 DA",
+      "variant": null,
+      "name": "TIF 30 DA",
+      "slug": "blaupunkt-tif-30-da",
+      "brand": "BLAUPUNKT",
+      "category": "off-road",
+      "subcategory": "Air compressors",
+      "group": "Accessories",
+      "mrp": 4800,
+      "sellingPrice": 4320,
+      "discountPct": 10,
+      "specs": [
+        "Ÿ: Output"
+      ],
+      "heading": "Tyre Inflators",
+      "page": 44,
+      "image": null,
+      "flags": [
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "TIF 21 DA",
+      "variant": null,
+      "name": "TIF 21 DA",
+      "slug": "blaupunkt-tif-21-da",
+      "brand": "BLAUPUNKT",
+      "category": "off-road",
+      "subcategory": "Air compressors",
+      "group": "Accessories",
+      "mrp": 5490,
+      "sellingPrice": 4940,
+      "discountPct": 10,
+      "specs": [
+        "Ÿ: Volume: 30L/min"
+      ],
+      "heading": "Tyre Inflators",
+      "page": 44,
+      "image": null,
+      "flags": [
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "4K & 1080P Front, Rear & In-cabin R-41192848",
+      "variant": null,
+      "name": "4K & 1080P Front, Rear & In-cabin R-41192848",
+      "slug": "blaupunkt-4k-1080p-front-rear-in-cabin-r-41192848",
+      "brand": "BLAUPUNKT",
+      "category": "interior",
+      "subcategory": "Dash cams",
+      "group": "Accessories",
+      "mrp": 19990,
+      "sellingPrice": 17990,
+      "discountPct": 10,
+      "specs": [
+        "www.bis.gov.in"
+      ],
+      "heading": "Digital Video Recorder",
+      "page": 45,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-045-6.jpg",
+        "width": 859,
+        "height": 1215,
+        "source": "Blaupunkt Brochure 2026 p.45"
+      },
+      "flags": [
+        "MODEL_UNCERTAIN"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "R-41192848",
+      "variant": null,
+      "name": "R-41192848",
+      "slug": "blaupunkt-r-41192848",
+      "brand": "BLAUPUNKT",
+      "category": "interior",
+      "subcategory": "Dash cams",
+      "group": "Accessories",
+      "mrp": 11990,
+      "sellingPrice": 10790,
+      "discountPct": 10,
+      "specs": [
+        "2\" IPS Display I Motion Detection",
+        "www.bis.gov.in"
+      ],
+      "heading": "Digital Video Recorder",
+      "page": 46,
+      "image": null,
+      "flags": [
+        "MODEL_UNCERTAIN",
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "505 WIFI",
+      "variant": null,
+      "name": "505 WIFI",
+      "slug": "blaupunkt-505-wifi",
+      "brand": "BLAUPUNKT",
+      "category": "interior",
+      "subcategory": "Dash cams",
+      "group": "Accessories",
+      "mrp": 5990,
+      "sellingPrice": 5390,
+      "discountPct": 10,
+      "specs": [
+        "Full HD 1080P (Rear) Parking Monitoring with Timelapse Hadrwire Kit Included R-41192848",
+        "www.bis.gov.in"
+      ],
+      "heading": "Digital Video Recorder",
+      "page": 46,
+      "image": null,
+      "flags": [
+        "MODEL_UNCERTAIN",
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "2K (Front) 1080P (Rear) Dual Camera R-41192848",
+      "variant": null,
+      "name": "2K (Front) 1080P (Rear) Dual Camera R-41192848",
+      "slug": "blaupunkt-2k-front-1080p-rear-dual-camera-r-41192848",
+      "brand": "BLAUPUNKT",
+      "category": "interior",
+      "subcategory": "Dash cams",
+      "group": "Accessories",
+      "mrp": 12990,
+      "sellingPrice": 11690,
+      "discountPct": 10,
+      "specs": [
+        "www.bis.gov.in"
+      ],
+      "heading": "Digital Video Recorder",
+      "page": 47,
+      "image": null,
+      "flags": [
+        "MODEL_UNCERTAIN",
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "BP 5050 WIFI",
+      "variant": null,
+      "name": "BP 5050 WIFI",
+      "slug": "blaupunkt-bp-5050-wifi",
+      "brand": "BLAUPUNKT",
+      "category": "interior",
+      "subcategory": "Dash cams",
+      "group": "Accessories",
+      "mrp": 12990,
+      "sellingPrice": 11690,
+      "discountPct": 10,
+      "specs": [
+        "Google Play Store",
+        "2K (Front) 1080P (Rear) Dual Camera Hadrwire Kit Included R-41192848",
+        "www.bis.gov.in"
+      ],
+      "heading": "Digital Video Recorder",
+      "page": 47,
+      "image": null,
+      "flags": [
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "3K & 1080P Front & Rear",
+      "variant": null,
+      "name": "3K & 1080P Front & Rear",
+      "slug": "blaupunkt-3k-1080p-front-rear",
+      "brand": "BLAUPUNKT",
+      "category": "interior",
+      "subcategory": "Dash cams",
+      "group": "Accessories",
+      "mrp": 15990,
+      "sellingPrice": 14390,
+      "discountPct": 10,
+      "specs": [
+        "3.16\" IPS Screen Supports Car Numbers Display",
+        "Car Charger included",
+        "Built-in SONY STARVIS Sensor Rear Camera Mirror Supported",
+        "3K Resolution for Front Camera Smaller Video Size with H.264 Coding Format",
+        "Full HD 1080P for Rear Camera",
+        "Support Parking Mode with Time-Lapse Recording",
+        "170° Wide-View-Angle (diagonal) (Hardwire Kit is required)",
+        "Built-in WiFi for Live View Storage Ultra High Speed 3 Micro SD up to 512GB",
+        "Mobile APP for iOS & Android Input Power Supply: DC12-24V input/ DC 5V/ 2A output",
+        "ADAS Function Supported Car Charger included",
+        "Built-in Voice Prompt",
+        "Working Temperature: -20 C -70 C",
+        "Gravity Sensor Supported Dimension (WXHXD): 92x38x40mm",
+        "Snapshot While Recording",
+        "BP 6000 WIFI",
+        "3K & 1080P Front & Rear",
+        "3.16\" IPS Screen Supports Car Numbers Display",
+        "Built-in SONY STARVIS Sensor Rear Camera Mirror Supported",
+        "3K Resolution for Front Camera Smaller Video Size with H.264 Coding Format",
+        "Full HD 1080P for Rear Camera Support Parking Mode with Time-Lapse Recording",
+        "170° Wide-View-Angle (diagonal) (Hardwire Kit is required)",
+        "Built-in WiFi for Live View Storage Ultra High Speed 3 Micro SD up to 512GB",
+        "Mobile APP for iOS & Android Input Power Supply: DC12-24V input/ DC 5V/ 2A output",
+        "ADAS Function Supported Hardwire Kit included"
+      ],
+      "heading": "Digital Video Recorder",
+      "page": 48,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-048-6.jpg",
+        "width": 345,
+        "height": 593,
+        "source": "Blaupunkt Brochure 2026 p.48"
+      },
+      "flags": [
+        "MODEL_UNCERTAIN",
+        "DUPLICATE_LISTING"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "Full HD 1080P Parking Monitoring R-41192848",
+      "variant": null,
+      "name": "Full HD 1080P Parking Monitoring R-41192848",
+      "slug": "blaupunkt-full-hd-1080p-parking-monitoring-r-41192848",
+      "brand": "BLAUPUNKT",
+      "category": "interior",
+      "subcategory": "Dash cams",
+      "group": "Accessories",
+      "mrp": 5990,
+      "sellingPrice": 5390,
+      "discountPct": 10,
+      "specs": [
+        "www.bis.gov.in"
+      ],
+      "heading": "Digital Video Recorder",
+      "page": 49,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-049-3.jpg",
+        "width": 898,
+        "height": 566,
+        "source": "Blaupunkt Brochure 2026 p.49"
+      },
+      "flags": [
+        "MODEL_UNCERTAIN"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "BPM 110",
+      "variant": null,
+      "name": "BPM 110",
+      "slug": "blaupunkt-bpm-110",
+      "brand": "BLAUPUNKT",
+      "category": "interior",
+      "subcategory": "Dash cams",
+      "group": "Accessories",
+      "mrp": 29990,
+      "sellingPrice": 26990,
+      "discountPct": 10,
+      "specs": [
+        "4G DASH CAM / GPS Tracker / 2K / GPS / Dual Channel (Front and Rear)"
+      ],
+      "heading": "Digital Video Recorder - 4G",
+      "page": 50,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-050-5.jpg",
+        "width": 558,
+        "height": 514,
+        "source": "Blaupunkt Brochure 2026 p.50"
+      },
+      "flags": [],
+      "published": true,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "IP68 – Water resistant",
+      "variant": "H8, H16, H11, H7, H18, 9005, 9012",
+      "name": "IP68 – Water resistant H8, H16, H11, H7, H18, 9005, 9012",
+      "slug": "blaupunkt-ip68-water-resistant-h8-h16-h11-h7-h18-9005-9012",
+      "brand": "BLAUPUNKT",
+      "category": "lighting",
+      "subcategory": "LED bulbs",
+      "group": "Lighting",
+      "mrp": 6500,
+      "sellingPrice": 5850,
+      "discountPct": 10,
+      "specs": [
+        "LED 5X PRO - YEL - 110 Watts",
+        "H4, H19 - MRP ` 7500",
+        "Suitable for Car Projector, Reflector & Fog Lamp",
+        "Cool Yellow LED Lamp with Superior Brightness COOL",
+        "WATTS Superior Intelligent",
+        "Brightness C ANBUS",
+        "Voltage: DC 12V Up to 180% More Light",
+        "Power: 55W each LED Lamp IP68 – Water resistant",
+        "Lumen: 5500LM/ lamp Compact design for better \u0000t.",
+        "High Power advanced Chipset High Speed fan built in",
+        "Energy Efficient 180% Extra Light",
+        "High Speed Fan Easy to Install",
+        "Color Temperature: 4300 Kelvin Energy Saving, Quick start",
+        "CANBUS – Intelligent communication Superior brightness",
+        "protocol capable 24 Months warranty",
+        "Lamp Material: Aluminum Alloy"
+      ],
+      "heading": "Improve Night Visibilty",
+      "page": 55,
+      "image": null,
+      "flags": [
+        "MODEL_UNCERTAIN",
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "IP68 – Water resistant",
+      "variant": "H4, H19",
+      "name": "IP68 – Water resistant H4, H19",
+      "slug": "blaupunkt-ip68-water-resistant-h4-h19",
+      "brand": "BLAUPUNKT",
+      "category": "lighting",
+      "subcategory": "LED bulbs",
+      "group": "Lighting",
+      "mrp": 7500,
+      "sellingPrice": 6750,
+      "discountPct": 10,
+      "specs": [
+        "H8, H16, H11, H7, H18, 9005, 9012 - MRP ` 6500",
+        "LED 5X PRO - YEL - 110 Watts"
+      ],
+      "heading": "Improve Night Visibilty",
+      "page": 55,
+      "image": null,
+      "flags": [
+        "MODEL_UNCERTAIN",
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "LED RIL 24 PRO 6000K",
+      "variant": null,
+      "name": "LED RIL 24 PRO 6000K",
+      "slug": "blaupunkt-led-ril-24-pro-6000k",
+      "brand": "BLAUPUNKT",
+      "category": "lighting",
+      "subcategory": "LED bulbs",
+      "group": "Lighting",
+      "mrp": 750,
+      "sellingPrice": 680,
+      "discountPct": 10,
+      "specs": [
+        "Suitable for Roof & Interior Lights"
+      ],
+      "heading": "Improve Night Visibilty",
+      "page": 62,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-062-1.jpg",
+        "width": 451,
+        "height": 404,
+        "source": "Blaupunkt Brochure 2026 p.62"
+      },
+      "flags": [],
+      "published": true,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "LED T10.2 PRO 6000K",
+      "variant": null,
+      "name": "LED T10.2 PRO 6000K",
+      "slug": "blaupunkt-led-t10-2-pro-6000k",
+      "brand": "BLAUPUNKT",
+      "category": "lighting",
+      "subcategory": "LED bulbs",
+      "group": "Lighting",
+      "mrp": 699,
+      "sellingPrice": 630,
+      "discountPct": 10,
+      "specs": [
+        "LED T10.2 PRO: 6000K",
+        "WHITE: 200% Extra Light",
+        "Superior: Energy Efficient",
+        "Ÿ: Compact design for better \u0000t,",
+        "Ÿ: Compatible with traditional W5W sockets",
+        "Ÿ: Suitable for Parking & Interior Lights",
+        "Energy Efficient: 200% Extra Light"
+      ],
+      "heading": "Light up your way",
+      "page": 63,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-063-1.jpg",
+        "width": 222,
+        "height": 159,
+        "source": "Blaupunkt Brochure 2026 p.63"
+      },
+      "flags": [
+        "IMAGE_ORDER_ASSUMED"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "LED T10 PRO 6000K",
+      "variant": null,
+      "name": "LED T10 PRO 6000K",
+      "slug": "blaupunkt-led-t10-pro-6000k",
+      "brand": "BLAUPUNKT",
+      "category": "lighting",
+      "subcategory": "LED bulbs",
+      "group": "Lighting",
+      "mrp": 525,
+      "sellingPrice": 470,
+      "discountPct": 10,
+      "specs": [
+        "LED T10.2 PRO: LED T10 PRO",
+        "WHITE: WHITE",
+        "Superior: Superior",
+        "Ÿ: Ÿ",
+        "Ÿ: Ÿ",
+        "Ÿ: Ÿ",
+        "Energy Efficient: WHITE"
+      ],
+      "heading": "Light up your way",
+      "page": 63,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-063-2.jpg",
+        "width": 226,
+        "height": 164,
+        "source": "Blaupunkt Brochure 2026 p.63"
+      },
+      "flags": [
+        "IMAGE_ORDER_ASSUMED"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "Bmax = 1.6cm",
+      "variant": null,
+      "name": "Bmax = 1.6cm",
+      "slug": "blaupunkt-bmax-1-6cm",
+      "brand": "BLAUPUNKT",
+      "category": "exterior",
+      "subcategory": "Antennas",
+      "group": "Accessories",
+      "mrp": 799,
+      "sellingPrice": 720,
+      "discountPct": 10,
+      "specs": [
+        "Z = 150 Ω"
+      ],
+      "heading": "Antenna",
+      "page": 64,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-064-2.jpg",
+        "width": 344,
+        "height": 1006,
+        "source": "Blaupunkt Brochure 2026 p.64"
+      },
+      "flags": [
+        "MODEL_UNCERTAIN"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "BP 4A KIT - OFC",
+      "variant": null,
+      "name": "BP 4A KIT - OFC",
+      "slug": "blaupunkt-bp-4a-kit-ofc",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Wiring",
+      "group": "Installation",
+      "mrp": 11990,
+      "sellingPrice": 10790,
+      "discountPct": 10,
+      "specs": [
+        "MRP:: `"
+      ],
+      "heading": "Cables & Installation Accessories",
+      "page": 67,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-067-1.jpg",
+        "width": 314,
+        "height": 417,
+        "source": "Blaupunkt Brochure 2026 p.67"
+      },
+      "flags": [
+        "IMAGE_ORDER_ASSUMED"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "BP 8A KIT - OFC",
+      "variant": null,
+      "name": "BP 8A KIT - OFC",
+      "slug": "blaupunkt-bp-8a-kit-ofc",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Wiring",
+      "group": "Installation",
+      "mrp": 6290,
+      "sellingPrice": 5660,
+      "discountPct": 10,
+      "specs": [
+        "Designed for Underseat Installation: OFC",
+        "MRP:: 7990"
+      ],
+      "heading": "Cables & Installation Accessories",
+      "page": 67,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-067-2.jpg",
+        "width": 309,
+        "height": 417,
+        "source": "Blaupunkt Brochure 2026 p.67"
+      },
+      "flags": [
+        "IMAGE_ORDER_ASSUMED"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "BP 4A US KIT - OFC",
+      "variant": null,
+      "name": "BP 4A US KIT - OFC",
+      "slug": "blaupunkt-bp-4a-us-kit-ofc",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Wiring",
+      "group": "Installation",
+      "mrp": 7990,
+      "sellingPrice": 7190,
+      "discountPct": 10,
+      "specs": [],
+      "heading": "Cables & Installation Accessories",
+      "page": 67,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-067-3.jpg",
+        "width": 309,
+        "height": 417,
+        "source": "Blaupunkt Brochure 2026 p.67"
+      },
+      "flags": [
+        "SPEC_MISSING",
+        "IMAGE_ORDER_ASSUMED"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "BP 8A US KIT - OFC",
+      "variant": null,
+      "name": "BP 8A US KIT - OFC",
+      "slug": "blaupunkt-bp-8a-us-kit-ofc",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Wiring",
+      "group": "Installation",
+      "mrp": 4690,
+      "sellingPrice": 4220,
+      "discountPct": 10,
+      "specs": [],
+      "heading": "Cables & Installation Accessories",
+      "page": 67,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-067-4.jpg",
+        "width": 312,
+        "height": 417,
+        "source": "Blaupunkt Brochure 2026 p.67"
+      },
+      "flags": [
+        "SPEC_MISSING",
+        "IMAGE_ORDER_ASSUMED"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "BP-16S-300 - IN",
+      "variant": null,
+      "name": "BP-16S-300 - IN",
+      "slug": "blaupunkt-bp-16s-300-in",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Wiring",
+      "group": "Installation",
+      "mrp": 13990,
+      "sellingPrice": 12590,
+      "discountPct": 10,
+      "specs": [
+        "MRP:: `"
+      ],
+      "heading": "Cables & Installation Accessories",
+      "page": 68,
+      "image": null,
+      "flags": [
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "BP-16S-100 - IN",
+      "variant": null,
+      "name": "BP-16S-100 - IN",
+      "slug": "blaupunkt-bp-16s-100-in",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Wiring",
+      "group": "Installation",
+      "mrp": 4990,
+      "sellingPrice": 4490,
+      "discountPct": 10,
+      "specs": [
+        "MRP:: 22600"
+      ],
+      "heading": "Cables & Installation Accessories",
+      "page": 68,
+      "image": null,
+      "flags": [
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "BP-18S-300 - IN",
+      "variant": null,
+      "name": "BP-18S-300 - IN",
+      "slug": "blaupunkt-bp-18s-300-in",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Wiring",
+      "group": "Installation",
+      "mrp": 9490,
+      "sellingPrice": 8540,
+      "discountPct": 10,
+      "specs": [
+        "MRP:: MRP:"
+      ],
+      "heading": "Cables & Installation Accessories",
+      "page": 68,
+      "image": null,
+      "flags": [
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "BP-18S-100 - IN",
+      "variant": null,
+      "name": "BP-18S-100 - IN",
+      "slug": "blaupunkt-bp-18s-100-in",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Wiring",
+      "group": "Installation",
+      "mrp": 3590,
+      "sellingPrice": 3230,
+      "discountPct": 10,
+      "specs": [
+        "MRP:: `"
+      ],
+      "heading": "Cables & Installation Accessories",
+      "page": 68,
+      "image": null,
+      "flags": [
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "BP-8G-SP-BRW-250FT",
+      "variant": null,
+      "name": "BP-8G-SP-BRW-250FT",
+      "slug": "blaupunkt-bp-8g-sp-brw-250ft",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Wiring",
+      "group": "Installation",
+      "mrp": 22600,
+      "sellingPrice": 20340,
+      "discountPct": 10,
+      "specs": [],
+      "heading": "Cables & Installation Accessories",
+      "page": 68,
+      "image": null,
+      "flags": [
+        "SPEC_MISSING",
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "BP-4GA-OFC-RED-IN - 50FT",
+      "variant": null,
+      "name": "BP-4GA-OFC-RED-IN - 50FT",
+      "slug": "blaupunkt-bp-4ga-ofc-red-in-50ft",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Wiring",
+      "group": "Installation",
+      "mrp": 18000,
+      "sellingPrice": 16200,
+      "discountPct": 10,
+      "specs": [],
+      "heading": "Cables & Installation Accessories",
+      "page": 68,
+      "image": null,
+      "flags": [
+        "SPEC_MISSING",
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "BP-4GA-OFC- BLK-IN - 50FT",
+      "variant": null,
+      "name": "BP-4GA-OFC- BLK-IN - 50FT",
+      "slug": "blaupunkt-bp-4ga-ofc-blk-in-50ft",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Wiring",
+      "group": "Installation",
+      "mrp": 18000,
+      "sellingPrice": 16200,
+      "discountPct": 10,
+      "specs": [],
+      "heading": "Cables & Installation Accessories",
+      "page": 68,
+      "image": null,
+      "flags": [
+        "SPEC_MISSING",
+        "IMAGE_COUNT_MISMATCH"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "BP 4A KIT - CCA",
+      "variant": null,
+      "name": "BP 4A KIT - CCA",
+      "slug": "blaupunkt-bp-4a-kit-cca",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Wiring",
+      "group": "Installation",
+      "mrp": 3450,
+      "sellingPrice": 3110,
+      "discountPct": 10,
+      "specs": [
+        "Amplifier Wiring Kit -: Designed for Underseat Installation",
+        "MRP:: `"
+      ],
+      "heading": "Cables & Installation Accessories",
+      "page": 69,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-069-1.jpg",
+        "width": 336,
+        "height": 424,
+        "source": "Blaupunkt Brochure 2026 p.69"
+      },
+      "flags": [
+        "IMAGE_ORDER_ASSUMED"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "BP 8A KIT - CCA",
+      "variant": null,
+      "name": "BP 8A KIT - CCA",
+      "slug": "blaupunkt-bp-8a-kit-cca",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Wiring",
+      "group": "Installation",
+      "mrp": 2390,
+      "sellingPrice": 2150,
+      "discountPct": 10,
+      "specs": [
+        "MRP:: 2650"
+      ],
+      "heading": "Cables & Installation Accessories",
+      "page": 69,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-069-2.jpg",
+        "width": 336,
+        "height": 425,
+        "source": "Blaupunkt Brochure 2026 p.69"
+      },
+      "flags": [
+        "IMAGE_ORDER_ASSUMED"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "BP 4A US KIT - CCA",
+      "variant": null,
+      "name": "BP 4A US KIT - CCA",
+      "slug": "blaupunkt-bp-4a-us-kit-cca",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Wiring",
+      "group": "Installation",
+      "mrp": 2650,
+      "sellingPrice": 2390,
+      "discountPct": 10,
+      "specs": [],
+      "heading": "Cables & Installation Accessories",
+      "page": 69,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-069-3.jpg",
+        "width": 336,
+        "height": 425,
+        "source": "Blaupunkt Brochure 2026 p.69"
+      },
+      "flags": [
+        "SPEC_MISSING",
+        "IMAGE_ORDER_ASSUMED"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "BP 8A US KIT - CCA",
+      "variant": null,
+      "name": "BP 8A US KIT - CCA",
+      "slug": "blaupunkt-bp-8a-us-kit-cca",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Wiring",
+      "group": "Installation",
+      "mrp": 1850,
+      "sellingPrice": 1670,
+      "discountPct": 10,
+      "specs": [],
+      "heading": "Cables & Installation Accessories",
+      "page": 69,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-069-4.jpg",
+        "width": 360,
+        "height": 425,
+        "source": "Blaupunkt Brochure 2026 p.69"
+      },
+      "flags": [
+        "SPEC_MISSING",
+        "IMAGE_ORDER_ASSUMED"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "BP-12S-300-CCA",
+      "variant": null,
+      "name": "BP-12S-300-CCA",
+      "slug": "blaupunkt-bp-12s-300-cca",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Wiring",
+      "group": "Installation",
+      "mrp": 7190,
+      "sellingPrice": 6470,
+      "discountPct": 10,
+      "specs": [],
+      "heading": "Cables & Installation Accessories",
+      "page": 70,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-070-1.jpg",
+        "width": 302,
+        "height": 271,
+        "source": "Blaupunkt Brochure 2026 p.70"
+      },
+      "flags": [
+        "SPEC_MISSING",
+        "IMAGE_ORDER_ASSUMED"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "BP-12S-100-CCA",
+      "variant": null,
+      "name": "BP-12S-100-CCA",
+      "slug": "blaupunkt-bp-12s-100-cca",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Wiring",
+      "group": "Installation",
+      "mrp": 2790,
+      "sellingPrice": 2510,
+      "discountPct": 10,
+      "specs": [],
+      "heading": "Cables & Installation Accessories",
+      "page": 70,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-070-2.jpg",
+        "width": 322,
+        "height": 271,
+        "source": "Blaupunkt Brochure 2026 p.70"
+      },
+      "flags": [
+        "SPEC_MISSING",
+        "IMAGE_ORDER_ASSUMED"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "BP-14S-300-CCA-IN",
+      "variant": null,
+      "name": "BP-14S-300-CCA-IN",
+      "slug": "blaupunkt-bp-14s-300-cca-in",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Wiring",
+      "group": "Installation",
+      "mrp": 5490,
+      "sellingPrice": 4940,
+      "discountPct": 10,
+      "specs": [],
+      "heading": "Cables & Installation Accessories",
+      "page": 70,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-070-3.jpg",
+        "width": 280,
+        "height": 271,
+        "source": "Blaupunkt Brochure 2026 p.70"
+      },
+      "flags": [
+        "SPEC_MISSING",
+        "IMAGE_ORDER_ASSUMED"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "BP-14S-100-CCA-IN",
+      "variant": null,
+      "name": "BP-14S-100-CCA-IN",
+      "slug": "blaupunkt-bp-14s-100-cca-in",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Wiring",
+      "group": "Installation",
+      "mrp": 2190,
+      "sellingPrice": 1970,
+      "discountPct": 10,
+      "specs": [],
+      "heading": "Cables & Installation Accessories",
+      "page": 70,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-070-4.jpg",
+        "width": 280,
+        "height": 271,
+        "source": "Blaupunkt Brochure 2026 p.70"
+      },
+      "flags": [
+        "SPEC_MISSING",
+        "IMAGE_ORDER_ASSUMED"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "BP-HI-LO-2",
+      "variant": null,
+      "name": "BP-HI-LO-2",
+      "slug": "blaupunkt-bp-hi-lo-2",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Wiring",
+      "group": "Installation",
+      "mrp": 1690,
+      "sellingPrice": 1520,
+      "discountPct": 10,
+      "specs": [
+        "Ÿ: BP-HI-LO-2 is a 2-channel high-level to",
+        "have dedicated low-level RCA outputs.: have dedicated low-level RCA outputs.",
+        "from the radio's speaker line & transforms: Ÿ",
+        "it into a safe low-level audio signal to help: a safe low-level audio signal to help",
+        "interface an external ampli\u0000er for higher: Ÿ"
+      ],
+      "heading": "Cables & Installation Accessories",
+      "page": 71,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-071-1.jpg",
+        "width": 328,
+        "height": 371,
+        "source": "Blaupunkt Brochure 2026 p.71"
+      },
+      "flags": [
+        "IMAGE_ORDER_ASSUMED"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "BP-HI-LO-4",
+      "variant": null,
+      "name": "BP-HI-LO-4",
+      "slug": "blaupunkt-bp-hi-lo-4",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Wiring",
+      "group": "Installation",
+      "mrp": 2190,
+      "sellingPrice": 1970,
+      "discountPct": 10,
+      "specs": [
+        "Ÿ: BP-HI-LO-4 is a 4-channel high-level to",
+        "have dedicated low-level RCA outputs.: The",
+        "from the radio's speaker line & transforms: HPP plating for superior corrosion",
+        "it into a safe low-level audio signal to help: resistance",
+        "interface an external ampli\u0000er for higher: Flexible for use with multiple wire sizes"
+      ],
+      "heading": "Cables & Installation Accessories",
+      "page": 71,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-071-2.jpg",
+        "width": 328,
+        "height": 371,
+        "source": "Blaupunkt Brochure 2026 p.71"
+      },
+      "flags": [
+        "IMAGE_ORDER_ASSUMED"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "BP FS4 - 2",
+      "variant": null,
+      "name": "BP FS4 - 2",
+      "slug": "blaupunkt-bp-fs4-2",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Wiring",
+      "group": "Installation",
+      "mrp": 1100,
+      "sellingPrice": 990,
+      "discountPct": 10,
+      "specs": [
+        "Ÿ: Ÿ",
+        "have dedicated low-level RCA outputs.: 8 AWG inputs.",
+        "from the radio's speaker line & transforms: Ÿ",
+        "it into a safe low-level audio signal to help: Ÿ",
+        "interface an external ampli\u0000er for higher: Ÿ"
+      ],
+      "heading": "Cables & Installation Accessories",
+      "page": 71,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-071-3.jpg",
+        "width": 329,
+        "height": 371,
+        "source": "Blaupunkt Brochure 2026 p.71"
+      },
+      "flags": [
+        "IMAGE_ORDER_ASSUMED"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    },
+    {
+      "model": "BP FH-01",
+      "variant": null,
+      "name": "BP FH-01",
+      "slug": "blaupunkt-bp-fh-01",
+      "brand": "BLAUPUNKT",
+      "category": "audio",
+      "subcategory": "Wiring",
+      "group": "Installation",
+      "mrp": 425,
+      "sellingPrice": 380,
+      "discountPct": 10,
+      "specs": [
+        "Ÿ: Gold plated fused distribution, \u0000exibility",
+        "have dedicated low-level RCA outputs.: Two 8 AWG outputs.",
+        "from the radio's speaker line & transforms: Zinc alloy body and PC cover",
+        "it into a safe low-level audio signal to help: HPP plating for corrosion resistance",
+        "interface an external ampli\u0000er for higher: Fuse - 20A-80A"
+      ],
+      "heading": "Cables & Installation Accessories",
+      "page": 71,
+      "image": {
+        "file": "/blaupunkt/catalogue/bp-071-4.jpg",
+        "width": 309,
+        "height": 371,
+        "source": "Blaupunkt Brochure 2026 p.71"
+      },
+      "flags": [
+        "IMAGE_ORDER_ASSUMED"
+      ],
+      "published": false,
+      "source": "Blaupunkt Brochure 2026"
+    }
+  ]
+}
