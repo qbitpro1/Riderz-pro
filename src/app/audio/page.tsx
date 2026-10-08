@@ -99,7 +99,7 @@ export default function AudioPage() {
                     </p>
 
                     <a
-                      href={whatsapp(`Hi Motorbotz, I'm interested in the ${p.name} audio package (${rupees(p.price)}). My car is: `)}
+                      href={whatsapp(`Hi Riderzpro, I'm interested in the ${p.name} audio package (${rupees(p.price)}). My car is: `)}
                       target="_blank"
                       rel="noreferrer noopener"
                       className={`btn btn-sm btn-block mt-4 ${p.highlight ? "btn-accent" : "btn-outline"}`}

@@ -40,7 +40,7 @@ export function PartnerSignup() {
   const ready = business.trim() && contact.trim() && phone.trim().length >= 10 && city && agreed;
 
   const message = [
-    "Hi Motorbotz, I'd like to list my inventory.",
+    "Hi Riderzpro, I'd like to list my inventory.",
     `Business: ${business}`,
     `Contact: ${contact}`,
     `Phone: ${phone}`,
@@ -52,7 +52,7 @@ export function PartnerSignup() {
     website ? `Website: ${website}` : "",
     stock ? `Cars in stock: ${stock}` : "",
     `Inventory system: ${system}`,
-    "I accept the Motorbotz Inventory Agreement.",
+    "I accept the Riderzpro Inventory Agreement.",
   ]
     .filter(Boolean)
     .join("\n");
@@ -67,7 +67,7 @@ export function PartnerSignup() {
       }}
     >
       <p className="eyebrow mb-1">Become a partner</p>
-      <h3 className="display-3">LIST YOUR CARS ON MOTORBOTZ</h3>
+      <h3 className="display-3">LIST YOUR CARS ON RIDERZPRO</h3>
       <p className="mt-2 text-sm text-ash">
         Free to join, no card, no lock-in. We come back within one working day with your login and
         an upload link.
@@ -156,10 +156,10 @@ export function PartnerSignup() {
           className="mt-0.5 h-4 w-4 shrink-0 accent-[var(--color-accent)]"
         />
         <span className="text-xs leading-relaxed text-ash">
-          I accept the <span className="text-chalk">Motorbotz Inventory Agreement</span>: the vehicles
-          and photographs I upload are mine to supply, and Motorbotz may display them while they are
-          in my stock. I understand that Motorbotz Inspected and Motorbotz Verified are awarded by
-          Motorbotz after a physical inspection and cannot be set by me.
+          I accept the <span className="text-chalk">Riderzpro Inventory Agreement</span>: the vehicles
+          and photographs I upload are mine to supply, and Riderzpro may display them while they are
+          in my stock. I understand that Riderzpro Inspected and Riderzpro Verified are awarded by
+          Riderzpro after a physical inspection and cannot be set by me.
         </span>
       </label>
 

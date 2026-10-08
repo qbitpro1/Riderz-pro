@@ -49,7 +49,7 @@ export default function PerformancePage() {
         media="engineBay"
         actions={[
           { href: "#services", label: "See what we do", variant: "primary" },
-          { href: whatsapp("Hi Motorbotz, I want more power from my "), label: "Talk to the tuner", variant: "outline", external: true },
+          { href: whatsapp("Hi Riderzpro, I want more power from my "), label: "Talk to the tuner", variant: "outline", external: true },
         ]}
       />
 
@@ -153,7 +153,7 @@ export default function PerformancePage() {
               an honest opinion about whether your car is worth tuning at all.
             </p>
             <a
-              href={whatsapp("Hi Motorbotz, I'd like to book a dyno session. My car is: ")}
+              href={whatsapp("Hi Riderzpro, I'd like to book a dyno session. My car is: ")}
               target="_blank"
               rel="noreferrer noopener"
               className="btn btn-whatsapp btn-block mt-5"

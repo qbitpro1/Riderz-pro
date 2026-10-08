@@ -24,8 +24,8 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: {
-    default: "Motorbotz — Buy. Build. Drive. | Cars, Accessories & Modification in India",
-    template: "%s | Motorbotz",
+    default: "Riderzpro — Buy. Build. Drive. | Cars, Accessories & Modification in India",
+    template: "%s | Riderzpro",
   },
   description: SITE.description,
   keywords: [
@@ -48,11 +48,11 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_IN",
     siteName: SITE.name,
-    title: "Motorbotz — Buy. Build. Drive.",
+    title: "Riderzpro — Buy. Build. Drive.",
     description: SITE.description,
     url: SITE.url,
   },
-  twitter: { card: "summary_large_image", title: "Motorbotz — Buy. Build. Drive.", description: SITE.description },
+  twitter: { card: "summary_large_image", title: "Riderzpro — Buy. Build. Drive.", description: SITE.description },
   robots: { index: true, follow: true },
   alternates: { canonical: "/" },
 };

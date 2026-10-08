@@ -9,6 +9,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { readStored } from "@/lib/storage";
 
 export type CartLine = {
   slug: string;
@@ -33,7 +34,7 @@ type CartState = {
   ready: boolean;
 };
 
-const KEY = "motorbotz.cart.v1";
+const KEY = "riderzpro.cart.v1";
 const CartCtx = createContext<CartState | null>(null);
 
 /**
@@ -52,7 +53,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     try {
-      const raw = localStorage.getItem(KEY);
+      const raw = readStored(KEY);
       if (raw) setLines((JSON.parse(raw) as CartLine[]).map(withHref));
     } catch {
       // A corrupt or unavailable store should never block the page.

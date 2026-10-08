@@ -7,8 +7,9 @@ import { useCart } from "@/components/cart/CartContext";
 import { rupees } from "@/lib/format";
 import { whatsapp } from "@/lib/data/site";
 import type { PublicProduct } from "@/lib/data/recoil";
+import { readStored } from "@/lib/storage";
 
-const COMPARE_KEY = "motorbotz.compare.v1";
+const COMPARE_KEY = "riderzpro.compare.v1";
 
 export function RecoilActions({ product }: { product: PublicProduct }) {
   const { add } = useCart();
@@ -36,7 +37,7 @@ export function RecoilActions({ product }: { product: PublicProduct }) {
 
   function addToCompare() {
     try {
-      const raw = localStorage.getItem(COMPARE_KEY);
+      const raw = readStored(COMPARE_KEY);
       const list: string[] = raw ? JSON.parse(raw) : [];
       if (!list.includes(product.sku)) list.push(product.sku);
       localStorage.setItem(COMPARE_KEY, JSON.stringify(list.slice(-4)));
@@ -52,7 +53,7 @@ export function RecoilActions({ product }: { product: PublicProduct }) {
       <div className="mt-6 space-y-3">
         <a
           href={whatsapp(
-            `Hi Motorbotz, please hold a RECOIL ${product.sku} (${product.priceListName}) from the first shipment. My car is: `,
+            `Hi Riderzpro, please hold a RECOIL ${product.sku} (${product.priceListName}) from the first shipment. My car is: `,
           )}
           target="_blank"
           rel="noreferrer noopener"
@@ -112,7 +113,7 @@ export function RecoilActions({ product }: { product: PublicProduct }) {
           )}
         </button>
         <a
-          href={whatsapp(`Hi Motorbotz, will the RECOIL ${product.sku} fit my car? My car is: `)}
+          href={whatsapp(`Hi Riderzpro, will the RECOIL ${product.sku} fit my car? My car is: `)}
           target="_blank"
           rel="noreferrer noopener"
           className="btn btn-whatsapp"

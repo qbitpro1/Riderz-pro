@@ -108,7 +108,7 @@ export default function InteriorsPage() {
               ))}
             </ul>
             <a
-              href={whatsapp("Hi Motorbotz, I want a luxury interior conversion. My car is: ")}
+              href={whatsapp("Hi Riderzpro, I want a luxury interior conversion. My car is: ")}
               target="_blank"
               rel="noreferrer noopener"
               className="btn btn-accent mt-7"

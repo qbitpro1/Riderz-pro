@@ -71,7 +71,7 @@ export function Configurator() {
   const vehicleLabel = model && brand ? `${year || model.years[0]} ${brand.name} ${model.name}` : "my car";
 
   const quoteMessage = [
-    `Hi Motorbotz, I've configured a build on the website.`,
+    `Hi Riderzpro, I've configured a build on the website.`,
     `Vehicle: ${vehicleLabel}`,
     "",
     ...selected.map((o) => `• ${o.stage} — ${o.name} (${rupees(o.price)})`),

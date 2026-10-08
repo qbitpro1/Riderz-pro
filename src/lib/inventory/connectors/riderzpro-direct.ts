@@ -8,9 +8,9 @@ import type { Connector } from "./index";
 const INSPECTIONS = (inspectionFile as { inspections: Record<string, Inspection> }).inspections;
 
 /**
- * Motorbotz's own inventory — cars we hold, photograph and inspect ourselves.
+ * Riderzpro's own inventory — cars we hold, photograph and inspect ourselves.
  * Level 3 in the source hierarchy and the only source that can ever carry the
- * MOTORBOTZ VERIFIED badge.
+ * RIDERZPRO VERIFIED badge.
  *
  * The records currently here are the sample cars written during the design
  * build. They are flagged `demo: true` so the dashboard never counts them as
@@ -21,8 +21,8 @@ const INSPECTIONS = (inspectionFile as { inspections: Record<string, Inspection>
 
 const DEMO = true;
 
-export const motorbotzDirect: Connector = {
-  sourceId: "motorbotz-direct",
+export const riderzproDirect: Connector = {
+  sourceId: "riderzpro-direct",
   pull: () => CARS.map(toListing),
 };
 
@@ -66,14 +66,14 @@ function toListing(car: Car): Listing {
     state: car.state,
     pincode: null,
 
-    sellerType: "motorbotz",
-    dealerName: "Motorbotz",
+    sellerType: "riderzpro",
+    dealerName: "Riderzpro",
     dealerLocation: `${car.city}, ${car.state}`,
     dealerContact: null,
 
     sources: [
       {
-        sourceId: "motorbotz-direct",
+        sourceId: "riderzpro-direct",
         externalId: car.slug,
         url: null,
         urlDisplayable: false,
@@ -82,9 +82,9 @@ function toListing(car: Car): Listing {
         lastPrice: car.price,
       },
     ],
-    primarySourceId: "motorbotz-direct",
+    primarySourceId: "riderzpro-direct",
     status: "ACTIVE",
-    verification: inspection ? "MOTORBOTZ_VERIFIED" : "SOURCE_LISTING",
+    verification: inspection ? "RIDERZPRO_VERIFIED" : "SOURCE_LISTING",
     confidence: "HIGH",
     demo: DEMO,
 
@@ -95,18 +95,18 @@ function toListing(car: Car): Listing {
       media,
       alt: `${car.year} ${car.brand} ${car.model} ${car.variant}`,
       slot: (["front-3q", "rear-3q", "interior", "side"] as const)[i] ?? "detail",
-      licence: "motorbotz-own" as const,
+      licence: "riderzpro-own" as const,
       credit: null,
     })),
     imagesUnavailableReason: null,
 
     // Paperwork details are what the record states, not what we have checked.
-    // They only move to `motorbotzVerified` when an inspection confirms them.
+    // They only move to `riderzproVerified` when an inspection confirms them.
     condition: {
       ...emptyCondition(),
-      insurance: { sourceReported: car.insurance, motorbotzVerified: null },
-      serviceHistory: { sourceReported: car.serviceHistory, motorbotzVerified: null },
-      rc: { sourceReported: car.registration, motorbotzVerified: null },
+      insurance: { sourceReported: car.insurance, riderzproVerified: null },
+      serviceHistory: { sourceReported: car.serviceHistory, riderzproVerified: null },
+      rc: { sourceReported: car.registration, riderzproVerified: null },
     },
     inspection,
 

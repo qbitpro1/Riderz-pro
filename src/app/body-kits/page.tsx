@@ -12,7 +12,7 @@ import { whatsapp } from "@/lib/data/site";
 export const metadata: Metadata = {
   title: "Body Kits & Facelift Conversions",
   description:
-    "Turn a 2020 Creta into a 2024 Creta, a 2016 Fortuner into a Legender. Bumper, grille, headlamp, DRL and tail lamp conversions, body kits and custom paint at Motorbotz.",
+    "Turn a 2020 Creta into a 2024 Creta, a 2016 Fortuner into a Legender. Bumper, grille, headlamp, DRL and tail lamp conversions, body kits and custom paint at Riderzpro.",
   alternates: { canonical: "/body-kits" },
 };
 
@@ -45,7 +45,7 @@ export default function BodyKitsPage() {
         media="chromeGrille"
         actions={[
           { href: "#conversions", label: "See conversions", variant: "primary" },
-          { href: whatsapp("Hi Motorbotz, I want a facelift quote. My car is: "), label: "Get facelift quote", variant: "outline", external: true },
+          { href: whatsapp("Hi Riderzpro, I want a facelift quote. My car is: "), label: "Get facelift quote", variant: "outline", external: true },
         ]}
       />
 
@@ -88,7 +88,7 @@ export default function BodyKitsPage() {
                       </ul>
 
                       <a
-                        href={whatsapp(`Hi Motorbotz, I want a quote for: ${f.from} → ${f.to}.`)}
+                        href={whatsapp(`Hi Riderzpro, I want a quote for: ${f.from} → ${f.to}.`)}
                         target="_blank"
                         rel="noreferrer noopener"
                         className="btn btn-outline btn-sm btn-block mt-5"
@@ -152,7 +152,7 @@ export default function BodyKitsPage() {
               and carbon when nothing exists off the shelf. Send us the car and the look you want.
             </p>
             <a
-              href={whatsapp("Hi Motorbotz, I want a facelift / body kit quote. My car is:  and the look I want is: ")}
+              href={whatsapp("Hi Riderzpro, I want a facelift / body kit quote. My car is:  and the look I want is: ")}
               target="_blank"
               rel="noreferrer noopener"
               className="btn btn-whatsapp btn-block mt-5"

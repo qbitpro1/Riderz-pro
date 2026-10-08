@@ -16,7 +16,7 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const SOURCES_FILE = resolve(ROOT, "src/lib/inventory/sources.ts");
-const UA = "Mozilla/5.0 (compatible; MotorbotzComplianceCheck/1.0)";
+const UA = "Mozilla/5.0 (compatible; RiderzproComplianceCheck/1.0)";
 
 // Read the recorded evidence straight out of the registry, so the audit can
 // never drift from what the application believes.

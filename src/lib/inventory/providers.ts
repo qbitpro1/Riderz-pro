@@ -57,7 +57,7 @@ export const ENRICHMENT_PROVIDERS: EnrichmentProvider[] = [
     commercialUse: "published",
     pricingNote: "Per-verification pricing; commercial plans published.",
     note:
-      "Verifies against RTO/VAHAN records in real time. The stronger option where we need RC and ownership confirmation rather than just spec decoding — i.e. for the Motorbotz Verified tier.",
+      "Verifies against RTO/VAHAN records in real time. The stronger option where we need RC and ownership confirmation rather than just spec decoding — i.e. for the Riderzpro Verified tier.",
   },
   {
     id: "vahan-open-data",
@@ -76,7 +76,7 @@ export const ENRICHMENT_PROVIDERS: EnrichmentProvider[] = [
     name: "Dealer management systems (generic feed)",
     kind: "dms-integration",
     status: "CONNECTED",
-    homepage: "https://motorbotz.in/partners",
+    homepage: "https://riderzpro.com/partners",
     returns: ["Full stock list", "Prices", "Status", "Photos where the dealer supplies them"],
     commercialUse: "published",
     pricingNote: null,

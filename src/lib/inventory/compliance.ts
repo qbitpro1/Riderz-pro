@@ -83,8 +83,8 @@ export function attributionFor(listing: Listing): {
   const primary = listing.sources.find((s) => s.sourceId === listing.primarySourceId) ?? listing.sources[0];
   const source = primary ? getSource(primary.sourceId) : undefined;
 
-  if (!source || source.id === "motorbotz-direct") {
-    return { label: "Motorbotz inventory", showSourceName: false, sourceName: null, url: null };
+  if (!source || source.id === "riderzpro-direct") {
+    return { label: "Riderzpro inventory", showSourceName: false, sourceName: null, url: null };
   }
 
   const showUrl = Boolean(primary?.urlDisplayable && primary.url && source.rules.originalUrlRequired);
@@ -98,18 +98,18 @@ export function attributionFor(listing: Listing): {
 }
 
 /**
- * A listing may only claim MOTORBOTZ VERIFIED if we actually inspected it.
+ * A listing may only claim RIDERZPRO VERIFIED if we actually inspected it.
  * This is checked at render time as well as at write time, so a bad import
  * cannot promote a third-party car into our own verified stock.
  */
 export function verifiedBadgeAllowed(listing: Listing): boolean {
-  return listing.verification === "MOTORBOTZ_VERIFIED" && listing.inspection !== null;
+  return listing.verification === "RIDERZPRO_VERIFIED" && listing.inspection !== null;
 }
 
 /** Images render only when the licence behind each one holds up. */
 export function displayableImages(listing: Listing) {
   return listing.images.filter((img) => {
-    if (img.licence === "motorbotz-own") return true;
+    if (img.licence === "riderzpro-own") return true;
     if (img.licence === "dealer-permission") return canDisplayImages(listing.primarySourceId);
     if (img.licence === "licensed-feed") return canDisplayImages(listing.primarySourceId);
     return false;

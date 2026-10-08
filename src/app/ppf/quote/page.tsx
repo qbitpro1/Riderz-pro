@@ -11,7 +11,7 @@ import { PRICE_DISCLAIMER } from "@/lib/ppf/coverage";
 export const metadata: Metadata = {
   title: "PPF Quote Calculator — Build Your Paint Protection Package",
   description:
-    "Pick your car, choose the panels, select the film and see an indicative PPF price. Final price confirmed after a physical inspection at a Motorbotz studio.",
+    "Pick your car, choose the panels, select the film and see an indicative PPF price. Final price confirmed after a physical inspection at a Riderzpro studio.",
   alternates: { canonical: "/ppf/quote" },
 };
 
@@ -68,7 +68,7 @@ export default function PpfQuotePage() {
             <ol className="space-y-4">
               {[
                 { t: "You send the configuration", b: "Everything you picked arrives with us on WhatsApp, itemised." },
-                { t: "We book an inspection", b: "Free, about twenty minutes, at any Motorbotz studio." },
+                { t: "We book an inspection", b: "Free, about twenty minutes, at any Riderzpro studio." },
                 { t: "We read the paint", b: "Depth gauge on every panel, under inspection lighting. This is what moves the price." },
                 { t: "You get a firm quote", b: "Fixed, itemised, valid for fifteen days. No surprises on collection day." },
               ].map((s, i) => (

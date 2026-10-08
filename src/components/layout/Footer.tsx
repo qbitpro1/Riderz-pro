@@ -1,17 +1,18 @@
 import Link from "next/link";
+import { Logo } from "@/components/brand/Logo";
 import { Icon } from "@/components/ui/Icon";
 import { LOCATIONS, SITE, whatsapp } from "@/lib/data/site";
 import { LANDING_MODELS } from "@/lib/data/vehicles";
 
 const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
   {
-    title: "Motorbotz",
+    title: "Riderzpro",
     links: [
       { label: "Buy Cars", href: "/cars" },
       { label: "Sell Your Car", href: "/sell" },
       { label: "Shop Accessories", href: "/shop" },
       { label: "Build Your Car", href: "/build" },
-      { label: "Motorbotz Builds", href: "/builds" },
+      { label: "Riderzpro Builds", href: "/builds" },
     ],
   },
   {
@@ -25,7 +26,7 @@ const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
       { label: "Body Kits & Facelifts", href: "/body-kits" },
       { label: "Custom Interiors", href: "/interiors" },
       { label: "Performance Garage", href: "/performance" },
-      { label: "Motorbotz Garage", href: "/garage" },
+      { label: "Riderzpro Garage", href: "/garage" },
     ],
   },
   {
@@ -41,7 +42,7 @@ const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
   {
     title: "Company",
     links: [
-      { label: "Why Motorbotz", href: "/why-motorbotz" },
+      { label: "Why Riderzpro", href: "/why-riderzpro" },
       { label: "Privacy Policy", href: "/legal/privacy" },
       { label: "Terms of Service", href: "/legal/terms" },
     ],
@@ -54,20 +55,18 @@ export function Footer() {
       <div className="shell py-12 md:py-16">
         <div className="grid gap-10 lg:grid-cols-[1.3fr_2.4fr]">
           <div>
-            <span className="flex items-baseline font-display text-3xl font-extrabold tracking-[-0.045em]">
-              MOTOR<span className="text-accent">BOTZ</span>
-            </span>
+            <Logo className="text-3xl" />
             <p className="mt-3 font-display text-sm font-bold uppercase tracking-[0.24em] text-ash">
               {SITE.tagline}
             </p>
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-ash">
-              If it has wheels, Motorbotz can help you buy it, sell it, modify it, protect it,
+              If it has wheels, Riderzpro can help you buy it, sell it, modify it, protect it,
               upgrade it or build it.
             </p>
 
             <div className="mt-6 flex flex-wrap gap-3">
               <a
-                href={whatsapp("Hi Motorbotz, I'd like to talk about my car.")}
+                href={whatsapp("Hi Riderzpro, I'd like to talk about my car.")}
                 target="_blank"
                 rel="noreferrer noopener"
                 className="btn btn-whatsapp btn-sm"
@@ -135,11 +134,11 @@ export function Footer() {
         </div>
 
         <div className="mt-10 flex flex-col gap-3 border-t border-white/8 pt-6 text-xs text-dim md:flex-row md:items-center md:justify-between">
-          <p>© {new Date().getFullYear()} Motorbotz Automotive Pvt. Ltd. All rights reserved.</p>
           <p>
-            Modifications are carried out in line with the Central Motor Vehicles Rules. GSTIN
-            29AAJCM4412Q1ZP.
+            © {new Date().getFullYear()} {SITE.legalName} {SITE.name}® is a registered trademark of{" "}
+            {SITE.legalName} All rights reserved.
           </p>
+          <p>Modifications are carried out in line with the Central Motor Vehicles Rules. GSTIN {SITE.gstin}.</p>
         </div>
       </div>
     </footer>

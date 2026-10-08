@@ -33,8 +33,8 @@ export async function generateMetadata({ params }: { params: Promise<{ design: s
   const two = priceFor(design, 2);
   return {
     title: `Autoform ${design.code} Seat Covers — ${band.series}`,
-    description: `Autoform ${design.code} seat covers from ${rupees(two.sellingPrice)} for a 5-seater. ${design.tagline}. Made to your car, fitted at Motorbotz.`.slice(0, 158),
-    keywords: ["Autoform", `Autoform ${design.code}`, "seat covers", "car seat covers", band.series, "Motorbotz"],
+    description: `Autoform ${design.code} seat covers from ${rupees(two.sellingPrice)} for a 5-seater. ${design.tagline}. Made to your car, fitted at Riderzpro.`.slice(0, 158),
+    keywords: ["Autoform", `Autoform ${design.code}`, "seat covers", "car seat covers", band.series, "Riderzpro"],
     alternates: { canonical: `/autoform/${design.slug}` },
     openGraph: { title: `Autoform ${design.code}`, description: design.tagline, images: [design.image] },
   };
@@ -51,7 +51,7 @@ export default async function AutoformDesignPage({ params }: { params: Promise<{
   const status = designStatus(design);
   const siblings = designsInBand(design.bandId).filter((d) => d.slug !== design.slug);
 
-  // Complete your interior — from the Motorbotz accessories catalogue.
+  // Complete your interior — from the Riderzpro accessories catalogue.
   const crossSell = PRODUCTS.filter((p) => p.category === "interior" || p.sub === "Steering covers").slice(0, 4);
 
   const schema = {
@@ -100,7 +100,7 @@ export default async function AutoformDesignPage({ params }: { params: Promise<{
               </div>
               <p className="mt-3 flex items-center gap-1.5 text-[11px] text-dim">
                 <Icon name="check" size={11} className="text-accent" />
-                Manufacturer image — {SOURCE_DOCS.CAT24.name}, page {design.page}. Used under Motorbotz
+                Manufacturer image — {SOURCE_DOCS.CAT24.name}, page {design.page}. Used under Riderzpro
                 reseller authorisation.
               </p>
             </div>
@@ -111,7 +111,7 @@ export default async function AutoformDesignPage({ params }: { params: Promise<{
                   <Icon name="shield" size={11} />
                   Genuine Autoform
                 </span>
-                <span className="chip">Authorised Motorbotz reseller</span>
+                <span className="chip">Authorised Riderzpro reseller</span>
               </div>
 
               <p className="eyebrow mt-4">{band.series}</p>
@@ -161,7 +161,7 @@ export default async function AutoformDesignPage({ params }: { params: Promise<{
 
               <div className="mt-6 grid gap-3 sm:grid-cols-2">
                 <a
-                  href={whatsapp(`Hi Motorbotz, I want Autoform ${design.code} seat covers. My car is: `)}
+                  href={whatsapp(`Hi Riderzpro, I want Autoform ${design.code} seat covers. My car is: `)}
                   target="_blank"
                   rel="noreferrer noopener"
                   className="btn btn-primary"
@@ -169,7 +169,7 @@ export default async function AutoformDesignPage({ params }: { params: Promise<{
                   Order this design
                 </a>
                 <a
-                  href={whatsapp(`Hi Motorbotz, I'd like to book fitting for Autoform ${design.code}. My car is: `)}
+                  href={whatsapp(`Hi Riderzpro, I'd like to book fitting for Autoform ${design.code}. My car is: `)}
                   target="_blank"
                   rel="noreferrer noopener"
                   className="btn btn-whatsapp"
@@ -244,7 +244,7 @@ export default async function AutoformDesignPage({ params }: { params: Promise<{
           <div>
             <h2 className="display-3">INSTALLATION</h2>
             <p className="mt-3 text-sm leading-relaxed text-ash">
-              Fitted at any Motorbotz workshop, usually around two hours for a 5-seater. Seats are not
+              Fitted at any Riderzpro workshop, usually around two hours for a 5-seater. Seats are not
               removed unless the pattern needs it. If your car has side airbags in the seat bolster we
               confirm the correct Autoform pattern before we start — we will not fit a cover that
               obstructs one.

@@ -64,7 +64,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     {
       q: "Do you install this?",
       a: product.installation
-        ? `Yes. Installation takes about ${product.installTime} at any Motorbotz garage${
+        ? `Yes. Installation takes about ${product.installTime} at any Riderzpro garage${
             product.installPrice ? ` and costs ${rupees(product.installPrice)}` : " and is included free with the part"
           }. Workmanship is warranted for 12 months.`
         : "This part is designed for self-fitment and needs no tools or workshop time. If you would still rather we did it, book a slot and we will fit it while you wait.",

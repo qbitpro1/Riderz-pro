@@ -1,7 +1,7 @@
 import { importAllowed } from "../compliance";
 import { SOURCES } from "../sources";
 import type { Listing } from "../types";
-import { motorbotzDirect } from "./motorbotz-direct";
+import { riderzproDirect } from "./riderzpro-direct";
 import { dealerFeed } from "./dealer-feed";
 import { blockedConnector } from "./blocked";
 
@@ -16,7 +16,7 @@ export type Connector = {
 };
 
 export const CONNECTORS: Connector[] = [
-  motorbotzDirect,
+  riderzproDirect,
   dealerFeed,
   // Marketplace connectors exist so the wiring is ready the day a licence
   // lands. Until then they refuse to run rather than degrading into scraping.

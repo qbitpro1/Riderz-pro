@@ -15,11 +15,11 @@ import { BAAS_FROM, BE6, PRICE_FROM, colour } from "@/lib/data/be6";
 export const metadata: Metadata = {
   title: "Mahindra BE 6 — Every Variant, Configured, Then Built Your Way",
   description:
-    "Configure any Mahindra BE 6 SPORTEQ — variant, battery, colour, price — verified against Mahindra's official brochure, then build it your way with Motorbotz PPF, audio, interior and 3D-printed parts.",
+    "Configure any Mahindra BE 6 SPORTEQ — variant, battery, colour, price — verified against Mahindra's official brochure, then build it your way with Riderzpro PPF, audio, interior and 3D-printed parts.",
   alternates: { canonical: "/be-6" },
   openGraph: {
     title: "THE BE 6. REIMAGINED.",
-    description: "Every factory variant, a build configurator, and the first MOTORBOTZ Limited Edition concept.",
+    description: "Every factory variant, a build configurator, and the first RIDERZPRO Limited Edition concept.",
     url: "/be-6",
   },
 };
@@ -61,7 +61,7 @@ export default function Be6Page() {
           </h1>
 
           <p className="rise mt-4 max-w-md text-base text-ash" style={{ animationDelay: "260ms" }}>
-            Meet the first MOTORBOTZ Limited Edition concept.
+            Meet the first RIDERZPRO Limited Edition concept.
           </p>
 
           <div className="rise mt-6 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap" style={{ animationDelay: "340ms" }}>
@@ -72,7 +72,7 @@ export default function Be6Page() {
               BUILD YOUR BE 6
             </a>
             <Link href="/be-6/limited-edition" className="btn btn-outline !border-gold/45 !text-gold">
-              MOTORBOTZ EDITION — COMING SOON
+              RIDERZPRO EDITION — COMING SOON
             </Link>
           </div>
 
@@ -133,7 +133,7 @@ export default function Be6Page() {
       <section id="build" className="section border-t border-white/[0.06]">
         <div className="shell">
           <SectionHead
-            eyebrow="Motorbotz"
+            eyebrow="Riderzpro"
             title="NOW BUILD IT YOUR WAY."
             blurb="The factory car stays exactly as Mahindra built it. This is what we add on top."
           />
@@ -146,7 +146,7 @@ export default function Be6Page() {
         <div className="shell text-center">
           <p className="eyebrow !text-gold">Coming soon</p>
           <h2 className="display-2 mt-3">
-            MOTORBOTZ BE 6
+            RIDERZPRO BE 6
             <br />
             <span className="text-gold">LIMITED EDITION</span>
           </h2>
@@ -155,7 +155,7 @@ export default function Be6Page() {
             its real development stage.
           </p>
           <p className="mx-auto mt-4 max-w-xl text-[0.6875rem] leading-relaxed text-dim">
-            An independent MOTORBOTZ concept. Not a factory Mahindra variant, and not endorsed or certified by
+            An independent RIDERZPRO concept. Not a factory Mahindra variant, and not endorsed or certified by
             Mahindra.
           </p>
           <Link href="/be-6/limited-edition" className="btn btn-accent mt-6 !bg-gold !text-[#1a1204]">
@@ -171,7 +171,7 @@ export default function Be6Page() {
           <SectionHead
             eyebrow="Be first"
             title="BE FIRST."
-            blurb="Join the MOTORBOTZ BE 6 waitlist. We come back when there is something real to come back with."
+            blurb="Join the RIDERZPRO BE 6 waitlist. We come back when there is something real to come back with."
           />
           <Waitlist />
         </div>

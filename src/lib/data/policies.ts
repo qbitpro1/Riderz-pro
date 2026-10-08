@@ -97,7 +97,7 @@ export const SUPPORT_POLICIES: Policy[] = [
       {
         heading: "Workmanship warranty",
         body: [
-          "Twelve months on all installation, wiring, fabrication and trim work carried out at a Motorbotz garage.",
+          "Twelve months on all installation, wiring, fabrication and trim work carried out at a Riderzpro garage.",
           "If something we fitted rattles, leaks, fails or comes loose within that period, we fix it free — including removing and refitting other parts to get to it.",
         ],
       },
@@ -131,7 +131,7 @@ export const LEGAL_POLICIES: Policy[] = [
     title: "PRIVACY POLICY",
     eyebrow: "Legal",
     intro:
-      "This policy explains what Motorbotz Automotive Pvt. Ltd. collects, why, and what you can ask us to do about it. Last updated 1 April 2026.",
+      "This policy explains what Riderzpro Automotive Pvt. Ltd. collects, why, and what you can ask us to do about it. Last updated 1 April 2026.",
     sections: [
       {
         heading: "What we collect",
@@ -160,7 +160,7 @@ export const LEGAL_POLICIES: Policy[] = [
         heading: "Your rights",
         body: [
           "You can ask us for a copy of what we hold, ask us to correct it, or ask us to delete it, subject to our legal obligation to retain transaction records.",
-          "Write to hello@motorbotz.in and we respond within 30 days.",
+          "Write to hello@riderzpro.com and we respond within 30 days.",
         ],
       },
       {
@@ -176,7 +176,7 @@ export const LEGAL_POLICIES: Policy[] = [
     title: "TERMS OF SERVICE",
     eyebrow: "Legal",
     intro:
-      "These terms govern purchases, workshop bookings and vehicle transactions with Motorbotz Automotive Pvt. Ltd. Last updated 1 April 2026.",
+      "These terms govern purchases, workshop bookings and vehicle transactions with Riderzpro Automotive Pvt. Ltd. Last updated 1 April 2026.",
     sections: [
       {
         heading: "Prices and estimates",
@@ -202,7 +202,7 @@ export const LEGAL_POLICIES: Policy[] = [
       {
         heading: "Vehicle sales",
         body: [
-          "Cars are sold with the inspection report shared in advance. Motorbotz Certified cars carry a 5-day / 300 km return window from delivery.",
+          "Cars are sold with the inspection report shared in advance. Riderzpro Certified cars carry a 5-day / 300 km return window from delivery.",
           "Payment for a car we buy from you is released before the RC transfer application is filed. We settle any outstanding loan directly with the lender.",
         ],
       },

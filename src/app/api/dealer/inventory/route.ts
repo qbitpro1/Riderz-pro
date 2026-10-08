@@ -62,7 +62,7 @@ export async function POST(request: Request) {
 export async function GET() {
   return NextResponse.json({
     endpoint: "/api/dealer/inventory",
-    authentication: "Authorization: Bearer <your Motorbotz API key>",
+    authentication: "Authorization: Bearer <your Riderzpro API key>",
     actions: {
       create: { vehicles: "[{ stockId, make, model, variant, year, fuel, transmission, km, price, city, images[] }]" },
       update: { vehicles: "[{ stockId, ...fields to change }]" },
@@ -75,7 +75,7 @@ export async function GET() {
     notes: [
       "Every vehicle is normalized and validated before it is accepted.",
       "Images must be hosted by you and served over HTTPS. Links to another marketplace's CDN are rejected.",
-      "A feed cannot set verification status — Motorbotz Inspected and Motorbotz Verified come from a physical inspection only.",
+      "A feed cannot set verification status — Riderzpro Inspected and Riderzpro Verified come from a physical inspection only.",
       "Rate limit: 60 requests per minute per key.",
     ],
   });
@@ -172,7 +172,7 @@ function authenticate(request: Request) {
   if (!gate.allowed) {
     return {
       error: problem(403, "no_display_rights", `Cannot accept inventory: ${gate.reason}.`, {
-        fix: "Accept the Motorbotz Inventory Agreement in the partner portal.",
+        fix: "Accept the Riderzpro Inventory Agreement in the partner portal.",
       }),
     };
   }

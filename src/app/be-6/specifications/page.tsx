@@ -141,7 +141,7 @@ export default function Be6SpecificationsPage() {
           <SectionHead
             eyebrow="Mahindra's own software"
             title="MAIA AND THE SIX TEQ SUITES"
-            blurb="Worth reading closely — the factory BE 6 already runs its own AI. Anything Motorbotz proposes is separate from these six."
+            blurb="Worth reading closely — the factory BE 6 already runs its own AI. Anything Riderzpro proposes is separate from these six."
           />
           <TeqSuites />
 

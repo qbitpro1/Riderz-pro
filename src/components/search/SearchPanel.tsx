@@ -61,7 +61,7 @@ export function SearchPanel({ onClose }: { onClose: () => void }) {
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder="Search your car, accessory or modification..."
-          aria-label="Search Motorbotz"
+          aria-label="Search Riderzpro"
           className="h-12 flex-1 bg-transparent text-base outline-none placeholder:text-dim"
         />
         <button

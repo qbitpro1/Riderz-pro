@@ -18,7 +18,7 @@ export function BookingForm({ defaultService }: { defaultService?: string }) {
   const ready = name.trim() && phone.trim().length >= 10 && car.trim();
 
   const message = [
-    "Hi Motorbotz, I'd like to book an appointment.",
+    "Hi Riderzpro, I'd like to book an appointment.",
     `Name: ${name}`,
     `Phone: ${phone}`,
     `Car: ${car}`,
@@ -38,7 +38,7 @@ export function BookingForm({ defaultService }: { defaultService?: string }) {
         if (ready) window.open(whatsapp(message), "_blank", "noopener,noreferrer");
       }}
     >
-      <p className="eyebrow mb-1">Motorbotz Garage</p>
+      <p className="eyebrow mb-1">Riderzpro Garage</p>
       <h3 className="display-3">BOOK AN APPOINTMENT</h3>
       <p className="mt-2 text-sm text-ash">
         Tell us what the car needs. We confirm a slot on WhatsApp within business hours, usually in

@@ -16,7 +16,7 @@ export const MEDIA = {
   // --- Cinematic / night -----------------------------------------------
   heroWorkshopNight: photo(
     "photo-1626668893632-6f3a4466d22f",
-    "Blacked-out build lit by workshop floodlights inside the Motorbotz bay at night",
+    "Blacked-out build lit by workshop floodlights inside the Riderzpro bay at night",
   ),
   garageHeadlights: photo(
     "photo-1533106418989-88406c7cc8ca",
@@ -76,7 +76,7 @@ export const MEDIA = {
   ),
   mechanicEngine: photo(
     "photo-1487754180451-c456f719a1fc",
-    "Technician working on an engine bay inside the Motorbotz garage",
+    "Technician working on an engine bay inside the Riderzpro garage",
   ),
   washBay: photo(
     "photo-1590362891991-f776e747a588",
@@ -102,7 +102,7 @@ export const MEDIA = {
   ),
   studioMonitors: photo(
     "photo-1545454675-3531b543be5d",
-    "Reference monitors used to tune Motorbotz audio builds",
+    "Reference monitors used to tune Riderzpro audio builds",
   ),
   speakerCone: photo(
     "photo-1558537348-c0f8e733989d",

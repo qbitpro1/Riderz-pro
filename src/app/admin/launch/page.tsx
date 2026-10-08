@@ -45,8 +45,8 @@ export default function LaunchReadinessPage() {
 
         <ul className="mt-3 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
           <Brand
-            name="Motorbotz"
-            live={READINESS.live.motorbotz}
+            name="Riderzpro"
+            live={READINESS.live.riderzpro}
             note="House range. Grows when we add our own products — no external source involved."
           />
           <Brand
@@ -149,9 +149,9 @@ export default function LaunchReadinessPage() {
           </p>
           <ol className="mt-3 space-y-2 text-sm leading-relaxed text-chalk/85">
             <li>
-              <span className="font-semibold">1. Own inventory.</span> Cars Motorbotz owns, has
+              <span className="font-semibold">1. Own inventory.</span> Cars Riderzpro owns, has
               consigned, or has inspected and photographed. Goes in through the{" "}
-              <code className="text-xs text-accent">motorbotz-direct</code> connector with no
+              <code className="text-xs text-accent">riderzpro-direct</code> connector with no
               third-party rights involved.
             </li>
             <li>

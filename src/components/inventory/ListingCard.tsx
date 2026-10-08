@@ -29,7 +29,7 @@ export function ListingCard({
           <span className="flex h-full flex-col items-center justify-center gap-2 p-4 text-center">
             <Icon name="car" size={26} className="text-dim" />
             <span className="text-[10px] uppercase leading-relaxed tracking-[0.12em] text-dim">
-              {listing.imagesUnavailableReason ?? "Photos unavailable — contact Motorbotz"}
+              {listing.imagesUnavailableReason ?? "Photos unavailable — contact Riderzpro"}
             </span>
           </span>
         )}
@@ -39,7 +39,7 @@ export function ListingCard({
           {listing.verified ? (
             <span className="verified">
               <Icon name="shield" size={11} />
-              Motorbotz Verified
+              Riderzpro Verified
             </span>
           ) : (
             <span className="chip border-white/20 bg-void/70">{listing.sourceLabel}</span>

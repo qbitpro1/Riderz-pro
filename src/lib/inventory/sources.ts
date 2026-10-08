@@ -26,8 +26,8 @@ const CHECKED = "2026-08-09T00:00:00.000Z";
 export const SOURCES: Source[] = [
   /* ---------------------------------------------------------- level 3 */
   {
-    id: "motorbotz-direct",
-    name: "Motorbotz Direct Inventory",
+    id: "riderzpro-direct",
+    name: "Riderzpro Direct Inventory",
     level: 3,
     status: "LIVE",
     rules: {
@@ -41,12 +41,12 @@ export const SOURCES: Source[] = [
     licence: "Own inventory",
     rateLimitPerMin: null,
     refreshHours: { high: 24, normal: 72, stale: 168 },
-    homepage: "https://motorbotz.in",
+    homepage: "https://riderzpro.com",
     evidence: {
       checkedAt: CHECKED,
       robotsUrl: null,
       blockingRules: [],
-      note: "Cars Motorbotz owns, has consigned, or has photographed and inspected itself. No third-party rights involved.",
+      note: "Cars Riderzpro owns, has consigned, or has photographed and inspected itself. No third-party rights involved.",
     },
   },
 
@@ -66,10 +66,10 @@ export const SOURCES: Source[] = [
       originalUrlRequired: false,
       commercialUse: true,
     },
-    licence: "Motorbotz Dealer Inventory Agreement (per dealer)",
+    licence: "Riderzpro Dealer Inventory Agreement (per dealer)",
     rateLimitPerMin: 60,
     refreshHours: { high: 4, normal: 12, stale: 48 },
-    homepage: "https://motorbotz.in/partners",
+    homepage: "https://riderzpro.com/partners",
     evidence: {
       checkedAt: CHECKED,
       robotsUrl: null,
@@ -187,7 +187,7 @@ export const SOURCES: Source[] = [
     licence: null,
     rateLimitPerMin: null,
     refreshHours: null,
-    homepage: "https://motorbotz.in/partners",
+    homepage: "https://riderzpro.com/partners",
     evidence: {
       checkedAt: CHECKED,
       robotsUrl: null,

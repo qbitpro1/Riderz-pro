@@ -1,18 +1,21 @@
 export const SITE = {
-  name: "MOTORBOTZ",
+  name: "Riderzpro",
   tagline: "BUY. BUILD. DRIVE.",
-  support: "Your Car. Your Build. Your Botz.",
+  support: "Your Car. Your Build. Your Ride.",
   description:
-    "Motorbotz is India's automotive ecosystem — buy and sell verified cars, build them at our workshop, and shop accessories, audio, PPF, off-road and performance upgrades.",
-  url: "https://motorbotz.in",
+    "Riderzpro is India's automotive ecosystem — buy and sell verified cars, build them at our workshop, and shop accessories, audio, PPF, off-road and performance upgrades.",
+  url: "https://riderzpro.com",
   phone: "+91 98860 44488",
   phoneHref: "tel:+919886044488",
   whatsappNumber: "919886044488",
-  email: "hello@motorbotz.in",
-  instagram: "https://instagram.com/motorbotz",
-  youtube: "https://youtube.com/@motorbotz",
-  facebook: "https://facebook.com/motorbotz",
+  email: "hello@riderzpro.com",
+  instagram: "https://instagram.com/riderzpro",
+  youtube: "https://youtube.com/@riderzpro",
+  facebook: "https://facebook.com/riderzpro",
   hours: "Mon – Sat · 9:30 AM – 8:00 PM · Sunday by appointment",
+  /** The registered company (GSTIN holder) that owns the Riderzpro trademark. Ends with a full stop. */
+  legalName: "Motorbotz Automotive Pvt. Ltd.",
+  gstin: "29AAJCM4412Q1ZP",
 } as const;
 
 /** Deep link into WhatsApp with a pre-filled, context-aware message. */
@@ -36,7 +39,7 @@ export const PRIMARY_NAV: NavItem[] = [
 
 export const SECONDARY_NAV: NavItem[] = [
   { label: "BE 6 Specifications", href: "/be-6/specifications" },
-  { label: "MOTORBOTZ BE 6 Limited Edition", href: "/be-6/limited-edition" },
+  { label: "RIDERZPRO BE 6 Limited Edition", href: "/be-6/limited-edition" },
   { label: "Shop by Brand", href: "/brands" },
   { label: "RECOIL Catalogue", href: "/recoil" },
   { label: "Build My Audio System", href: "/build-audio" },
@@ -46,7 +49,7 @@ export const SECONDARY_NAV: NavItem[] = [
   { label: "Body Kits & Facelifts", href: "/body-kits" },
   { label: "Custom Interiors", href: "/interiors" },
   { label: "Performance", href: "/performance" },
-  { label: "Motorbotz Builds", href: "/builds" },
+  { label: "Riderzpro Builds", href: "/builds" },
   { label: "Locations", href: "/locations" },
   { label: "List Your Cars", href: "/partners" },
 ];
@@ -75,7 +78,7 @@ export type Location = {
 export const LOCATIONS: Location[] = [
   {
     slug: "bengaluru-hq",
-    name: "Motorbotz Garage — Bengaluru",
+    name: "Riderzpro Garage — Bengaluru",
     city: "Bengaluru",
     address: "No. 14, Hosur Main Road, Kudlu Gate, Bengaluru, Karnataka 560068",
     phone: "+91 98860 44488",
@@ -87,7 +90,7 @@ export const LOCATIONS: Location[] = [
   },
   {
     slug: "hyderabad",
-    name: "Motorbotz Garage — Hyderabad",
+    name: "Riderzpro Garage — Hyderabad",
     city: "Hyderabad",
     address: "Plot 42, Gachibowli–Miyapur Road, Kondapur, Hyderabad, Telangana 500084",
     phone: "+91 98860 44489",
@@ -98,7 +101,7 @@ export const LOCATIONS: Location[] = [
   },
   {
     slug: "pune",
-    name: "Motorbotz Garage — Pune",
+    name: "Riderzpro Garage — Pune",
     city: "Pune",
     address: "Survey 61, Mundhwa–Kharadi Road, Kharadi, Pune, Maharashtra 411014",
     phone: "+91 98860 44490",

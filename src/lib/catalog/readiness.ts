@@ -178,7 +178,7 @@ export const HELD_BACK_TOTAL =
 
 export const READINESS = {
   live: {
-    motorbotz: CATALOG_BY_BRAND.motorbotz.length,
+    riderzpro: CATALOG_BY_BRAND.riderzpro.length,
     recoil: CATALOG_BY_BRAND.recoil.length,
     autoform: CATALOG_BY_BRAND.autoform.length,
     blaupunkt: CATALOG_BY_BRAND.blaupunkt.length,

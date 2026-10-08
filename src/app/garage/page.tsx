@@ -11,9 +11,9 @@ import { LOCATIONS, SITE } from "@/lib/data/site";
 import { STATS } from "@/lib/data/community";
 
 export const metadata: Metadata = {
-  title: "Motorbotz Garage — Installation, Modification & Service Workshop",
+  title: "Riderzpro Garage — Installation, Modification & Service Workshop",
   description:
-    "Book installation, modification, detailing, PPF, audio, performance, off-road and interior work at Motorbotz garages in Bengaluru, Hyderabad and Pune. 26 bays, one standard.",
+    "Book installation, modification, detailing, PPF, audio, performance, off-road and interior work at Riderzpro garages in Bengaluru, Hyderabad and Pune. 26 bays, one standard.",
   alternates: { canonical: "/garage" },
 };
 
@@ -23,7 +23,7 @@ export default function GaragePage() {
   return (
     <>
       <PageHero
-        eyebrow="Motorbotz Garage"
+        eyebrow="Riderzpro Garage"
         title="26 BAYS. ONE STANDARD."
         blurb="Everything happens under one roof — trim shop, paint room, audio bay, dyno, welding and lifts. No sending your car to three different markets and hoping."
         media="mechanicEngine"
@@ -84,7 +84,7 @@ export default function GaragePage() {
 
       <section className="section">
         <div className="shell">
-          <SectionHead eyebrow="Locations" title="VISIT MOTORBOTZ." href="/locations" hrefLabel="All locations" />
+          <SectionHead eyebrow="Locations" title="VISIT RIDERZPRO." href="/locations" hrefLabel="All locations" />
           <ul className="grid gap-4 md:grid-cols-3">
             {LOCATIONS.map((l) => (
               <li key={l.slug} className="card p-5">

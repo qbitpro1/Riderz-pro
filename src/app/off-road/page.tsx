@@ -159,7 +159,7 @@ export default function OffRoadPage() {
               weekend trails outside the city. Tell us the trip and we'll spec the truck for it.
             </p>
             <a
-              href={whatsapp("Hi Motorbotz, I want to build my off-road SUV. My vehicle is:  and I mostly drive: ")}
+              href={whatsapp("Hi Riderzpro, I want to build my off-road SUV. My vehicle is:  and I mostly drive: ")}
               target="_blank"
               rel="noreferrer noopener"
               className="btn btn-whatsapp btn-block mt-5"

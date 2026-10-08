@@ -13,7 +13,7 @@
 import type { MediaKey } from "@/lib/media";
 import type { CategorySlug } from "@/lib/data/products";
 
-export type BrandSlug = "motorbotz" | "recoil" | "autoform" | "blaupunkt";
+export type BrandSlug = "riderzpro" | "recoil" | "autoform" | "blaupunkt";
 
 /**
  * How we're allowed to describe our relationship with the brand. These are
@@ -49,8 +49,8 @@ export type Brand = {
 
 export const BRANDS: Brand[] = [
   {
-    slug: "motorbotz",
-    name: "Motorbotz",
+    slug: "riderzpro",
+    name: "Riderzpro",
     position: "House brand",
     tagline: "Built by us, fitted by us.",
     blurb:
@@ -60,7 +60,7 @@ export const BRANDS: Brand[] = [
     image: "heroWorkshopNight",
     categories: ["interior", "exterior", "lighting", "audio", "off-road", "performance"],
     state: "live",
-    provenance: "Specified, stocked and warranted by Motorbotz. Fitted at our own workshops.",
+    provenance: "Specified, stocked and warranted by Riderzpro. Fitted at our own workshops.",
   },
   {
     slug: "recoil",
@@ -80,7 +80,7 @@ export const BRANDS: Brand[] = [
   {
     slug: "autoform",
     name: "Autoform",
-    // Matches the wording already on /autoform: "Authorised Motorbotz reseller".
+    // Matches the wording already on /autoform: "Authorised Riderzpro reseller".
     position: "Authorised reseller",
     tagline: "Seat covers cut to your car.",
     blurb:

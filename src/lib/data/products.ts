@@ -90,7 +90,7 @@ export const CATEGORIES: Category[] = [
     name: "Audio",
     tagline: "Sound. Power. Control.",
     blurb:
-      "Component sets, tweeters, subwoofers, amplifiers, DSP and deadening — sold as parts or as a fully tuned Motorbotz build.",
+      "Component sets, tweeters, subwoofers, amplifiers, DSP and deadening — sold as parts or as a fully tuned Riderzpro build.",
     image: "studioMonitors",
     subcategories: [
       "Speakers",
@@ -141,7 +141,7 @@ export const CATEGORIES: Category[] = [
     name: "Performance",
     tagline: "More power. More control.",
     blurb:
-      "Intake, exhaust, cooling, braking and suspension hardware. Fitted, mapped and road-tested at the Motorbotz garage.",
+      "Intake, exhaust, cooling, braking and suspension hardware. Fitted, mapped and road-tested at the Riderzpro garage.",
     image: "engineBay",
     subcategories: [
       "Air filters",
@@ -187,9 +187,9 @@ export type Product = {
 export const PRODUCTS: Product[] = [
   // ---------------------------------------------------------------- interior
   {
-    slug: "motorbotz-9d-floor-mats",
-    name: "Motorbotz 9D TPE Floor Mats",
-    maker: "Motorbotz",
+    slug: "riderzpro-9d-floor-mats",
+    name: "Riderzpro 9D TPE Floor Mats",
+    maker: "Riderzpro",
     category: "interior",
     sub: "9D mats",
     price: 4499,
@@ -223,7 +223,7 @@ export const PRODUCTS: Product[] = [
   {
     slug: "7d-luxury-floor-mats",
     name: "7D Luxury Floor Mats",
-    maker: "Motorbotz",
+    maker: "Riderzpro",
     category: "interior",
     sub: "7D mats",
     price: 2999,
@@ -255,7 +255,7 @@ export const PRODUCTS: Product[] = [
   {
     slug: "nappa-leather-steering-cover",
     name: "Nappa Leather Steering Cover",
-    maker: "Motorbotz",
+    maker: "Riderzpro",
     category: "interior",
     sub: "Steering covers",
     price: 899,
@@ -285,7 +285,7 @@ export const PRODUCTS: Product[] = [
   {
     slug: "custom-fit-seat-covers-leatherette",
     name: "Custom-Fit Leatherette Seat Covers",
-    maker: "Motorbotz Interiors",
+    maker: "Riderzpro Interiors",
     category: "interior",
     sub: "Seat covers",
     price: 12_900,
@@ -305,7 +305,7 @@ export const PRODUCTS: Product[] = [
       "Airbag-compliant tear seams on side-airbag seats",
       "Breathable perforated centre panels",
       "Headrest, armrest and third-row pieces included where applicable",
-      "Free fitting at any Motorbotz garage",
+      "Free fitting at any Riderzpro garage",
     ],
     specs: [
       { label: "Material", value: "Automotive-grade leatherette, 1.2 mm" },
@@ -317,7 +317,7 @@ export const PRODUCTS: Product[] = [
   {
     slug: "magnetic-window-sunshades",
     name: "Magnetic Window Sunshades",
-    maker: "Motorbotz",
+    maker: "Riderzpro",
     category: "interior",
     sub: "Sunshades",
     price: 1299,
@@ -346,7 +346,7 @@ export const PRODUCTS: Product[] = [
   {
     slug: "wireless-charging-phone-mount",
     name: "15W Wireless Charging Vent Mount",
-    maker: "Motorbotz",
+    maker: "Riderzpro",
     category: "interior",
     sub: "Phone holders",
     price: 1899,
@@ -375,7 +375,7 @@ export const PRODUCTS: Product[] = [
   {
     slug: "suv-ambient-lighting-kit",
     name: "64-Colour Ambient Lighting Kit",
-    maker: "Motorbotz",
+    maker: "Riderzpro",
     category: "interior",
     sub: "Ambient lighting",
     price: 8900,
@@ -409,7 +409,7 @@ export const PRODUCTS: Product[] = [
   {
     slug: "bi-led-projector-headlamp-upgrade",
     name: "Bi-LED Projector Headlamp Upgrade",
-    maker: "Motorbotz Lighting",
+    maker: "Riderzpro Lighting",
     category: "lighting",
     sub: "Projector headlamps",
     price: 18_900,
@@ -443,7 +443,7 @@ export const PRODUCTS: Product[] = [
   {
     slug: "sequential-drl-strip",
     name: "Sequential DRL & Indicator Strip",
-    maker: "Motorbotz",
+    maker: "Riderzpro",
     category: "lighting",
     sub: "Sequential indicators",
     price: 3499,
@@ -474,7 +474,7 @@ export const PRODUCTS: Product[] = [
   {
     slug: "22-inch-led-light-bar",
     name: "22\" Dual-Row LED Light Bar",
-    maker: "Motorbotz Off-Road",
+    maker: "Riderzpro Off-Road",
     category: "lighting",
     sub: "LED bars",
     price: 9900,
@@ -507,7 +507,7 @@ export const PRODUCTS: Product[] = [
   {
     slug: "fog-lamp-projector-kit",
     name: "Projector Fog Lamp Kit",
-    maker: "Motorbotz Lighting",
+    maker: "Riderzpro Lighting",
     category: "lighting",
     sub: "Fog lamps",
     price: 5900,
@@ -538,9 +538,9 @@ export const PRODUCTS: Product[] = [
 
   // ------------------------------------------------------------------ audio
   {
-    slug: "motorbotz-signature-component-set",
-    name: "Motorbotz Signature 6.5\" Component Set",
-    maker: "Motorbotz Audio",
+    slug: "riderzpro-signature-component-set",
+    name: "Riderzpro Signature 6.5\" Component Set",
+    maker: "Riderzpro Audio",
     category: "audio",
     sub: "Component speakers",
     price: 34_900,
@@ -577,7 +577,7 @@ export const PRODUCTS: Product[] = [
   {
     slug: "8-channel-dsp-amplifier",
     name: "8-Channel DSP Amplifier",
-    maker: "Motorbotz Audio",
+    maker: "Riderzpro Audio",
     category: "audio",
     sub: "DSP",
     price: 42_900,
@@ -598,7 +598,7 @@ export const PRODUCTS: Product[] = [
       "31-band parametric EQ per channel",
       "Time alignment to 0.01 ms per driver",
       "High-level input with factory-signal de-equalisation",
-      "Free re-tune at any Motorbotz garage for life",
+      "Free re-tune at any Riderzpro garage for life",
     ],
     specs: [
       { label: "Channels", value: "8 (bridgeable to 4)" },
@@ -610,7 +610,7 @@ export const PRODUCTS: Product[] = [
   {
     slug: "10-inch-underseat-subwoofer",
     name: "10\" Slim Under-Seat Subwoofer",
-    maker: "Motorbotz Audio",
+    maker: "Riderzpro Audio",
     category: "audio",
     sub: "Subwoofers",
     price: 16_900,
@@ -642,7 +642,7 @@ export const PRODUCTS: Product[] = [
   {
     slug: "sound-deadening-kit-4-door",
     name: "Butyl Sound Deadening Kit — 4 Door",
-    maker: "Motorbotz Audio",
+    maker: "Riderzpro Audio",
     category: "audio",
     sub: "Sound deadening",
     price: 11_900,
@@ -673,7 +673,7 @@ export const PRODUCTS: Product[] = [
   {
     slug: "12-inch-android-head-unit",
     name: "12.3\" Android Head Unit with QLED Panel",
-    maker: "Motorbotz",
+    maker: "Riderzpro",
     category: "audio",
     sub: "Android head units",
     price: 29_900,
@@ -707,7 +707,7 @@ export const PRODUCTS: Product[] = [
   {
     slug: "silk-dome-tweeter-pair",
     name: "28 mm Silk Dome Tweeter Pair",
-    maker: "Motorbotz Audio",
+    maker: "Riderzpro Audio",
     category: "audio",
     sub: "Tweeters",
     price: 6900,
@@ -740,7 +740,7 @@ export const PRODUCTS: Product[] = [
   {
     slug: "all-weather-body-cover",
     name: "All-Weather Body Cover",
-    maker: "Motorbotz",
+    maker: "Riderzpro",
     category: "exterior",
     sub: "Body covers",
     price: 2499,
@@ -770,7 +770,7 @@ export const PRODUCTS: Product[] = [
   {
     slug: "stainless-side-steps",
     name: "Stainless Side Steps",
-    maker: "Motorbotz",
+    maker: "Riderzpro",
     category: "exterior",
     sub: "Side steps",
     price: 14_900,
@@ -801,7 +801,7 @@ export const PRODUCTS: Product[] = [
   {
     slug: "aero-roof-rails",
     name: "Aero Roof Rails",
-    maker: "Motorbotz",
+    maker: "Riderzpro",
     category: "exterior",
     sub: "Roof rails",
     price: 8900,
@@ -832,7 +832,7 @@ export const PRODUCTS: Product[] = [
   {
     slug: "injection-door-visors",
     name: "Injection-Moulded Door Visors",
-    maker: "Motorbotz",
+    maker: "Riderzpro",
     category: "exterior",
     sub: "Door visors",
     price: 1799,
@@ -863,7 +863,7 @@ export const PRODUCTS: Product[] = [
   {
     slug: "rear-roof-spoiler",
     name: "Rear Roof Spoiler — Painted",
-    maker: "Motorbotz",
+    maker: "Riderzpro",
     category: "exterior",
     sub: "Spoilers",
     price: 6900,
@@ -896,7 +896,7 @@ export const PRODUCTS: Product[] = [
   {
     slug: "recovery-boards-pair",
     name: "Recovery Boards (Pair)",
-    maker: "Motorbotz Off-Road",
+    maker: "Riderzpro Off-Road",
     category: "off-road",
     sub: "Recovery boards",
     price: 8900,
@@ -926,7 +926,7 @@ export const PRODUCTS: Product[] = [
   {
     slug: "12000lb-winch-synthetic",
     name: "12,000 lb Winch with Synthetic Rope",
-    maker: "Motorbotz Off-Road",
+    maker: "Riderzpro Off-Road",
     category: "off-road",
     sub: "Winches",
     price: 62_900,
@@ -959,7 +959,7 @@ export const PRODUCTS: Product[] = [
   {
     slug: "2-inch-lift-kit",
     name: "2-Inch Progressive Lift Kit",
-    maker: "Motorbotz Off-Road",
+    maker: "Riderzpro Off-Road",
     category: "off-road",
     sub: "Lift kits",
     price: 54_900,
@@ -992,7 +992,7 @@ export const PRODUCTS: Product[] = [
   {
     slug: "steel-rock-sliders",
     name: "Steel Rock Sliders",
-    maker: "Motorbotz Off-Road",
+    maker: "Riderzpro Off-Road",
     category: "off-road",
     sub: "Rock sliders",
     price: 26_900,
@@ -1023,7 +1023,7 @@ export const PRODUCTS: Product[] = [
   {
     slug: "raised-air-intake-snorkel",
     name: "Raised Air Intake Snorkel",
-    maker: "Motorbotz Off-Road",
+    maker: "Riderzpro Off-Road",
     category: "off-road",
     sub: "Snorkels",
     price: 18_900,
@@ -1054,7 +1054,7 @@ export const PRODUCTS: Product[] = [
   {
     slug: "portable-air-compressor",
     name: "Portable Twin-Cylinder Air Compressor",
-    maker: "Motorbotz Off-Road",
+    maker: "Riderzpro Off-Road",
     category: "off-road",
     sub: "Air compressors",
     price: 16_900,
@@ -1083,7 +1083,7 @@ export const PRODUCTS: Product[] = [
   {
     slug: "expedition-roof-rack-platform",
     name: "Expedition Platform Roof Rack",
-    maker: "Motorbotz Off-Road",
+    maker: "Riderzpro Off-Road",
     category: "off-road",
     sub: "Roof racks",
     price: 44_900,
@@ -1114,7 +1114,7 @@ export const PRODUCTS: Product[] = [
   {
     slug: "all-terrain-tyre-set",
     name: "All-Terrain Tyre Set (4)",
-    maker: "Motorbotz Off-Road",
+    maker: "Riderzpro Off-Road",
     category: "off-road",
     sub: "All-terrain tyres",
     price: 48_000,
@@ -1147,7 +1147,7 @@ export const PRODUCTS: Product[] = [
   {
     slug: "cold-air-intake-system",
     name: "Closed-Box Cold Air Intake",
-    maker: "Motorbotz Performance",
+    maker: "Riderzpro Performance",
     category: "performance",
     sub: "Intake systems",
     price: 18_900,
@@ -1178,7 +1178,7 @@ export const PRODUCTS: Product[] = [
   {
     slug: "cat-back-exhaust-system",
     name: "Stainless Cat-Back Exhaust",
-    maker: "Motorbotz Performance",
+    maker: "Riderzpro Performance",
     category: "performance",
     sub: "Exhaust",
     price: 46_900,
@@ -1211,7 +1211,7 @@ export const PRODUCTS: Product[] = [
   {
     slug: "stage-1-ecu-remap",
     name: "Stage 1 ECU Remap",
-    maker: "Motorbotz Performance",
+    maker: "Riderzpro Performance",
     category: "performance",
     sub: "ECU tuning",
     price: 34_900,
@@ -1244,7 +1244,7 @@ export const PRODUCTS: Product[] = [
   {
     slug: "big-brake-kit-front",
     name: "4-Pot Big Brake Kit — Front",
-    maker: "Motorbotz Performance",
+    maker: "Riderzpro Performance",
     category: "performance",
     sub: "Brakes",
     price: 89_900,
@@ -1275,7 +1275,7 @@ export const PRODUCTS: Product[] = [
   {
     slug: "coilover-suspension-kit",
     name: "Adjustable Coilover Kit",
-    maker: "Motorbotz Performance",
+    maker: "Riderzpro Performance",
     category: "performance",
     sub: "Suspension",
     price: 74_900,
@@ -1306,7 +1306,7 @@ export const PRODUCTS: Product[] = [
   {
     slug: "high-flow-air-filter",
     name: "High-Flow Drop-In Air Filter",
-    maker: "Motorbotz Performance",
+    maker: "Riderzpro Performance",
     category: "performance",
     sub: "Air filters",
     price: 3499,

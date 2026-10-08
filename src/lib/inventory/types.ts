@@ -67,17 +67,17 @@ export type ListingStatus =
   | "ARCHIVED";
 
 /**
- * Whether Motorbotz has physically seen the car. This is deliberately separate
+ * Whether Riderzpro has physically seen the car. This is deliberately separate
  * from ListingStatus: a listing can be perfectly ACTIVE and still be a third
  * party's car that we have never touched.
  */
 export type VerificationLevel =
-  /** Third-party or partner listing. Motorbotz has not inspected it. */
+  /** Third-party or partner listing. Riderzpro has not inspected it. */
   | "SOURCE_LISTING"
   /** A customer has requested an inspection; not yet completed. */
   | "INSPECTION_REQUESTED"
-  /** Motorbotz has physically inspected and signed off. */
-  | "MOTORBOTZ_VERIFIED";
+  /** Riderzpro has physically inspected and signed off. */
+  | "RIDERZPRO_VERIFIED";
 
 export type DataConfidence = "HIGH" | "MEDIUM" | "LOW";
 
@@ -90,7 +90,7 @@ export type BodyType = "Hatchback" | "Sedan" | "SUV" | "MUV" | "MPV" | "Coupe" |
 export type ListingImage = {
   /** Local/licensed remote URL. */
   url?: string;
-  /** Motorbotz's own photography from the media library. */
+  /** Riderzpro's own photography from the media library. */
   media?: MediaKey;
   alt: string;
   slot:
@@ -105,7 +105,7 @@ export type ListingImage = {
     | "boot"
     | "detail";
   /** Where the right to display it comes from. */
-  licence: "motorbotz-own" | "dealer-permission" | "licensed-feed";
+  licence: "riderzpro-own" | "dealer-permission" | "licensed-feed";
   credit: string | null;
 };
 
@@ -113,8 +113,8 @@ export type ListingImage = {
 export type ConditionField = {
   /** What the source stated, in its own factual terms. */
   sourceReported: string | null;
-  /** What Motorbotz confirmed on inspection. */
-  motorbotzVerified: string | null;
+  /** What Riderzpro confirmed on inspection. */
+  riderzproVerified: string | null;
 };
 
 export type ConditionReport = {
@@ -210,7 +210,7 @@ export type Listing = {
   pincode: string | null;
 
   /* seller ---------------------------------------------------------- */
-  sellerType: "dealer" | "private" | "motorbotz";
+  sellerType: "dealer" | "private" | "riderzpro";
   dealerName: string | null;
   dealerLocation: string | null;
   /** Never populated for private sellers. */
@@ -271,7 +271,7 @@ export type InventorySnapshot = {
     stale: number;
     sourceErrors: number;
     duplicatesMerged: number;
-    motorbotzVerified: number;
+    riderzproVerified: number;
   };
   listings: Listing[];
   importLog: ImportLogEntry[];
@@ -279,7 +279,7 @@ export type InventorySnapshot = {
 
 /** Every condition field starts unknown. Callers fill in only what they know. */
 export function emptyCondition(): ConditionReport {
-  const blank = (): ConditionField => ({ sourceReported: null, motorbotzVerified: null });
+  const blank = (): ConditionField => ({ sourceReported: null, riderzproVerified: null });
   return {
     exterior: blank(),
     interior: blank(),

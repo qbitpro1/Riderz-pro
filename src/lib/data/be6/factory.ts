@@ -2,7 +2,7 @@
  * MAHINDRA BE 6 — FACTORY DATA
  *
  * Everything in this file describes the vehicle Mahindra sells. Nothing
- * Motorbotz makes, fits or imagines belongs here; that lives in ./motorbotz
+ * Riderzpro makes, fits or imagines belongs here; that lives in ./riderzpro
  * and the two are never merged into one list.
  *
  * Current lineup is the BE 6 SPORTEQ, introduced 15 August 2026, deliveries

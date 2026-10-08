@@ -133,8 +133,8 @@ export function scoreQuality(
   const tierPoints: Record<VerificationTier, number> = {
     LISTED: 0,
     PARTNER_VERIFIED: 8,
-    MOTORBOTZ_INSPECTED: 16,
-    MOTORBOTZ_VERIFIED: 20,
+    RIDERZPRO_INSPECTED: 16,
+    RIDERZPRO_VERIFIED: 20,
   };
   bands.push({ label: "Verification", earned: tierPoints[context.verification], possible: 20 });
 
@@ -374,7 +374,7 @@ export const UPLOAD_TEMPLATE_HEADERS = [
 ];
 
 export const UPLOAD_TEMPLATE_EXAMPLE = [
-  "MB-1042",
+  "RP-1042",
   "Hyundai",
   "Creta",
   "SX(O) 1.5 Turbo DCT",

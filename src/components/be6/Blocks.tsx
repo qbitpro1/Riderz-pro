@@ -202,7 +202,7 @@ export function ConceptModuleBlock({ module: m }: { module: ConceptModule }) {
   return (
     <div className="card p-5 md:p-7">
       <div className="flex flex-wrap items-center gap-2">
-        <ProvenanceTag provenance="MOTORBOTZ CONCEPT" />
+        <ProvenanceTag provenance="RIDERZPRO CONCEPT" />
         <span className="verified !border-gold/40 !bg-gold/10 !text-gold">{m.status}</span>
       </div>
 
@@ -245,7 +245,7 @@ export function ConceptModuleBlock({ module: m }: { module: ConceptModule }) {
 }
 
 /* ------------------------------------------------------------------ */
-/* FACTORY vs MOTORBOTZ                                                */
+/* FACTORY vs RIDERZPRO                                                */
 /* ------------------------------------------------------------------ */
 
 export function ComparisonTable() {
@@ -260,7 +260,7 @@ export function ComparisonTable() {
                 Factory BE 6
               </th>
               <th className="p-3 font-display text-[0.625rem] uppercase tracking-[0.16em] text-accent">
-                MOTORBOTZ Edition
+                RIDERZPRO Edition
               </th>
             </tr>
           </thead>
@@ -274,7 +274,7 @@ export function ComparisonTable() {
                     r.conceptual ? "text-gold" : "text-accent"
                   }`}
                 >
-                  {r.motorbotz}
+                  {r.riderzpro}
                 </td>
               </tr>
             ))}

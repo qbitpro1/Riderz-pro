@@ -9,9 +9,9 @@ import { BUILDS, REVIEWS } from "@/lib/data/community";
 import { whatsapp } from "@/lib/data/site";
 
 export const metadata: Metadata = {
-  title: "Motorbotz Builds — Modified Cars, Full Spec & Real Build Costs",
+  title: "Riderzpro Builds — Modified Cars, Full Spec & Real Build Costs",
   description:
-    "Every Motorbotz build with the full modification list and what it actually cost. Off-road rigs, street builds, audio installs, luxury interiors and performance cars.",
+    "Every Riderzpro build with the full modification list and what it actually cost. Off-road rigs, street builds, audio installs, luxury interiors and performance cars.",
   alternates: { canonical: "/builds" },
 };
 
@@ -19,7 +19,7 @@ export default function BuildsPage() {
   return (
     <>
       <PageHero
-        eyebrow="Motorbotz builds"
+        eyebrow="Riderzpro builds"
         title="BUILT BY US. DRIVEN BY THEM."
         blurb="Real cars, real invoices, real owners. Every build lists exactly what went into it and what it cost — because that is the number nobody else publishes."
         media="garageSpotlit"
@@ -51,7 +51,7 @@ export default function BuildsPage() {
                 <Icon name="arrow" size={14} />
               </Link>
               <a
-                href={whatsapp("Hi Motorbotz, I want to build something like one of your builds. My car is: ")}
+                href={whatsapp("Hi Riderzpro, I want to build something like one of your builds. My car is: ")}
                 target="_blank"
                 rel="noreferrer noopener"
                 className="btn btn-whatsapp btn-sm"

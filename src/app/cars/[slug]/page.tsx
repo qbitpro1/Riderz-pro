@@ -37,7 +37,7 @@ export async function generateMetadata({
   const title = `${car.year} ${car.brand} ${car.model} ${car.variant} — ${lakh(car.price)}`;
   return {
     title,
-    description: `${car.note} ${fmtKm(car.km)}, ${car.fuel}, ${car.transmission}, ${car.owner}, ${car.city}. Motorbotz Certified with a 200-point inspection report.`,
+    description: `${car.note} ${fmtKm(car.km)}, ${car.fuel}, ${car.transmission}, ${car.owner}, ${car.city}. Riderzpro Certified with a 200-point inspection report.`,
     alternates: { canonical: `/cars/${car.slug}` },
     openGraph: { title, description: car.note, images: [MEDIA[car.images[0]].src] },
   };
@@ -46,7 +46,7 @@ export async function generateMetadata({
 const FAQ = [
   {
     q: "Can I get the car inspected independently?",
-    a: "Yes. Bring your own mechanic to any Motorbotz garage, or we will send the car to a third-party inspection agency of your choice at your cost. We have nothing to hide and the report usually matches ours.",
+    a: "Yes. Bring your own mechanic to any Riderzpro garage, or we will send the car to a third-party inspection agency of your choice at your cost. We have nothing to hide and the report usually matches ours.",
   },
   {
     q: "How does the RC transfer work?",
@@ -54,7 +54,7 @@ const FAQ = [
   },
   {
     q: "Is there a return window?",
-    a: "Five days or 300 km, whichever comes first, on every Motorbotz Certified car. If something material was missed in our inspection, we take the car back and refund in full.",
+    a: "Five days or 300 km, whichever comes first, on every Riderzpro Certified car. If something material was missed in our inspection, we take the car back and refund in full.",
   },
   {
     q: "Can I part-exchange my current car?",
@@ -69,7 +69,7 @@ export default async function CarDetailPage({ params }: { params: Promise<{ slug
 
   const related = relatedCars(car);
   const listing = getListing(slug);
-  const waMessage = `Hi Motorbotz, I'm interested in the ${car.year} ${car.brand} ${car.model} ${car.variant} (${lakh(car.price)}) listed on your website.`;
+  const waMessage = `Hi Riderzpro, I'm interested in the ${car.year} ${car.brand} ${car.model} ${car.variant} (${lakh(car.price)}) listed on your website.`;
 
   const schema = {
     "@context": "https://schema.org",
@@ -106,7 +106,7 @@ export default async function CarDetailPage({ params }: { params: Promise<{ slug
               {car.verified && (
                 <span className="verified">
                   <Icon name="shield" size={12} />
-                  Motorbotz Verified
+                  Riderzpro Verified
                 </span>
               )}
               <span className="chip bg-void/70">{car.photoCount} photos</span>
@@ -193,7 +193,7 @@ export default async function CarDetailPage({ params }: { params: Promise<{ slug
               </div>
             )}
 
-            <div className={`mt-10 ${listing && listing.verification !== "MOTORBOTZ_VERIFIED" ? "hidden" : ""}`}>
+            <div className={`mt-10 ${listing && listing.verification !== "RIDERZPRO_VERIFIED" ? "hidden" : ""}`}>
               <h2 className="display-3">INSPECTION REPORT</h2>
               <div className="card mt-4 p-5">
                 <div className="flex flex-wrap items-center gap-5">
@@ -222,9 +222,9 @@ export default async function CarDetailPage({ params }: { params: Promise<{ slug
                 then this is the checklist we will run, not a claim about this car. */}
             <div className="mt-10">
               <h2 className="display-3">
-                {listing?.verification === "MOTORBOTZ_VERIFIED" ? "TRUST CHECKS CLEARED" : "WHAT WE CHECK BEFORE WE VERIFY"}
+                {listing?.verification === "RIDERZPRO_VERIFIED" ? "TRUST CHECKS CLEARED" : "WHAT WE CHECK BEFORE WE VERIFY"}
               </h2>
-              {listing?.verification !== "MOTORBOTZ_VERIFIED" && (
+              {listing?.verification !== "RIDERZPRO_VERIFIED" && (
                 <p className="mt-2 max-w-xl text-sm text-ash">
                   None of these has been completed on this car yet. Request an inspection and we work
                   through every one, then publish the result here.
@@ -232,7 +232,7 @@ export default async function CarDetailPage({ params }: { params: Promise<{ slug
               )}
               <ul className="mt-4 flex flex-wrap gap-2">
                 {TRUST_POINTS.map((t) => {
-                  const cleared = listing?.verification === "MOTORBOTZ_VERIFIED";
+                  const cleared = listing?.verification === "RIDERZPRO_VERIFIED";
                   return (
                     <li
                       key={t.title}
@@ -251,7 +251,7 @@ export default async function CarDetailPage({ params }: { params: Promise<{ slug
                 <div className="mt-10">
                   <h2 className="display-3">CONDITION</h2>
                   <p className="mt-2 max-w-xl text-sm text-ash">
-                    What the source states and what Motorbotz has actually confirmed are kept in
+                    What the source states and what Riderzpro has actually confirmed are kept in
                     separate columns. Anything we have not checked ourselves says so.
                   </p>
                   <div className="mt-4">
@@ -260,7 +260,7 @@ export default async function CarDetailPage({ params }: { params: Promise<{ slug
                 </div>
 
                 <div className="mt-10">
-                  <h2 className="display-3 mb-4">MOTORBOTZ INSPECTION</h2>
+                  <h2 className="display-3 mb-4">RIDERZPRO INSPECTION</h2>
                   <InspectionReport listing={listing} />
                 </div>
               </>
@@ -275,7 +275,7 @@ export default async function CarDetailPage({ params }: { params: Promise<{ slug
           {/* sticky buy panel --------------------------------------- */}
           <aside className="lg:sticky lg:top-24">
             <div className="card p-5">
-              <p className="label mb-1">Motorbotz price</p>
+              <p className="label mb-1">Riderzpro price</p>
               <p className="font-display text-4xl font-extrabold tracking-[-0.04em] tnum">
                 {lakh(car.price)}
               </p>

@@ -199,7 +199,7 @@ export function InventoryBrowser({
         {open && (
           <div className="mt-4 space-y-4 border-t border-white/8 pt-4">
             <div>
-              <p className="label">Motorbotz picks</p>
+              <p className="label">Riderzpro picks</p>
               <div className="flex flex-wrap gap-2">
                 {specialFilters.map((s) => (
                   <button

@@ -95,7 +95,7 @@ export function PpfConfigurator({ films }: { films: PublishedFilm[] }) {
   const nothingSelected = selected.size === 0 && !fullBody;
 
   const message = [
-    "Hi Motorbotz, I want a PPF quote.",
+    "Hi Riderzpro, I want a PPF quote.",
     vehicleLabel ? `Car: ${vehicleLabel}${colour ? ` (${colour})` : ""}` : "Car: ",
     `Coverage: ${fullBody ? "Full body" : `${selected.size} areas`}${
       selected.size ? ` — ${[...selected].map((id) => COVERAGE_AREAS.find((a) => a.id === id)?.label).join(", ")}` : ""

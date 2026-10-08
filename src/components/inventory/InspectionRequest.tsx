@@ -5,7 +5,7 @@ import { Icon } from "@/components/ui/Icon";
 import { whatsapp } from "@/lib/data/site";
 
 /**
- * REQUEST MOTORBOTZ INSPECTION.
+ * REQUEST RIDERZPRO INSPECTION.
  *
  * Creates a lead. It does not, and must not, change the listing's verification
  * state — only a completed workshop inspection does that.
@@ -20,7 +20,7 @@ export function InspectionRequest({ vehicle, city }: { vehicle: string; city: st
   const ready = name.trim().length > 1 && phone.trim().length >= 10;
 
   const message = [
-    "Hi Motorbotz, I'd like to request an inspection.",
+    "Hi Riderzpro, I'd like to request an inspection.",
     `Vehicle: ${vehicle}`,
     `Name: ${name}`,
     `Phone: ${phone}`,
@@ -32,7 +32,7 @@ export function InspectionRequest({ vehicle, city }: { vehicle: string; city: st
     return (
       <button type="button" onClick={() => setOpen(true)} className="btn btn-outline btn-block">
         <Icon name="shield" size={15} />
-        Request Motorbotz inspection
+        Request Riderzpro inspection
       </button>
     );
   }

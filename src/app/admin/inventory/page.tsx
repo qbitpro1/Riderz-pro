@@ -43,7 +43,7 @@ export default function InventoryAdminPage() {
             { label: "Sold / removed", value: totals.soldOrRemoved },
             { label: "Source errors", value: totals.sourceErrors },
             { label: "Duplicates merged", value: totals.duplicatesMerged },
-            { label: "Motorbotz verified", value: totals.motorbotzVerified },
+            { label: "Riderzpro verified", value: totals.riderzproVerified },
           ].map((s) => (
             <li key={s.label} className="card p-4">
               <p className="font-display text-2xl font-extrabold tnum">{s.value}</p>

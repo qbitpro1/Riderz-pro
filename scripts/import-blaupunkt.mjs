@@ -37,7 +37,7 @@ const SOURCE = {
 };
 
 /**
- * Which shelf each catalogue section sits on in the Motorbotz shop. The section
+ * Which shelf each catalogue section sits on in the Riderzpro shop. The section
  * headings are Blaupunkt's own; the mapping to our six categories is ours, and
  * it is the only interpretive step in this importer.
  */

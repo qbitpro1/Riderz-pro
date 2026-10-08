@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { BRANDS } from "@/lib/data/vehicles";
+import { readStored } from "@/lib/storage";
 
 export type Garage = {
   brandSlug: string;
@@ -13,12 +14,12 @@ export type Garage = {
   label: string;
 };
 
-const KEY = "motorbotz.garage.v1";
+const KEY = "riderzpro.garage.v1";
 
 export function readGarage(): Garage | null {
   if (typeof window === "undefined") return null;
   try {
-    const raw = localStorage.getItem(KEY);
+    const raw = readStored(KEY);
     return raw ? (JSON.parse(raw) as Garage) : null;
   } catch {
     return null;

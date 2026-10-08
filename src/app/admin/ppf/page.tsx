@@ -184,7 +184,7 @@ export default function PpfAdminPage() {
               ))}
             </dl>
             <p className="mt-3 text-[11px] leading-relaxed text-dim">
-              Motorbotz retail rates, not supplier cost. Once a purchase rate exists, set margin here
+              Riderzpro retail rates, not supplier cost. Once a purchase rate exists, set margin here
               rather than editing the rates by hand.
             </p>
           </div>

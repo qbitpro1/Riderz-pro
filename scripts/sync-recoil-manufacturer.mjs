@@ -20,7 +20,7 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = resolve(ROOT, "data/recoil/manufacturer-mirror.json");
-const UA = "Mozilla/5.0 (compatible; MotorbotzCatalogImport/1.0)";
+const UA = "Mozilla/5.0 (compatible; RiderzproCatalogImport/1.0)";
 
 async function fetchOfficial() {
   const out = [];

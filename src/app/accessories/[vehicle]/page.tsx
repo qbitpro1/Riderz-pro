@@ -32,7 +32,7 @@ export async function generateMetadata({
     title,
     description: `Accessories, lighting, audio, interiors, PPF and ${
       model.offroad ? "off-road" : "performance"
-    } upgrades for the ${model.brand} ${model.name}. Fitment-checked for every variant and year, installed at Motorbotz garages.`,
+    } upgrades for the ${model.brand} ${model.name}. Fitment-checked for every variant and year, installed at Riderzpro garages.`,
     alternates: { canonical: `/accessories/${model.slug}` },
   };
 }
@@ -195,7 +195,7 @@ export default async function VehicleAccessoriesPage({
                     ))}
                   </ul>
                   <a
-                    href={whatsapp(`Hi Motorbotz, I want a quote for: ${f.to} on my ${f.from}.`)}
+                    href={whatsapp(`Hi Riderzpro, I want a quote for: ${f.to} on my ${f.from}.`)}
                     target="_blank"
                     rel="noreferrer noopener"
                     className="btn btn-outline btn-sm btn-block mt-5"
@@ -244,7 +244,7 @@ export default async function VehicleAccessoriesPage({
               three options at different budgets — not a catalogue dump.
             </p>
             <a
-              href={whatsapp(`Hi Motorbotz, I drive a ${model.brand} ${model.name}. I'm looking for: `)}
+              href={whatsapp(`Hi Riderzpro, I drive a ${model.brand} ${model.name}. I'm looking for: `)}
               target="_blank"
               rel="noreferrer noopener"
               className="btn btn-whatsapp btn-block mt-5"

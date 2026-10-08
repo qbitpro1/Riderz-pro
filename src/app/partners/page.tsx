@@ -17,9 +17,9 @@ import { FIELD_REQUIREMENTS, UPLOAD_TEMPLATE_HEADERS } from "@/lib/inventory/pip
 import { FRESHNESS_THRESHOLDS } from "@/lib/inventory/dealers";
 
 export const metadata: Metadata = {
-  title: "List Your Cars on Motorbotz — Dealer & Fleet Partners",
+  title: "List Your Cars on Riderzpro — Dealer & Fleet Partners",
   description:
-    "Put your used-car stock in front of Motorbotz buyers. Upload CSV, Excel, XML or JSON, sync a Google Sheet, or push through our dealer API. Free to join, no lock-in.",
+    "Put your used-car stock in front of Riderzpro buyers. Upload CSV, Excel, XML or JSON, sync a Google Sheet, or push through our dealer API. Free to join, no lock-in.",
   alternates: { canonical: "/partners" },
 };
 
@@ -38,9 +38,9 @@ export default function PartnersPage() {
   return (
     <>
       <PageHero
-        eyebrow="Motorbotz Vehicle Network"
+        eyebrow="Riderzpro Vehicle Network"
         title="HAVE CARS TO SELL?"
-        blurb="Put your inventory in front of Motorbotz buyers. Upload the file your system already exports — we do the rest. Free to join, and you keep your customers."
+        blurb="Put your inventory in front of Riderzpro buyers. Upload the file your system already exports — we do the rest. Free to join, and you keep your customers."
         media="suvDesertTrail"
         actions={[
           { href: "#upload", label: "Try an upload", variant: "primary" },
@@ -147,7 +147,7 @@ export default function PartnersPage() {
             blurb="Every DMS on the market exports CSV or XML for syndication. We take the file you already produce rather than asking you to build an integration."
           />
           <ul className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-            {SUPPLY_CHANNELS.filter((c) => c.id !== "motorbotz-owned").map((channel, i) => (
+            {SUPPLY_CHANNELS.filter((c) => c.id !== "riderzpro-owned").map((channel, i) => (
               <li key={channel.id}>
                 <Reveal delay={(i % 3) * 55} className="h-full">
                   <div className="card flex h-full flex-col p-5">
@@ -209,13 +209,13 @@ export default function PartnersPage() {
 
           <div className="card overflow-x-auto p-5">
             <p className="label">POST /api/dealer/inventory</p>
-            <pre className="whitespace-pre text-[11px] leading-relaxed text-ash">{`curl -X POST https://motorbotz.in/api/dealer/inventory \\
+            <pre className="whitespace-pre text-[11px] leading-relaxed text-ash">{`curl -X POST https://riderzpro.com/api/dealer/inventory \\
   -H "Authorization: Bearer <your key>" \\
   -H "Content-Type: application/json" \\
   -d '{
     "action": "create",
     "vehicles": [{
-      "stockId": "MB-1042",
+      "stockId": "RP-1042",
       "make": "Hyundai",
       "model": "Creta",
       "variant": "SX(O) 1.5 Turbo DCT",
@@ -259,7 +259,7 @@ export default function PartnersPage() {
                 </span>
                 <p className="mt-3 text-xs leading-relaxed text-ash">{tier.means}</p>
                 <p className="mt-3 text-[10px] uppercase tracking-[0.12em] text-dim">
-                  {tier.rank <= 1 ? "Set by dealer verification" : "Awarded by Motorbotz inspection"}
+                  {tier.rank <= 1 ? "Set by dealer verification" : "Awarded by Riderzpro inspection"}
                 </p>
               </li>
             ))}

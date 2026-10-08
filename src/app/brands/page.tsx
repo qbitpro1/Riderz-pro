@@ -9,9 +9,9 @@ import { BRAND_STORES, BRANDS, CATALOG_BY_BRAND, CATALOG_TOTALS } from "@/lib/ca
 import { CATEGORIES } from "@/lib/data/products";
 
 export const metadata: Metadata = {
-  title: "Shop by Brand — RECOIL, Autoform, Blaupunkt & Motorbotz",
+  title: "Shop by Brand — RECOIL, Autoform, Blaupunkt & Riderzpro",
   description:
-    "Every brand Motorbotz stocks in one place. Browse RECOIL car audio, Autoform seat covers and the Motorbotz house range by brand, category, price and fitment.",
+    "Every brand Riderzpro stocks in one place. Browse RECOIL car audio, Autoform seat covers and the Riderzpro house range by brand, category, price and fitment.",
   alternates: { canonical: "/brands" },
 };
 

@@ -15,7 +15,7 @@ import { whatsapp } from "@/lib/data/site";
 export const metadata: Metadata = {
   title: "Build My Audio System — RECOIL, Costed to Your Budget",
   description:
-    "Pick a budget, your car and what you want from the system. Motorbotz builds a matched RECOIL specification — amplifier, speakers, subwoofer, processing, damping and wiring — with a real total.",
+    "Pick a budget, your car and what you want from the system. Riderzpro builds a matched RECOIL specification — amplifier, speakers, subwoofer, processing, damping and wiring — with a real total.",
   alternates: { canonical: "/build-audio" },
 };
 
@@ -134,7 +134,7 @@ export default async function BuildAudioPage({ searchParams }: { searchParams: P
                 <a
                   href={whatsapp(
                     [
-                      "Hi Motorbotz, I built an audio system on the website:",
+                      "Hi Riderzpro, I built an audio system on the website:",
                       "",
                       ...system.slots
                         .filter((s) => s.product)

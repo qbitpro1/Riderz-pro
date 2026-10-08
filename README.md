@@ -1,4 +1,4 @@
-# MOTORBOTZ
+# RIDERZPRO
 
 **BUY. BUILD. DRIVE.** — an automotive ecosystem for India: a verified car marketplace, a
 modification studio, an accessories store, a premium audio room, a PPF and detailing bay, an
@@ -54,7 +54,7 @@ Everything renders statically — 118 prerendered routes, no server required to 
 /builds, /builds/[slug]  Build showcase with full mod lists and real build costs
 /accessories/[vehicle]   24 vehicle-specific SEO landing pages (Thar, Fortuner, Creta…)
 /used-cars, /car-modification, /car-accessories, /suv-modification   SEO landings
-/locations, /contact, /why-motorbotz
+/locations, /contact, /why-riderzpro
 /support/[topic]         Shipping, returns, warranty
 /legal/[doc]             Privacy, terms
 /brands                  Shop by brand — every brand in one index
@@ -109,7 +109,7 @@ src/lib/inventory/
   types.ts        Listing, ConditionReport, Inspection, ImportLog, statuses
   sources.ts      Source registry — rules, licence, rate limits, robots evidence
   compliance.ts   The gate. Import, images, attribution and the verified badge
-  connectors/     motorbotz-direct · dealer-feed · blocked (one per marketplace)
+  connectors/     riderzpro-direct · dealer-feed · blocked (one per marketplace)
   dedupe.ts       Registration/VIN first, then weighted attribute matching
   freshness.ts    IST timestamps, relative age, status machine, price history
   normalize.ts    Original description generation, confidence scoring
@@ -122,7 +122,7 @@ src/lib/inventory/
 | `npm run inventory:check-robots` | Re-reads each source's robots.txt and reports drift from the recorded evidence. |
 | `npm run inventory:refresh` | Pulls connected partner dealer feeds, validates them, writes the feed file. |
 
-### The Motorbotz Vehicle Network
+### The Riderzpro Vehicle Network
 
 Inventory is supplied to us, not copied from anyone. Seven inventory types
 (`src/lib/inventory/network.ts`), nine supply channels, four trust tiers.
@@ -137,7 +137,7 @@ Inventory is supplied to us, not copied from anyone. Seven inventory types
 | Manufacturer CPO | via franchise dealer | Needs agreement |
 | Auction & wholesale | CSV · API | Needs agreement |
 | Private seller intake | Sell Your Car | **Live** |
-| Motorbotz owned stock | staff entry | **Live** |
+| Riderzpro owned stock | staff entry | **Live** |
 
 **Why upload-first works:** every DMS on the market already exports CSV or XML
 for syndication to Autotrader, Facebook and the rest. We accept the file a
@@ -184,7 +184,7 @@ lookups to vehicles a supplier gave us and never stores keeper details.
 
 | Source | Level | Status |
 | --- | --- | --- |
-| Motorbotz Direct | 3 | **Live** — our own stock |
+| Riderzpro Direct | 3 | **Live** — our own stock |
 | Partner Dealer Feed | 1 | **Live** — imports once an agreement reference is on file |
 | CarDekho, CARS24, Spinny, CarWale, OLX Autos, OEM CPO | 2 / 1 | **Blocked — no licence** |
 
@@ -200,15 +200,15 @@ connector file — the marketplace, pipeline and UI do not change.
 
 1. **No unlicensed data.** The compliance gate runs before any connector fetches,
    and again before any image renders.
-2. **Never our badge on someone else's car.** `MOTORBOTZ_VERIFIED` requires an
+2. **Never our badge on someone else's car.** `RIDERZPRO_VERIFIED` requires an
    entry in `data/inventory/inspections.json`, written after a physical
    inspection. A dealer feed that tries to set it is rejected by the validator.
-   Everything else shows *Source listing* or *Motorbotz inventory*.
+   Everything else shows *Source listing* or *Riderzpro inventory*.
 3. **Original copy only.** Descriptions are generated from stored facts;
    `assertNoQualityClaims()` throws if copy ever claims "excellent condition",
    "accident-free" or similar.
 4. **No invented photographs.** A vehicle without `imageRights: "granted"`
-   displays *Photos unavailable — contact Motorbotz for vehicle images*.
+   displays *Photos unavailable — contact Riderzpro for vehicle images*.
 5. **Nothing is fabricated.** Missing data renders as *Not specified*; unchecked
    condition renders as *Not verified*; a price drop is only shown when two
    different observed prices exist in the recorded history.
@@ -257,19 +257,19 @@ unverified fields per SKU and what is blocking launch.
 **No product image is ever substituted.** A film with no licensed image shows an
 explicit "no product image" state naming what is missing.
 
-**Warranty is never genericised.** There is no "Motorbotz PPF warranty" on the
+**Warranty is never genericised.** There is no "Riderzpro PPF warranty" on the
 film. Each product publishes the manufacturer's own period, conditions and
-exclusions; Motorbotz separately warrants its own workmanship for 12 months.
+exclusions; Riderzpro separately warrants its own workmanship for 12 months.
 
 ## The cross-brand catalogue
 
 Every brand keeps its own store — `/recoil` and `/autoform` are unchanged, with
 their own sourcing trails, series guides and manufacturer data. On top of them
 sits one shared, filterable projection so the shop can rank a RECOIL amplifier
-against a Motorbotz one on price and fit rather than on the badge.
+against a Riderzpro one on price and fit rather than on the badge.
 
 ```
-src/lib/data/products.ts     Motorbotz house range   ─┐
+src/lib/data/products.ts     Riderzpro house range   ─┐
 src/lib/data/recoil/         RECOIL, imported         ├─→ src/lib/catalog/adapters.ts
 src/lib/autoform/catalog.ts  Autoform, imported      ─┘         ↓
                                                       src/lib/catalog/index.ts
@@ -316,7 +316,7 @@ rail rather than becoming a filter you can clear out from under the page.
 
 ## The RECOIL catalogue pipeline
 
-Motorbotz is an authorised RECOIL reseller. The catalogue is **imported**, not
+Riderzpro is an authorised RECOIL reseller. The catalogue is **imported**, not
 hand-written, so a new price list is a data drop rather than a rebuild.
 
 ```
@@ -352,7 +352,7 @@ src/lib/data/recoil/catalog.generated.json
 | Field | Visibility |
 | --- | --- |
 | MRP | Public |
-| Motorbotz selling price | Public — MRP less a per-category margin, admin-editable |
+| Riderzpro selling price | Public — MRP less a per-category margin, admin-editable |
 | Discount % | Public, derived |
 | **DP (dealer price)** | **Server-side only.** Stripped by `toPublic()` at every boundary that reaches the browser, and deliberately not rendered on `/admin/catalog` because that route has no authentication yet. |
 

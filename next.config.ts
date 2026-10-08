@@ -22,6 +22,19 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: [],
   },
+  // Pre-rebrand URLs (Motorbotz → Riderzpro), kept alive for bookmarks and search engines.
+  redirects() {
+    return [
+      { source: "/why-motorbotz", destination: "/why-riderzpro", permanent: true },
+      { source: "/brands/motorbotz", destination: "/brands/riderzpro", permanent: true },
+      { source: "/product/motorbotz-9d-floor-mats", destination: "/product/riderzpro-9d-floor-mats", permanent: true },
+      {
+        source: "/product/motorbotz-signature-component-set",
+        destination: "/product/riderzpro-signature-component-set",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

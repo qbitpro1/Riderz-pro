@@ -125,7 +125,7 @@ export function Configurator() {
           </div>
           <p className="mt-3 text-[0.6875rem] leading-relaxed text-dim">
 Wheel size is fixed by variant — ONE runs R18 aero covers, TWO R19 with aero covers, THREE upward R19
-            alloys, and the Formula E editions R20. There is no factory wheel choice within a variant. Motorbotz
+            alloys, and the Formula E editions R20. There is no factory wheel choice within a variant. Riderzpro
             alternatives are a separate section and are never mixed into the factory specification.
           </p>
         </Step>
@@ -223,7 +223,7 @@ Wheel size is fixed by variant — ONE runs R18 aero covers, TWO R19 with aero c
           That is the BE 6 as Mahindra sells it. Everything past here is ours.
         </p>
         <Link href="#build" className="btn btn-accent btn-sm shrink-0">
-          BUILD YOUR MOTORBOTZ BE 6
+          BUILD YOUR RIDERZPRO BE 6
         </Link>
       </div>
     </div>

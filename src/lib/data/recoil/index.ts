@@ -200,7 +200,7 @@ export function searchCatalog(query: string, limit = 20): CatalogProduct[] {
 
 /** Only fields the price list actually carries are offered for comparison. */
 export const COMPARE_FIELDS: { key: string; label: string; get: (p: CatalogProduct) => string | null }[] = [
-  { key: "price", label: "Motorbotz price", get: (p) => (p.sellingPrice ? `₹${p.sellingPrice.toLocaleString("en-IN")}` : null) },
+  { key: "price", label: "Riderzpro price", get: (p) => (p.sellingPrice ? `₹${p.sellingPrice.toLocaleString("en-IN")}` : null) },
   { key: "mrp", label: "MRP", get: (p) => (p.mrp ? `₹${p.mrp.toLocaleString("en-IN")}` : null) },
   { key: "category", label: "Category", get: (p) => p.category },
   { key: "series", label: "Series", get: (p) => p.series },

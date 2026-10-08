@@ -70,7 +70,7 @@ export function SellFlow() {
   const vehicleLabel = brand && model ? `${year} ${brand.name} ${model.name} ${variant}`.trim() : "";
 
   const message = [
-    "Hi Motorbotz, I want to sell my car.",
+    "Hi Riderzpro, I want to sell my car.",
     `Registration: ${reg || "—"}`,
     `Vehicle: ${vehicleLabel || "—"}`,
     `Kilometres: ${km || "—"}`,
@@ -276,7 +276,7 @@ export function SellFlow() {
         {step === 3 && (
           <Panel
             title="Your estimated valuation"
-            hint="Based on live Motorbotz transaction data for this model, adjusted for age, kilometres, ownership and condition."
+            hint="Based on live Riderzpro transaction data for this model, adjusted for age, kilometres, ownership and condition."
           >
             {valuation ? (
               <div className="border border-accent/30 bg-accent/8 p-5 text-center">
@@ -305,7 +305,7 @@ export function SellFlow() {
         )}
 
         {step === 4 && (
-          <Panel title="Schedule your free inspection" hint="At your home or at any Motorbotz garage. It takes about 45 minutes.">
+          <Panel title="Schedule your free inspection" hint="At your home or at any Riderzpro garage. It takes about 45 minutes.">
             <div className="grid gap-3 sm:grid-cols-2">
               <div>
                 <label className="label" htmlFor="sell-name">

@@ -1,7 +1,7 @@
 /**
- * MOTORBOTZ BE 6 — WHAT WE ADD
+ * RIDERZPRO BE 6 — WHAT WE ADD
  *
- * Everything Motorbotz makes, fits, or has only imagined. Nothing in this file
+ * Everything Riderzpro makes, fits, or has only imagined. Nothing in this file
  * is a Mahindra feature, and nothing here may be rendered in the same list as
  * ./factory data. The label carried by every item is what keeps that promise
  * on screen.
@@ -16,10 +16,10 @@
 export type Provenance =
   /** Genuine Mahindra factory equipment. */
   | "MAHINDRA FACTORY"
-  /** A Motorbotz product or service we fit to the car. */
-  | "MOTORBOTZ CUSTOM"
-  /** A Motorbotz idea for the Limited Edition. Not for sale. */
-  | "MOTORBOTZ CONCEPT";
+  /** A Riderzpro product or service we fit to the car. */
+  | "RIDERZPRO CUSTOM"
+  /** A Riderzpro idea for the Limited Edition. Not for sale. */
+  | "RIDERZPRO CONCEPT";
 
 export type Stage =
   /** An idea. Drawn, not built. */
@@ -106,7 +106,7 @@ export type Upgrade = {
   price: number | null;
   /** Shown instead of a price when price is null. */
   priceNote?: string;
-  /** Existing Motorbotz catalogue this draws on, where it does. */
+  /** Existing Riderzpro catalogue this draws on, where it does. */
   sourcedFrom?: { label: string; href: string };
   validation?: ValidationDomain[];
   /** Selected by default in the builder — the ones we would fit to our own car. */
@@ -126,55 +126,55 @@ export const UPGRADE_GROUPS: UpgradeGroup[] = [
   {
     slug: "shield",
     title: "PPF & COATING",
-    banner: "MOTORBOTZ SHIELD",
+    banner: "RIDERZPRO SHIELD",
     caption: "Paint protection film and ceramic, from our existing PPF programme.",
     href: "/ppf",
   },
   {
     slug: "aero",
     title: "EXTERIOR",
-    banner: "MOTORBOTZ AERO",
-    caption: "Bodywork, aero and trim. Every part labelled factory or Motorbotz.",
+    banner: "RIDERZPRO AERO",
+    caption: "Bodywork, aero and trim. Every part labelled factory or Riderzpro.",
   },
   {
     slug: "wheels",
     title: "WHEELS & TYRES",
-    banner: "MOTORBOTZ WHEELS",
+    banner: "RIDERZPRO WHEELS",
     caption: "Alternatives to the factory 19s, with fitment validated before anything is ordered.",
   },
   {
     slug: "audio",
     title: "AUDIO",
-    banner: "MOTORBOTZ AUDIO 01",
+    banner: "RIDERZPRO AUDIO 01",
     caption: "Built on the Blaupunkt and RECOIL catalogues we already carry.",
     href: "/audio",
   },
   {
     slug: "interior",
     title: "INTERIOR",
-    banner: "MOTORBOTZ INTERIOR",
+    banner: "RIDERZPRO INTERIOR",
     caption: "Seat covers, trim and ambient light, drawing on the Autoform catalogue.",
     href: "/autoform",
   },
   {
     slug: "light-lab",
     title: "LIGHTING",
-    banner: "MOTORBOTZ LIGHT LAB",
+    banner: "RIDERZPRO LIGHT LAB",
     caption: "Cabin, welcome and cargo light. Nothing that alters a factory road-lighting function.",
   },
   {
     slug: "lab",
     title: "3D-PRINTED PARTS",
-    banner: "MOTORBOTZ LAB",
+    banner: "RIDERZPRO LAB",
     caption: "Parts we design and print ourselves, each with its own development stage.",
   },
-  { slug: "storage", title: "STORAGE", banner: "MOTORBOTZ STORAGE", caption: "Using the 455-litre boot and 45-litre frunk properly." },
-  { slug: "security", title: "SECURITY", banner: "MOTORBOTZ ARMOR", caption: "Concept work. Read the engineering notice before anything else." },
-  { slug: "tech", title: "TECHNOLOGY", banner: "MOTORBOTZ TECH", caption: "Concept software and electronics, kept strictly apart from Mahindra's TEQ suites." },
+  { slug: "storage", title: "STORAGE", banner: "RIDERZPRO STORAGE", caption: "Using the 455-litre boot and 45-litre frunk properly." },
+  { slug: "security", title: "SECURITY", banner: "RIDERZPRO ARMOR", caption: "Concept work. Read the engineering notice before anything else." },
+  { slug: "tech", title: "TECHNOLOGY", banner: "RIDERZPRO TECH", caption: "Concept software and electronics, kept strictly apart from Mahindra's TEQ suites." },
   {
     slug: "urban-explorer",
     title: "URBAN EXPLORER",
-    banner: "MOTORBOTZ URBAN EXPLORER",
+    banner: "RIDERZPRO URBAN EXPLORER",
     caption: "Weekend-capable, not a 4x4 conversion. The BE 6 is rear-wheel drive and we do not pretend otherwise.",
   },
 ];
@@ -185,29 +185,29 @@ export const UPGRADES: Upgrade[] = [
     slug: "ppf-full-body",
     name: "Full-body PPF",
     group: "shield",
-    provenance: "MOTORBOTZ CUSTOM",
+    provenance: "RIDERZPRO CUSTOM",
     stage: "AVAILABLE",
     blurb:
       "Every painted panel wrapped in self-healing film. On a satin or matte BE 6 finish the film has to be matched to the finish, not just to the colour.",
     price: 1_85_000,
-    sourcedFrom: { label: "Motorbotz PPF programme", href: "/ppf" },
+    sourcedFrom: { label: "Riderzpro PPF programme", href: "/ppf" },
     signature: true,
   },
   {
     slug: "ppf-high-impact",
     name: "High-impact areas PPF",
     group: "shield",
-    provenance: "MOTORBOTZ CUSTOM",
+    provenance: "RIDERZPRO CUSTOM",
     stage: "AVAILABLE",
     blurb: "Bonnet, front bumper, mirrors, and the luggage-loading edge. The panels that actually take the hits.",
     price: 62_000,
-    sourcedFrom: { label: "Motorbotz PPF programme", href: "/ppf" },
+    sourcedFrom: { label: "Riderzpro PPF programme", href: "/ppf" },
   },
   {
     slug: "ppf-headlamp",
     name: "Headlamp protection film",
     group: "shield",
-    provenance: "MOTORBOTZ CUSTOM",
+    provenance: "RIDERZPRO CUSTOM",
     stage: "AVAILABLE",
     blurb: "Clear film over the lighting signature. Optical clarity is the whole job here.",
     price: 7500,
@@ -217,7 +217,7 @@ export const UPGRADES: Upgrade[] = [
     slug: "ceramic",
     name: "Ceramic coating over PPF",
     group: "shield",
-    provenance: "MOTORBOTZ CUSTOM",
+    provenance: "RIDERZPRO CUSTOM",
     stage: "AVAILABLE",
     blurb: "Applied over the film, not instead of it. Makes the car wash off rather than scrub off.",
     price: 34_000,
@@ -226,7 +226,7 @@ export const UPGRADES: Upgrade[] = [
     slug: "ppf-interior",
     name: "Interior high-touch film",
     group: "shield",
-    provenance: "MOTORBOTZ CUSTOM",
+    provenance: "RIDERZPRO CUSTOM",
     stage: "AVAILABLE",
     blurb:
       "Film on the three screens' surrounds, door pulls and the console. On a three-screen cabin this is the difference between a two-year-old interior and a tired one.",
@@ -238,7 +238,7 @@ export const UPGRADES: Upgrade[] = [
     slug: "aero-front",
     name: "Front aero element",
     group: "aero",
-    provenance: "MOTORBOTZ CUSTOM",
+    provenance: "RIDERZPRO CUSTOM",
     stage: "PROTOTYPE",
     blurb: "Lower front blade, printed and finished in house. First article fitted to a test car.",
     price: null,
@@ -249,7 +249,7 @@ export const UPGRADES: Upgrade[] = [
     slug: "aero-side-skirts",
     name: "Side skirts",
     group: "aero",
-    provenance: "MOTORBOTZ CUSTOM",
+    provenance: "RIDERZPRO CUSTOM",
     stage: "PROTOTYPE",
     blurb: "Sill extensions that visually drop the car without touching ride height.",
     price: null,
@@ -259,7 +259,7 @@ export const UPGRADES: Upgrade[] = [
     slug: "aero-diffuser",
     name: "Rear diffuser",
     group: "aero",
-    provenance: "MOTORBOTZ CUSTOM",
+    provenance: "RIDERZPRO CUSTOM",
     stage: "CONCEPT",
     blurb: "Rear underbody element. Drawn, not yet modelled for print.",
     price: null,
@@ -269,7 +269,7 @@ export const UPGRADES: Upgrade[] = [
     slug: "aero-spoiler",
     name: "Roof spoiler",
     group: "aero",
-    provenance: "MOTORBOTZ CUSTOM",
+    provenance: "RIDERZPRO CUSTOM",
     stage: "CONCEPT",
     blurb: "Extension of the factory roof line. Bonded, not drilled.",
     price: null,
@@ -280,7 +280,7 @@ export const UPGRADES: Upgrade[] = [
     slug: "charge-port-surround",
     name: "Charging-port surround",
     group: "aero",
-    provenance: "MOTORBOTZ CUSTOM",
+    provenance: "RIDERZPRO CUSTOM",
     stage: "TESTING",
     blurb: "Printed bezel around the charge port. In durability testing against UV and repeated cable contact.",
     price: null,
@@ -292,7 +292,7 @@ export const UPGRADES: Upgrade[] = [
     slug: "wheels-19-forged",
     name: "19-inch forged wheel set",
     group: "wheels",
-    provenance: "MOTORBOTZ CUSTOM",
+    provenance: "RIDERZPRO CUSTOM",
     stage: "AVAILABLE",
     blurb:
       "Same 19-inch diameter as the factory alloy, so the tyre and the speedometer are unaffected. The safest change you can make to a wheel.",
@@ -303,7 +303,7 @@ export const UPGRADES: Upgrade[] = [
     slug: "wheels-20-touring",
     name: "20-inch touring set",
     group: "wheels",
-    provenance: "MOTORBOTZ CUSTOM",
+    provenance: "RIDERZPRO CUSTOM",
     stage: "COMING SOON",
     blurb:
       "Matches the diameter Mahindra fits to the Formula E editions. Held until we have the factory tyre sizes in writing — an inch up on an unpublished size is not a fitment we will validate.",
@@ -315,7 +315,7 @@ export const UPGRADES: Upgrade[] = [
     slug: "tyres-ev-touring",
     name: "EV-specific touring tyres",
     group: "wheels",
-    provenance: "MOTORBOTZ CUSTOM",
+    provenance: "RIDERZPRO CUSTOM",
     stage: "AVAILABLE",
     blurb:
       "Higher load rating and lower rolling resistance. An EV is heavier and quieter than the car a standard tyre was designed around.",
@@ -328,12 +328,12 @@ export const UPGRADES: Upgrade[] = [
     slug: "audio-dsp",
     name: "DSP and re-tune over the factory system",
     group: "audio",
-    provenance: "MOTORBOTZ CUSTOM",
+    provenance: "RIDERZPRO CUSTOM",
     stage: "AVAILABLE",
     blurb:
       "The factory Harman Kardon is a good system. A DSP and a proper tune to the cabin gets more out of it than replacing it does.",
     price: 52_000,
-    sourcedFrom: { label: "Motorbotz audio", href: "/audio" },
+    sourcedFrom: { label: "Riderzpro audio", href: "/audio" },
     validation: ["electrical"],
     signature: true,
   },
@@ -341,7 +341,7 @@ export const UPGRADES: Upgrade[] = [
     slug: "audio-amp-sub",
     name: "Amplifier and subwoofer",
     group: "audio",
-    provenance: "MOTORBOTZ CUSTOM",
+    provenance: "RIDERZPRO CUSTOM",
     stage: "AVAILABLE",
     blurb: "Adds the bottom octave the factory system does not reach, sited so the 455-litre boot stays usable.",
     price: 1_15_000,
@@ -352,7 +352,7 @@ export const UPGRADES: Upgrade[] = [
     slug: "audio-speakers",
     name: "Component speaker upgrade",
     group: "audio",
-    provenance: "MOTORBOTZ CUSTOM",
+    provenance: "RIDERZPRO CUSTOM",
     stage: "AVAILABLE",
     blurb: "Front stage replacement from the Blaupunkt and RECOIL ranges we stock.",
     price: 46_000,
@@ -363,7 +363,7 @@ export const UPGRADES: Upgrade[] = [
     slug: "audio-damping",
     name: "Sound damping",
     group: "audio",
-    provenance: "MOTORBOTZ CUSTOM",
+    provenance: "RIDERZPRO CUSTOM",
     stage: "AVAILABLE",
     blurb:
       "Doors, arches and boot floor. An EV has no engine noise to mask road roar, so damping does more here than it would on a petrol car.",
@@ -376,7 +376,7 @@ export const UPGRADES: Upgrade[] = [
     slug: "interior-seat-covers",
     name: "Autoform seat covers",
     group: "interior",
-    provenance: "MOTORBOTZ CUSTOM",
+    provenance: "RIDERZPRO CUSTOM",
     stage: "AVAILABLE",
     blurb: "Cut to the BE 6's seats from the Autoform design range.",
     price: 32_000,
@@ -387,7 +387,7 @@ export const UPGRADES: Upgrade[] = [
     slug: "interior-upholstery",
     name: "Full custom upholstery",
     group: "interior",
-    provenance: "MOTORBOTZ CUSTOM",
+    provenance: "RIDERZPRO CUSTOM",
     stage: "AVAILABLE",
     blurb: "Retrim in the material and stitch of your choosing. Seat ventilation is preserved through perforation.",
     price: 1_45_000,
@@ -397,7 +397,7 @@ export const UPGRADES: Upgrade[] = [
     slug: "interior-ambient",
     name: "Ambient lighting",
     group: "interior",
-    provenance: "MOTORBOTZ CUSTOM",
+    provenance: "RIDERZPRO CUSTOM",
     stage: "AVAILABLE",
     blurb: "Footwell, door card and console light on its own controller, independent of the factory system.",
     price: 24_000,
@@ -408,7 +408,7 @@ export const UPGRADES: Upgrade[] = [
     slug: "interior-mats",
     name: "Premium floor and boot mats",
     group: "interior",
-    provenance: "MOTORBOTZ CUSTOM",
+    provenance: "RIDERZPRO CUSTOM",
     stage: "AVAILABLE",
     blurb: "Cut to the BE 6 floor pan, including the frunk.",
     price: 14_500,
@@ -418,7 +418,7 @@ export const UPGRADES: Upgrade[] = [
     slug: "interior-steering",
     name: "Custom steering wheel retrim",
     group: "interior",
-    provenance: "MOTORBOTZ CUSTOM",
+    provenance: "RIDERZPRO CUSTOM",
     stage: "AVAILABLE",
     blurb: "Retrim of the factory wheel. The airbag module and every control is reused, never relocated.",
     price: 28_000,
@@ -430,7 +430,7 @@ export const UPGRADES: Upgrade[] = [
     slug: "light-welcome",
     name: "Welcome lighting",
     group: "light-lab",
-    provenance: "MOTORBOTZ CUSTOM",
+    provenance: "RIDERZPRO CUSTOM",
     stage: "AVAILABLE",
     blurb: "Cabin and puddle light sequence on approach. Does not touch a road-lighting function.",
     price: 16_000,
@@ -440,7 +440,7 @@ export const UPGRADES: Upgrade[] = [
     slug: "light-cargo",
     name: "Boot and frunk lighting",
     group: "light-lab",
-    provenance: "MOTORBOTZ CUSTOM",
+    provenance: "RIDERZPRO CUSTOM",
     stage: "AVAILABLE",
     blurb: "Proper light in both storage areas. The frunk has none worth the name from the factory.",
     price: 9500,
@@ -450,7 +450,7 @@ export const UPGRADES: Upgrade[] = [
     slug: "light-ground-projection",
     name: "Ground projection",
     group: "light-lab",
-    provenance: "MOTORBOTZ CUSTOM",
+    provenance: "RIDERZPRO CUSTOM",
     stage: "CONCEPT",
     blurb:
       "Projected logo on the ground at the doors. Concept only — projected light from a vehicle has road-legality questions we have not answered yet.",
@@ -462,7 +462,7 @@ export const UPGRADES: Upgrade[] = [
     slug: "light-drl",
     name: "DRL modification",
     group: "light-lab",
-    provenance: "MOTORBOTZ CUSTOM",
+    provenance: "RIDERZPRO CUSTOM",
     stage: "CONCEPT",
     blurb:
       "We are not currently willing to modify the BE 6's daytime running lights. The lighting signature is a homologated road-lighting function and altering it puts road legality at risk.",
@@ -476,7 +476,7 @@ export const UPGRADES: Upgrade[] = [
     slug: "storage-frunk-organiser",
     name: "Frunk organiser",
     group: "storage",
-    provenance: "MOTORBOTZ CUSTOM",
+    provenance: "RIDERZPRO CUSTOM",
     stage: "READY",
     blurb: "Printed insert that divides the 45-litre frunk into a cable bay and a dry bay.",
     price: 6800,
@@ -485,7 +485,7 @@ export const UPGRADES: Upgrade[] = [
     slug: "storage-boot-system",
     name: "Boot organiser system",
     group: "storage",
-    provenance: "MOTORBOTZ CUSTOM",
+    provenance: "RIDERZPRO CUSTOM",
     stage: "AVAILABLE",
     blurb: "Modular dividers for the 455-litre boot, removable in one piece.",
     price: 11_500,
@@ -494,7 +494,7 @@ export const UPGRADES: Upgrade[] = [
     slug: "storage-cable-management",
     name: "Charging cable management",
     group: "storage",
-    provenance: "MOTORBOTZ CUSTOM",
+    provenance: "RIDERZPRO CUSTOM",
     stage: "READY",
     blurb: "A bag and mount so the charging cable stops living loose in the boot.",
     price: 4200,
@@ -505,7 +505,7 @@ export const UPGRADES: Upgrade[] = [
     slug: "armor-tracking",
     name: "Tracking and recovery",
     group: "security",
-    provenance: "MOTORBOTZ CUSTOM",
+    provenance: "RIDERZPRO CUSTOM",
     stage: "AVAILABLE",
     blurb:
       "Independent tracker with its own power, additional to Mahindra's Secure360 Pro rather than a replacement for it.",
@@ -516,7 +516,7 @@ export const UPGRADES: Upgrade[] = [
     slug: "armor-secure-storage",
     name: "Secure in-car storage",
     group: "security",
-    provenance: "MOTORBOTZ CUSTOM",
+    provenance: "RIDERZPRO CUSTOM",
     stage: "PROTOTYPE",
     blurb: "Lockable compartment under the boot floor. First article built, not yet tested.",
     price: null,
@@ -527,7 +527,7 @@ export const UPGRADES: Upgrade[] = [
     slug: "armor-security-film",
     name: "Security film on glazing",
     group: "security",
-    provenance: "MOTORBOTZ CUSTOM",
+    provenance: "RIDERZPRO CUSTOM",
     stage: "TESTING",
     blurb:
       "Anti-shatter film on the side glass. This makes glass harder to break through. It is not ballistic protection and we do not describe it as such.",
@@ -539,7 +539,7 @@ export const UPGRADES: Upgrade[] = [
     slug: "armor-intrusion",
     name: "Intrusion detection",
     group: "security",
-    provenance: "MOTORBOTZ CONCEPT",
+    provenance: "RIDERZPRO CONCEPT",
     stage: "CONCEPT",
     blurb: "Additional sensing and tamper alerting. Concept — and it overlaps with what TEQ_Secure already does.",
     price: null,
@@ -552,7 +552,7 @@ export const UPGRADES: Upgrade[] = [
     slug: "tech-dashcam",
     name: "Dual dashcam with parking mode",
     group: "tech",
-    provenance: "MOTORBOTZ CUSTOM",
+    provenance: "RIDERZPRO CUSTOM",
     stage: "AVAILABLE",
     blurb: "Front and rear, hard-wired, recording while parked.",
     price: 32_000,
@@ -562,7 +562,7 @@ export const UPGRADES: Upgrade[] = [
     slug: "tech-rear-entertainment",
     name: "Rear entertainment",
     group: "tech",
-    provenance: "MOTORBOTZ CUSTOM",
+    provenance: "RIDERZPRO CUSTOM",
     stage: "AVAILABLE",
     blurb: "Screens for the second row. Independent of the factory three-screen cockpit.",
     price: 78_000,
@@ -574,7 +574,7 @@ export const UPGRADES: Upgrade[] = [
     slug: "ux-roof-storage",
     name: "Roof storage",
     group: "urban-explorer",
-    provenance: "MOTORBOTZ CUSTOM",
+    provenance: "RIDERZPRO CUSTOM",
     stage: "AVAILABLE",
     blurb:
       "Roof box and rails. Expect a real range cost — anything on the roof of an EV is paid for in kilometres at highway speed.",
@@ -585,7 +585,7 @@ export const UPGRADES: Upgrade[] = [
     slug: "ux-all-weather",
     name: "All-weather protection pack",
     group: "urban-explorer",
-    provenance: "MOTORBOTZ CUSTOM",
+    provenance: "RIDERZPRO CUSTOM",
     stage: "AVAILABLE",
     blurb: "Mats, boot liner, mud flaps and seat protection for a car that gets used properly.",
     price: 22_000,
@@ -594,7 +594,7 @@ export const UPGRADES: Upgrade[] = [
     slug: "ux-underbody",
     name: "Underbody protection",
     group: "urban-explorer",
-    provenance: "MOTORBOTZ CONCEPT",
+    provenance: "RIDERZPRO CONCEPT",
     stage: "CONCEPT",
     blurb:
       "Concept only. The battery is structural on this platform and anything bolted beneath it is an engineering question before it is a product question.",

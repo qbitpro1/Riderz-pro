@@ -41,7 +41,7 @@ export function CartView() {
   const total = subtotal + installTotal + shipping;
 
   const message = [
-    "Hi Motorbotz, I'd like to place this order:",
+    "Hi Riderzpro, I'd like to place this order:",
     "",
     ...lines.map(
       (l) =>

@@ -20,7 +20,7 @@ import {
 
 export const metadata: Metadata = {
   title: "BE 6 Programme — Admin",
-  description: "Internal control board for the BE 6 factory data, Motorbotz products and Limited Edition concept.",
+  description: "Internal control board for the BE 6 factory data, Riderzpro products and Limited Edition concept.",
   robots: { index: false, follow: false, nocache: true },
 };
 
@@ -134,7 +134,7 @@ export default function Be6AdminPage() {
             ["Battery packs", String(BATTERIES.length)],
             ["Factory colours", String(COLOURS.length)],
             ["Price range", `${lakh(Math.min(...VARIANTS.flatMap((v) => v.prices.map((p) => p.exShowroom))))} – ${lakh(Math.max(...VARIANTS.flatMap((v) => v.prices.map((p) => p.exShowroom))))}`],
-            ["Motorbotz products", String(UPGRADES.length)],
+            ["Riderzpro products", String(UPGRADES.length)],
             ["On sale now", String(sellable.length)],
             ["Not yet priced", String(unpriced.length)],
             ["3D-printed parts", String(PRINTED_PARTS.length)],
@@ -210,8 +210,8 @@ export default function Be6AdminPage() {
           </div>
         </Board>
 
-        {/* --- MOTORBOTZ PRODUCTS -------------------------------------- */}
-        <Board title="MOTORBOTZ PRODUCTS" note="Modification, price, availability and development stage.">
+        {/* --- RIDERZPRO PRODUCTS -------------------------------------- */}
+        <Board title="RIDERZPRO PRODUCTS" note="Modification, price, availability and development stage.">
           <div className="mb-4 flex flex-wrap gap-2">
             {stageCounts.map((s) => (
               <div key={s.stage} className="border border-white/10 bg-white/[0.02] px-3 py-2">
@@ -308,7 +308,7 @@ export default function Be6AdminPage() {
               No leads store yet
             </p>
             <p className="mt-2 max-w-2xl text-[0.6875rem] leading-relaxed text-ash">
-              The waitlist and quote forms currently hand the enquiry to WhatsApp, which is where Motorbotz enquiries
+              The waitlist and quote forms currently hand the enquiry to WhatsApp, which is where Riderzpro enquiries
               actually land. Nothing is written to a database, so there is nothing to list here. When a leads
               endpoint exists, this board reads from it — the four lead types below are the ones the BE 6 pages
               generate.

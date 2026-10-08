@@ -56,7 +56,7 @@ export const AUDIO_PACKAGES: AudioPackage[] = [
     duration: "3–4 days",
     bestFor: "Owners who want a soundstage sitting on the dashboard, not in the doors",
     includes: [
-      "Motorbotz Signature 3-way front stage",
+      "Riderzpro Signature 3-way front stage",
       "8-channel DSP amplifier with per-driver time alignment",
       "Sealed 10\" subwoofer in a custom-built enclosure",
       "Full-cabin deadening — doors, floor, boot, wheel arches",
@@ -523,7 +523,7 @@ export const PERFORMANCE_SERVICES = [
 ];
 
 export const PERFORMANCE_DISCLAIMER =
-  "Performance modifications must comply with the Central Motor Vehicles Rules and your state RTO's requirements. Motorbotz retains all emissions equipment, keeps sound output within CMVR limits, archives your original ECU map, and will advise where an endorsement or re-certification is required before we begin work. We do not remove catalytic converters, DPFs or any emissions hardware.";
+  "Performance modifications must comply with the Central Motor Vehicles Rules and your state RTO's requirements. Riderzpro retains all emissions equipment, keeps sound output within CMVR limits, archives your original ECU map, and will advise where an endorsement or re-certification is required before we begin work. We do not remove catalytic converters, DPFs or any emissions hardware.";
 
 /* --------------------------------------------------------------- garage */
 

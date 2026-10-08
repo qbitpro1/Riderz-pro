@@ -25,7 +25,7 @@ function buildSnapshot(): InventorySnapshot {
   const listings = merged.map((l) => {
     const status = applyStaleness(l, now);
     // A listing can only claim the verified badge if an inspection backs it.
-    const verification = verifiedBadgeAllowed(l) ? l.verification : l.verification === "MOTORBOTZ_VERIFIED" ? "SOURCE_LISTING" : l.verification;
+    const verification = verifiedBadgeAllowed(l) ? l.verification : l.verification === "RIDERZPRO_VERIFIED" ? "SOURCE_LISTING" : l.verification;
     return { ...l, status, verification };
   });
 
@@ -44,7 +44,7 @@ function buildSnapshot(): InventorySnapshot {
       imagePermission:
         l.images.length === 0
           ? "not-granted"
-          : l.images.every((i) => i.licence === "motorbotz-own")
+          : l.images.every((i) => i.licence === "riderzpro-own")
             ? "own-photography"
             : "granted",
       confidence: l.confidence,
@@ -82,7 +82,7 @@ function buildSnapshot(): InventorySnapshot {
       stale: listings.filter((l) => l.status === "STALE").length,
       sourceErrors: listings.filter((l) => l.status === "SOURCE_ERROR").length,
       duplicatesMerged: raw.length - merged.length,
-      motorbotzVerified: listings.filter((l) => l.verification === "MOTORBOTZ_VERIFIED").length,
+      riderzproVerified: listings.filter((l) => l.verification === "RIDERZPRO_VERIFIED").length,
     },
     listings,
     importLog,
@@ -157,7 +157,7 @@ export const KM_BANDS = [
 ];
 
 /**
- * Motorbotz's own angles on the inventory. These are derived from recorded
+ * Riderzpro's own angles on the inventory. These are derived from recorded
  * facts — drivetrain, listed modifications, marque — never guessed.
  */
 export const SPECIAL_FILTERS = {

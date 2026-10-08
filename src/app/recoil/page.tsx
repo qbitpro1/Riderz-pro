@@ -19,7 +19,7 @@ import { whatsapp } from "@/lib/data/site";
 export const metadata: Metadata = {
   title: "RECOIL Car Audio & Installation — Authorised Reseller",
   description:
-    "The full RECOIL range at Motorbotz: amplifiers, DSP, component and coaxial speakers, subwoofers, damping, wiring, distribution and installation accessories. Authorised reseller, genuine product.",
+    "The full RECOIL range at Riderzpro: amplifiers, DSP, component and coaxial speakers, subwoofers, damping, wiring, distribution and installation accessories. Authorised reseller, genuine product.",
   alternates: { canonical: "/recoil" },
 };
 
@@ -54,7 +54,7 @@ export default function RecoilPage() {
           {[
             { icon: "shield" as const, t: "Genuine products only", b: "Sourced against the official RECOIL price list." },
             { icon: "check" as const, t: "Exact model matching", b: "Every image is matched to its own SKU, never a similar one." },
-            { icon: "wrench" as const, t: "Installation available", b: "Fitted and tuned at three Motorbotz workshops." },
+            { icon: "wrench" as const, t: "Installation available", b: "Fitted and tuned at three Riderzpro workshops." },
             { icon: "spark" as const, t: "Manufacturer-backed data", b: "Specifications published as RECOIL states them." },
           ].map((f, i) => (
             <li key={f.t} className="bg-carbon">
@@ -151,7 +151,7 @@ export default function RecoilPage() {
           </div>
           <div className="flex flex-wrap gap-3 lg:justify-end">
             <a
-              href={whatsapp("Hi Motorbotz, do you stock this RECOIL model number: ")}
+              href={whatsapp("Hi Riderzpro, do you stock this RECOIL model number: ")}
               target="_blank"
               rel="noreferrer noopener"
               className="btn btn-whatsapp"

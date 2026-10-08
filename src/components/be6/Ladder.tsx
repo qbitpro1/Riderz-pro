@@ -166,7 +166,7 @@ export function Ladder() {
       <div className="mt-6 flex flex-wrap items-center gap-3">
         <ProvenanceTag provenance="MAHINDRA FACTORY" />
         <p className="text-[0.6875rem] text-dim">
-          Every figure in this comparison is Mahindra&apos;s. Nothing Motorbotz sells appears in it.
+          Every figure in this comparison is Mahindra&apos;s. Nothing Riderzpro sells appears in it.
         </p>
       </div>
 

@@ -27,7 +27,7 @@ export function AudioBuilder() {
   const grand = total + labour;
 
   const message = [
-    "Hi Motorbotz, I designed an audio system on the website:",
+    "Hi Riderzpro, I designed an audio system on the website:",
     "",
     ...lines.map((l) => `• ${l.label}: ${l.option.name} (${rupees(l.option.price)})`),
     "",
@@ -93,7 +93,7 @@ export function AudioBuilder() {
             Get this quoted
           </a>
           <p className="mt-4 text-[11px] leading-relaxed text-dim">
-            Every Motorbotz system is tuned by ear and by measurement before you collect the car, and
+            Every Riderzpro system is tuned by ear and by measurement before you collect the car, and
             re-tuned free once inside the first month.
           </p>
         </div>

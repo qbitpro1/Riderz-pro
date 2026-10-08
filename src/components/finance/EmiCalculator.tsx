@@ -98,7 +98,7 @@ export function EmiCalculator({
           </div>
           <a
             href={whatsapp(
-              `Hi Motorbotz, I want finance for ${context}. Price ${rupees(price)}, down payment ${downPct}%, tenure ${months} months.`,
+              `Hi Riderzpro, I want finance for ${context}. Price ${rupees(price)}, down payment ${downPct}%, tenure ${months} months.`,
             )}
             target="_blank"
             rel="noreferrer noopener"

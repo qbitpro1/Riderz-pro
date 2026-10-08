@@ -77,7 +77,7 @@ async function handleSheet(request: Request) {
     );
   }
 
-  const response = await fetch(csvUrl, { headers: { "user-agent": "MotorbotzInventory/1.0" } });
+  const response = await fetch(csvUrl, { headers: { "user-agent": "RiderzproInventory/1.0" } });
   if (!response.ok) {
     return NextResponse.json(
       {

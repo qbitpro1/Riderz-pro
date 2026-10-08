@@ -1,14 +1,14 @@
 /**
- * THE MOTORBOTZ VEHICLE NETWORK
+ * THE RIDERZPRO VEHICLE NETWORK
  *
  * Inventory comes to us, rather than us going out and copying it. Every
  * channel below is a supply relationship: a dealer, a fleet, a seller or a
- * partner who has agreed to put their cars in front of Motorbotz buyers.
+ * partner who has agreed to put their cars in front of Riderzpro buyers.
  */
 
 /** Where a vehicle actually comes from. Drives the badge on every card. */
 export type InventoryType =
-  | "MOTORBOTZ_OWNED"
+  | "RIDERZPRO_OWNED"
   | "DEALER_PARTNER"
   | "CONSIGNMENT"
   | "PRIVATE_SELLER"
@@ -20,28 +20,28 @@ export const INVENTORY_TYPES: Record<
   InventoryType,
   { label: string; badge: string; blurb: string; tone: "accent" | "gold" | "neutral" }
 > = {
-  MOTORBOTZ_OWNED: {
-    label: "Motorbotz Owned",
-    badge: "MOTORBOTZ STOCK",
-    blurb: "Bought outright by Motorbotz. We hold the car, the papers and the risk.",
+  RIDERZPRO_OWNED: {
+    label: "Riderzpro Owned",
+    badge: "RIDERZPRO STOCK",
+    blurb: "Bought outright by Riderzpro. We hold the car, the papers and the risk.",
     tone: "accent",
   },
   DEALER_PARTNER: {
     label: "Dealer Partner",
     badge: "DEALER PARTNER",
-    blurb: "Supplied by a registered dealer under a Motorbotz inventory agreement.",
+    blurb: "Supplied by a registered dealer under a Riderzpro inventory agreement.",
     tone: "neutral",
   },
   CONSIGNMENT: {
     label: "Consignment",
     badge: "ON CONSIGNMENT",
-    blurb: "Owned by the seller, held and sold by Motorbotz on their behalf.",
+    blurb: "Owned by the seller, held and sold by Riderzpro on their behalf.",
     tone: "neutral",
   },
   PRIVATE_SELLER: {
     label: "Private Seller",
-    badge: "MOTORBOTZ SELLER",
-    blurb: "A private owner selling through Motorbotz. Enquiries come to us, not to them.",
+    badge: "RIDERZPRO SELLER",
+    blurb: "A private owner selling through Riderzpro. Enquiries come to us, not to them.",
     tone: "neutral",
   },
   MANUFACTURER_CERTIFIED: {
@@ -73,10 +73,10 @@ export type VerificationTier =
   | "LISTED"
   /** The supplier's identity and registration have been verified. Not the car. */
   | "PARTNER_VERIFIED"
-  /** A Motorbotz engineer physically inspected the car. */
-  | "MOTORBOTZ_INSPECTED"
-  /** Inspection plus documentation verified against the Motorbotz checklist. */
-  | "MOTORBOTZ_VERIFIED";
+  /** A Riderzpro engineer physically inspected the car. */
+  | "RIDERZPRO_INSPECTED"
+  /** Inspection plus documentation verified against the Riderzpro checklist. */
+  | "RIDERZPRO_VERIFIED";
 
 export const VERIFICATION_TIERS: Record<
   VerificationTier,
@@ -84,7 +84,7 @@ export const VERIFICATION_TIERS: Record<
 > = {
   LISTED: {
     label: "Listed",
-    means: "Supplied by a dealer or seller. Motorbotz has not checked the car or the paperwork.",
+    means: "Supplied by a dealer or seller. Riderzpro has not checked the car or the paperwork.",
     tone: "neutral",
     rank: 0,
   },
@@ -94,14 +94,14 @@ export const VERIFICATION_TIERS: Record<
     tone: "gold",
     rank: 1,
   },
-  MOTORBOTZ_INSPECTED: {
-    label: "Motorbotz Inspected",
-    means: "A Motorbotz engineer has physically inspected the vehicle on 12 points.",
+  RIDERZPRO_INSPECTED: {
+    label: "Riderzpro Inspected",
+    means: "A Riderzpro engineer has physically inspected the vehicle on 12 points.",
     tone: "accent",
     rank: 2,
   },
-  MOTORBOTZ_VERIFIED: {
-    label: "Motorbotz Verified",
+  RIDERZPRO_VERIFIED: {
+    label: "Riderzpro Verified",
     means: "Inspected, and the RC, insurance, service history and ownership chain verified against the vehicle.",
     tone: "accent",
     rank: 3,
@@ -157,7 +157,7 @@ export const SUPPLY_CHANNELS: SupplyChannel[] = [
     phase: 3,
     intake: ["api"],
     blurb:
-      "Dealers with their own website or DMS push straight into Motorbotz: create, update, price change, mark sold, remove, photos, availability.",
+      "Dealers with their own website or DMS push straight into Riderzpro: create, update, price change, mark sold, remove, photos, availability.",
     requirement: "Dealer requests an API key from the partner portal.",
   },
   {
@@ -217,9 +217,9 @@ export const SUPPLY_CHANNELS: SupplyChannel[] = [
     requirement: "Nothing — this channel is open today.",
   },
   {
-    id: "motorbotz-owned",
-    name: "Motorbotz owned stock",
-    inventoryType: "MOTORBOTZ_OWNED",
+    id: "riderzpro-owned",
+    name: "Riderzpro owned stock",
+    inventoryType: "RIDERZPRO_OWNED",
     status: "LIVE",
     phase: 7,
     intake: ["manual"],
@@ -257,7 +257,7 @@ export const DEALER_PACKAGES = [
     id: "free",
     name: "FREE",
     price: "No cost",
-    blurb: "Get your stock in front of Motorbotz buyers. No card, no commitment.",
+    blurb: "Get your stock in front of Riderzpro buyers. No card, no commitment.",
     features: ["Unlimited listings", "Bulk upload — CSV, Excel, XML, JSON", "Google Sheet sync", "Buyer enquiries by WhatsApp"],
   },
   {
@@ -276,7 +276,7 @@ export const DEALER_PACKAGES = [
   },
   {
     id: "partner",
-    name: "MOTORBOTZ PARTNER",
+    name: "RIDERZPRO PARTNER",
     price: "By invitation",
     blurb: "Full integration, priority placement and first refusal on our buying pipeline.",
     features: [

@@ -20,11 +20,11 @@ export const SEO_LANDINGS: SeoLanding[] = [
     slug: "used-cars",
     eyebrow: "Used cars",
     h1: "USED CARS, WITHOUT THE ASTERISKS.",
-    title: "Used Cars for Sale in India — Motorbotz Certified",
+    title: "Used Cars for Sale in India — Riderzpro Certified",
     description:
       "Buy used cars in Bengaluru, Hyderabad and Pune with a 200-point inspection, RC and insurance verification, transparent pricing and a 5-day return window.",
     intro:
-      "Most used-car problems are not mechanical, they are informational. You cannot see the accident history, the odometer truth or the pending loan — so you overpay for risk. Motorbotz publishes all of it before you call.",
+      "Most used-car problems are not mechanical, they are informational. You cannot see the accident history, the odometer truth or the pending loan — so you overpay for risk. Riderzpro publishes all of it before you call.",
     media: "luxurySaloonMotion",
     cta: { href: "/cars", label: "Browse used cars" },
     secondary: { href: "/sell", label: "Sell your car" },
@@ -47,14 +47,14 @@ export const SEO_LANDINGS: SeoLanding[] = [
       },
       {
         heading: "Five days to change your mind",
-        body: "Five days or 300 km on every Motorbotz Certified car. If our inspection missed something material, we take the car back and refund in full.",
+        body: "Five days or 300 km on every Riderzpro Certified car. If our inspection missed something material, we take the car back and refund in full.",
       },
     ],
     links: [
       { label: "Browse all cars", href: "/cars" },
       { label: "Sell your car", href: "/sell" },
       { label: "EMI calculator", href: "/cars#listings" },
-      { label: "Why Motorbotz", href: "/why-motorbotz" },
+      { label: "Why Riderzpro", href: "/why-riderzpro" },
     ],
   },
   {
@@ -63,7 +63,7 @@ export const SEO_LANDINGS: SeoLanding[] = [
     h1: "CAR MODIFICATION, DONE PROPERLY.",
     title: "Car Modification Near Me — Body Kits, Audio, Off-Road & Performance",
     description:
-      "Car modification in Bengaluru, Hyderabad and Pune. Body kits, facelift conversions, custom interiors, car audio, PPF, off-road builds and performance tuning at Motorbotz.",
+      "Car modification in Bengaluru, Hyderabad and Pune. Body kits, facelift conversions, custom interiors, car audio, PPF, off-road builds and performance tuning at Riderzpro.",
     intro:
       "Modification goes wrong for three reasons: parts that do not fit, work that cannot be undone, and nobody taking responsibility afterwards. We fix all three by doing everything in one workshop and documenting all of it.",
     media: "garageSpotlit",
@@ -97,7 +97,7 @@ export const SEO_LANDINGS: SeoLanding[] = [
       { label: "Custom interiors", href: "/interiors" },
       { label: "Performance garage", href: "/performance" },
       { label: "Off-road garage", href: "/off-road" },
-      { label: "Motorbotz builds", href: "/builds" },
+      { label: "Riderzpro builds", href: "/builds" },
     ],
   },
   {
@@ -123,7 +123,7 @@ export const SEO_LANDINGS: SeoLanding[] = [
       },
       {
         heading: "Installation available on everything",
-        body: "Anything bought from us can be fitted at a Motorbotz garage, usually the same day, with a 12-month workmanship warranty.",
+        body: "Anything bought from us can be fitted at a Riderzpro garage, usually the same day, with a 12-month workmanship warranty.",
       },
       {
         heading: "Fitment guarantee",

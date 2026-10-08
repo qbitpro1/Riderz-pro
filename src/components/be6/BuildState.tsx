@@ -9,8 +9,9 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { BUILDABLE, upgrade, type Upgrade } from "@/lib/data/be6/motorbotz";
+import { BUILDABLE, upgrade, type Upgrade } from "@/lib/data/be6/riderzpro";
 import { battery, coloursFor, variant, type BatteryId, type Variant } from "@/lib/data/be6/factory";
+import { readStored } from "@/lib/storage";
 
 /**
  * One build, shared by every interactive section on the BE 6 page.
@@ -23,7 +24,7 @@ import { battery, coloursFor, variant, type BatteryId, type Variant } from "@/li
  * same spirit as the garage picker.
  */
 
-const KEY = "mb:be6-build";
+const KEY = "rp:be6-build";
 
 export type Be6Build = {
   variantSlug: string;
@@ -65,7 +66,7 @@ export function Be6BuildProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     try {
-      const raw = window.localStorage.getItem(KEY);
+      const raw = readStored(KEY);
       if (!raw) return;
       const saved = JSON.parse(raw) as Partial<Be6Build>;
       // Validate against the current catalogue — a saved build can outlive a

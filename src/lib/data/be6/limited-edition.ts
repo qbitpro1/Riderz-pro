@@ -1,7 +1,7 @@
 /**
- * MOTORBOTZ BE 6 LIMITED EDITION — CONCEPT
+ * RIDERZPRO BE 6 LIMITED EDITION — CONCEPT
  *
- * An independent Motorbotz customisation concept. It is not a Mahindra
+ * An independent Riderzpro customisation concept. It is not a Mahindra
  * variant, not endorsed by Mahindra, and not for sale.
  *
  * This file carries the claims that would do the most damage if they were
@@ -9,26 +9,26 @@
  *
  *   - No ballistic rating is named. None has been tested.
  *   - No cryptographic algorithm is named as implemented. None has been.
- *   - No Motorbotz AI feature is described in a way that could be read as
+ *   - No Riderzpro AI feature is described in a way that could be read as
  *     Mahindra's MAIA or TEQ software, which genuinely exists and genuinely
  *     does some of these things already.
  *   - No production quantity is advertised, because none has been decided.
  */
 
-import type { Stage, ValidationDomain } from "./motorbotz";
+import type { Stage, ValidationDomain } from "./riderzpro";
 
 export const DISCLAIMER =
-  "MOTORBOTZ Limited Edition is an independent customization concept by MOTORBOTZ and is not a factory Mahindra variant.";
+  "RIDERZPRO Limited Edition is an independent customization concept by RIDERZPRO and is not a factory Mahindra variant.";
 
 export const DISCLAIMER_LONG =
-  "The MOTORBOTZ BE 6 Limited Edition is an independent aftermarket concept developed by MOTORBOTZ. It is not a Mahindra product, not a Mahindra variant, and carries no Mahindra endorsement, certification or partnership. Mahindra and BE 6 are trademarks of Mahindra & Mahindra Ltd, used here to identify the vehicle the concept is based on. The factory vehicle, its specifications and its warranty are Mahindra's; everything described as MOTORBOTZ is ours.";
+  "The RIDERZPRO BE 6 Limited Edition is an independent aftermarket concept developed by RIDERZPRO. It is not a Mahindra product, not a Mahindra variant, and carries no Mahindra endorsement, certification or partnership. Mahindra and BE 6 are trademarks of Mahindra & Mahindra Ltd, used here to identify the vehicle the concept is based on. The factory vehicle, its specifications and its warranty are Mahindra's; everything described as RIDERZPRO is ours.";
 
 export const LE_HEADLINE = {
-  name: "MOTORBOTZ BE 6",
+  name: "RIDERZPRO BE 6",
   line: "LIMITED EDITION",
   status: "COMING SOON",
   sub: "The BE 6, rebuilt without limits.",
-  positioning: "MOTORBOTZ BE 6 Limited Edition — Independent Custom Concept.",
+  positioning: "RIDERZPRO BE 6 Limited Edition — Independent Custom Concept.",
 };
 
 /**
@@ -37,7 +37,7 @@ export const LE_HEADLINE = {
  * advertised. `quantity: null` is the whole point of this object.
  */
 export const NUMBERING = {
-  badgeFormat: "MOTORBOTZ BE 6 — 001/___",
+  badgeFormat: "RIDERZPRO BE 6 — 001/___",
   quantity: null as number | null,
   note:
     "The concept is designed to support a numbered limited run. No production quantity has been decided, so none is advertised. The badge shows the format, not a promise.",
@@ -310,7 +310,7 @@ export type ConceptModule = {
 
 export const ARMOR: ConceptModule = {
   slug: "armor",
-  name: "MOTORBOTZ ARMOR — CONCEPT",
+  name: "RIDERZPRO ARMOR — CONCEPT",
   status: "CONCEPT",
   tagline: "A security concept. Not an armoured vehicle.",
   body:
@@ -334,7 +334,7 @@ export const ARMOR: ConceptModule = {
 
 export const SECURITY_GLASS: ConceptModule = {
   slug: "security-glass",
-  name: "MOTORBOTZ SECURITY GLASS",
+  name: "RIDERZPRO SECURITY GLASS",
   status: "COMING SOON",
   tagline: "CONCEPT — COMING SOON",
   body:
@@ -358,20 +358,20 @@ export const SECURITY_GLASS: ConceptModule = {
 
 export const QUANTUM_SHIELD: ConceptModule = {
   slug: "quantum-shield",
-  name: "MOTORBOTZ QUANTUM SHIELD",
+  name: "RIDERZPRO QUANTUM SHIELD",
   status: "CONCEPT",
   tagline: "A security architecture concept. Designed around modern and post-quantum-ready security principles.",
   body:
-    "Quantum Shield is an architecture study for the Motorbotz systems that would talk to a vehicle — our app, our telemetry, our keys — not a claim about the car. Mahindra's own systems are Mahindra's. What we are working out is how anything we add would authenticate, communicate and be updated without becoming the weakest link in someone's car.",
+    "Quantum Shield is an architecture study for the Riderzpro systems that would talk to a vehicle — our app, our telemetry, our keys — not a claim about the car. Mahindra's own systems are Mahindra's. What we are working out is how anything we add would authenticate, communicate and be updated without becoming the weakest link in someone's car.",
   notClaiming: [
     'We do not claim anything is "unhackable".',
     'We do not claim anything is "impossible to breach".',
-    "We do not claim the vehicle becomes post-quantum secure because a Motorbotz component is fitted.",
+    "We do not claim the vehicle becomes post-quantum secure because a Riderzpro component is fitted.",
     "We name no specific cryptographic algorithm as implemented, because none has been implemented or validated yet.",
     "We make no claim about the security of Mahindra's factory systems, which are outside our scope.",
   ],
   requirements: [
-    "Threat model for every Motorbotz component that touches the vehicle",
+    "Threat model for every Riderzpro component that touches the vehicle",
     "Independent security review of the architecture before any implementation",
     "Selection of recognised post-quantum cryptographic standards at implementation time, published only once validated",
     "Key management and secure provisioning design",
@@ -397,7 +397,7 @@ export const QUANTUM_AREAS = [
 /* ------------------------------------------------------------------ */
 
 export const AI_SEPARATION =
-  "Mahindra's BE 6 already runs its own AI software: the MAIA architecture and six TEQ suites, including TEQ_Talk built with Google Gemini and TEQ_Me driver personalisation. Those are factory features and they are described in the factory section of this site. Everything below is a MOTORBOTZ concept — separate software, not yet built, and not an enhancement to Mahindra's system.";
+  "Mahindra's BE 6 already runs its own AI software: the MAIA architecture and six TEQ suites, including TEQ_Talk built with Google Gemini and TEQ_Me driver personalisation. Those are factory features and they are described in the factory section of this site. Everything below is a RIDERZPRO concept — separate software, not yet built, and not an enhancement to Mahindra's system.";
 
 export type AiMode = {
   slug: string;
@@ -441,7 +441,7 @@ export const AI_MODES: AiMode[] = [
     slug: "ai-garage",
     name: "AI GARAGE",
     blurb: "Diagnostics and service reminders, including for the parts we fitted.",
-    does: ["Vehicle diagnostics", "Maintenance reminders", "Motorbotz component health"],
+    does: ["Vehicle diagnostics", "Maintenance reminders", "Riderzpro component health"],
   },
   {
     slug: "ai-guardian",
@@ -453,10 +453,10 @@ export const AI_MODES: AiMode[] = [
 ];
 
 export const VOICE = {
-  name: "MOTORBOTZ AI",
+  name: "RIDERZPRO AI",
   status: "CONCEPT" as const,
   intro:
-    "A concept voice assistant for Motorbotz systems. What it could actually answer depends entirely on what a future vehicle integration is permitted to read — so these are the questions we are designing towards, not features that work today.",
+    "A concept voice assistant for Riderzpro systems. What it could actually answer depends entirely on what a future vehicle integration is permitted to read — so these are the questions we are designing towards, not features that work today.",
   examples: [
     "What's my range?",
     "Find the nearest fast charger.",
@@ -465,7 +465,7 @@ export const VOICE = {
     "How much battery will I have when I reach?",
   ],
   caveat:
-    "Mahindra's TEQ_Talk, built with Google Gemini, already answers questions like these in the factory car. A Motorbotz assistant would only be worth building for things TEQ_Talk cannot reach — our own components, our own service history, our own build.",
+    "Mahindra's TEQ_Talk, built with Google Gemini, already answers questions like these in the factory car. A Riderzpro assistant would only be worth building for things TEQ_Talk cannot reach — our own components, our own service history, our own build.",
 };
 
 export type DriveMode = { slug: string; name: string; blurb: string };
@@ -480,37 +480,37 @@ export const DRIVE_MODES: DriveMode[] = [
 ];
 
 export const DRIVE_MODES_NOTICE =
-  "These are MOTORBOTZ concepts, not factory drive modes. Mahindra's own TEQ_Drive provides Custom Drive Mode, Drift Mode and Tribe Drive on the factory car. Nothing here modifies or replaces them.";
+  "These are RIDERZPRO concepts, not factory drive modes. Mahindra's own TEQ_Drive provides Custom Drive Mode, Drift Mode and Tribe Drive on the factory car. Nothing here modifies or replaces them.";
 
 /* ------------------------------------------------------------------ */
-/* FACTORY vs MOTORBOTZ                                                */
+/* FACTORY vs RIDERZPRO                                                */
 /* ------------------------------------------------------------------ */
 
 export type ComparisonRow = {
   label: string;
   factory: string;
-  motorbotz: string;
+  riderzpro: string;
   /** Marks the row as describing something not yet real on our side. */
   conceptual?: boolean;
 };
 
 export const COMPARISON: ComparisonRow[] = [
-  { label: "Factory powertrain", factory: "Yes", motorbotz: "Yes — unmodified" },
-  { label: "Factory battery and warranty", factory: "Yes", motorbotz: "Yes — untouched" },
-  { label: "Mahindra MAIA / TEQ suites", factory: "Yes", motorbotz: "Yes — factory software, unmodified" },
-  { label: "Custom exterior", factory: "—", motorbotz: "Motorbotz" },
-  { label: "3D-printed parts", factory: "—", motorbotz: "Motorbotz" },
-  { label: "Premium audio", factory: "16-speaker Harman Kardon", motorbotz: "Motorbotz DSP, amplification and damping over it" },
-  { label: "PPF and coating", factory: "Accessory", motorbotz: "Motorbotz" },
-  { label: "Custom interior", factory: "Accessory", motorbotz: "Motorbotz" },
-  { label: "Vehicle security", factory: "TEQ_Secure, Secure360 Pro, digital key", motorbotz: "Motorbotz concept, additional to it", conceptual: true },
-  { label: "AI features", factory: "MAIA architecture, six TEQ suites", motorbotz: "Motorbotz concept, separate software", conceptual: true },
-  { label: "Ballistic protection", factory: "—", motorbotz: "Concept — untested, uncertified", conceptual: true },
-  { label: "Post-quantum security", factory: "—", motorbotz: "Concept — architecture study only", conceptual: true },
+  { label: "Factory powertrain", factory: "Yes", riderzpro: "Yes — unmodified" },
+  { label: "Factory battery and warranty", factory: "Yes", riderzpro: "Yes — untouched" },
+  { label: "Mahindra MAIA / TEQ suites", factory: "Yes", riderzpro: "Yes — factory software, unmodified" },
+  { label: "Custom exterior", factory: "—", riderzpro: "Riderzpro" },
+  { label: "3D-printed parts", factory: "—", riderzpro: "Riderzpro" },
+  { label: "Premium audio", factory: "16-speaker Harman Kardon", riderzpro: "Riderzpro DSP, amplification and damping over it" },
+  { label: "PPF and coating", factory: "Accessory", riderzpro: "Riderzpro" },
+  { label: "Custom interior", factory: "Accessory", riderzpro: "Riderzpro" },
+  { label: "Vehicle security", factory: "TEQ_Secure, Secure360 Pro, digital key", riderzpro: "Riderzpro concept, additional to it", conceptual: true },
+  { label: "AI features", factory: "MAIA architecture, six TEQ suites", riderzpro: "Riderzpro concept, separate software", conceptual: true },
+  { label: "Ballistic protection", factory: "—", riderzpro: "Concept — untested, uncertified", conceptual: true },
+  { label: "Post-quantum security", factory: "—", riderzpro: "Concept — architecture study only", conceptual: true },
 ];
 
 export const COMPARISON_NOTICE =
-  "Rows marked as concept are not production-ready and cannot be bought. Nothing in the MOTORBOTZ column is a Mahindra feature.";
+  "Rows marked as concept are not production-ready and cannot be bought. Nothing in the RIDERZPRO column is a Mahindra feature.";
 
 /* ------------------------------------------------------------------ */
 /* WAITLIST                                                            */

@@ -26,7 +26,7 @@ import { whatsapp } from "@/lib/data/site";
 export const metadata: Metadata = {
   title: "Paint Protection Film (PPF) — Packages, Films & Installation",
   description:
-    "Premium paint protection film at Motorbotz. Essential, full front and full body packages for mid-range SUVs through to luxury and exotic cars. Build your package and get an indicative price.",
+    "Premium paint protection film at Riderzpro. Essential, full front and full body packages for mid-range SUVs through to luxury and exotic cars. Build your package and get an indicative price.",
   alternates: { canonical: "/ppf" },
 };
 
@@ -325,7 +325,7 @@ export default function PpfPage() {
           </div>
 
           <div>
-            <SectionHead eyebrow="Why Motorbotz" title="WHAT WE ACTUALLY DO." />
+            <SectionHead eyebrow="Why Riderzpro" title="WHAT WE ACTUALLY DO." />
             <ul className="grid gap-2 sm:grid-cols-2">
               {[
                 "Professional installation",
@@ -346,7 +346,7 @@ export default function PpfPage() {
               ))}
             </ul>
             <p className="mt-4 text-[11px] leading-relaxed text-dim">
-              We do not publish a generic &ldquo;Motorbotz warranty&rdquo; on the film itself. The
+              We do not publish a generic &ldquo;Riderzpro warranty&rdquo; on the film itself. The
               film&apos;s warranty is the manufacturer&apos;s, and it is published per product with its
               own conditions and exclusions. Ours covers our workmanship.
             </p>
@@ -401,7 +401,7 @@ export default function PpfPage() {
               <Icon name="arrow" size={15} />
             </Link>
             <a
-              href={whatsapp("Hi Motorbotz, I want a PPF quote for my ")}
+              href={whatsapp("Hi Riderzpro, I want a PPF quote for my ")}
               target="_blank"
               rel="noreferrer noopener"
               className="btn btn-whatsapp btn-block mt-3"

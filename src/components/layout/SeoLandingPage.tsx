@@ -43,7 +43,7 @@ export function SeoLandingPage({ landing }: { landing: SeoLanding }) {
               <Icon name="arrow" size={15} />
             </Link>
             <a
-              href={whatsapp(`Hi Motorbotz, I found you looking for ${landing.eyebrow.toLowerCase()}. `)}
+              href={whatsapp(`Hi Riderzpro, I found you looking for ${landing.eyebrow.toLowerCase()}. `)}
               target="_blank"
               rel="noreferrer noopener"
               className="btn btn-whatsapp"

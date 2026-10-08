@@ -39,7 +39,7 @@ export function PolicyPage({ policy, parent }: { policy: Policy; parent: { label
           </div>
           <div className="flex gap-3">
             <a
-              href={whatsapp("Hi Motorbotz, I have a support question about ")}
+              href={whatsapp("Hi Riderzpro, I have a support question about ")}
               target="_blank"
               rel="noreferrer noopener"
               className="btn btn-whatsapp btn-sm"

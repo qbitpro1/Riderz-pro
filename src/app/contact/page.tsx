@@ -7,9 +7,9 @@ import { Icon } from "@/components/ui/Icon";
 import { LOCATIONS, SITE, whatsapp } from "@/lib/data/site";
 
 export const metadata: Metadata = {
-  title: "Contact Motorbotz",
+  title: "Contact Riderzpro",
   description:
-    "Talk to Motorbotz on WhatsApp or by phone about cars, accessories, builds, audio, PPF, off-road work and workshop bookings across Bengaluru, Hyderabad and Pune.",
+    "Talk to Riderzpro on WhatsApp or by phone about cars, accessories, builds, audio, PPF, off-road work and workshop bookings across Bengaluru, Hyderabad and Pune.",
   alternates: { canonical: "/contact" },
 };
 
@@ -18,7 +18,7 @@ const CHANNELS = [
     title: "WhatsApp",
     body: "Fastest route to a human. Fitment questions, quotes, order updates, build photos.",
     action: "Message us",
-    href: whatsapp("Hi Motorbotz, "),
+    href: whatsapp("Hi Riderzpro, "),
     icon: "whatsapp" as const,
     external: true,
   },
@@ -88,7 +88,7 @@ export default function ContactPage() {
             <SectionHead
               eyebrow="Support"
               title="EVERYTHING ELSE."
-              blurb="Registered office: No. 14, Hosur Main Road, Kudlu Gate, Bengaluru 560068. GSTIN 29AAJCM4412Q1ZP."
+              blurb={`Registered office: No. 14, Hosur Main Road, Kudlu Gate, Bengaluru 560068. GSTIN ${SITE.gstin}.`}
             />
             <ul className="space-y-2.5">
               {QUICK_LINKS.map((l) => (

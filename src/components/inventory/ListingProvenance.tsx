@@ -16,13 +16,13 @@ export function ProvenanceBanner({ listing }: { listing: Listing }) {
     <div className={`card p-5 ${verified ? "border-accent/35 bg-accent/6" : "border-gold/25 bg-gold/5"}`}>
       <p className={`flex items-center gap-2 font-display text-sm font-extrabold uppercase ${verified ? "text-accent" : "text-gold"}`}>
         <Icon name="shield" size={16} />
-        {verified ? "Motorbotz Verified" : attribution.label}
+        {verified ? "Riderzpro Verified" : attribution.label}
       </p>
 
       <p className="mt-2 text-sm leading-relaxed text-chalk/85">
         {verified
-          ? "Motorbotz has physically inspected this car. The 12-point report is published below and the documents have been checked against the vehicle."
-          : "Motorbotz has not inspected this car. Everything below is as supplied by the source and is shown unverified — request an inspection and we will check it for you before you commit."}
+          ? "Riderzpro has physically inspected this car. The 12-point report is published below and the documents have been checked against the vehicle."
+          : "Riderzpro has not inspected this car. Everything below is as supplied by the source and is shown unverified — request an inspection and we will check it for you before you commit."}
       </p>
 
       <dl className="mt-4 grid gap-2 text-xs sm:grid-cols-2">
@@ -93,7 +93,7 @@ const CONDITION_LABELS: { key: keyof ConditionReport; label: string }[] = [
   { key: "numberOfKeys", label: "Number of keys" },
 ];
 
-/** Source claims and Motorbotz findings sit in separate columns, always. */
+/** Source claims and Riderzpro findings sit in separate columns, always. */
 export function ConditionTable({ listing }: { listing: Listing }) {
   return (
     <div className="overflow-x-auto">
@@ -102,7 +102,7 @@ export function ConditionTable({ listing }: { listing: Listing }) {
           <tr className="border-b border-white/12 text-left text-[10px] uppercase tracking-[0.14em] text-dim">
             <th className="p-2.5">Item</th>
             <th className="p-2.5">Source reported</th>
-            <th className="p-2.5">Motorbotz verified</th>
+            <th className="p-2.5">Riderzpro verified</th>
           </tr>
         </thead>
         <tbody>
@@ -115,10 +115,10 @@ export function ConditionTable({ listing }: { listing: Listing }) {
                   {field.sourceReported ?? <span className="text-dim">Not specified</span>}
                 </td>
                 <td className="p-2.5 text-xs">
-                  {field.motorbotzVerified ? (
+                  {field.riderzproVerified ? (
                     <span className="flex items-start gap-1.5 text-accent">
                       <Icon name="check" size={12} className="mt-0.5 shrink-0" />
-                      {field.motorbotzVerified}
+                      {field.riderzproVerified}
                     </span>
                   ) : (
                     <span className="text-gold">Not verified</span>
@@ -139,7 +139,7 @@ export function InspectionReport({ listing }: { listing: Listing }) {
       <div className="card p-5">
         <p className="font-display text-sm font-extrabold uppercase text-gold">Not yet inspected</p>
         <p className="mt-2 text-sm text-ash">
-          No Motorbotz inspection has been carried out on this car. All twelve points below are open.
+          No Riderzpro inspection has been carried out on this car. All twelve points below are open.
         </p>
         <ul className="mt-4 flex flex-wrap gap-1.5">
           {INSPECTION_POINTS.map((p) => (
@@ -156,7 +156,7 @@ export function InspectionReport({ listing }: { listing: Listing }) {
     <div className="card p-5">
       <p className="verified mb-3">
         <Icon name="shield" size={12} />
-        Motorbotz Inspected
+        Riderzpro Inspected
       </p>
       <p className="text-xs text-dim">
         {formatIST(listing.inspection.inspectedAt)} · {listing.inspection.inspector}
@@ -202,7 +202,7 @@ export function BuildItNext({ listing }: { listing: Listing }) {
 
   return (
     <div className="card p-6">
-      <p className="eyebrow mb-2">Motorbotz can also help you with</p>
+      <p className="eyebrow mb-2">Riderzpro can also help you with</p>
       <h2 className="display-3">BUY IT. THEN BUILD IT.</h2>
       <p className="mt-3 max-w-xl text-sm leading-relaxed text-ash">
         Every car we sell can go straight from handover into our workshop. Roll the build into the

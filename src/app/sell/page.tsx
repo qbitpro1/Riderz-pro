@@ -9,7 +9,7 @@ import { whatsapp } from "@/lib/data/site";
 export const metadata: Metadata = {
   title: "Sell Your Car — Free Valuation & Same-Day Payment",
   description:
-    "Sell your used car to Motorbotz. Free valuation, free 200-point inspection at your home, payment before RC transfer, and full documentation support.",
+    "Sell your used car to Riderzpro. Free valuation, free 200-point inspection at your home, payment before RC transfer, and full documentation support.",
   alternates: { canonical: "/sell" },
 };
 
@@ -20,7 +20,7 @@ const STEPS = [
   { n: "04", title: "Enter kilometres", body: "Honest numbers get honest offers. We verify against the OBD anyway." },
   { n: "05", title: "Enter condition", body: "Tell us about dents, repaints and anything pending." },
   { n: "06", title: "Get estimated valuation", body: "An indicative range in under sixty seconds, on this page." },
-  { n: "07", title: "Schedule inspection", body: "At your home or any Motorbotz garage. Around 45 minutes, free." },
+  { n: "07", title: "Schedule inspection", body: "At your home or any Riderzpro garage. Around 45 minutes, free." },
   { n: "08", title: "Receive offer", body: "A firm written offer, valid for seven days. No pressure, no haggling." },
 ];
 
@@ -122,7 +122,7 @@ export default function SellPage() {
               a free inspection, usually within twenty minutes.
             </p>
             <a
-              href={whatsapp("Hi Motorbotz, I want to sell my car. Registration number: ")}
+              href={whatsapp("Hi Riderzpro, I want to sell my car. Registration number: ")}
               target="_blank"
               rel="noreferrer noopener"
               className="btn btn-whatsapp btn-block mt-5"

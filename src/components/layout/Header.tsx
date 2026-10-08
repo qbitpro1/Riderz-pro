@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { SearchPanel } from "@/components/search/SearchPanel";
+import { Logo } from "@/components/brand/Logo";
 import { useCart } from "@/components/cart/CartContext";
 import { PRIMARY_NAV, SECONDARY_NAV, SITE, whatsapp } from "@/lib/data/site";
 
@@ -42,7 +43,7 @@ export function Header() {
         }`}
       >
         <div className="shell flex h-14 items-center justify-between gap-4 md:h-[68px]">
-          <Link href="/" className="group flex shrink-0 items-center gap-2" aria-label="Motorbotz home">
+          <Link href="/" className="group flex shrink-0 items-center gap-2" aria-label="Riderzpro home">
             <Logo />
           </Link>
 
@@ -83,7 +84,7 @@ export function Header() {
             </Link>
 
             <a
-              href={whatsapp("Hi Motorbotz, I have a question.")}
+              href={whatsapp("Hi Riderzpro, I have a question.")}
               target="_blank"
               rel="noreferrer noopener"
               className="hidden h-10 items-center gap-2 border border-white/15 px-3 font-display text-[11px] font-bold uppercase tracking-[0.14em] text-chalk/85 transition-colors hover:border-[#1faa53] hover:text-[#3ddc7f] lg:inline-flex"
@@ -136,20 +137,11 @@ function IconButton({
   );
 }
 
-export function Logo({ className = "" }: { className?: string }) {
-  return (
-    <span className={`flex items-baseline font-display text-[19px] font-extrabold tracking-[-0.04em] md:text-[22px] ${className}`}>
-      MOTOR
-      <span className="text-accent">BOTZ</span>
-    </span>
-  );
-}
-
 function MegaMenu({ onClose }: { onClose: () => void }) {
   return (
     <div className="fixed inset-0 top-14 z-40 overflow-y-auto bg-void/97 backdrop-blur-xl md:top-[68px]">
       <div className="shell py-8">
-        <p className="eyebrow mb-5">Everything Motorbotz</p>
+        <p className="eyebrow mb-5">Everything Riderzpro</p>
         <ul className="grid gap-px overflow-hidden border border-white/8 bg-white/8 sm:grid-cols-2 lg:grid-cols-4">
           {PRIMARY_NAV.map((item) => (
             <li key={item.href} className="bg-void">
@@ -192,7 +184,7 @@ function MegaMenu({ onClose }: { onClose: () => void }) {
             <p className="eyebrow mb-4">Talk to us</p>
             <div className="flex flex-col gap-3 sm:flex-row">
               <a
-                href={whatsapp("Hi Motorbotz, I want to discuss a build.")}
+                href={whatsapp("Hi Riderzpro, I want to discuss a build.")}
                 target="_blank"
                 rel="noreferrer noopener"
                 className="btn btn-whatsapp btn-block sm:w-auto"

@@ -13,7 +13,7 @@ import { TRUST_POINTS, whatsapp } from "@/lib/data/site";
 export const metadata: Metadata = {
   title: "Buy Used Cars in India — Verified, Inspected & Certified",
   description:
-    "Browse Motorbotz Certified used, modified, off-road and luxury cars. 200-point inspection, RC and insurance verification, transparent pricing and finance from 11 lenders.",
+    "Browse Riderzpro Certified used, modified, off-road and luxury cars. 200-point inspection, RC and insurance verification, transparent pricing and finance from 11 lenders.",
   alternates: { canonical: "/cars" },
 };
 
@@ -38,7 +38,7 @@ export default function CarsPage() {
   return (
     <>
       <PageHero
-        eyebrow="Motorbotz Marketplace"
+        eyebrow="Riderzpro Marketplace"
         title="CARS WORTH BUYING."
         blurb="New, used, certified, modified, off-road, luxury and performance. Every listing carries an inspection report you can read before you call us."
         media="luxurySaloonMotion"
@@ -90,7 +90,7 @@ export default function CarsPage() {
               ))}
             </ul>
           </div>
-          <EmiCalculator context="a car from Motorbotz" />
+          <EmiCalculator context="a car from Riderzpro" />
         </div>
       </section>
 
@@ -118,7 +118,7 @@ export default function CarsPage() {
             </div>
             <div className="flex flex-wrap gap-3">
               <a
-                href={whatsapp("Hi Motorbotz, I'm looking for a car. My requirement is: ")}
+                href={whatsapp("Hi Riderzpro, I'm looking for a car. My requirement is: ")}
                 target="_blank"
                 rel="noreferrer noopener"
                 className="btn btn-whatsapp btn-sm"

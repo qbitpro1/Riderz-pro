@@ -43,7 +43,7 @@ export const SPEC_GROUPS: SpecGroup[] = [
       {
         label: "Factory drive modes",
         value: val("Default, Range, Everyday, Race, Custom and Snow", "mahindra-brochure"),
-        note: "These six are Mahindra's. Any Motorbotz drive mode is a separate concept and is labelled as one.",
+        note: "These six are Mahindra's. Any Riderzpro drive mode is a separate concept and is labelled as one.",
       },
       { label: "Regeneration", value: val("L0, L1, L2, L3 — plus Auto from THREE upward. Single-pedal drive across the range.", "mahindra-brochure") },
       {
@@ -128,7 +128,7 @@ export const SPEC_GROUPS: SpecGroup[] = [
   {
     slug: "chassis",
     title: "CHASSIS & WHEELS",
-    caption: "Factory rolling stock and suspension. Motorbotz alternatives are a separate list, never mixed into this one.",
+    caption: "Factory rolling stock and suspension. Riderzpro alternatives are a separate list, never mixed into this one.",
     rows: [
       { label: "Steering", value: val("Electric power steering with variable gear ratio", "mahindra-brochure") },
       { label: "Front suspension", value: val("McPherson strut i-Link independent, with stabiliser bar", "mahindra-brochure") },
@@ -146,7 +146,7 @@ export const SPEC_GROUPS: SpecGroup[] = [
       {
         label: "Tyre sizes",
         value: pending("Section widths and profiles are not given in the brochure."),
-        note: "Motorbotz will not validate a wheel or tyre fitment against an unpublished factory size.",
+        note: "Riderzpro will not validate a wheel or tyre fitment against an unpublished factory size.",
       },
       { label: "Brakes", value: val("All-wheel disc, brake-by-wire, intelligent electronic brake booster", "mahindra-brochure") },
     ],
@@ -198,7 +198,7 @@ export const SPEC_GROUPS: SpecGroup[] = [
  *
  * Mahindra's own in-car software, built on its MAIA architecture. This matters
  * for more than completeness: the factory car now genuinely ships AI features,
- * so any Motorbotz AI concept has to be visibly separated from these six or
+ * so any Riderzpro AI concept has to be visibly separated from these six or
  * the customer will reasonably assume we are describing the same thing.
  */
 export type TeqSuite = {
@@ -417,7 +417,7 @@ export const HOTSPOTS: Hotspot[] = [
     x: 16,
     y: 46,
     view: "exterior",
-    body: "The BE 6's lighting signature is one of the most recognisable things about the car. Motorbotz will not alter the factory headlamp function — see the Light Lab note on road legality.",
+    body: "The BE 6's lighting signature is one of the most recognisable things about the car. Riderzpro will not alter the factory headlamp function — see the Light Lab note on road legality.",
   },
   {
     slug: "wheels",
@@ -546,5 +546,5 @@ export const REAL_WORLD_RANGE = {
     certified: b.certifiedRangeKm,
   })),
   note:
-    "Both figures above are Mahindra's. Motorbotz does not publish a real-world estimate of its own until we have driven a customer's car on their own route.",
+    "Both figures above are Mahindra's. Riderzpro does not publish a real-world estimate of its own until we have driven a customer's car on their own route.",
 };

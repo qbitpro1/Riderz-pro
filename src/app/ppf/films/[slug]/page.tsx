@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: `${brand?.name} ${film.name} — PPF Specifications & Warranty`,
     description: `${brand?.name} ${film.name}: ${film.finish.toLowerCase()} paint protection film${
       film.warrantyYears.value ? ` with a published ${film.warrantyYears.value}-year manufacturer warranty` : ""
-    }. Installed by Motorbotz.`,
+    }. Installed by Riderzpro.`,
     alternates: { canonical: `/ppf/films/${film.slug}` },
   };
 }
@@ -177,7 +177,7 @@ export default async function PpfFilmPage({ params }: { params: Promise<{ slug: 
               )}
 
               <p className="mt-4 text-xs leading-relaxed text-dim">
-                Separately, Motorbotz warrants its own installation workmanship for 12 months. That is
+                Separately, Riderzpro warrants its own installation workmanship for 12 months. That is
                 our warranty, not the manufacturer&apos;s, and the two do not overlap.
               </p>
             </div>
@@ -185,7 +185,7 @@ export default async function PpfFilmPage({ params }: { params: Promise<{ slug: 
             {/* sidebar -------------------------------------------- */}
             <aside className="lg:sticky lg:top-24">
               <div className="card p-5">
-                <p className="label mb-1">Motorbotz installed rate</p>
+                <p className="label mb-1">Riderzpro installed rate</p>
                 <p className="font-display text-3xl font-extrabold tracking-[-0.04em] tnum">
                   ₹{TIER_RATES[film.tier].min}–{TIER_RATES[film.tier].max}
                 </p>
@@ -197,7 +197,7 @@ export default async function PpfFilmPage({ params }: { params: Promise<{ slug: 
                   <Icon name="arrow" size={15} />
                 </Link>
                 <a
-                  href={whatsapp(`Hi Motorbotz, I'm interested in ${brand?.name} ${film.name} PPF. My car is: `)}
+                  href={whatsapp(`Hi Riderzpro, I'm interested in ${brand?.name} ${film.name} PPF. My car is: `)}
                   target="_blank"
                   rel="noreferrer noopener"
                   className="btn btn-whatsapp btn-block mt-3"

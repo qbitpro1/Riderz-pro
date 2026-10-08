@@ -118,7 +118,7 @@ export default async function BuildDetailPage({ params }: { params: Promise<{ sl
                   <Icon name="arrow" size={15} />
                 </Link>
                 <a
-                  href={whatsapp(`Hi Motorbotz, I want a build like ${build.title} (${build.vehicle}). My car is: `)}
+                  href={whatsapp(`Hi Riderzpro, I want a build like ${build.title} (${build.vehicle}). My car is: `)}
                   target="_blank"
                   rel="noreferrer noopener"
                   className="btn btn-whatsapp btn-block mt-3"

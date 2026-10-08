@@ -33,7 +33,7 @@ export async function generateMetadata({
   const p = getBySlug(slug);
   if (!p) return {};
   return {
-    title: p.seo.title.replace(/ \| MOTORBOTZ$/, ""),
+    title: p.seo.title.replace(/ \| RIDERZPRO$/, ""),
     description: p.seo.metaDescription,
     keywords: p.seo.keywords,
     alternates: { canonical: `/products/${p.slug}` },
@@ -105,7 +105,7 @@ export default async function RecoilProductPage({ params }: { params: Promise<{ 
                   <Icon name="shield" size={11} />
                   Authentic RECOIL
                 </span>
-                <span className="chip">Authorised Motorbotz reseller</span>
+                <span className="chip">Authorised Riderzpro reseller</span>
                 {comingSoon && <span className="chip border-gold/40 bg-gold/12 text-gold">Coming soon</span>}
               </div>
 
@@ -128,7 +128,7 @@ export default async function RecoilProductPage({ params }: { params: Promise<{ 
                 </div>
               </dl>
 
-              {/* Pricing — MRP and the Motorbotz price only. Dealer price never
+              {/* Pricing — MRP and the Riderzpro price only. Dealer price never
                   leaves the server. */}
               <div className="mt-6">
                 {comingSoon ? (
@@ -358,7 +358,7 @@ function overview(p: CatalogProduct): string {
   if (short && short.length > 40) return `${lead} ${trim(short, 600)}`;
   const spec = p.priceListSpecs.slice(0, 2).join(". ");
   const sourced =
-    " Supplied by Motorbotz as an authorised RECOIL reseller, with installation available at our Bengaluru, Hyderabad and Pune workshops.";
+    " Supplied by Riderzpro as an authorised RECOIL reseller, with installation available at our Bengaluru, Hyderabad and Pune workshops.";
   return `${lead}${spec ? ` ${spec}.` : ""}${sourced}`;
 }
 
@@ -366,7 +366,7 @@ function installationNote(p: CatalogProduct): string {
   switch (p.category) {
     case "Amplifiers":
     case "Processors":
-      return "Professional installation strongly recommended. Amplifiers and processors need correctly sized power and ground runs, a fused distribution point and a clean signal take-off; the gain structure then has to be set with a meter rather than by ear. Fitting and tuning are available at any Motorbotz garage.";
+      return "Professional installation strongly recommended. Amplifiers and processors need correctly sized power and ground runs, a fused distribution point and a clean signal take-off; the gain structure then has to be set with a meter rather than by ear. Fitting and tuning are available at any Riderzpro garage.";
     case "Subwoofers":
       return "Professional installation recommended. Enclosure volume and porting determine how a subwoofer performs, so we build the box to the driver rather than dropping it into a generic enclosure.";
     case "Speakers":
@@ -377,7 +377,7 @@ function installationNote(p: CatalogProduct): string {
     case "Power":
       return "Suitable for self-installation by an experienced installer. Power distribution must be fused within 30 cm of the battery. If you are unsure, book the workshop — bad power wiring is a fire risk.";
     default:
-      return "Fits without workshop equipment. Installation is available at any Motorbotz garage if you would prefer us to do it.";
+      return "Fits without workshop equipment. Installation is available at any Riderzpro garage if you would prefer us to do it.";
   }
 }
 
@@ -403,7 +403,7 @@ function buildFaq(p: CatalogProduct) {
   const items = [
     {
       q: "Is this a genuine RECOIL product?",
-      a: `Yes. Motorbotz is an authorised RECOIL reseller. ${p.sku} is stocked against the RECOIL ${p.priceListEdition} price list, and the product photography on this page comes from RECOIL's own media library — matched to this exact model number, never to a similar one.`,
+      a: `Yes. Riderzpro is an authorised RECOIL reseller. ${p.sku} is stocked against the RECOIL ${p.priceListEdition} price list, and the product photography on this page comes from RECOIL's own media library — matched to this exact model number, never to a similar one.`,
     },
     {
       q: "Will it fit my car?",
@@ -418,7 +418,7 @@ function buildFaq(p: CatalogProduct) {
     },
     {
       q: "What warranty does it carry?",
-      a: "Warranty is as offered by RECOIL for this model; we register the claim on your behalf rather than sending you to a helpline. Motorbotz workmanship on any installation we carry out is warranted for 12 months. We do not publish a warranty period for a product unless RECOIL states one.",
+      a: "Warranty is as offered by RECOIL for this model; we register the claim on your behalf rather than sending you to a helpline. Riderzpro workmanship on any installation we carry out is warranted for 12 months. We do not publish a warranty period for a product unless RECOIL states one.",
     },
   ];
 

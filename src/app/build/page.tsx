@@ -11,7 +11,7 @@ import { BUILDS } from "@/lib/data/community";
 export const metadata: Metadata = {
   title: "Build Your Car — Configurator with Live Build Cost",
   description:
-    "Configure your car at Motorbotz: exterior, wheels and tyres, interior, audio and performance. Real parts, real installed prices, a live estimated build cost and a one-tap quote.",
+    "Configure your car at Riderzpro: exterior, wheels and tyres, interior, audio and performance. Real parts, real installed prices, a live estimated build cost and a one-tap quote.",
   alternates: { canonical: "/build" },
 };
 

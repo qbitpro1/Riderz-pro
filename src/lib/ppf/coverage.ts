@@ -117,7 +117,7 @@ export function classForBody(body: string, segment: string): SizeClass {
 /* ------------------------------------------------------------- film rates */
 
 /**
- * Motorbotz installed rates per square foot, as a range. These are our own
+ * Riderzpro installed rates per square foot, as a range. These are our own
  * prices, not a manufacturer's — supplier rates are not published, and we do
  * not pretend otherwise. Labour, consumables and the pattern licence are in
  * the figure.

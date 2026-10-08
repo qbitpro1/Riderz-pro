@@ -141,7 +141,7 @@ export default async function PpfLandingPage({ params }: { params: Promise<{ slu
             {!landing.city?.address && (
               <p className="mt-4 text-xs leading-relaxed text-dim">
                 We do not have a studio in {landing.city?.name} yet. Customers there use the nearest
-                Motorbotz workshop — tell us on WhatsApp and we will sort out logistics.
+                Riderzpro workshop — tell us on WhatsApp and we will sort out logistics.
               </p>
             )}
           </div>
@@ -181,8 +181,8 @@ export default async function PpfLandingPage({ params }: { params: Promise<{ slu
             <a
               href={whatsapp(
                 landing.kind === "vehicle"
-                  ? `Hi Motorbotz, I want a PPF quote for my ${landing.vehicle!.brand} ${landing.vehicle!.model}.`
-                  : `Hi Motorbotz, I want PPF in ${landing.city!.name}. My car is: `,
+                  ? `Hi Riderzpro, I want a PPF quote for my ${landing.vehicle!.brand} ${landing.vehicle!.model}.`
+                  : `Hi Riderzpro, I want PPF in ${landing.city!.name}. My car is: `,
               )}
               target="_blank"
               rel="noreferrer noopener"

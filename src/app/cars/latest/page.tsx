@@ -13,7 +13,7 @@ import { whatsapp } from "@/lib/data/site";
 export const metadata: Metadata = {
   title: "Latest Used Cars — Just Listed",
   description:
-    "The newest cars in the Motorbotz marketplace, ordered by when they were last verified. Delhi NCR and every other city we cover, with the verification timestamp shown on every listing.",
+    "The newest cars in the Riderzpro marketplace, ordered by when they were last verified. Delhi NCR and every other city we cover, with the verification timestamp shown on every listing.",
   alternates: { canonical: "/cars/latest" },
 };
 
@@ -41,7 +41,7 @@ export default function LatestCarsPage() {
           <Stat value={String(SNAPSHOT.totals.listings)} label="Cars listed" />
           <Stat value={String(SNAPSHOT.totals.newToday)} label="Added today" />
           <Stat value={String(SNAPSHOT.totals.priceDrops)} label="Price drops" />
-          <Stat value={String(SNAPSHOT.totals.motorbotzVerified)} label="Motorbotz verified" />
+          <Stat value={String(SNAPSHOT.totals.riderzproVerified)} label="Riderzpro verified" />
         </dl>
         <p className="mt-4 text-xs text-dim">Inventory snapshot: {formatIST(SNAPSHOT.generatedAt)}</p>
       </PageHero>
@@ -55,7 +55,7 @@ export default function LatestCarsPage() {
               Where these cars come from
             </p>
             <p className="mt-2 max-w-3xl text-xs leading-relaxed text-chalk/85">
-              Motorbotz runs its own vehicle network. Inventory comes directly from dealers, fleets,
+              Riderzpro runs its own vehicle network. Inventory comes directly from dealers, fleets,
               private sellers and our own stock — people who choose to put their cars in front of our
               buyers — rather than being copied from another marketplace. Dealers upload the file
               their system already exports, or push straight into our API.
@@ -107,7 +107,7 @@ export default function LatestCarsPage() {
             </div>
             <div className="flex flex-wrap gap-3">
               <a
-                href={whatsapp("Hi Motorbotz, I'm looking for a car. My requirement is: ")}
+                href={whatsapp("Hi Riderzpro, I'm looking for a car. My requirement is: ")}
                 target="_blank"
                 rel="noreferrer noopener"
                 className="btn btn-whatsapp btn-sm"

@@ -13,13 +13,13 @@ import {
   UPGRADES,
   type Upgrade,
   type UpgradeGroupSlug,
-} from "@/lib/data/be6/motorbotz";
+} from "@/lib/data/be6/riderzpro";
 
 /**
- * BUILD YOUR MOTORBOTZ BE 6.
+ * BUILD YOUR RIDERZPRO BE 6.
  *
  * Layer 2: the factory car plus what we fit to it. The factory price and the
- * Motorbotz total are added together but never merged into one line — the
+ * Riderzpro total are added together but never merged into one line — the
  * customer has to be able to see which half of the number is Mahindra's.
  *
  * Anything that is not yet sellable appears with its stage and no price, and
@@ -127,7 +127,7 @@ export function Builder() {
 
           <div className="border-b border-white/[0.07] py-3">
             <div className="mb-2 flex items-center justify-between">
-              <ProvenanceTag provenance="MOTORBOTZ CUSTOM" />
+              <ProvenanceTag provenance="RIDERZPRO CUSTOM" />
               {selected.upgrades.length > 0 && (
                 <button
                   type="button"
@@ -154,7 +154,7 @@ export function Builder() {
 
             <div className="mt-2.5 flex items-baseline justify-between border-t border-white/[0.07] pt-2.5">
               <span className="font-display text-[0.625rem] uppercase tracking-[0.14em] text-ash">
-                Motorbotz upgrades
+                Riderzpro upgrades
               </span>
               <span className="tnum font-display text-sm font-bold text-accent">
                 {rupees(selected.upgradeTotal)}
@@ -164,7 +164,7 @@ export function Builder() {
 
           {/* Concepts are listed, not priced. */}
           <div className="border-b border-white/[0.07] py-3">
-            <ProvenanceTag provenance="MOTORBOTZ CONCEPT" className="mb-2" />
+            <ProvenanceTag provenance="RIDERZPRO CONCEPT" className="mb-2" />
             <ul className="space-y-1">
               {["Armor security", "Security glass", "Quantum Shield", "AI Drive"].map((n) => (
                 <li key={n} className="flex items-baseline justify-between gap-3">
@@ -187,7 +187,7 @@ export function Builder() {
             <p className="tnum mt-1 font-display text-3xl font-extrabold text-chalk">{lakh(total)}</p>
             <p className="mt-1.5 text-[0.625rem] leading-relaxed text-dim">
               Factory price is ex-showroom and excludes registration, insurance, road tax and the wall charger.
-              Motorbotz prices are installed estimates and are confirmed after the car is in front of us.
+              Riderzpro prices are installed estimates and are confirmed after the car is in front of us.
             </p>
           </div>
 
@@ -197,7 +197,7 @@ export function Builder() {
             </button>
             <a
               href={whatsapp(
-                `Hi Motorbotz — I'd like a quote on a BE 6 SPORTEQ ${selected.variant.name} (${selected.battery.label}) with ${selected.upgrades.length} Motorbotz upgrade(s). Estimated build value ${lakh(total)}.`,
+                `Hi Riderzpro — I'd like a quote on a BE 6 SPORTEQ ${selected.variant.name} (${selected.battery.label}) with ${selected.upgrades.length} Riderzpro upgrade(s). Estimated build value ${lakh(total)}.`,
               )}
               target="_blank"
               rel="noopener noreferrer"
@@ -282,7 +282,7 @@ function UpgradeRow({
  */
 function saveBuild(build: unknown) {
   try {
-    window.localStorage.setItem("mb:be6-saved", JSON.stringify({ build, at: new Date().toISOString() }));
+    window.localStorage.setItem("rp:be6-saved", JSON.stringify({ build, at: new Date().toISOString() }));
     window.alert(
       "Build saved to this browser. It will be here when you come back. To have us price it properly, use Request Quote.",
     );

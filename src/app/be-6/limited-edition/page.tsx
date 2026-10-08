@@ -30,14 +30,14 @@ import {
 } from "@/lib/data/be6";
 
 export const metadata: Metadata = {
-  title: "MOTORBOTZ BE 6 Limited Edition — Independent Custom Concept",
+  title: "RIDERZPRO BE 6 Limited Edition — Independent Custom Concept",
   description:
-    "The MOTORBOTZ BE 6 Limited Edition: an independent customization concept by MOTORBOTZ, not a factory Mahindra variant. Exterior, interior, 3D-printed parts, audio, security and AI concepts — each shown with its real development stage.",
+    "The RIDERZPRO BE 6 Limited Edition: an independent customization concept by RIDERZPRO, not a factory Mahindra variant. Exterior, interior, 3D-printed parts, audio, security and AI concepts — each shown with its real development stage.",
   alternates: { canonical: "/be-6/limited-edition" },
   robots: { index: true, follow: true },
   openGraph: {
-    title: "MOTORBOTZ BE 6 LIMITED EDITION — COMING SOON",
-    description: "The BE 6, rebuilt without limits. An independent MOTORBOTZ concept.",
+    title: "RIDERZPRO BE 6 LIMITED EDITION — COMING SOON",
+    description: "The BE 6, rebuilt without limits. An independent RIDERZPRO concept.",
     url: "/be-6/limited-edition",
   },
 };
@@ -164,7 +164,7 @@ export default function LimitedEditionPage() {
       </section>
 
       {/* EXTERIOR --------------------------------------------------------- */}
-      <Section id="exterior" eyebrow="01" title="EXTERIOR" blurb="MOTORBOTZ AERO — printed aero, trim and fender work, each with its version, material and stage.">
+      <Section id="exterior" eyebrow="01" title="EXTERIOR" blurb="RIDERZPRO AERO — printed aero, trim and fender work, each with its version, material and stage.">
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {exterior.map((p) => (
             <PrintedPartCard key={p.slug} part={p} />
@@ -177,7 +177,7 @@ export default function LimitedEditionPage() {
         id="interior"
         eyebrow="02"
         title="INTERIOR"
-        blurb="MOTORBOTZ INTERIOR — storage, docks, trim and the Autoform upholstery catalogue."
+        blurb="RIDERZPRO INTERIOR — storage, docks, trim and the Autoform upholstery catalogue."
         alt
       >
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -193,7 +193,7 @@ export default function LimitedEditionPage() {
         id="technology"
         eyebrow="03"
         title="TECHNOLOGY"
-        blurb="MOTORBOTZ QUANTUM SHIELD — a security architecture concept, not a claim about the car."
+        blurb="RIDERZPRO QUANTUM SHIELD — a security architecture concept, not a claim about the car."
       >
         <ConceptModuleBlock module={QUANTUM_SHIELD} />
 
@@ -220,7 +220,7 @@ export default function LimitedEditionPage() {
         id="security"
         eyebrow="04"
         title="SECURITY"
-        blurb="MOTORBOTZ ARMOR and MOTORBOTZ SECURITY GLASS. The two concepts where careless wording would be dangerous."
+        blurb="RIDERZPRO ARMOR and RIDERZPRO SECURITY GLASS. The two concepts where careless wording would be dangerous."
         alt
       >
         <div className="space-y-4">
@@ -235,7 +235,7 @@ export default function LimitedEditionPage() {
         id="audio"
         eyebrow="05"
         title="AUDIO"
-        blurb="MOTORBOTZ AUDIO 01 — built over the factory 16-speaker Harman Kardon, not ripped out of the car."
+        blurb="RIDERZPRO AUDIO 01 — built over the factory 16-speaker Harman Kardon, not ripped out of the car."
       >
         <div className="card mb-4 p-4">
           <div className="flex flex-wrap items-center gap-2">
@@ -268,7 +268,7 @@ export default function LimitedEditionPage() {
         id="ai"
         eyebrow="06"
         title="AI"
-        blurb="MOTORBOTZ AI DRIVE and MOTORBOTZ AI — concepts, and separate from Mahindra's factory AI."
+        blurb="RIDERZPRO AI DRIVE and RIDERZPRO AI — concepts, and separate from Mahindra's factory AI."
         alt
       >
         <div className="card mb-4 border-accent/25 p-4 md:p-5">
@@ -325,7 +325,7 @@ export default function LimitedEditionPage() {
         {/* Drive modes */}
         <div className="mt-4">
           <h3 className="font-display text-sm font-extrabold uppercase tracking-[0.1em] text-chalk">
-            MOTORBOTZ DRIVE MODES
+            RIDERZPRO DRIVE MODES
           </h3>
           <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {DRIVE_MODES.map((d) => (
@@ -343,12 +343,12 @@ export default function LimitedEditionPage() {
       </Section>
 
       {/* PPF ---------------------------------------------------------------- */}
-      <Section id="ppf" eyebrow="07" title="PPF" blurb="MOTORBOTZ SHIELD — the one part of this page that is entirely real today." alt>
+      <Section id="ppf" eyebrow="07" title="PPF" blurb="RIDERZPRO SHIELD — the one part of this page that is entirely real today." alt>
         <UpgradeStrip group="shield" />
       </Section>
 
       {/* WHEELS -------------------------------------------------------------- */}
-      <Section id="wheels" eyebrow="08" title="WHEELS" blurb="MOTORBOTZ WHEELS — with fitment validation, and a wheel we are refusing to sell yet.">
+      <Section id="wheels" eyebrow="08" title="WHEELS" blurb="RIDERZPRO WHEELS — with fitment validation, and a wheel we are refusing to sell yet.">
         <UpgradeStrip group="wheels" />
         <div className="mt-4 border border-white/10 bg-white/[0.02] p-4">
           <h3 className="font-display text-xs font-bold uppercase tracking-[0.16em] text-chalk">
@@ -363,7 +363,7 @@ export default function LimitedEditionPage() {
       </Section>
 
       {/* LIGHTING ------------------------------------------------------------- */}
-      <Section id="lighting" eyebrow="09" title="CUSTOM LIGHTING" blurb="MOTORBOTZ LIGHT LAB — cabin, welcome and cargo light only." alt>
+      <Section id="lighting" eyebrow="09" title="CUSTOM LIGHTING" blurb="RIDERZPRO LIGHT LAB — cabin, welcome and cargo light only." alt>
         <UpgradeStrip group="light-lab" />
         <ValidationNotice domains={["lighting", "road-legality"]} className="mt-4 max-w-2xl" />
       </Section>
@@ -404,7 +404,7 @@ export default function LimitedEditionPage() {
       </Section>
 
       {/* COMPARISON -------------------------------------------------------------- */}
-      <Section id="compare" eyebrow="11" title="FACTORY vs MOTORBOTZ" blurb="What is Mahindra's, what is ours, and what is still only an idea." alt>
+      <Section id="compare" eyebrow="11" title="FACTORY vs RIDERZPRO" blurb="What is Mahindra's, what is ours, and what is still only an idea." alt>
         <ComparisonTable />
       </Section>
 
@@ -423,7 +423,7 @@ export default function LimitedEditionPage() {
         <div className="shell">
           <SectionHead
             eyebrow="Be first"
-            title="JOIN THE MOTORBOTZ BE 6 WAITLIST"
+            title="JOIN THE RIDERZPRO BE 6 WAITLIST"
             blurb="No deposit, no commitment, no vehicle held. You will hear from us when there is something real."
           />
           <Waitlist />

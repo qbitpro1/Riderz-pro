@@ -24,7 +24,7 @@ const pullUrl = args.includes("--pull") ? args[args.indexOf("--pull") + 1] : nul
 
 const feed = JSON.parse(readFileSync(FEED_FILE, "utf8"));
 
-console.log("Motorbotz inventory refresh");
+console.log("Riderzpro inventory refresh");
 console.log("───────────────────────────");
 
 if (!feed.agreementRef) {
@@ -39,7 +39,7 @@ if (!feed.agreementRef) {
   if (pullUrl) {
     console.log(`\nPulling ${pullUrl}`);
     const res = await fetch(pullUrl, {
-      headers: { "user-agent": "MotorbotzInventory/1.0", accept: "application/json" },
+      headers: { "user-agent": "RiderzproInventory/1.0", accept: "application/json" },
     });
     if (!res.ok) {
       console.error(`  ! HTTP ${res.status} — feed not updated`);
@@ -92,8 +92,8 @@ function validate(v) {
     issues.push('images supplied without imageRights:"granted" — they would not be displayed');
   }
   // Never accept a claim we cannot attribute.
-  if (v.verified || v.motorbotzVerified) {
-    issues.push("a feed cannot set verified status — only a Motorbotz inspection can");
+  if (v.verified || v.riderzproVerified) {
+    issues.push("a feed cannot set verified status — only a Riderzpro inspection can");
   }
   return issues;
 }

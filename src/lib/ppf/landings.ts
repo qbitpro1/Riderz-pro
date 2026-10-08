@@ -66,7 +66,7 @@ function cityLanding(target: (typeof CITY_TARGETS)[number]): PpfLanding {
     )}, full front from ₹${fullFront.low.toLocaleString("en-IN")}. Plotter-cut patterns, dust-controlled installation, manufacturer warranty passed through.`,
     intro: studio
       ? `Our ${target.name} studio has a dedicated dust-controlled room for film work. Book an inspection and we read the paint before quoting — the number on the website is an estimate until we have seen the car.`
-      : `We install paint protection film for customers across ${target.nearby ?? target.name}. Bring the car to the nearest Motorbotz studio and we will read the paint, quote properly and book you in.`,
+      : `We install paint protection film for customers across ${target.nearby ?? target.name}. Bring the car to the nearest Riderzpro studio and we will read the paint, quote properly and book you in.`,
     sizeClass: "mid-suv",
     vehicle: null,
     city: { name: target.name, state: target.state, address: studio?.address ?? null },

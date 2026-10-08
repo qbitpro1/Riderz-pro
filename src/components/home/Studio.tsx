@@ -5,7 +5,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import type { MediaKey } from "@/lib/media";
 
 /**
- * The alternating image / copy band used for each Motorbotz studio on the
+ * The alternating image / copy band used for each Riderzpro studio on the
  * homepage. One component, six sections, consistent rhythm.
  */
 export function Studio({

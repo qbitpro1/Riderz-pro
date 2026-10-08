@@ -16,7 +16,7 @@ export function BrandShopBar({ brand }: { brand: BrandSlug }) {
       <div className="shell flex flex-wrap items-center gap-x-6 gap-y-3 py-4">
         <p className="flex items-center gap-2 text-xs text-ash">
           <Icon name="filter" size={14} className="text-accent" />
-          All {count} {b.name} products are in the Motorbotz shop too — filter them by type, price and
+          All {count} {b.name} products are in the Riderzpro shop too — filter them by type, price and
           fitment against every other brand we stock.
         </p>
         <div className="ml-auto flex flex-wrap items-center gap-4">

@@ -48,7 +48,7 @@ export function ProductActions({ product }: { product: Product }) {
               {installPrice > 0 ? ` — ${rupees(installPrice)}` : " — free"}
             </span>
             <span className="mt-0.5 block text-xs text-ash">
-              Fitted at any Motorbotz garage in about {product.installTime}. Workmanship warranted for
+              Fitted at any Riderzpro garage in about {product.installTime}. Workmanship warranted for
               12 months.
             </span>
           </span>
@@ -94,7 +94,7 @@ export function ProductActions({ product }: { product: Product }) {
           )}
         </button>
         <a
-          href={whatsapp(`Hi Motorbotz, will the ${product.name} fit my car? My car is: `)}
+          href={whatsapp(`Hi Riderzpro, will the ${product.name} fit my car? My car is: `)}
           target="_blank"
           rel="noreferrer noopener"
           className="btn btn-whatsapp"

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Builds the Motorbotz RECOIL catalogue.
+ * Builds the Riderzpro RECOIL catalogue.
  *
  *   node scripts/import-recoil.mjs
  *
@@ -28,7 +28,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const DATA = resolve(ROOT, "data/recoil");
 const OUT = resolve(ROOT, "src/lib/data/recoil/catalog.generated.json");
 
-/** Motorbotz retail margin off MRP, per category. Admin-editable downstream. */
+/** Riderzpro retail margin off MRP, per category. Admin-editable downstream. */
 const DEFAULT_DISCOUNT = { default: 0.12, Amplifiers: 0.1, Subwoofers: 0.1, Speakers: 0.12, Processors: 0.1 };
 
 export const FLAG_MEANINGS = {
@@ -137,7 +137,7 @@ function buildTitle(row) {
  * word boundary rather than amputating the brand suffix.
  */
 function seoTitle(sku, name) {
-  const suffix = " | MOTORBOTZ";
+  const suffix = " | RIDERZPRO";
   const lead = `RECOIL ${sku} `;
   const room = 60 - suffix.length - lead.length;
   let desc = name.replace(/\s+/g, " ").trim();
@@ -150,14 +150,14 @@ function seoTitle(sku, name) {
 
 function metaDescription(row, sellingPrice) {
   const spec = (row.specs || "").split(";")[0];
-  const base = `${row.sku} — ${row.name}.${spec ? ` ${spec}.` : ""} Genuine RECOIL, authorised Motorbotz reseller.${
+  const base = `${row.sku} — ${row.name}.${spec ? ` ${spec}.` : ""} Genuine RECOIL, authorised Riderzpro reseller.${
     sellingPrice ? ` ₹${sellingPrice.toLocaleString("en-IN")}.` : ""
   }`;
   return base.length <= 158 ? base : `${base.slice(0, 155).trimEnd()}…`;
 }
 
 function keywords(row) {
-  const out = new Set(["Recoil", row.sku, row.category, row.subcategory, "car audio", "India", "Motorbotz"]);
+  const out = new Set(["Recoil", row.sku, row.category, row.subcategory, "car audio", "India", "Riderzpro"]);
   if (row.series) out.add(`Recoil ${row.series}`);
   return [...out].filter(Boolean);
 }
@@ -273,7 +273,7 @@ const catalog = priceRows.map((row) => {
     priceListFile: row.__source,
     priceListEdition: "May 2026",
 
-    // Motorbotz commercial layer. DP is admin-only and never rendered.
+    // Riderzpro commercial layer. DP is admin-only and never rendered.
     sellingPrice,
     discountPct: mrp && sellingPrice ? Math.round(((mrp - sellingPrice) / mrp) * 100) : null,
 

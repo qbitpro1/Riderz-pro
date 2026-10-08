@@ -33,7 +33,7 @@ export type PpfBrand = {
   origin: string;
   homepage: string;
   blurb: string;
-  /** Whether Motorbotz is an authorised installer for this brand. */
+  /** Whether Riderzpro is an authorised installer for this brand. */
   installerStatus: "AUTHORISED" | "PENDING" | "PROSPECT";
   imageRights: "granted" | "not-granted";
 };
@@ -90,7 +90,7 @@ export type PpfFilm = {
   /** Only manufacturer images we are licensed to use ever appear here. */
   images: { url: string; source: string; collectedAt: string; authorisation: string }[];
   imagesUnavailableReason: string | null;
-  /** Motorbotz price per square foot, before vehicle and labour factors. */
+  /** Riderzpro price per square foot, before vehicle and labour factors. */
   ratePerSqFt: number | null;
   availability: "IN_STOCK" | "TO_ORDER" | "NOT_STOCKED";
   installationNotes: string[];

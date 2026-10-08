@@ -34,7 +34,7 @@ import type { CategorySlug } from "@/lib/data/products";
 const lower = (...parts: (string | null | undefined)[]) =>
   parts.filter(Boolean).join(" ").toLowerCase().replace(/\s+/g, " ").trim();
 
-/* ------------------------------------------------------------- Motorbotz */
+/* ------------------------------------------------------------- Riderzpro */
 
 /**
  * The house range already carries every field the shop needs, so this is a
@@ -42,9 +42,9 @@ const lower = (...parts: (string | null | undefined)[]) =>
  */
 function houseItem(p: Product): CatalogItem {
   return {
-    id: `motorbotz:${p.slug}`,
-    brand: "motorbotz",
-    brandName: BRAND_BY_SLUG.motorbotz.name,
+    id: `riderzpro:${p.slug}`,
+    brand: "riderzpro",
+    brandName: BRAND_BY_SLUG.riderzpro.name,
     href: `/product/${p.slug}`,
     title: p.name,
     code: null,

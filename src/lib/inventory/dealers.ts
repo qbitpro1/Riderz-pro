@@ -5,7 +5,7 @@ import type { InventoryType, VerificationTier } from "./network";
  * Partner registry — dealers, fleets and auction houses that supply inventory.
  *
  * Registration is what creates the relationship; accepting the inventory
- * agreement is what grants Motorbotz the right to display their vehicles and
+ * agreement is what grants Riderzpro the right to display their vehicles and
  * photographs. Neither is assumed.
  */
 

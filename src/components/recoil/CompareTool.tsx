@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
+import { readStored } from "@/lib/storage";
 
 export type CompareRow = {
   sku: string;
@@ -15,7 +16,7 @@ export type CompareRow = {
   fields: Record<string, string | null>;
 };
 
-const COMPARE_KEY = "motorbotz.compare.v1";
+const COMPARE_KEY = "riderzpro.compare.v1";
 const MAX = 4;
 
 export function CompareTool({ rows, fieldOrder }: { rows: CompareRow[]; fieldOrder: string[] }) {
@@ -189,7 +190,7 @@ export function CompareTool({ rows, fieldOrder }: { rows: CompareRow[]; fieldOrd
 
 function safeRead(): string[] {
   try {
-    const raw = localStorage.getItem(COMPARE_KEY);
+    const raw = readStored(COMPARE_KEY);
     return raw ? (JSON.parse(raw) as string[]) : [];
   } catch {
     return [];

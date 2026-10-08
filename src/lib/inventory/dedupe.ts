@@ -180,8 +180,8 @@ function absorb(keep: Listing, dupe: Listing): void {
   if (new Date(dupe.lastVerifiedAt) > new Date(keep.lastVerifiedAt)) keep.lastVerifiedAt = dupe.lastVerifiedAt;
 
   // Only our own inspection can carry the verified badge across a merge.
-  if (dupe.verification === "MOTORBOTZ_VERIFIED" && dupe.inspection) {
-    keep.verification = "MOTORBOTZ_VERIFIED";
+  if (dupe.verification === "RIDERZPRO_VERIFIED" && dupe.inspection) {
+    keep.verification = "RIDERZPRO_VERIFIED";
     keep.inspection = dupe.inspection;
   }
 

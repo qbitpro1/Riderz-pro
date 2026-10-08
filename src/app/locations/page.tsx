@@ -7,9 +7,9 @@ import { BookingForm } from "@/components/garage/BookingForm";
 import { LOCATIONS, SITE, whatsapp } from "@/lib/data/site";
 
 export const metadata: Metadata = {
-  title: "Visit Motorbotz — Bengaluru, Hyderabad & Pune",
+  title: "Visit Riderzpro — Bengaluru, Hyderabad & Pune",
   description:
-    "Motorbotz garage addresses, phone numbers, opening hours and directions. Car modification, accessories, audio, PPF and off-road builds in Bengaluru, Hyderabad and Pune.",
+    "Riderzpro garage addresses, phone numbers, opening hours and directions. Car modification, accessories, audio, PPF and off-road builds in Bengaluru, Hyderabad and Pune.",
   alternates: { canonical: "/locations" },
 };
 
@@ -19,7 +19,7 @@ export default function LocationsPage() {
   return (
     <>
       <PageHero
-        eyebrow="Visit Motorbotz"
+        eyebrow="Visit Riderzpro"
         title="COME AND SEE THE WORK."
         blurb="Walk into any bay, look at what's on the lifts, talk to the person who will actually build your car. No appointment needed to visit."
         media="garageSpotlit"
@@ -66,7 +66,7 @@ export default function LocationsPage() {
                     {l.phone}
                   </a>
                   <a
-                    href={whatsapp(`Hi Motorbotz ${l.city}, I'd like to visit. `)}
+                    href={whatsapp(`Hi Riderzpro ${l.city}, I'd like to visit. `)}
                     target="_blank"
                     rel="noreferrer noopener"
                     className="btn btn-whatsapp btn-sm"

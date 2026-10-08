@@ -10,7 +10,7 @@ import { WAITLIST_BUDGETS } from "@/lib/data/be6/limited-edition";
  *
  * There is no leads endpoint on this site yet, so the form does not pretend to
  * post to one. It composes the enquiry and hands it to WhatsApp, which is
- * where Motorbotz enquiries actually land today. When a leads API exists this
+ * where Riderzpro enquiries actually land today. When a leads API exists this
  * component gets a submit handler and nothing else changes.
  */
 
@@ -36,14 +36,14 @@ export function Waitlist() {
     e.preventDefault();
     if (!ready) return;
     const lines = [
-      "MOTORBOTZ BE 6 WAITLIST",
+      "RIDERZPRO BE 6 WAITLIST",
       `Name: ${form.name}`,
       `Phone: ${form.phone}`,
       form.email && `Email: ${form.email}`,
       form.city && `City: ${form.city}`,
       form.currentCar && `Current car: ${form.currentCar}`,
       form.buyingBe6 && `Interested in buying a BE 6: ${form.buyingBe6}`,
-      form.wantsEdition && `Interested in the MOTORBOTZ Edition: ${form.wantsEdition}`,
+      form.wantsEdition && `Interested in the RIDERZPRO Edition: ${form.wantsEdition}`,
       form.budget && `Budget: ${form.budget}`,
     ].filter(Boolean);
     window.open(whatsapp(lines.join("\n")), "_blank", "noopener,noreferrer");
@@ -111,7 +111,7 @@ export function Waitlist() {
             <option>Just interested</option>
           </select>
         </Field>
-        <Field label="Interested in the MOTORBOTZ Edition?">
+        <Field label="Interested in the RIDERZPRO Edition?">
           <select className="field" value={form.wantsEdition} onChange={set("wantsEdition")}>
             <option value="">Select</option>
             <option>Yes — keep me first in line</option>
@@ -123,11 +123,11 @@ export function Waitlist() {
       </div>
 
       <button type="submit" disabled={!ready} className="btn btn-accent btn-block mt-5 disabled:opacity-40">
-        JOIN THE MOTORBOTZ BE 6 WAITLIST
+        JOIN THE RIDERZPRO BE 6 WAITLIST
       </button>
 
       <p className="mt-3 text-[0.625rem] leading-relaxed text-dim">
-        Joining the waitlist is not an order and holds no vehicle. The MOTORBOTZ Limited Edition is a concept with no
+        Joining the waitlist is not an order and holds no vehicle. The RIDERZPRO Limited Edition is a concept with no
         confirmed launch date, no confirmed price and no confirmed production quantity. We will only contact you about
         the BE 6 programme.
       </p>

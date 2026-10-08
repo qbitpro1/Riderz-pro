@@ -221,7 +221,7 @@ export function bandFor(design: AutoformDesign): PriceBand {
   return PRICE_BANDS.find((b) => b.id === design.bandId)!;
 }
 
-/** Motorbotz retail margin off MRP. Admin-editable; DP never leaves the server. */
+/** Riderzpro retail margin off MRP. Admin-editable; DP never leaves the server. */
 const DISCOUNT = 0.1;
 
 export type DesignPrice = {

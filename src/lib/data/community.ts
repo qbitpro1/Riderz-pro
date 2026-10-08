@@ -58,7 +58,7 @@ export const BUILDS: Build[] = [
       { group: "Interior", items: ["Nappa leather with diamond stitch", "Captain seats with electric recline", "Automatic footrests", "Alcantara roof lining", "64-colour ambient lighting"] },
       { group: "Audio", items: ["3-way active front stage", "8-channel DSP amplifier", "Sealed 10\" subwoofer", "Full-cabin deadening"] },
     ],
-    shop: ["motorbotz-signature-component-set", "8-channel-dsp-amplifier", "custom-fit-seat-covers-leatherette"],
+    shop: ["riderzpro-signature-component-set", "8-channel-dsp-amplifier", "custom-fit-seat-covers-leatherette"],
     tag: "Luxury",
   },
   {
@@ -102,7 +102,7 @@ export const BUILDS: Build[] = [
       { group: "Electrical", items: ["Big three upgrade", "Second battery with isolator", "Distribution block and 70 mm² runs"] },
       { group: "Acoustics", items: ["Full-cabin butyl deadening", "Closed-cell foam decoupler", "Boot floor treatment"] },
     ],
-    shop: ["motorbotz-signature-component-set", "8-channel-dsp-amplifier", "sound-deadening-kit-4-door"],
+    shop: ["riderzpro-signature-component-set", "8-channel-dsp-amplifier", "sound-deadening-kit-4-door"],
     tag: "Audio",
   },
   {
@@ -124,14 +124,14 @@ export const BUILDS: Build[] = [
       { group: "Interior", items: ["12.3\" Android head unit", "Ambient lighting", "9D floor mats"] },
       { group: "Protection", items: ["Front-end PPF", "9H ceramic coating"] },
     ],
-    shop: ["12-inch-android-head-unit", "motorbotz-9d-floor-mats", "suv-ambient-lighting-kit"],
+    shop: ["12-inch-android-head-unit", "riderzpro-9d-floor-mats", "suv-ambient-lighting-kit"],
     tag: "Street",
   },
   {
     slug: "gurkha-expedition-rig",
     title: "BASECAMP",
     vehicle: "2023 Force Gurkha 4x4",
-    owner: "Team Motorbotz",
+    owner: "Team Riderzpro",
     city: "Nagpur",
     cost: 5_60_000,
     weeks: 6,
@@ -194,7 +194,7 @@ export const REVIEWS: Review[] = [
     rating: 5,
     city: "Pune",
     date: "February 2026",
-    body: "Bought my first car through Motorbotz. The inspection report flagged two things they then fixed before delivery. RC transfer was done in eleven days without me visiting the RTO once.",
+    body: "Bought my first car through Riderzpro. The inspection report flagged two things they then fixed before delivery. RC transfer was done in eleven days without me visiting the RTO once.",
     image: "crossoverTeal",
   },
   {

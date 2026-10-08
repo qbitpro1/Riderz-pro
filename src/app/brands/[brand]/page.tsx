@@ -162,7 +162,7 @@ function ImportPending({ name }: { name: string }) {
       </p>
       <div className="mt-6 flex flex-wrap gap-3">
         <a
-          href={whatsapp(`Hi Motorbotz, I'm looking for ${name} products. What do you have?`)}
+          href={whatsapp(`Hi Riderzpro, I'm looking for ${name} products. What do you have?`)}
           target="_blank"
           rel="noreferrer noopener"
           className="btn btn-whatsapp btn-sm"

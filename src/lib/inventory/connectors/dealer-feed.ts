@@ -6,7 +6,7 @@ import type { Connector } from "./index";
 /**
  * Partner dealer feed — Level 1, the preferred way to get real inventory.
  *
- * A dealer signs the Motorbotz Dealer Inventory Agreement and pushes a JSON
+ * A dealer signs the Riderzpro Dealer Inventory Agreement and pushes a JSON
  * feed matching the shape below. The agreement is what grants display rights,
  * and rights are recorded per vehicle: a car whose `imageRights` is not
  * `granted` shows no photographs at all rather than borrowing someone else's.
@@ -157,7 +157,7 @@ function toListing(v: DealerFeedVehicle): Listing {
       : [],
     imagesUnavailableReason: imagesAllowed
       ? null
-      : "Photos unavailable — contact Motorbotz for vehicle images",
+      : "Photos unavailable — contact Riderzpro for vehicle images",
 
     condition: applyReported(v),
     inspection: null,
@@ -174,7 +174,7 @@ function toListing(v: DealerFeedVehicle): Listing {
   return listing;
 }
 
-/** Dealer statements land in `sourceReported`. `motorbotzVerified` stays null. */
+/** Dealer statements land in `sourceReported`. `riderzproVerified` stays null. */
 function applyReported(v: DealerFeedVehicle) {
   const condition = emptyCondition();
   for (const [key, value] of Object.entries(v.reported ?? {})) {

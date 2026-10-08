@@ -2,7 +2,7 @@ import { lakh, number as fmtNumber } from "@/lib/format";
 import type { DataConfidence, Listing } from "./types";
 
 /**
- * Turning source facts into a Motorbotz listing.
+ * Turning source facts into a Riderzpro listing.
  *
  * The description is generated from fields we actually hold, in our own words.
  * The source's marketing copy is never reproduced, and no quality claim is ever
@@ -22,7 +22,7 @@ export function listingTitle(l: Pick<Listing, "year" | "make" | "model" | "varia
   return [l.year, l.make, l.model, l.variant].filter(Boolean).join(" ");
 }
 
-/** Facts only, in Motorbotz's voice, hedged where the source is the only witness. */
+/** Facts only, in Riderzpro's voice, hedged where the source is the only witness. */
 export function buildDescription(l: Listing): string {
   const title = listingTitle(l);
   const parts: string[] = [];
@@ -45,8 +45,8 @@ export function buildDescription(l: Listing): string {
         ? ` and is presented as a ${ordinal(l.owners)}-owner example`
         : "";
 
-  if (l.sellerType === "motorbotz") {
-    parts.push(`The car is held in Motorbotz stock at ${place}${ownerPhrase}.`);
+  if (l.sellerType === "riderzpro") {
+    parts.push(`The car is held in Riderzpro stock at ${place}${ownerPhrase}.`);
   } else {
     parts.push(`The vehicle is listed in ${place}${ownerPhrase}.`);
   }
@@ -62,9 +62,9 @@ export function buildDescription(l: Listing): string {
   }
 
   parts.push(
-    l.verification === "MOTORBOTZ_VERIFIED"
-      ? "Motorbotz has inspected this car; the report is published on this page."
-      : "Motorbotz has not inspected this car. The details below are as supplied by the source and are shown unverified — request an inspection and we will check them for you.",
+    l.verification === "RIDERZPRO_VERIFIED"
+      ? "Riderzpro has inspected this car; the report is published on this page."
+      : "Riderzpro has not inspected this car. The details below are as supplied by the source and are shown unverified — request an inspection and we will check them for you.",
   );
 
   const text = parts.join(" ");

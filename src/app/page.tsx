@@ -22,9 +22,9 @@ import { SITE, TRUST_POINTS, whatsapp } from "@/lib/data/site";
 import { PRICE_FROM as BE6_PRICE_FROM, colour as be6Colour } from "@/lib/data/be6/factory";
 
 export const metadata: Metadata = {
-  title: "Motorbotz — Buy. Build. Drive. | Cars, Accessories & Modification in India",
+  title: "Riderzpro — Buy. Build. Drive. | Cars, Accessories & Modification in India",
   description:
-    "Buy and sell verified cars, build your own with our configurator, and shop accessories, audio, PPF, off-road and performance upgrades. Motorbotz garages in Bengaluru, Hyderabad and Pune.",
+    "Buy and sell verified cars, build your own with our configurator, and shop accessories, audio, PPF, off-road and performance upgrades. Riderzpro garages in Bengaluru, Hyderabad and Pune.",
   alternates: { canonical: "/" },
 };
 
@@ -74,7 +74,7 @@ export default function HomePage() {
         <div className="shell relative pb-14 pt-28 md:pb-20">
           <p className="rise eyebrow mb-4 flex items-center gap-2" style={{ animationDelay: "80ms" }}>
             <span className="h-1.5 w-1.5 bg-accent pulse-dot" />
-            Motorbotz flagship · Mahindra BE 6 SPORTEQ
+            Riderzpro flagship · Mahindra BE 6 SPORTEQ
           </p>
 
           <h1 className="rise display-1 max-w-4xl" style={{ animationDelay: "160ms" }}>
@@ -87,7 +87,7 @@ export default function HomePage() {
             className="rise mt-5 max-w-md text-base text-ash md:text-lg"
             style={{ animationDelay: "260ms" }}
           >
-            Meet the first MOTORBOTZ Limited Edition concept. Every factory variant explained, every
+            Meet the first RIDERZPRO Limited Edition concept. Every factory variant explained, every
             upgrade priced, and a clear line between what Mahindra builds and what we do to it.
           </p>
 
@@ -100,7 +100,7 @@ export default function HomePage() {
               Build your BE 6
             </Link>
             <Link href="/be-6/limited-edition" className="btn btn-outline !border-gold/45 !text-gold">
-              Motorbotz Edition — coming soon
+              Riderzpro Edition — coming soon
             </Link>
           </div>
 
@@ -155,7 +155,7 @@ export default function HomePage() {
           <Reveal>
             <p className="eyebrow mb-3">The first car we build different</p>
             <h2 className="display-2">
-              MOTORBOTZ
+              RIDERZPRO
               <br />
               BE 6.
             </h2>
@@ -229,7 +229,7 @@ export default function HomePage() {
       <section className="section">
         <div className="shell">
           <SectionHead
-            eyebrow="Motorbotz Certified"
+            eyebrow="Riderzpro Certified"
             title="CARS WORTH BUYING."
             blurb="Every car is inspected on 200 points, its paperwork verified against VAHAN, and its price published without negotiation games."
             href="/cars"
@@ -374,9 +374,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 7 — MOTORBOTZ GARAGE ----------------------------------------- */}
+      {/* 7 — RIDERZPRO GARAGE ----------------------------------------- */}
       <Studio
-        eyebrow="Motorbotz Garage"
+        eyebrow="Riderzpro Garage"
         title="26 BAYS. ONE STANDARD."
         blurb="Installation, modification, detailing, PPF, audio, performance, off-road and interiors — all under one roof, by people who own modified cars themselves."
         points={[
@@ -493,11 +493,11 @@ export default function HomePage() {
         priceNote="All work carried out within Central Motor Vehicles Rules."
       />
 
-      {/* 14 — MOTORBOTZ BUILDS ---------------------------------------- */}
+      {/* 14 — RIDERZPRO BUILDS ---------------------------------------- */}
       <section className="section border-y border-white/8 bg-carbon">
         <div className="shell">
           <SectionHead
-            eyebrow="Motorbotz builds"
+            eyebrow="Riderzpro builds"
             title="BUILT BY US. DRIVEN BY THEM."
             blurb="Real cars, real invoices, real owners. Every build lists what went into it and what it cost."
             href="/builds"
@@ -536,7 +536,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 16 — WHY MOTORBOTZ ------------------------------------------- */}
+      {/* 16 — WHY RIDERZPRO ------------------------------------------- */}
       <section className="section border-t border-white/8 bg-carbon">
         <div className="shell">
           <SectionHead
@@ -561,7 +561,7 @@ export default function HomePage() {
           <div className="mt-8 flex flex-wrap items-center gap-4">
             <span className="verified text-sm">
               <Icon name="shield" size={14} />
-              Motorbotz Verified
+              Riderzpro Verified
             </span>
             <p className="text-sm text-ash">
               The badge only goes on a car once all nine checks are cleared and signed off.
@@ -586,7 +586,7 @@ export default function HomePage() {
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <a
-                href={whatsapp("Hi Motorbotz, I'd like to talk about my car.")}
+                href={whatsapp("Hi Riderzpro, I'd like to talk about my car.")}
                 target="_blank"
                 rel="noreferrer noopener"
                 className="btn btn-whatsapp"

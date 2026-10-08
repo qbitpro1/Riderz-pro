@@ -1,23 +1,23 @@
-import type { Provenance, Stage, ValidationDomain } from "@/lib/data/be6/motorbotz";
-import { STAGE_COPY, VALIDATION_COPY } from "@/lib/data/be6/motorbotz";
+import type { Provenance, Stage, ValidationDomain } from "@/lib/data/be6/riderzpro";
+import { STAGE_COPY, VALIDATION_COPY } from "@/lib/data/be6/riderzpro";
 
 /**
  * The labels that keep the three layers apart.
  *
  * These are the most load-bearing components on the BE 6 pages. A factory
- * feature and a Motorbotz concept must never be able to look like the same
+ * feature and a Riderzpro concept must never be able to look like the same
  * kind of thing, so each provenance gets its own colour, and nothing else in
  * the BE 6 section is allowed to borrow those colours.
  *
  *   MAHINDRA FACTORY — steel/white. What Mahindra sells.
- *   MOTORBOTZ CUSTOM — accent cyan. What we fit.
- *   MOTORBOTZ CONCEPT — gold. What we have only imagined.
+ *   RIDERZPRO CUSTOM — accent cyan. What we fit.
+ *   RIDERZPRO CONCEPT — gold. What we have only imagined.
  */
 
 const PROVENANCE_STYLE: Record<Provenance, string> = {
   "MAHINDRA FACTORY": "border-white/35 bg-white/10 text-chalk",
-  "MOTORBOTZ CUSTOM": "border-accent/45 bg-accent/12 text-accent",
-  "MOTORBOTZ CONCEPT": "border-gold/45 bg-gold/12 text-gold",
+  "RIDERZPRO CUSTOM": "border-accent/45 bg-accent/12 text-accent",
+  "RIDERZPRO CONCEPT": "border-gold/45 bg-gold/12 text-gold",
 };
 
 export function ProvenanceTag({
@@ -63,8 +63,8 @@ export function ConceptNotice({ long = false, className = "" }: { long?: boolean
     <p className={`border-l-2 border-gold/50 bg-gold/[0.06] px-4 py-3 text-xs leading-relaxed text-ash ${className}`}>
       {long ? (
         <>
-          <strong className="text-gold">MOTORBOTZ Limited Edition</strong> is an independent customization concept by
-          MOTORBOTZ and is not a factory Mahindra variant. It carries no Mahindra endorsement, certification or
+          <strong className="text-gold">RIDERZPRO Limited Edition</strong> is an independent customization concept by
+          RIDERZPRO and is not a factory Mahindra variant. It carries no Mahindra endorsement, certification or
           partnership.
         </>
       ) : (

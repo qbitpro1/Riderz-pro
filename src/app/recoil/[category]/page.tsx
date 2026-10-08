@@ -38,7 +38,7 @@ export async function generateMetadata({
   if (!cat) return {};
   return {
     title: `RECOIL ${cat.name} — ${cat.count} Models`,
-    description: `Buy RECOIL ${cat.name.toLowerCase()} at Motorbotz: ${cat.subcategories
+    description: `Buy RECOIL ${cat.name.toLowerCase()} at Riderzpro: ${cat.subcategories
       .slice(0, 6)
       .map((s) => s.name)
       .join(", ")}. Authorised reseller, genuine product, installation available across India.`,

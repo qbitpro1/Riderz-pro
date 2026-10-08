@@ -48,7 +48,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     entry("/builds", 0.7),
     entry("/locations", 0.6, "monthly"),
     entry("/contact", 0.6, "monthly"),
-    entry("/why-motorbotz", 0.6, "monthly"),
+    entry("/why-riderzpro", 0.6, "monthly"),
 
     entry("/recoil", 0.85),
     entry("/brands", 0.85),

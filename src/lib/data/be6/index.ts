@@ -5,7 +5,7 @@
  * each other:
  *
  *   factory / specs / ladder  — the Mahindra BE 6, as Mahindra sells it.
- *   motorbotz                 — what we fit to it.
+ *   riderzpro                 — what we fit to it.
  *   limited-edition           — what we have only imagined.
  *
  * Import from here for page code; import the specific module when you need
@@ -16,7 +16,7 @@ export * from "./sources";
 export * from "./factory";
 export * from "./specs";
 export * from "./ladder";
-export * from "./motorbotz";
+export * from "./riderzpro";
 export * from "./limited-edition";
 
 export const BE6 = {

@@ -98,7 +98,7 @@ export default async function PpfGuideArticlePage({ params }: { params: Promise<
                 <Icon name="arrow" size={14} />
               </Link>
               <a
-                href={whatsapp("Hi Motorbotz, I have a PPF question: ")}
+                href={whatsapp("Hi Riderzpro, I have a PPF question: ")}
                 target="_blank"
                 rel="noreferrer noopener"
                 className="btn btn-whatsapp btn-sm"

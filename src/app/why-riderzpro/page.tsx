@@ -9,10 +9,10 @@ import { TRUST_POINTS, whatsapp } from "@/lib/data/site";
 import { REVIEWS, STATS } from "@/lib/data/community";
 
 export const metadata: Metadata = {
-  title: "Why Motorbotz",
+  title: "Why Riderzpro",
   description:
-    "What Motorbotz does differently: one workshop for the whole car, published prices, documented builds, legal compliance, and a badge that means something.",
-  alternates: { canonical: "/why-motorbotz" },
+    "What Riderzpro does differently: one workshop for the whole car, published prices, documented builds, legal compliance, and a badge that means something.",
+  alternates: { canonical: "/why-riderzpro" },
 };
 
 const PRINCIPLES = [
@@ -46,7 +46,7 @@ export default function WhyPage() {
   return (
     <>
       <PageHero
-        eyebrow="Why Motorbotz"
+        eyebrow="Why Riderzpro"
         title="IF IT HAS WHEELS, WE CAN HELP."
         blurb="Buy it, sell it, modify it, protect it, upgrade it or build it. One brand, one standard, one number to call when something isn't right."
         media="garageHeadlights"
@@ -124,7 +124,7 @@ export default function WhyPage() {
                 Shop accessories
               </Link>
               <a
-                href={whatsapp("Hi Motorbotz, I'd like to talk about my car.")}
+                href={whatsapp("Hi Riderzpro, I'd like to talk about my car.")}
                 target="_blank"
                 rel="noreferrer noopener"
                 className="btn btn-whatsapp btn-sm"

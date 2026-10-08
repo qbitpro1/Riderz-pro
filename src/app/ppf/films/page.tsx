@@ -10,7 +10,7 @@ import { TIER_RATES } from "@/lib/ppf/coverage";
 export const metadata: Metadata = {
   title: "PPF Films & Brands — Specifications, Finishes and Warranties",
   description:
-    "The paint protection films Motorbotz installs, with each manufacturer's published warranty period, conditions and exclusions. Specifications we cannot verify are marked as such.",
+    "The paint protection films Riderzpro installs, with each manufacturer's published warranty period, conditions and exclusions. Specifications we cannot verify are marked as such.",
   alternates: { canonical: "/ppf/films" },
 };
 
@@ -97,7 +97,7 @@ export default function PpfFilmsPage() {
             </table>
           </div>
           <p className="mt-4 text-xs text-dim">
-            Motorbotz installed rates: Essential ₹{TIER_RATES.essential.min}–{TIER_RATES.essential.max}/sq ft ·
+            Riderzpro installed rates: Essential ₹{TIER_RATES.essential.min}–{TIER_RATES.essential.max}/sq ft ·
             Premium ₹{TIER_RATES.premium.min}–{TIER_RATES.premium.max}/sq ft · Signature ₹
             {TIER_RATES.signature.min}–{TIER_RATES.signature.max}/sq ft.
           </p>

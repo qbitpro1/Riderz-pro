@@ -15,7 +15,7 @@ import { LANDING_MODELS } from "@/lib/data/vehicles";
 export const metadata: Metadata = {
   title: "Car Accessories Online — Exterior, Lighting, Interior, Audio, Off-Road",
   description:
-    "Shop car accessories from ₹299 to ₹2,00,000 across every brand we stock. Filter by brand, category, price and fitment, with installation available at Motorbotz garages in Bengaluru, Hyderabad and Pune.",
+    "Shop car accessories from ₹299 to ₹2,00,000 across every brand we stock. Filter by brand, category, price and fitment, with installation available at Riderzpro garages in Bengaluru, Hyderabad and Pune.",
   alternates: { canonical: "/shop" },
 };
 

@@ -226,7 +226,7 @@ export function AutoformSelector({ designs }: { designs: DesignCard[] }) {
         </p>
         <a
           href={whatsapp(
-            `Hi Motorbotz, I want Autoform seat covers${vehicle ? ` for my ${vehicle}` : ""}. Seat layout: ${rows === 2 ? "5-seater" : "6/7-seater"}.`,
+            `Hi Riderzpro, I want Autoform seat covers${vehicle ? ` for my ${vehicle}` : ""}. Seat layout: ${rows === 2 ? "5-seater" : "6/7-seater"}.`,
           )}
           target="_blank"
           rel="noreferrer noopener"

@@ -146,7 +146,7 @@ export const REVIEW_FLAGS: ReviewFlag[] = [
     id: "imagery-licence",
     field: "Rights to Mahindra photography",
     issue:
-      "The vehicle imagery on these pages is Mahindra's copyright, taken from the official BE 6 SPORTEQ brochure and the official configurator, and self-hosted at the customer's direction. Motorbotz's right to reproduce it has not been documented.",
+      "The vehicle imagery on these pages is Mahindra's copyright, taken from the official BE 6 SPORTEQ brochure and the official configurator, and self-hosted at the customer's direction. Riderzpro's right to reproduce it has not been documented.",
     positions: [],
     handling:
       "In use with attribution to Mahindra on every image. Confirm the licence position with Mahindra or the dealer before the page goes public.",

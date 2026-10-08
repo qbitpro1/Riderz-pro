@@ -27,7 +27,7 @@ import { whatsapp } from "@/lib/data/site";
 export const metadata: Metadata = {
   title: "Autoform Seat Covers — Car-Specific Designs & Prices",
   description:
-    "Genuine Autoform seat covers at Motorbotz. 20 designs across the Eco and Signature series, priced for 5-seater and 7-seater cars, with fitting at our workshops.",
+    "Genuine Autoform seat covers at Riderzpro. 20 designs across the Eco and Signature series, priced for 5-seater and 7-seater cars, with fitting at our workshops.",
   alternates: { canonical: "/autoform" },
 };
 
@@ -55,14 +55,14 @@ export default function AutoformPage() {
   return (
     <>
       <PageHero
-        eyebrow="Genuine Autoform · Authorised Motorbotz reseller"
+        eyebrow="Genuine Autoform · Authorised Riderzpro reseller"
         title="SEATS THAT LOOK BUILT IN."
-        blurb={`Twenty Autoform designs across the Eco and Signature series, cut to your car rather than pulled over it. From ${rupees(cheapest)} for a 5-seater set, fitted at a Motorbotz workshop.`}
+        blurb={`Twenty Autoform designs across the Eco and Signature series, cut to your car rather than pulled over it. From ${rupees(cheapest)} for a 5-seater set, fitted at a Riderzpro workshop.`}
         media="cockpitScreen"
         actions={[
           { href: "#designs", label: "Browse designs", variant: "primary" },
           {
-            href: whatsapp("Hi Motorbotz, I want Autoform seat covers for my "),
+            href: whatsapp("Hi Riderzpro, I want Autoform seat covers for my "),
             label: "Get a quote",
             variant: "outline",
             external: true,
@@ -136,9 +136,9 @@ export default function AutoformPage() {
                   <th className="p-2.5">Series</th>
                   <th className="p-2.5">Designs</th>
                   <th className="p-2.5 text-right">5-seater MRP</th>
-                  <th className="p-2.5 text-right">Motorbotz</th>
+                  <th className="p-2.5 text-right">Riderzpro</th>
                   <th className="p-2.5 text-right">7-seater MRP</th>
-                  <th className="p-2.5 text-right">Motorbotz</th>
+                  <th className="p-2.5 text-right">Riderzpro</th>
                 </tr>
               </thead>
               <tbody>
@@ -282,7 +282,7 @@ export default function AutoformPage() {
               your exact variant, and fit it at the workshop — usually about two hours.
             </p>
             <a
-              href={whatsapp("Hi Motorbotz, I want to book Autoform seat cover fitting. My car is: ")}
+              href={whatsapp("Hi Riderzpro, I want to book Autoform seat cover fitting. My car is: ")}
               target="_blank"
               rel="noreferrer noopener"
               className="btn btn-whatsapp btn-block mt-5"

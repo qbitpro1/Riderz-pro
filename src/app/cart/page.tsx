@@ -3,7 +3,7 @@ import { CartView } from "@/components/cart/CartView";
 
 export const metadata: Metadata = {
   title: "Your Cart",
-  description: "Review your Motorbotz order, add installation and check out over WhatsApp.",
+  description: "Review your Riderzpro order, add installation and check out over WhatsApp.",
   robots: { index: false, follow: false },
 };
 

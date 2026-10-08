@@ -304,7 +304,7 @@ export const GUIDE: GuideArticle[] = [
       "Manufacturing defects in the film, from the film manufacturer. Our installation is warranted separately by us.",
     body: [
       {
-        text: "Every film we install carries its own manufacturer warranty, with its own period, conditions and exclusions. Those are published per product on this site, taken from the manufacturer's own warranty documentation — we do not summarise them into a single Motorbotz promise, because they genuinely differ.",
+        text: "Every film we install carries its own manufacturer warranty, with its own period, conditions and exclusions. Those are published per product on this site, taken from the manufacturer's own warranty documentation — we do not summarise them into a single Riderzpro promise, because they genuinely differ.",
       },
       {
         heading: "Typically covered",
@@ -320,7 +320,7 @@ export const GUIDE: GuideArticle[] = [
       },
       {
         heading: "Our part",
-        text: "Motorbotz warrants its own workmanship — lifting edges, contamination under film, alignment — for twelve months. That is separate from, and additional to, the manufacturer's warranty on the film itself.",
+        text: "Riderzpro warrants its own workmanship — lifting edges, contamination under film, alignment — for twelve months. That is separate from, and additional to, the manufacturer's warranty on the film itself.",
       },
     ],
     related: ["how-long-does-ppf-last", "ppf-maintenance"],

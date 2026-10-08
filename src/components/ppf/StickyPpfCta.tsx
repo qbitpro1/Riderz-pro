@@ -21,8 +21,8 @@ export function StickyPpfCta({ vehicle }: { vehicle?: string }) {
   }, []);
 
   const message = vehicle
-    ? `Hi Motorbotz, I want a PPF quote for my ${vehicle}.`
-    : "Hi Motorbotz, I want a PPF quote for my ";
+    ? `Hi Riderzpro, I want a PPF quote for my ${vehicle}.`
+    : "Hi Riderzpro, I want a PPF quote for my ";
 
   return (
     <div
