@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Photo } from "@/components/ui/Photo";
 import { Icon } from "@/components/ui/Icon";
-import { Stars } from "@/components/ui/Section";
 import { rupees } from "@/lib/format";
 import type { Product } from "@/lib/data/products";
 
@@ -40,11 +39,6 @@ export function ProductCard({
             {product.name}
           </Link>
         </h3>
-
-        <div className="mt-2 flex items-center gap-2">
-          <Stars rating={product.rating} size={11} />
-          <span className="text-[11px] text-dim tnum">({product.reviews})</span>
-        </div>
 
         <div className="mt-auto pt-3">
           <p className="flex items-baseline gap-2">

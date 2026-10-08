@@ -21,7 +21,15 @@ export function RecoilActions({ product }: { product: PublicProduct }) {
 
   function addToCart() {
     if (!price) return;
-    add({ slug: product.slug, name: `RECOIL ${product.sku} — ${product.priceListName}`, price }, qty);
+    add(
+      {
+        slug: product.slug,
+        name: `RECOIL ${product.sku} — ${product.priceListName}`,
+        href: `/products/${product.slug}`,
+        price,
+      },
+      qty,
+    );
     setAdded(true);
     window.setTimeout(() => setAdded(false), 2200);
   }

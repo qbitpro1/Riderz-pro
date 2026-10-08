@@ -1,3 +1,6 @@
+// Carries the dealer price (`dp`): importing this from a client component fails the build.
+import "server-only";
+
 /**
  * AUTOFORM SEAT COVER CATALOGUE
  *

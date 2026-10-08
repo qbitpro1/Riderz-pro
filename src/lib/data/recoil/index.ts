@@ -1,3 +1,6 @@
+// Carries the dealer price (`dp`): importing this from a client component fails the build.
+import "server-only";
+
 import raw from "./catalog.generated.json";
 
 /* --------------------------------------------------------------- types */

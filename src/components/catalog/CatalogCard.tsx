@@ -4,7 +4,7 @@ import { Icon } from "@/components/ui/Icon";
 import { Photo } from "@/components/ui/Photo";
 import { Stars } from "@/components/ui/Section";
 import { rupees } from "@/lib/format";
-import type { CatalogItem } from "@/lib/catalog";
+import type { CatalogItem } from "@/lib/catalog/types";
 
 /**
  * One card for every brand. Two things vary and both are carried by the item

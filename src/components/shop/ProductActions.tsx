@@ -22,6 +22,7 @@ export function ProductActions({ product }: { product: Product }) {
       {
         slug: product.slug,
         name: product.name,
+        href: `/product/${product.slug}`,
         price: product.price,
         install: withInstall ? installPrice : 0,
       },

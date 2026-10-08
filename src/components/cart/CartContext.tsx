@@ -13,6 +13,8 @@ import {
 export type CartLine = {
   slug: string;
   name: string;
+  /** The product page this line links back to — each brand owns its own route. */
+  href: string;
   price: number;
   qty: number;
   /** Optional installation add-on booked with the part. */
@@ -34,6 +36,16 @@ type CartState = {
 const KEY = "motorbotz.cart.v1";
 const CartCtx = createContext<CartState | null>(null);
 
+/**
+ * Lines saved before `href` existed were all linked to `/product/…`, which only
+ * the house range lives under. RECOIL lines are recognisable by their name.
+ */
+function withHref(line: CartLine): CartLine {
+  if (line.href) return line;
+  const base = line.name.startsWith("RECOIL ") ? "/products" : "/product";
+  return { ...line, href: `${base}/${line.slug}` };
+}
+
 export function CartProvider({ children }: { children: ReactNode }) {
   const [lines, setLines] = useState<CartLine[]>([]);
   const [ready, setReady] = useState(false);
@@ -41,7 +53,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     try {
       const raw = localStorage.getItem(KEY);
-      if (raw) setLines(JSON.parse(raw) as CartLine[]);
+      if (raw) setLines((JSON.parse(raw) as CartLine[]).map(withHref));
     } catch {
       // A corrupt or unavailable store should never block the page.
     }

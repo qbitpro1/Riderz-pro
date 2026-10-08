@@ -3,11 +3,41 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
-import { searchAll, SEARCH_BRANDS, SEARCH_SUGGESTIONS, type SearchEntry } from "@/lib/search";
+import { searchAll, SEARCH_SUGGESTIONS, type SearchEntry, type SearchIndex } from "@/lib/search/match";
+
+/* Fetched once per visit, the first time the panel opens, and shared by every
+   later open. A failed fetch is forgotten so the next open can retry. */
+let indexRequest: Promise<SearchIndex> | null = null;
+
+function loadIndex(): Promise<SearchIndex> {
+  indexRequest ??= fetch("/search-index.json")
+    .then((res) => {
+      if (!res.ok) throw new Error(`Search index: HTTP ${res.status}`);
+      return res.json() as Promise<SearchIndex>;
+    })
+    .catch((err) => {
+      indexRequest = null;
+      throw err;
+    });
+  return indexRequest;
+}
 
 export function SearchPanel({ onClose }: { onClose: () => void }) {
   const [q, setQ] = useState("");
+  const [index, setIndex] = useState<SearchIndex | null>(null);
+  const [failed, setFailed] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    let live = true;
+    loadIndex().then(
+      (data) => live && setIndex(data),
+      () => live && setFailed(true),
+    );
+    return () => {
+      live = false;
+    };
+  }, []);
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -20,7 +50,7 @@ export function SearchPanel({ onClose }: { onClose: () => void }) {
     };
   }, [onClose]);
 
-  const results = useMemo(() => searchAll(q, 9), [q]);
+  const results = useMemo(() => (index ? searchAll(index.entries, q, 9) : []), [index, q]);
 
   return (
     <div className="fixed inset-0 z-[70] flex flex-col bg-void/95 backdrop-blur-xl">
@@ -49,28 +79,32 @@ export function SearchPanel({ onClose }: { onClose: () => void }) {
       <div className="shell flex-1 overflow-y-auto py-6">
         {q.length < 2 ? (
           <>
-            <p className="eyebrow mb-4">Search by brand</p>
-            <ul className="mb-8 grid gap-px overflow-hidden border border-white/8 bg-white/8 sm:grid-cols-2 lg:grid-cols-4">
-              {SEARCH_BRANDS.map((b) => (
-                <li key={b.slug} className="bg-void">
-                  <Link
-                    href={b.href}
-                    onClick={onClose}
-                    className="group flex items-center justify-between gap-3 p-4 transition-colors hover:bg-white/4"
-                  >
-                    <span className="min-w-0">
-                      <span className="block truncate font-display text-base font-extrabold uppercase tracking-[-0.02em] group-hover:text-accent">
-                        {b.name}
-                      </span>
-                      <span className="block text-[11px] text-dim tnum">
-                        {b.count > 0 ? `${b.count} products` : "Coming soon"}
-                      </span>
-                    </span>
-                    <Icon name="arrow" size={15} className="shrink-0 text-dim group-hover:text-accent" />
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            {index && (
+              <>
+                <p className="eyebrow mb-4">Search by brand</p>
+                <ul className="mb-8 grid gap-px overflow-hidden border border-white/8 bg-white/8 sm:grid-cols-2 lg:grid-cols-4">
+                  {index.brands.map((b) => (
+                    <li key={b.slug} className="bg-void">
+                      <Link
+                        href={b.href}
+                        onClick={onClose}
+                        className="group flex items-center justify-between gap-3 p-4 transition-colors hover:bg-white/4"
+                      >
+                        <span className="min-w-0">
+                          <span className="block truncate font-display text-base font-extrabold uppercase tracking-[-0.02em] group-hover:text-accent">
+                            {b.name}
+                          </span>
+                          <span className="block text-[11px] text-dim tnum">
+                            {b.count > 0 ? `${b.count} products` : "Coming soon"}
+                          </span>
+                        </span>
+                        <Icon name="arrow" size={15} className="shrink-0 text-dim group-hover:text-accent" />
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
 
             <p className="eyebrow mb-4">Popular right now</p>
             <div className="flex flex-wrap gap-2">
@@ -81,6 +115,12 @@ export function SearchPanel({ onClose }: { onClose: () => void }) {
               ))}
             </div>
           </>
+        ) : !index ? (
+          <div className="py-10 text-center">
+            <p className="text-sm text-ash">
+              {failed ? "Search couldn’t load. Check your connection and try again." : "Searching…"}
+            </p>
+          </div>
         ) : results.length === 0 ? (
           <div className="py-10 text-center">
             <p className="font-display text-lg uppercase">Nothing matched “{q}”</p>

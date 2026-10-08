@@ -81,7 +81,6 @@ const ORG_SCHEMA = {
     postalCode: "560068",
     addressCountry: "IN",
   },
-  aggregateRating: { "@type": "AggregateRating", ratingValue: "4.8", reviewCount: "3184" },
   sameAs: [SITE.instagram, SITE.youtube, SITE.facebook],
 };
 

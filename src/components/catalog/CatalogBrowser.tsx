@@ -16,10 +16,10 @@ import {
   SORTS,
   TIER_LABELS,
   type CatalogFilters,
-  type CatalogItem,
   type Facet,
   type SortKey,
-} from "@/lib/catalog";
+} from "@/lib/catalog/filters";
+import type { CatalogItem } from "@/lib/catalog/types";
 
 const PAGE = 24;
 

@@ -67,7 +67,7 @@ export function CartView() {
         {lines.map((l) => (
           <li key={l.slug} className="flex flex-wrap items-center gap-4 py-4">
             <div className="min-w-0 flex-1">
-              <Link href={`/product/${l.slug}`} className="text-sm font-semibold transition-colors hover:text-accent">
+              <Link href={l.href} className="text-sm font-semibold transition-colors hover:text-accent">
                 {l.name}
               </Link>
               <p className="mt-0.5 text-xs text-dim tnum">

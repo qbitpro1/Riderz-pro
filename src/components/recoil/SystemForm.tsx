@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { BRANDS } from "@/lib/data/vehicles";
-import { BUDGETS, GOALS } from "@/lib/data/recoil/system-builder";
+import { BUDGETS, GOALS } from "@/lib/data/recoil/system-options";
 
 /**
  * Drives the system builder through the query string, so the recommendation
