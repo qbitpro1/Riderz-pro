@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { Photo } from "@/components/ui/Photo";
 import { Icon } from "@/components/ui/Icon";
 import { Breadcrumbs } from "@/components/layout/PageHero";
-import { SectionHead } from "@/components/ui/Section";
+import { SectionHead, Stars } from "@/components/ui/Section";
 import { Accordion } from "@/components/ui/Accordion";
 import { ProductCard } from "@/components/shop/ProductCard";
 import { ProductActions } from "@/components/shop/ProductActions";
@@ -87,6 +87,11 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     description: product.summary,
     brand: { "@type": "Brand", name: product.maker },
     image: MEDIA[product.image].src,
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: product.rating,
+      reviewCount: product.reviews,
+    },
     offers: {
       "@type": "Offer",
       price: product.price,
@@ -143,11 +148,13 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               <p className="eyebrow">{product.maker}</p>
               <h1 className="display-3 mt-2">{product.name}</h1>
 
-              {product.bestseller && (
-                <div className="mt-3">
-                  <span className="chip border-gold/40 bg-gold/12 text-gold">Bestseller</span>
-                </div>
-              )}
+              <div className="mt-3 flex flex-wrap items-center gap-3">
+                <Stars rating={product.rating} />
+                <span className="text-xs text-ash tnum">
+                  {product.rating} · {product.reviews} reviews
+                </span>
+                {product.bestseller && <span className="chip border-gold/40 bg-gold/12 text-gold">Bestseller</span>}
+              </div>
 
               <div className="mt-5 flex flex-wrap items-baseline gap-3">
                 <span className="font-display text-4xl font-extrabold tracking-[-0.04em] tnum">

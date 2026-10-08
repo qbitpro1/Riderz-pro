@@ -12,12 +12,13 @@ import { TIER_BOUNDS, type Availability, type CatalogItem } from "./types";
 
 /* ----------------------------------------------------------------- filters */
 
-export type SortKey = "popular" | "price-asc" | "price-desc" | "discount";
+export type SortKey = "popular" | "price-asc" | "price-desc" | "rating" | "discount";
 
 export const SORTS: { key: SortKey; label: string }[] = [
   { key: "popular", label: "Most popular" },
   { key: "price-asc", label: "Price: low to high" },
   { key: "price-desc", label: "Price: high to low" },
+  { key: "rating", label: "Highest rated" },
   { key: "discount", label: "Biggest saving" },
 ];
 
@@ -117,6 +118,8 @@ export function sortItems(items: CatalogItem[], sort: SortKey): CatalogItem[] {
       return out.sort(byPrice(1));
     case "price-desc":
       return out.sort(byPrice(-1));
+    case "rating":
+      return out.sort((a, b) => (b.rating ?? -1) - (a.rating ?? -1) || (b.reviews ?? 0) - (a.reviews ?? 0));
     case "discount":
       return out.sort((a, b) => discountPct(b) - discountPct(a));
     default:
