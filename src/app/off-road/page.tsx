@@ -95,7 +95,7 @@ export default function OffRoadPage() {
                 </div>
                 <div className={i % 2 ? "lg:order-1" : ""}>
                   <p className="text-sm leading-relaxed text-ash">{g.blurb}</p>
-                  <ul className="mt-5 divide-y divide-white/8 border-y border-white/8">
+                  <ul className="mt-5 divide-y divide-tint/8 border-y border-tint/8">
                     {g.items.map((item) => (
                       <li key={item.name} className="flex items-center justify-between gap-4 py-3">
                         <span className="text-sm">{item.name}</span>
@@ -113,7 +113,7 @@ export default function OffRoadPage() {
       </section>
 
       {/* gear store ------------------------------------------------ */}
-      <section className="section border-y border-white/8 bg-carbon">
+      <section className="section border-y border-tint/8 bg-carbon">
         <div className="shell">
           <SectionHead
             eyebrow="Off-road store"
@@ -146,7 +146,7 @@ export default function OffRoadPage() {
         </div>
       </section>
 
-      <section className="section border-t border-white/8 bg-carbon">
+      <section className="section border-t border-tint/8 bg-carbon">
         <div className="shell grid gap-8 lg:grid-cols-2 lg:items-start">
           <div>
             <SectionHead eyebrow="Questions" title="BEFORE YOU LIFT IT." />

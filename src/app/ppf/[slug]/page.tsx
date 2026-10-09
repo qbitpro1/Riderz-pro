@@ -84,7 +84,7 @@ export default async function PpfLandingPage({ params }: { params: Promise<{ slu
 
           <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
             {landing.points.map((p) => (
-              <li key={p} className="flex items-start gap-2.5 border border-white/8 bg-white/2 p-3 text-sm text-ash">
+              <li key={p} className="flex items-start gap-2.5 border border-tint/8 bg-tint/2 p-3 text-sm text-ash">
                 <Icon name="check" size={15} className="mt-0.5 shrink-0 text-accent" />
                 {p}
               </li>
@@ -93,7 +93,7 @@ export default async function PpfLandingPage({ params }: { params: Promise<{ slu
         </div>
       </section>
 
-      <section className="section border-y border-white/8 bg-carbon">
+      <section className="section border-y border-tint/8 bg-carbon">
         <div className="shell">
           <SectionHead
             eyebrow="Packages"
@@ -148,7 +148,7 @@ export default async function PpfLandingPage({ params }: { params: Promise<{ slu
         </section>
       )}
 
-      <section className="section border-t border-white/8 bg-carbon">
+      <section className="section border-t border-tint/8 bg-carbon">
         <div className="shell grid gap-8 lg:grid-cols-2 lg:items-start">
           <div>
             <SectionHead eyebrow="Read first" title="WORTH KNOWING." href="/ppf/guide" hrefLabel="Full guide" />

@@ -242,7 +242,7 @@ export default async function RecoilProductPage({ params }: { params: Promise<{ 
               As published in the RECOIL {product.priceListEdition} price list. Anything the
               manufacturer does not state is shown as not specified rather than estimated.
             </p>
-            <dl className="mt-4 divide-y divide-white/8 border-y border-white/8">
+            <dl className="mt-4 divide-y divide-tint/8 border-y border-tint/8">
               <Spec label="Model number" value={product.printedSku} />
               <Spec label="Brand" value="RECOIL" />
               <Spec label="Series" value={product.series} />
@@ -264,7 +264,7 @@ export default async function RecoilProductPage({ params }: { params: Promise<{ 
         </div>
       </section>
 
-      <section className="section border-y border-white/8 bg-carbon">
+      <section className="section border-y border-tint/8 bg-carbon">
         <div className="shell max-w-3xl">
           <SectionHead eyebrow="FAQs" title="BEFORE YOU BUY." />
           <Accordion items={faq} />
@@ -293,7 +293,7 @@ export default async function RecoilProductPage({ params }: { params: Promise<{ 
       )}
 
       {related.length > 0 && (
-        <section className="section border-t border-white/8 bg-carbon">
+        <section className="section border-t border-tint/8 bg-carbon">
           <div className="shell">
             <SectionHead
               eyebrow={product.series ? `${product.series} Series` : "Same category"}
@@ -335,7 +335,7 @@ function Spec({ label, value }: { label: string; value: string | null }) {
 
 function Fact({ icon, label }: { icon: "shield" | "wrench" | "car" | "check"; label: string }) {
   return (
-    <li className="flex items-start gap-2.5 border border-white/8 bg-white/2 p-3 text-xs text-ash">
+    <li className="flex items-start gap-2.5 border border-tint/8 bg-tint/2 p-3 text-xs text-ash">
       <Icon name={icon} size={14} className="mt-0.5 shrink-0 text-accent" />
       {label}
     </li>

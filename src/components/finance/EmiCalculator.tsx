@@ -80,7 +80,7 @@ export function EmiCalculator({
           </div>
         </div>
 
-        <div className="flex flex-col justify-between border border-white/8 bg-white/3 p-5">
+        <div className="flex flex-col justify-between border border-tint/8 bg-tint/3 p-5">
           <div>
             <p className="label mb-1">Estimated monthly EMI</p>
             <p className="font-display text-4xl font-extrabold tracking-[-0.04em] text-accent tnum">
@@ -146,7 +146,7 @@ function Slider({
         step={step}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="h-1 w-full cursor-pointer appearance-none rounded-full bg-white/12 accent-[var(--color-accent)]"
+        className="h-1 w-full cursor-pointer appearance-none rounded-full bg-tint/12 accent-[var(--color-accent)]"
       />
     </div>
   );

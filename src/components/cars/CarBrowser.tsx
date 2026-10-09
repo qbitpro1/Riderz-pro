@@ -103,7 +103,7 @@ export function CarBrowser({ cars }: { cars: Car[] }) {
   return (
     <div>
       {/* toolbar ------------------------------------------------------ */}
-      <div className="sticky top-14 z-30 -mx-4 mb-6 border-y border-white/8 bg-void/92 px-4 py-3 backdrop-blur-xl md:top-[68px] md:mx-0 md:px-0 md:pl-4 md:pr-3">
+      <div className="sticky top-14 z-30 -mx-4 mb-6 border-y border-tint/8 bg-void/92 px-4 py-3 backdrop-blur-xl md:top-[68px] md:mx-0 md:px-0 md:pl-4 md:pr-3">
         <div className="flex items-center gap-3">
           <button
             type="button"
@@ -135,7 +135,7 @@ export function CarBrowser({ cars }: { cars: Car[] }) {
         </div>
 
         {open && (
-          <div className="mt-4 space-y-4 border-t border-white/8 pt-4">
+          <div className="mt-4 space-y-4 border-t border-tint/8 pt-4">
             <Group label="Brand" values={CAR_BRANDS} group="brand" sel={sel} onToggle={toggle} />
             <Group label="Condition" values={[...CAR_FILTERS.condition]} group="condition" sel={sel} onToggle={toggle} />
             <Group label="Body type" values={[...CAR_FILTERS.body]} group="body" sel={sel} onToggle={toggle} />

@@ -73,7 +73,7 @@ export function RecoilActions({ product }: { product: PublicProduct }) {
   return (
     <div className="mt-6 space-y-4">
       <div className="flex items-center gap-3">
-        <div className="flex items-center border border-white/12">
+        <div className="flex items-center border border-tint/12">
           <button
             type="button"
             aria-label="Decrease quantity"

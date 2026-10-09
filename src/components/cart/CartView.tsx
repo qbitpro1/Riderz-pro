@@ -63,7 +63,7 @@ export function CartView() {
 
   return (
     <div className="grid gap-6 lg:grid-cols-[1.6fr_1fr] lg:items-start">
-      <ul className="divide-y divide-white/8 border-y border-white/8">
+      <ul className="divide-y divide-tint/8 border-y border-tint/8">
         {lines.map((l) => (
           <li key={l.slug} className="flex flex-wrap items-center gap-4 py-4">
             <div className="min-w-0 flex-1">
@@ -76,7 +76,7 @@ export function CartView() {
               </p>
             </div>
 
-            <div className="flex items-center border border-white/12">
+            <div className="flex items-center border border-tint/12">
               <button
                 type="button"
                 aria-label={`Decrease ${l.name}`}
@@ -119,7 +119,7 @@ export function CartView() {
           {installTotal > 0 && <Row label="Installation" value={rupees(installTotal)} />}
           <Row label="Shipping" value={shipping === 0 ? "Free" : rupees(shipping)} />
         </dl>
-        <div className="mt-4 flex items-baseline justify-between border-t border-white/8 pt-4">
+        <div className="mt-4 flex items-baseline justify-between border-t border-tint/8 pt-4">
           <span className="font-display text-sm font-bold uppercase tracking-[0.14em]">Total</span>
           <span className="font-display text-2xl font-extrabold tnum">{rupees(total)}</span>
         </div>
@@ -145,7 +145,7 @@ export function CartView() {
           and no-cost EMI on orders above ₹10,000.
         </p>
 
-        <div className="mt-5 flex justify-between border-t border-white/8 pt-4">
+        <div className="mt-5 flex justify-between border-t border-tint/8 pt-4">
           <Link href="/shop" className="text-xs text-ash underline underline-offset-4 hover:text-accent">
             Continue shopping
           </Link>

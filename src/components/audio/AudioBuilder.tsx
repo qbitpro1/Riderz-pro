@@ -51,7 +51,7 @@ export function AudioBuilder() {
                     aria-pressed={on}
                     onClick={() => setChoice((c) => ({ ...c, [stage.key]: i }))}
                     className={`flex h-full flex-col justify-between gap-3 border p-3 text-left transition-colors ${
-                      on ? "border-accent/60 bg-accent/10" : "border-white/8 bg-white/2 hover:border-white/25"
+                      on ? "border-accent/60 bg-accent/10" : "border-tint/8 bg-tint/2 hover:border-tint/25"
                     }`}
                   >
                     <span className="text-sm font-medium leading-snug">{opt.name}</span>
@@ -74,7 +74,7 @@ export function AudioBuilder() {
           </p>
           <p className="mt-1 text-xs text-dim">Parts {rupees(total)} + installation {rupees(labour)}</p>
 
-          <ul className="mt-5 space-y-2.5 border-t border-white/8 pt-4 text-sm">
+          <ul className="mt-5 space-y-2.5 border-t border-tint/8 pt-4 text-sm">
             {lines.map((l) => (
               <li key={l.label} className="flex items-start justify-between gap-3">
                 <span className="text-dim">{l.label}</span>

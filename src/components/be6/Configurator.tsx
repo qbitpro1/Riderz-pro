@@ -34,7 +34,7 @@ export function Configurator() {
   return (
     <div className="card">
       {/* --- The vehicle ------------------------------------------------ */}
-      <div className="relative border-b border-white/[0.07] bg-[radial-gradient(120%_90%_at_50%_0%,rgba(92,225,255,0.07),transparent_60%)] px-4 pb-4 pt-6 md:px-8 md:pt-10">
+      <div className="relative border-b border-tint/[0.07] bg-[radial-gradient(120%_90%_at_50%_0%,rgba(92,225,255,0.07),transparent_60%)] px-4 pb-4 pt-6 md:px-8 md:pt-10">
         <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
           <ProvenanceTag provenance="MAHINDRA FACTORY" />
           <span className="font-display text-[0.5625rem] uppercase tracking-[0.18em] text-dim">
@@ -46,7 +46,7 @@ export function Configurator() {
         <ImageCredit className="mt-1" />
       </div>
 
-      <div className="divide-y divide-white/[0.07]">
+      <div className="divide-y divide-tint/[0.07]">
         {/* --- 1. Variant ---------------------------------------------- */}
         <Step n={1} title="VARIANT">
           <div className="rail -mx-4 px-4 pb-1 md:mx-0 md:grid md:grid-cols-4 md:gap-2 md:overflow-visible md:px-0">
@@ -60,7 +60,7 @@ export function Configurator() {
                   onClick={() => setVariant(v.slug)}
                   aria-pressed={on}
                   className={`w-[8.5rem] shrink-0 border p-3 text-left transition-colors md:w-auto ${
-                    on ? "border-accent bg-accent/10" : "border-white/10 bg-white/[0.02] hover:border-white/25"
+                    on ? "border-accent bg-accent/10" : "border-tint/10 bg-tint/[0.02] hover:border-tint/25"
                   }`}
                 >
                   <span className={`block font-display text-sm font-bold ${on ? "text-accent" : "text-chalk"}`}>
@@ -95,8 +95,8 @@ export function Configurator() {
                     on
                       ? "border-accent bg-accent/10"
                       : offered
-                        ? "border-white/10 bg-white/[0.02] hover:border-white/25"
-                        : "cursor-not-allowed border-white/[0.06] bg-transparent opacity-35"
+                        ? "border-tint/10 bg-tint/[0.02] hover:border-tint/25"
+                        : "cursor-not-allowed border-tint/[0.06] bg-transparent opacity-35"
                   }`}
                 >
                   <span className={`block font-display text-sm font-bold ${on ? "text-accent" : "text-chalk"}`}>
@@ -155,7 +155,7 @@ Wheel size is fixed by variant — ONE runs R18 aero covers, TWO R19 with aero c
                   aria-pressed={on}
                   title={`${c.name} — ${c.finish}`}
                   className={`group relative h-11 w-11 border-2 transition-transform ${
-                    on ? "border-accent scale-110" : "border-white/20 hover:border-white/50"
+                    on ? "border-accent scale-110" : "border-tint/20 hover:border-tint/50"
                   }`}
                   style={{ background: c.hex }}
                 >
@@ -218,7 +218,7 @@ Wheel size is fixed by variant — ONE runs R18 aero covers, TWO R19 with aero c
       </div>
 
       {/* --- Hand off to layer 2 ---------------------------------------- */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/[0.07] bg-white/[0.02] p-4">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-tint/[0.07] bg-tint/[0.02] p-4">
         <p className="text-xs text-ash">
           That is the BE 6 as Mahindra sells it. Everything past here is ours.
         </p>
@@ -234,7 +234,7 @@ function Step({ n, title, children }: { n: number; title: string; children: Reac
   return (
     <div className="p-4 md:p-6">
       <div className="mb-3 flex items-center gap-2.5">
-        <span className="flex h-6 w-6 shrink-0 items-center justify-center border border-white/20 font-display text-[0.625rem] font-bold text-ash">
+        <span className="flex h-6 w-6 shrink-0 items-center justify-center border border-tint/20 font-display text-[0.625rem] font-bold text-ash">
           {n}
         </span>
         <h3 className="font-display text-xs font-bold uppercase tracking-[0.18em] text-chalk">{title}</h3>

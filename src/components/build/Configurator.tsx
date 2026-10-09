@@ -171,7 +171,7 @@ export function Configurator() {
 
         {/* 3 — stages --------------------------------------------------- */}
         <div className="card">
-          <div className="rail border-b border-white/8 px-2">
+          <div className="rail border-b border-tint/8 px-2">
             {BUILD_STAGES.map((s) => {
               const count = s.options.filter((o) => picked.has(o.slug)).length;
               return (
@@ -185,7 +185,7 @@ export function Configurator() {
                 >
                   {s.name}
                   {count > 0 && (
-                    <span className="ml-1.5 inline-grid h-4 min-w-4 place-items-center rounded-full bg-accent px-1 text-[10px] text-[#04161d] tnum">
+                    <span className="ml-1.5 inline-grid h-4 min-w-4 place-items-center rounded-full bg-accent px-1 text-[10px] text-on-accent tnum">
                       {count}
                     </span>
                   )}
@@ -211,7 +211,7 @@ export function Configurator() {
                         className={`flex w-full items-center justify-between gap-3 border p-3 text-left transition-colors ${
                           on
                             ? "border-accent/60 bg-accent/10"
-                            : "border-white/8 bg-white/2 hover:border-white/25"
+                            : "border-tint/8 bg-tint/2 hover:border-tint/25"
                         }`}
                       >
                         <span className="min-w-0">
@@ -222,7 +222,7 @@ export function Configurator() {
                         </span>
                         <span
                           className={`grid h-6 w-6 shrink-0 place-items-center border ${
-                            on ? "border-accent bg-accent text-[#04161d]" : "border-white/25 text-transparent"
+                            on ? "border-accent bg-accent text-on-accent" : "border-tint/25 text-transparent"
                           }`}
                         >
                           <Icon name="check" size={13} />
@@ -268,7 +268,7 @@ export function Configurator() {
             </ul>
           )}
 
-          <dl className="mt-5 space-y-2 border-t border-white/8 pt-4 text-sm">
+          <dl className="mt-5 space-y-2 border-t border-tint/8 pt-4 text-sm">
             <SummaryRow label="Parts" value={rupees(parts)} />
             <SummaryRow label="Workshop labour" value={rupees(labour)} />
             <SummaryRow label="GST (18%)" value={rupees(gst)} />

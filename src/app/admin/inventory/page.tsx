@@ -76,7 +76,7 @@ export default function InventoryAdminPage() {
         <div className="mt-4 overflow-x-auto">
           <table className="w-full min-w-[820px] border-collapse text-sm">
             <thead>
-              <tr className="border-b border-white/12 text-left text-[10px] uppercase tracking-[0.14em] text-dim">
+              <tr className="border-b border-tint/12 text-left text-[10px] uppercase tracking-[0.14em] text-dim">
                 <th className="p-2.5">Channel</th>
                 <th className="p-2.5">Inventory type</th>
                 <th className="p-2.5">Phase</th>
@@ -87,7 +87,7 @@ export default function InventoryAdminPage() {
             </thead>
             <tbody>
               {SUPPLY_CHANNELS.map((c) => (
-                <tr key={c.id} className="border-b border-white/8 align-top">
+                <tr key={c.id} className="border-b border-tint/8 align-top">
                   <td className="p-2.5 text-xs">{c.name}</td>
                   <td className="p-2.5 text-[11px] text-ash">{INVENTORY_TYPES[c.inventoryType].label}</td>
                   <td className="p-2.5 text-[11px] text-dim tnum">{c.phase}</td>
@@ -98,7 +98,7 @@ export default function InventoryAdminPage() {
                         c.status === "LIVE"
                           ? "border-accent/35 text-accent"
                           : c.status === "READY_TO_ONBOARD"
-                            ? "border-white/20"
+                            ? "border-tint/20"
                             : "border-gold/35 text-gold"
                       }`}
                     >
@@ -128,7 +128,7 @@ export default function InventoryAdminPage() {
                     p.status === "CONNECTED"
                       ? "border-accent/35 text-accent"
                       : p.status === "AVAILABLE"
-                        ? "border-white/20"
+                        ? "border-tint/20"
                         : "border-gold/35 text-gold"
                   }`}
                 >
@@ -165,7 +165,7 @@ export default function InventoryAdminPage() {
         </p>
         <ul className="mt-4 grid gap-2 md:grid-cols-2 lg:grid-cols-3">
           {FUTURE_PARTNERS.map((p) => (
-            <li key={p.id} className="border border-white/8 bg-white/2 p-3">
+            <li key={p.id} className="border border-tint/8 bg-tint/2 p-3">
               <p className="font-display text-xs font-bold uppercase tracking-[0.1em]">{p.name}</p>
               <p className="mt-1 text-[11px] leading-relaxed text-dim">{p.note}</p>
             </li>
@@ -179,7 +179,7 @@ export default function InventoryAdminPage() {
             const row = SNAPSHOT.sources.find((s) => s.id === source.id);
             const live = source.status === "LIVE";
             return (
-              <div key={source.id} className={`card p-5 ${live ? "" : "border-white/6"}`}>
+              <div key={source.id} className={`card p-5 ${live ? "" : "border-tint/6"}`}>
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
                     <p className="flex flex-wrap items-center gap-2 font-display text-base font-extrabold uppercase">
@@ -207,7 +207,7 @@ export default function InventoryAdminPage() {
                 </dl>
 
                 {source.evidence.blockingRules.length > 0 && (
-                  <div className="mt-4 border-t border-white/8 pt-3">
+                  <div className="mt-4 border-t border-tint/8 pt-3">
                     <p className="text-[10px] uppercase tracking-[0.14em] text-dim">
                       robots.txt checked {new Date(source.evidence.checkedAt).toLocaleDateString("en-IN")} —{" "}
                       {source.evidence.robotsUrl && (
@@ -246,7 +246,7 @@ export default function InventoryAdminPage() {
         <div className="mt-4 overflow-x-auto">
           <table className="w-full min-w-[1000px] border-collapse text-sm">
             <thead>
-              <tr className="border-b border-white/12 text-left text-[10px] uppercase tracking-[0.14em] text-dim">
+              <tr className="border-b border-tint/12 text-left text-[10px] uppercase tracking-[0.14em] text-dim">
                 <th className="p-2.5">Vehicle</th>
                 <th className="p-2.5">Source</th>
                 <th className="p-2.5">Imported</th>
@@ -264,7 +264,7 @@ export default function InventoryAdminPage() {
                 const listing = listings.find((l) => l.id === entry.listingId)!;
                 const drop = priceChange(listing.priceHistory);
                 return (
-                  <tr key={entry.listingId} className="border-b border-white/8 align-top">
+                  <tr key={entry.listingId} className="border-b border-tint/8 align-top">
                     <td className="p-2.5 text-xs">
                       <Link href={`/cars/${listing.slug}`} className="text-accent hover:underline">
                         {listing.year} {listing.make} {listing.model}
@@ -337,8 +337,8 @@ function StatusPill({ status }: { status: Listing["status"] }) {
     PRICE_UPDATED: "border-accent/40 bg-accent/10 text-accent",
     STALE: "border-gold/40 bg-gold/10 text-gold",
     SOURCE_ERROR: "border-danger/40 bg-danger/10 text-danger",
-    SOLD_UNAVAILABLE: "border-white/20 text-ash",
-    ARCHIVED: "border-white/20 text-dim",
+    SOLD_UNAVAILABLE: "border-tint/20 text-ash",
+    ARCHIVED: "border-tint/20 text-dim",
   };
   return <span className={`chip ${tone[status]}`}>{status.replace(/_/g, " ")}</span>;
 }

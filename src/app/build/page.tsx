@@ -32,14 +32,14 @@ export default function BuildPage() {
         </div>
       </section>
 
-      <section className="section border-y border-white/8 bg-carbon">
+      <section className="section border-y border-tint/8 bg-carbon">
         <div className="shell">
           <SectionHead
             eyebrow="Five stages"
             title="WHAT YOU CAN CHANGE."
             blurb="Anything not listed here, we can still do. The configurator covers what we fit most often."
           />
-          <ul className="grid gap-px overflow-hidden border border-white/8 bg-white/8 md:grid-cols-2 lg:grid-cols-5">
+          <ul className="grid gap-px overflow-hidden border border-tint/8 bg-tint/8 md:grid-cols-2 lg:grid-cols-5">
             {BUILD_STAGES.map((s) => (
               <li key={s.slug} className="bg-carbon p-5">
                 <p className="font-display text-base font-extrabold uppercase tracking-[-0.01em] text-accent">
@@ -67,7 +67,7 @@ export default function BuildPage() {
             title="FROM QUOTE TO KEYS."
             blurb="No surprises, no scope creep, no calls asking for more money halfway through."
           />
-          <ol className="grid gap-px overflow-hidden border border-white/8 bg-white/8 sm:grid-cols-2 lg:grid-cols-4">
+          <ol className="grid gap-px overflow-hidden border border-tint/8 bg-tint/8 sm:grid-cols-2 lg:grid-cols-4">
             {[
               { n: "01", t: "Configure & send", b: "You build the sheet here and send it over. We check fitment against your exact variant." },
               { n: "02", t: "Firm quote & schedule", b: "A fixed written quote with a dated schedule. 40% to book parts, balance on delivery." },
@@ -91,7 +91,7 @@ export default function BuildPage() {
         </div>
       </section>
 
-      <section className="section border-t border-white/8 bg-carbon">
+      <section className="section border-t border-tint/8 bg-carbon">
         <div className="shell">
           <SectionHead
             eyebrow="Finished builds"

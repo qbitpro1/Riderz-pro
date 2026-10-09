@@ -43,7 +43,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
               <li key={c.slug}>
                 <Reveal delay={i * 55} className="h-full">
                   <Link href={`/shop/${c.slug}`} className="card card-hover group block h-full">
-                    <div className="relative aspect-[16/9] overflow-hidden bg-graphite">
+                    <div data-theme="dark" className="relative aspect-[16/9] overflow-hidden bg-graphite">
                       <Photo media={c.image} sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 92vw" className="zoom opacity-85" />
                       <div className="absolute inset-0 scrim-soft" />
                       <div className="absolute inset-x-0 bottom-0 p-4">
@@ -72,7 +72,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
         </div>
       </section>
 
-      <section className="section border-y border-white/8 bg-carbon">
+      <section className="section border-y border-tint/8 bg-carbon">
         <div className="shell">
           <SectionHead
             eyebrow="Shop by brand"
@@ -96,7 +96,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
         </div>
       </section>
 
-      <section className="section border-t border-white/8 bg-carbon">
+      <section className="section border-t border-tint/8 bg-carbon">
         <div className="shell">
           <SectionHead eyebrow="Pricing" title="₹299 TO ₹2 LAKH+." blurb="We stock for the first-time owner and the signature build, deliberately." />
           <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -111,7 +111,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
         </div>
       </section>
 
-      <section className="section border-t border-white/8">
+      <section className="section border-t border-tint/8">
         <div className="shell">
           <SectionHead eyebrow="Shop by car" title="PARTS FOR YOUR EXACT MODEL." />
           <ul className="flex flex-wrap gap-2">

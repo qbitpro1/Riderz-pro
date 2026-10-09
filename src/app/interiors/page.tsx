@@ -60,7 +60,7 @@ export default function InteriorsPage() {
             title="EVERY SURFACE YOU TOUCH."
             blurb="Prices are starting points for a mid-size SUV. The final quote depends on hide count, stitch pattern and how much of the cabin comes apart."
           />
-          <ul className="grid gap-px overflow-hidden border border-white/8 bg-white/8 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="grid gap-px overflow-hidden border border-tint/8 bg-tint/8 sm:grid-cols-2 lg:grid-cols-3">
             {INTERIOR_SERVICES.map((s, i) => (
               <li key={s.name} className="bg-void p-5">
                 <Reveal delay={(i % 3) * 50}>
@@ -76,7 +76,7 @@ export default function InteriorsPage() {
         </div>
       </section>
 
-      <section className="section border-y border-white/8 bg-carbon">
+      <section className="section border-y border-tint/8 bg-carbon">
         <div className="shell grid items-center gap-10 lg:grid-cols-2">
           <Reveal>
             <div className="relative aspect-[4/3] overflow-hidden bg-graphite">

@@ -64,7 +64,7 @@ export default async function BuildAudioPage({ searchParams }: { searchParams: P
                 </li>
               ))}
             </ul>
-            <p className="mt-5 border-t border-white/8 pt-4 text-xs leading-relaxed text-dim">
+            <p className="mt-5 border-t border-tint/8 pt-4 text-xs leading-relaxed text-dim">
               Enclosure design, adapter rings, harnesses and labour are quoted after we see the car.
               The figure below is parts only.
             </p>
@@ -73,7 +73,7 @@ export default async function BuildAudioPage({ searchParams }: { searchParams: P
       </section>
 
       {system && (
-        <section className="section scroll-mt-24 border-y border-white/8 bg-carbon" id="system">
+        <section className="section scroll-mt-24 border-y border-tint/8 bg-carbon" id="system">
           <div className="shell">
             <SectionHead
               eyebrow={`${goalMeta?.label} · ${rupees(budget!)} budget${vehicle ? ` · ${vehicle}` : ""}`}
@@ -156,7 +156,7 @@ export default async function BuildAudioPage({ searchParams }: { searchParams: P
               </div>
 
               {system.notes.length > 0 && (
-                <ul className="mt-5 space-y-2 border-t border-white/8 pt-4">
+                <ul className="mt-5 space-y-2 border-t border-tint/8 pt-4">
                   {system.notes.map((n) => (
                     <li key={n} className="flex items-start gap-2.5 text-xs leading-relaxed text-dim">
                       <Icon name="shield" size={13} className="mt-0.5 shrink-0 text-gold" />
@@ -180,7 +180,7 @@ export default async function BuildAudioPage({ searchParams }: { searchParams: P
       )}
 
       {!system && (
-        <section className="section border-t border-white/8 bg-carbon">
+        <section className="section border-t border-tint/8 bg-carbon">
           <div className="shell">
             <SectionHead
               eyebrow="Or start from a fitted package"

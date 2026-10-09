@@ -78,7 +78,7 @@ export default function CatalogAdminPage() {
 
         {/* flags --------------------------------------------------- */}
         <h2 className="display-3 mt-12">FLAGS RAISED</h2>
-        <ul className="mt-4 divide-y divide-white/8 border-y border-white/8">
+        <ul className="mt-4 divide-y divide-tint/8 border-y border-tint/8">
           {Object.entries(CATALOG_SUMMARY.flagCounts)
             .sort((a, b) => b[1] - a[1])
             .map(([flag, count]) => (
@@ -102,7 +102,7 @@ export default function CatalogAdminPage() {
             <div className="mt-4 overflow-x-auto">
               <table className="w-full min-w-[900px] border-collapse text-sm">
                 <thead>
-                  <tr className="border-b border-white/12 text-left text-[10px] uppercase tracking-[0.14em] text-dim">
+                  <tr className="border-b border-tint/12 text-left text-[10px] uppercase tracking-[0.14em] text-dim">
                     <th className="p-2.5">SKU</th>
                     <th className="p-2.5">Product</th>
                     <th className="p-2.5">Category</th>
@@ -146,7 +146,7 @@ function Row({ product: p }: { product: CatalogProduct }) {
     <span className={ok ? "text-accent" : "text-danger"}>{ok ? "✓" : "✗"}</span>
   );
   return (
-    <tr className="border-b border-white/8 align-top">
+    <tr className="border-b border-tint/8 align-top">
       <td className="p-2.5 font-display text-xs font-bold tracking-[0.06em] text-accent">
         <Link href={`/products/${p.slug}`} className="hover:underline">
           {p.printedSku}

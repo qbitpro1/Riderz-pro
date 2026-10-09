@@ -148,7 +148,7 @@ export function PartnerSignup() {
         </Field>
       </div>
 
-      <label className="mt-5 flex cursor-pointer items-start gap-3 border border-white/10 bg-white/3 p-4">
+      <label className="mt-5 flex cursor-pointer items-start gap-3 border border-tint/10 bg-tint/3 p-4">
         <input
           type="checkbox"
           checked={agreed}

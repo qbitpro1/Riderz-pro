@@ -166,7 +166,7 @@ export function InventoryUploader() {
             </ul>
 
             {report.parserWarnings.length > 0 && (
-              <ul className="mt-4 space-y-1.5 border-t border-white/8 pt-4">
+              <ul className="mt-4 space-y-1.5 border-t border-tint/8 pt-4">
                 {report.parserWarnings.map((w) => (
                   <li key={w} className="flex items-start gap-2 text-xs text-gold">
                     <Icon name="shield" size={13} className="mt-0.5 shrink-0" />
@@ -177,7 +177,7 @@ export function InventoryUploader() {
             )}
 
             {report.breakdown.length > 0 && (
-              <div className="mt-5 border-t border-white/8 pt-4">
+              <div className="mt-5 border-t border-tint/8 pt-4">
                 <p className="label">What needs attention</p>
                 <ul className="flex flex-wrap gap-2">
                   {report.breakdown.map((b) => (
@@ -215,7 +215,7 @@ export function InventoryUploader() {
           <div className="mt-3 overflow-x-auto">
             <table className="w-full min-w-[860px] border-collapse text-sm">
               <thead>
-                <tr className="border-b border-white/12 text-left text-[10px] uppercase tracking-[0.14em] text-dim">
+                <tr className="border-b border-tint/12 text-left text-[10px] uppercase tracking-[0.14em] text-dim">
                   <th className="p-2.5">Row</th>
                   <th className="p-2.5">Vehicle as we read it</th>
                   <th className="p-2.5 text-right">Price</th>
@@ -230,7 +230,7 @@ export function InventoryUploader() {
                   .filter((r) => (showRows === "all" ? true : !r.accepted || r.warnings.length > 0))
                   .slice(0, 200)
                   .map((r) => (
-                    <tr key={r.rowNumber} className="border-b border-white/8 align-top">
+                    <tr key={r.rowNumber} className="border-b border-tint/8 align-top">
                       <td className="p-2.5 text-xs text-dim tnum">{r.rowNumber}</td>
                       <td className="p-2.5 text-xs">
                         <span className="block">
@@ -294,7 +294,7 @@ function Tally({ value, label, tone = "neutral" }: { value: number; label: strin
   const colour =
     tone === "accent" ? "text-accent" : tone === "gold" ? "text-gold" : tone === "danger" ? "text-danger" : "text-chalk";
   return (
-    <li className="border border-white/8 bg-white/2 p-3">
+    <li className="border border-tint/8 bg-tint/2 p-3">
       <p className={`font-display text-2xl font-extrabold tnum ${colour}`}>{value}</p>
       <p className="mt-0.5 text-[10px] uppercase tracking-[0.12em] text-dim">{label}</p>
     </li>

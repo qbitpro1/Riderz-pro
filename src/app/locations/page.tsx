@@ -84,7 +84,7 @@ export default function LocationsPage() {
                   title={`Map of ${l.name}`}
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  className="mt-5 h-48 w-full border border-white/8 grayscale-[60%]"
+                  className="mt-5 h-48 w-full border border-tint/8 grayscale-[60%]"
                   src={`https://maps.google.com/maps?q=${encodeURIComponent(l.embedQuery)}&t=&z=14&ie=UTF8&iwloc=&output=embed`}
                 />
               </div>
@@ -93,7 +93,7 @@ export default function LocationsPage() {
         </div>
       </section>
 
-      <section className="section border-t border-white/8 bg-carbon">
+      <section className="section border-t border-tint/8 bg-carbon">
         <div className="shell grid gap-8 lg:grid-cols-[1fr_1.1fr] lg:items-start">
           <SectionHead
             eyebrow="More cities coming"

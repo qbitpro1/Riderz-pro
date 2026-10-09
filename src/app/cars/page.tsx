@@ -68,7 +68,7 @@ export default function CarsPage() {
         </div>
       </section>
 
-      <section className="section border-t border-white/8 bg-carbon">
+      <section className="section border-t border-tint/8 bg-carbon">
         <div className="shell grid gap-8 lg:grid-cols-[1fr_1.1fr] lg:items-start">
           <div>
             <SectionHead
@@ -97,7 +97,7 @@ export default function CarsPage() {
       <section className="section">
         <div className="shell">
           <SectionHead eyebrow="Trust system" title="WHAT WE CHECK BEFORE WE LIST." />
-          <ul className="grid gap-px overflow-hidden border border-white/8 bg-white/8 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="grid gap-px overflow-hidden border border-tint/8 bg-tint/8 sm:grid-cols-2 lg:grid-cols-3">
             {TRUST_POINTS.map((t) => (
               <li key={t.title} className="bg-void p-5">
                 <p className="flex items-center gap-2 font-display text-sm font-extrabold uppercase">

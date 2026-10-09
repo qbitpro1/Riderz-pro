@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { SearchPanel } from "@/components/search/SearchPanel";
 import { Logo } from "@/components/brand/Logo";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { useCart } from "@/components/cart/CartContext";
 import { PRIMARY_NAV, SECONDARY_NAV, SITE, whatsapp } from "@/lib/data/site";
 
@@ -39,7 +40,7 @@ export function Header() {
     <>
       <header
         className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
-          scrolled || menuOpen ? "glass" : "border-b border-transparent bg-gradient-to-b from-black/70 to-transparent"
+          scrolled || menuOpen ? "glass" : "header-top"
         }`}
       >
         <div className="shell flex h-14 items-center justify-between gap-4 md:h-[68px]">
@@ -66,6 +67,7 @@ export function Header() {
           </nav>
 
           <div className="flex items-center gap-1 md:gap-2">
+            <ThemeToggle />
             <IconButton label="Search" onClick={() => setSearchOpen(true)}>
               <Icon name="search" size={20} />
             </IconButton>
@@ -77,7 +79,7 @@ export function Header() {
             >
               <Icon name="bag" size={20} />
               {count > 0 && (
-                <span className="absolute right-1 top-1 grid h-4 min-w-4 place-items-center rounded-full bg-accent px-1 text-[10px] font-bold text-[#04161d] tnum">
+                <span className="absolute right-1 top-1 grid h-4 min-w-4 place-items-center rounded-full bg-accent px-1 text-[10px] font-bold text-on-accent tnum">
                   {count > 9 ? "9+" : count}
                 </span>
               )}
@@ -87,7 +89,7 @@ export function Header() {
               href={whatsapp("Hi Riderzpro, I have a question.")}
               target="_blank"
               rel="noreferrer noopener"
-              className="hidden h-10 items-center gap-2 border border-white/15 px-3 font-display text-[11px] font-bold uppercase tracking-[0.14em] text-chalk/85 transition-colors hover:border-[#1faa53] hover:text-[#3ddc7f] lg:inline-flex"
+              className="hidden h-10 items-center gap-2 border border-tint/15 px-3 font-display text-[11px] font-bold uppercase tracking-[0.14em] text-chalk/85 transition-colors hover:border-[#1faa53] hover:text-[#3ddc7f] lg:inline-flex"
             >
               <Icon name="whatsapp" size={16} />
               WhatsApp
@@ -142,13 +144,13 @@ function MegaMenu({ onClose }: { onClose: () => void }) {
     <div className="fixed inset-0 top-14 z-40 overflow-y-auto bg-void/97 backdrop-blur-xl md:top-[68px]">
       <div className="shell py-8">
         <p className="eyebrow mb-5">Everything Riderzpro</p>
-        <ul className="grid gap-px overflow-hidden border border-white/8 bg-white/8 sm:grid-cols-2 lg:grid-cols-4">
+        <ul className="grid gap-px overflow-hidden border border-tint/8 bg-tint/8 sm:grid-cols-2 lg:grid-cols-4">
           {PRIMARY_NAV.map((item) => (
             <li key={item.href} className="bg-void">
               <Link
                 href={item.href}
                 onClick={onClose}
-                className="group flex h-full flex-col justify-between gap-6 p-5 transition-colors hover:bg-white/4"
+                className="group flex h-full flex-col justify-between gap-6 p-5 transition-colors hover:bg-tint/4"
               >
                 <span className="font-display text-xl font-extrabold uppercase tracking-[-0.02em] group-hover:text-accent">
                   {item.label}

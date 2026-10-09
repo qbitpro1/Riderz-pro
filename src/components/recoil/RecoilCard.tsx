@@ -57,12 +57,12 @@ export function RecoilCard({
       <Link href={`/products/${product.slug}`} className="relative block aspect-square overflow-hidden bg-[#f3f4f5]">
         <ProductShot product={product} sizes={sizes} />
         {comingSoon && (
-          <span className="absolute left-2.5 top-2.5 chip border-gold/50 bg-gold/90 text-[10px] text-[#1a1204]">
+          <span className="absolute left-2.5 top-2.5 chip border-gold/50 bg-gold/90 text-[10px] text-on-gold">
             Coming soon
           </span>
         )}
         {!comingSoon && product.discountPct ? (
-          <span className="absolute left-2.5 top-2.5 bg-accent px-1.5 py-0.5 font-display text-[10px] font-bold tracking-[0.08em] text-[#04161d]">
+          <span className="absolute left-2.5 top-2.5 bg-accent px-1.5 py-0.5 font-display text-[10px] font-bold tracking-[0.08em] text-on-accent">
             {product.discountPct}% OFF
           </span>
         ) : null}

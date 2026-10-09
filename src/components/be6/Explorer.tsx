@@ -26,7 +26,7 @@ export function Explorer() {
 
   return (
     <div className="card overflow-hidden">
-      <div className="flex items-center justify-between gap-3 border-b border-white/[0.07] p-3">
+      <div className="flex items-center justify-between gap-3 border-b border-tint/[0.07] p-3">
         <div className="flex gap-1">
           {(["exterior", "interior"] as const).map((v) => (
             <button
@@ -66,7 +66,7 @@ export function Explorer() {
               <span
                 className={`flex h-6 w-6 items-center justify-center rounded-full border transition-all ${
                   on
-                    ? "scale-125 border-accent bg-accent text-[#04161d]"
+                    ? "scale-125 border-accent bg-accent text-on-accent"
                     : "border-accent/60 bg-void/80 text-accent hover:scale-110"
                 }`}
               >
@@ -81,7 +81,7 @@ export function Explorer() {
       <ImageCredit className="px-3 pb-2" />
 
       {shown && (
-        <div className="border-t border-white/[0.07] p-4 md:p-5">
+        <div className="border-t border-tint/[0.07] p-4 md:p-5">
           <h3 className="font-display text-sm font-extrabold uppercase tracking-[0.1em] text-chalk">
             {shown.label}
           </h3>
@@ -95,7 +95,7 @@ export function Explorer() {
         </div>
       )}
 
-      <div className="flex flex-wrap gap-1.5 border-t border-white/[0.07] p-3">
+      <div className="flex flex-wrap gap-1.5 border-t border-tint/[0.07] p-3">
         {spots.map((h) => (
           <button
             key={h.slug}

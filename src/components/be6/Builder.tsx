@@ -64,7 +64,7 @@ export function Builder() {
                 </span>
                 <span className="flex shrink-0 items-center gap-2">
                   {chosen > 0 && (
-                    <span className="flex h-5 min-w-5 items-center justify-center bg-accent px-1 font-display text-[0.625rem] font-bold text-[#04161d]">
+                    <span className="flex h-5 min-w-5 items-center justify-center bg-accent px-1 font-display text-[0.625rem] font-bold text-on-accent">
                       {chosen}
                     </span>
                   )}
@@ -73,11 +73,11 @@ export function Builder() {
               </button>
 
               {isOpen && (
-                <div className="border-t border-white/[0.07] p-4 pt-3">
+                <div className="border-t border-tint/[0.07] p-4 pt-3">
                   {g.href && (
                     <Link
                       href={g.href}
-                      className="mb-3 inline-flex items-center gap-1.5 border-b border-white/20 pb-0.5 font-display text-[0.625rem] font-bold uppercase tracking-[0.14em] text-ash transition-colors hover:border-accent hover:text-accent"
+                      className="mb-3 inline-flex items-center gap-1.5 border-b border-tint/20 pb-0.5 font-display text-[0.625rem] font-bold uppercase tracking-[0.14em] text-ash transition-colors hover:border-accent hover:text-accent"
                     >
                       Full {g.title.toLowerCase()} catalogue
                       <Icon name="arrow" size={12} />
@@ -110,7 +110,7 @@ export function Builder() {
         <div className="card p-4 md:p-5">
           <h3 className="font-display text-xs font-bold uppercase tracking-[0.18em] text-chalk">Your BE 6</h3>
 
-          <div className="mt-4 border-b border-white/[0.07] pb-3">
+          <div className="mt-4 border-b border-tint/[0.07] pb-3">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <ProvenanceTag provenance="MAHINDRA FACTORY" className="mb-1.5" />
@@ -125,7 +125,7 @@ export function Builder() {
             </div>
           </div>
 
-          <div className="border-b border-white/[0.07] py-3">
+          <div className="border-b border-tint/[0.07] py-3">
             <div className="mb-2 flex items-center justify-between">
               <ProvenanceTag provenance="RIDERZPRO CUSTOM" />
               {selected.upgrades.length > 0 && (
@@ -152,7 +152,7 @@ export function Builder() {
               </ul>
             )}
 
-            <div className="mt-2.5 flex items-baseline justify-between border-t border-white/[0.07] pt-2.5">
+            <div className="mt-2.5 flex items-baseline justify-between border-t border-tint/[0.07] pt-2.5">
               <span className="font-display text-[0.625rem] uppercase tracking-[0.14em] text-ash">
                 Riderzpro upgrades
               </span>
@@ -163,7 +163,7 @@ export function Builder() {
           </div>
 
           {/* Concepts are listed, not priced. */}
-          <div className="border-b border-white/[0.07] py-3">
+          <div className="border-b border-tint/[0.07] py-3">
             <ProvenanceTag provenance="RIDERZPRO CONCEPT" className="mb-2" />
             <ul className="space-y-1">
               {["Armor security", "Security glass", "Quantum Shield", "AI Drive"].map((n) => (
@@ -232,10 +232,10 @@ function UpgradeRow({
       <label
         className={`flex gap-3 border p-3 transition-colors ${
           !sellable
-            ? "cursor-not-allowed border-white/[0.06] bg-transparent"
+            ? "cursor-not-allowed border-tint/[0.06] bg-transparent"
             : checked
               ? "cursor-pointer border-accent/50 bg-accent/[0.07]"
-              : "cursor-pointer border-white/10 bg-white/[0.02] hover:border-white/25"
+              : "cursor-pointer border-tint/10 bg-tint/[0.02] hover:border-tint/25"
         }`}
       >
         <input

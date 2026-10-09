@@ -48,7 +48,7 @@ export function ProductGallery({ images, sku }: { images: CatalogImage[]; sku: s
                 aria-label={`View image ${i + 1} of ${images.length}`}
                 aria-current={i === active}
                 className={`relative block aspect-square w-full overflow-hidden border bg-[#f3f4f5] transition-colors ${
-                  i === active ? "border-accent" : "border-white/10 hover:border-white/30"
+                  i === active ? "border-accent" : "border-tint/10 hover:border-tint/30"
                 }`}
               >
                 <Image src={img.url} alt="" fill sizes="80px" className="object-contain p-1.5" />

@@ -94,7 +94,7 @@ export default function AudioPage() {
                       ))}
                     </ul>
 
-                    <p className="mt-4 border-t border-white/8 pt-3 text-[11px] leading-relaxed text-dim">
+                    <p className="mt-4 border-t border-tint/8 pt-3 text-[11px] leading-relaxed text-dim">
                       Best for: {p.bestFor}
                     </p>
 
@@ -115,7 +115,7 @@ export default function AudioPage() {
       </section>
 
       {/* builder -------------------------------------------------- */}
-      <section className="section border-y border-white/8 bg-carbon" id="builder">
+      <section className="section border-y border-tint/8 bg-carbon" id="builder">
         <div className="shell">
           <SectionHead
             eyebrow="Custom"
@@ -162,7 +162,7 @@ export default function AudioPage() {
       </section>
 
       {/* parts ---------------------------------------------------- */}
-      <section className="section border-y border-white/8 bg-carbon">
+      <section className="section border-y border-tint/8 bg-carbon">
         <div className="shell">
           <SectionHead
             eyebrow="Audio store"

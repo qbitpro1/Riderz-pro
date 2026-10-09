@@ -38,7 +38,7 @@ export default function Be6Page() {
   return (
     <Be6BuildProvider>
       {/* 1 — HERO ------------------------------------------------------- */}
-      <section id="be6-hero" className="relative flex min-h-[92svh] flex-col justify-end overflow-hidden bg-void">
+      <section id="be6-hero" data-theme="dark" className="relative flex min-h-[92svh] flex-col justify-end overflow-hidden bg-void">
         <div className="absolute inset-0">
           <div className="absolute inset-0 grid-lines opacity-25" />
           <div className="absolute inset-0 bg-[radial-gradient(120%_80%_at_50%_20%,rgba(92,225,255,0.13),transparent_62%)]" />
@@ -95,7 +95,7 @@ export default function Be6Page() {
       </section>
 
       {/* 2 — CHOOSE YOUR BE 6 -------------------------------------------- */}
-      <section id="choose" className="section border-t border-white/[0.06]">
+      <section id="choose" className="section border-t border-tint/[0.06]">
         <div className="shell">
           <SectionHead
             eyebrow="Mahindra factory vehicle"
@@ -104,7 +104,7 @@ export default function Be6Page() {
           />
           <Configurator />
 
-          <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border border-white/10 bg-white/[0.02] p-4">
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border border-tint/10 bg-tint/[0.02] p-4">
             <p className="max-w-lg text-[0.6875rem] leading-relaxed text-dim">
               Verified against Mahindra&apos;s official BE 6 SPORTEQ brochure on {BE6.dataVerified}. Prices are
               ex-showroom and exclude the wall charger.
@@ -118,7 +118,7 @@ export default function Be6Page() {
       </section>
 
       {/* 3 — COMPARE ------------------------------------------------------ */}
-      <section id="compare" className="section border-t border-white/[0.06] bg-carbon">
+      <section id="compare" className="section border-t border-tint/[0.06] bg-carbon">
         <div className="shell">
           <SectionHead
             eyebrow="Mahindra factory vehicle"
@@ -130,7 +130,7 @@ export default function Be6Page() {
       </section>
 
       {/* 4 — BUILD -------------------------------------------------------- */}
-      <section id="build" className="section border-t border-white/[0.06]">
+      <section id="build" className="section border-t border-tint/[0.06]">
         <div className="shell">
           <SectionHead
             eyebrow="Riderzpro"
@@ -158,7 +158,7 @@ export default function Be6Page() {
             An independent RIDERZPRO concept. Not a factory Mahindra variant, and not endorsed or certified by
             Mahindra.
           </p>
-          <Link href="/be-6/limited-edition" className="btn btn-accent mt-6 !bg-gold !text-[#1a1204]">
+          <Link href="/be-6/limited-edition" className="btn btn-accent mt-6 !bg-gold !text-on-gold">
             ENTER THE CONCEPT
             <Icon name="arrow" size={15} />
           </Link>

@@ -27,7 +27,7 @@ export function PageHero({
     size === "lg" ? "pt-32 pb-16 md:pt-44 md:pb-24" : size === "sm" ? "pt-24 pb-10 md:pt-32 md:pb-14" : "pt-28 pb-14 md:pt-40 md:pb-20";
 
   return (
-    <section className="relative overflow-hidden border-b border-white/8">
+    <section data-theme="dark" className="relative overflow-hidden border-b border-tint/8">
       <div className="absolute inset-0">
         <Photo media={media} sizes="100vw" priority quality={70} position={position} />
         <div className="absolute inset-0 scrim" />

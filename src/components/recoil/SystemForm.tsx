@@ -116,7 +116,7 @@ export function SystemForm() {
                 onClick={() => setGoal(g.value)}
                 aria-pressed={goal === g.value}
                 className={`border p-3 text-left transition-colors ${
-                  goal === g.value ? "border-accent/60 bg-accent/10" : "border-white/8 bg-white/2 hover:border-white/25"
+                  goal === g.value ? "border-accent/60 bg-accent/10" : "border-tint/8 bg-tint/2 hover:border-tint/25"
                 }`}
               >
                 <span className="block text-sm font-semibold">{g.label}</span>

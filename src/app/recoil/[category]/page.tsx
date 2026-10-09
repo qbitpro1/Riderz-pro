@@ -77,7 +77,7 @@ export default async function RecoilCategoryPage({ params }: { params: Promise<{
         </div>
       </section>
 
-      <section className="section border-t border-white/8 bg-carbon">
+      <section className="section border-t border-tint/8 bg-carbon">
         <div className="shell">
           <SectionHead eyebrow="In this category" title="EVERY PRODUCT TYPE." />
           <ul className="flex flex-wrap gap-2">

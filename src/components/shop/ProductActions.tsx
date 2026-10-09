@@ -35,7 +35,7 @@ export function ProductActions({ product }: { product: Product }) {
   return (
     <div className="mt-6 space-y-4">
       {product.installation && (
-        <label className="flex cursor-pointer items-start gap-3 border border-white/10 bg-white/3 p-4">
+        <label className="flex cursor-pointer items-start gap-3 border border-tint/10 bg-tint/3 p-4">
           <input
             type="checkbox"
             checked={withInstall}
@@ -56,7 +56,7 @@ export function ProductActions({ product }: { product: Product }) {
       )}
 
       <div className="flex items-center gap-3">
-        <div className="flex items-center border border-white/12">
+        <div className="flex items-center border border-tint/12">
           <button
             type="button"
             aria-label="Decrease quantity"

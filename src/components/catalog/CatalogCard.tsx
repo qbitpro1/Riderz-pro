@@ -32,12 +32,12 @@ export function CatalogCard({
       >
         <CardImage item={item} sizes={sizes} />
         {off > 0 && (
-          <span className="absolute left-2.5 top-2.5 bg-accent px-1.5 py-0.5 font-display text-[10px] font-bold tracking-[0.08em] text-[#04161d]">
+          <span className="absolute left-2.5 top-2.5 bg-accent px-1.5 py-0.5 font-display text-[10px] font-bold tracking-[0.08em] text-on-accent">
             {off}% OFF
           </span>
         )}
         {item.availability === "coming-soon" && (
-          <span className="chip absolute left-2.5 top-2.5 border-gold/50 bg-gold/90 text-[10px] text-[#1a1204]">
+          <span className="chip absolute left-2.5 top-2.5 border-gold/50 bg-gold/90 text-[10px] text-on-gold">
             Coming soon
           </span>
         )}

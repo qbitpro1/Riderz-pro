@@ -15,7 +15,7 @@ import { STAGE_COPY, VALIDATION_COPY } from "@/lib/data/be6/riderzpro";
  */
 
 const PROVENANCE_STYLE: Record<Provenance, string> = {
-  "MAHINDRA FACTORY": "border-white/35 bg-white/10 text-chalk",
+  "MAHINDRA FACTORY": "border-tint/35 bg-tint/10 text-chalk",
   "RIDERZPRO CUSTOM": "border-accent/45 bg-accent/12 text-accent",
   "RIDERZPRO CONCEPT": "border-gold/45 bg-gold/12 text-gold",
 };
@@ -40,7 +40,7 @@ const STAGE_STYLE: Record<Stage, string> = {
   CONCEPT: "border-gold/40 text-gold",
   PROTOTYPE: "border-gold/40 text-gold",
   TESTING: "border-gold/40 text-gold",
-  READY: "border-white/30 text-ash",
+  READY: "border-tint/30 text-ash",
   "COMING SOON": "border-gold/50 bg-gold/10 text-gold",
   AVAILABLE: "border-accent/45 bg-accent/10 text-accent",
 };

@@ -47,14 +47,14 @@ export function ProvenanceBanner({ listing }: { listing: Listing }) {
       )}
 
       {needsConfirmation && (
-        <p className="mt-3 flex items-start gap-2 border-t border-white/10 pt-3 text-xs text-gold">
+        <p className="mt-3 flex items-start gap-2 border-t border-tint/10 pt-3 text-xs text-gold">
           <Icon name="shield" size={13} className="mt-0.5 shrink-0" />
           Price and availability need confirmation — this listing has not been re-verified recently.
         </p>
       )}
 
       {listing.demo && (
-        <p className="mt-3 border-t border-white/10 pt-3 text-[11px] text-dim">
+        <p className="mt-3 border-t border-tint/10 pt-3 text-[11px] text-dim">
           Sample record from the design build. Not live inventory.
         </p>
       )}
@@ -99,7 +99,7 @@ export function ConditionTable({ listing }: { listing: Listing }) {
     <div className="overflow-x-auto">
       <table className="w-full min-w-[520px] border-collapse text-sm">
         <thead>
-          <tr className="border-b border-white/12 text-left text-[10px] uppercase tracking-[0.14em] text-dim">
+          <tr className="border-b border-tint/12 text-left text-[10px] uppercase tracking-[0.14em] text-dim">
             <th className="p-2.5">Item</th>
             <th className="p-2.5">Source reported</th>
             <th className="p-2.5">Riderzpro verified</th>
@@ -109,7 +109,7 @@ export function ConditionTable({ listing }: { listing: Listing }) {
           {CONDITION_LABELS.map(({ key, label }) => {
             const field = listing.condition[key];
             return (
-              <tr key={key} className="border-b border-white/8 align-top">
+              <tr key={key} className="border-b border-tint/8 align-top">
                 <th className="p-2.5 text-left text-xs font-medium text-dim">{label}</th>
                 <td className="p-2.5 text-xs">
                   {field.sourceReported ?? <span className="text-dim">Not specified</span>}

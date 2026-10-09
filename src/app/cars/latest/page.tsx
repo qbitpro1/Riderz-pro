@@ -37,7 +37,7 @@ export default function LatestCarsPage() {
         media="luxurySaloonMotion"
         size="sm"
       >
-        <dl className="mt-8 grid max-w-2xl grid-cols-2 gap-x-6 gap-y-5 border-t border-white/12 pt-6 md:grid-cols-4">
+        <dl className="mt-8 grid max-w-2xl grid-cols-2 gap-x-6 gap-y-5 border-t border-tint/12 pt-6 md:grid-cols-4">
           <Stat value={String(SNAPSHOT.totals.listings)} label="Cars listed" />
           <Stat value={String(SNAPSHOT.totals.newToday)} label="Added today" />
           <Stat value={String(SNAPSHOT.totals.priceDrops)} label="Price drops" />
@@ -47,7 +47,7 @@ export default function LatestCarsPage() {
       </PageHero>
 
       {/* Sourcing position, stated plainly rather than buried. */}
-      <section className="border-b border-white/8 bg-carbon">
+      <section className="border-b border-tint/8 bg-carbon">
         <div className="shell py-6">
           <div className="card border-gold/25 bg-gold/5 p-5">
             <p className="flex items-center gap-2 font-display text-sm font-extrabold uppercase text-gold">

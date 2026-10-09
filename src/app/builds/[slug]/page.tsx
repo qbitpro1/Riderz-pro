@@ -43,7 +43,7 @@ export default async function BuildDetailPage({ params }: { params: Promise<{ sl
 
   return (
     <>
-      <section className="relative min-h-[70svh] overflow-hidden pt-14 md:pt-[68px]">
+      <section data-theme="dark" className="relative min-h-[70svh] overflow-hidden pt-14 md:pt-[68px]">
         <div className="absolute inset-0">
           <Photo media={build.image} sizes="100vw" priority />
           <div className="absolute inset-0 scrim" />
@@ -52,7 +52,7 @@ export default async function BuildDetailPage({ params }: { params: Promise<{ sl
           <span className="chip mb-4 self-start border-accent/35 bg-accent/12 text-accent">{build.tag}</span>
           <h1 className="display-1">{build.title}</h1>
           <p className="mt-3 text-base text-ash">{build.vehicle}</p>
-          <dl className="mt-8 grid max-w-xl grid-cols-2 gap-x-6 gap-y-4 border-t border-white/12 pt-6 sm:grid-cols-4">
+          <dl className="mt-8 grid max-w-xl grid-cols-2 gap-x-6 gap-y-4 border-t border-tint/12 pt-6 sm:grid-cols-4">
             <Stat label="Build cost" value={rupees(build.cost)} />
             <Stat label="Time in shop" value={`${build.weeks} weeks`} />
             <Stat label="Owner" value={build.owner} />
@@ -77,7 +77,7 @@ export default async function BuildDetailPage({ params }: { params: Promise<{ sl
               <p className="mt-3 max-w-xl text-sm leading-relaxed text-ash md:text-base">{build.brief}</p>
 
               <h2 className="display-3 mt-10">MODIFICATIONS</h2>
-              <ul className="mt-4 divide-y divide-white/8 border-y border-white/8">
+              <ul className="mt-4 divide-y divide-tint/8 border-y border-tint/8">
                 {build.mods.map((group) => (
                   <li key={group.group} className="flex flex-col gap-2 py-4 sm:flex-row sm:gap-8">
                     <span className="w-36 shrink-0 font-display text-[11px] font-bold uppercase tracking-[0.14em] text-accent">
@@ -133,7 +133,7 @@ export default async function BuildDetailPage({ params }: { params: Promise<{ sl
       </section>
 
       {shopItems.length > 0 && (
-        <section className="section border-y border-white/8 bg-carbon">
+        <section className="section border-y border-tint/8 bg-carbon">
           <div className="shell">
             <SectionHead eyebrow="Shop the build" title="THE PARTS ON THIS CAR." href="/shop" hrefLabel="Shop all" />
             <ul className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">

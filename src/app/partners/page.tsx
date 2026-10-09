@@ -57,8 +57,8 @@ export default function PartnersPage() {
       </PageHero>
 
       {/* why -------------------------------------------------------- */}
-      <section className="border-b border-white/8 bg-carbon">
-        <ul className="shell grid grid-cols-2 gap-px bg-white/8 px-0 lg:grid-cols-4">
+      <section className="border-b border-tint/8 bg-carbon">
+        <ul className="shell grid grid-cols-2 gap-px bg-tint/8 px-0 lg:grid-cols-4">
           {[
             { icon: "spark" as const, t: "Sell more cars", b: "Buyers who came for a build, and stayed to buy the car." },
             { icon: "wrench" as const, t: "Workshop rates", b: "Partner pricing on PPF, audio, detailing and modification." },
@@ -91,7 +91,7 @@ export default function PartnersPage() {
       </section>
 
       {/* fields ----------------------------------------------------- */}
-      <section className="section border-y border-white/8 bg-carbon">
+      <section className="section border-y border-tint/8 bg-carbon">
         <div className="shell grid gap-8 lg:grid-cols-[1fr_1.1fr] lg:items-start">
           <div>
             <SectionHead
@@ -101,7 +101,7 @@ export default function PartnersPage() {
             />
             <ul className="grid gap-2 sm:grid-cols-2">
               {FIELD_REQUIREMENTS.map((f) => (
-                <li key={f.field} className="flex items-center gap-2 border border-white/8 bg-white/2 p-2.5 text-xs">
+                <li key={f.field} className="flex items-center gap-2 border border-tint/8 bg-tint/2 p-2.5 text-xs">
                   <Icon
                     name={f.required ? "check" : "plus"}
                     size={13}
@@ -125,7 +125,7 @@ export default function PartnersPage() {
               You do not have to use these names. This is what a clean export looks like — but if your
               DMS calls it &ldquo;Sale Price&rdquo; and &ldquo;Regn Year&rdquo;, we handle that.
             </p>
-            <div className="mt-4 border-t border-white/8 pt-4">
+            <div className="mt-4 border-t border-tint/8 pt-4">
               <p className="label">Photographs</p>
               <p className="text-xs leading-relaxed text-ash">
                 Put your image URLs in one cell, separated by <code className="text-accent">|</code>. They
@@ -158,7 +158,7 @@ export default function PartnersPage() {
                           channel.status === "LIVE"
                             ? "border-accent/35 bg-accent/12 text-accent"
                             : channel.status === "READY_TO_ONBOARD"
-                              ? "border-white/20"
+                              ? "border-tint/20"
                               : "border-gold/35 text-gold"
                         }`}
                       >
@@ -173,7 +173,7 @@ export default function PartnersPage() {
                         </span>
                       ))}
                     </p>
-                    <p className="mt-3 border-t border-white/8 pt-3 text-[11px] text-dim">{channel.requirement}</p>
+                    <p className="mt-3 border-t border-tint/8 pt-3 text-[11px] text-dim">{channel.requirement}</p>
                   </div>
                 </Reveal>
               </li>
@@ -183,7 +183,7 @@ export default function PartnersPage() {
       </section>
 
       {/* API -------------------------------------------------------- */}
-      <section className="section border-y border-white/8 bg-carbon">
+      <section className="section border-y border-tint/8 bg-carbon">
         <div className="shell grid gap-8 lg:grid-cols-2 lg:items-start">
           <div>
             <SectionHead
@@ -252,7 +252,7 @@ export default function PartnersPage() {
                       ? "border-accent/35 bg-accent/12 text-accent"
                       : tier.tone === "gold"
                         ? "border-gold/35 bg-gold/10 text-gold"
-                        : "border-white/20"
+                        : "border-tint/20"
                   }`}
                 >
                   {tier.label}
@@ -268,7 +268,7 @@ export default function PartnersPage() {
       </section>
 
       {/* packages --------------------------------------------------- */}
-      <section className="section border-y border-white/8 bg-carbon">
+      <section className="section border-y border-tint/8 bg-carbon">
         <div className="shell">
           <SectionHead eyebrow="Packages" title="SELL MORE CARS. BUILD MORE CUSTOMERS." blurb="Start free. Nothing to pay while we are both proving this works." />
           <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -298,7 +298,7 @@ export default function PartnersPage() {
       <section className="section">
         <div className="shell">
           <SectionHead eyebrow="How onboarding works" title="LIVE IN A DAY." />
-          <ol className="grid gap-px overflow-hidden border border-white/8 bg-white/8 sm:grid-cols-2 lg:grid-cols-3">
+          <ol className="grid gap-px overflow-hidden border border-tint/8 bg-tint/8 sm:grid-cols-2 lg:grid-cols-3">
             {STEPS.map((s) => (
               <li key={s.n} className="bg-void p-5">
                 <p className="font-display text-2xl font-extrabold text-accent/40 tnum">{s.n}</p>
@@ -315,15 +315,15 @@ export default function PartnersPage() {
               updating, we act on it rather than leaving your stock up.
             </p>
             <ul className="mt-4 grid gap-2 sm:grid-cols-3">
-              <li className="border border-white/8 bg-white/2 p-3 text-xs">
+              <li className="border border-tint/8 bg-tint/2 p-3 text-xs">
                 <span className="font-display text-lg font-extrabold text-ash tnum">{FRESHNESS_THRESHOLDS.needsVerification} days</span>
                 <span className="mt-1 block text-dim">Marked &ldquo;needs verification&rdquo;</span>
               </li>
-              <li className="border border-white/8 bg-white/2 p-3 text-xs">
+              <li className="border border-tint/8 bg-tint/2 p-3 text-xs">
                 <span className="font-display text-lg font-extrabold text-gold tnum">{FRESHNESS_THRESHOLDS.stale} days</span>
                 <span className="mt-1 block text-dim">Marked stale, ranked down</span>
               </li>
-              <li className="border border-white/8 bg-white/2 p-3 text-xs">
+              <li className="border border-tint/8 bg-tint/2 p-3 text-xs">
                 <span className="font-display text-lg font-extrabold text-danger tnum">{FRESHNESS_THRESHOLDS.hide} days</span>
                 <span className="mt-1 block text-dim">Temporarily hidden from the site</span>
               </li>
@@ -333,7 +333,7 @@ export default function PartnersPage() {
       </section>
 
       {/* register + regions ----------------------------------------- */}
-      <section className="section border-t border-white/8 bg-carbon">
+      <section className="section border-t border-tint/8 bg-carbon">
         <div className="shell grid gap-8 lg:grid-cols-[1.1fr_1fr] lg:items-start">
           <PartnerSignup />
 

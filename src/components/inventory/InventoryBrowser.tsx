@@ -167,7 +167,7 @@ export function InventoryBrowser({
       </div>
 
       {/* toolbar --------------------------------------------------- */}
-      <div className="sticky top-14 z-30 -mx-4 mb-6 border-y border-white/8 bg-void/92 px-4 py-3 backdrop-blur-xl md:top-[68px] md:mx-0 md:px-0 md:pl-4 md:pr-3">
+      <div className="sticky top-14 z-30 -mx-4 mb-6 border-y border-tint/8 bg-void/92 px-4 py-3 backdrop-blur-xl md:top-[68px] md:mx-0 md:px-0 md:pl-4 md:pr-3">
         <div className="flex items-center gap-3">
           <button
             type="button"
@@ -197,7 +197,7 @@ export function InventoryBrowser({
         </div>
 
         {open && (
-          <div className="mt-4 space-y-4 border-t border-white/8 pt-4">
+          <div className="mt-4 space-y-4 border-t border-tint/8 pt-4">
             <div>
               <p className="label">Riderzpro picks</p>
               <div className="flex flex-wrap gap-2">

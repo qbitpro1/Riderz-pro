@@ -15,7 +15,7 @@ export function BuildCard({
   return (
     <article className="card card-hover group h-full">
       <Link href={`/builds/${build.slug}`} className="block">
-        <div className="relative aspect-[4/5] overflow-hidden bg-graphite">
+        <div data-theme="dark" className="relative aspect-[4/5] overflow-hidden bg-graphite">
           <Photo media={build.image} sizes={sizes} className="zoom" />
           <div className="absolute inset-0 scrim" />
 
@@ -38,7 +38,7 @@ export function BuildCard({
               {build.mods.length > 3 && <span className="chip">+{build.mods.length - 3}</span>}
             </div>
 
-            <div className="mt-4 flex items-end justify-between gap-3 border-t border-white/12 pt-3">
+            <div className="mt-4 flex items-end justify-between gap-3 border-t border-tint/12 pt-3">
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-dim">Build cost</p>
                 <p className="font-display text-lg font-extrabold tnum">{rupees(build.cost)}</p>
@@ -62,7 +62,7 @@ export function ReviewCard({ review }: { review: Review }) {
       <blockquote className="mt-4 flex-1 text-sm leading-relaxed text-chalk/90">
         “{review.body}”
       </blockquote>
-      <div className="mt-5 flex items-center gap-3 border-t border-white/8 pt-4">
+      <div className="mt-5 flex items-center gap-3 border-t border-tint/8 pt-4">
         <div className="relative h-11 w-11 shrink-0 overflow-hidden bg-graphite">
           <Photo media={review.image} sizes="44px" />
         </div>

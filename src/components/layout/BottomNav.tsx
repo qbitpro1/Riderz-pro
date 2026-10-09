@@ -11,7 +11,7 @@ export function BottomNav() {
   return (
     <nav
       aria-label="Primary mobile"
-      className="fixed inset-x-0 bottom-0 z-50 border-t border-white/10 bg-void/92 backdrop-blur-xl safe-b lg:hidden"
+      className="fixed inset-x-0 bottom-0 z-50 border-t border-tint/10 bg-void/92 backdrop-blur-xl safe-b lg:hidden"
     >
       <ul className="grid grid-cols-5">
         {BOTTOM_NAV.map((item) => {

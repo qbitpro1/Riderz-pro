@@ -26,7 +26,7 @@ export default function PpfFilmsPage() {
       />
 
       {/* honesty note ----------------------------------------------- */}
-      <section className="border-b border-white/8 bg-carbon">
+      <section className="border-b border-tint/8 bg-carbon">
         <div className="shell py-6">
           <div className="card border-gold/25 bg-gold/5 p-5">
             <p className="flex items-center gap-2 font-display text-sm font-extrabold uppercase text-gold">
@@ -51,7 +51,7 @@ export default function PpfFilmsPage() {
           <div className="overflow-x-auto">
             <table className="w-full min-w-[900px] border-collapse text-sm">
               <thead>
-                <tr className="border-b border-white/12 text-left text-[10px] uppercase tracking-[0.14em] text-dim">
+                <tr className="border-b border-tint/12 text-left text-[10px] uppercase tracking-[0.14em] text-dim">
                   <th className="p-2.5">Film</th>
                   <th className="p-2.5">Tier</th>
                   <th className="p-2.5">Finish</th>
@@ -66,7 +66,7 @@ export default function PpfFilmsPage() {
                 {PPF_FILMS.map((film) => {
                   const brand = PPF_BRANDS.find((b) => b.id === film.brandId);
                   return (
-                    <tr key={film.sku} className="border-b border-white/8 align-top">
+                    <tr key={film.sku} className="border-b border-tint/8 align-top">
                       <td className="p-2.5">
                         <Link href={`/ppf/films/${film.slug}`} className="text-accent hover:underline">
                           {brand?.name} {film.name}
@@ -105,7 +105,7 @@ export default function PpfFilmsPage() {
       </section>
 
       {/* finishes ---------------------------------------------------- */}
-      <section className="section border-y border-white/8 bg-carbon">
+      <section className="section border-y border-tint/8 bg-carbon">
         <div className="shell">
           <SectionHead eyebrow="Finishes" title="GLOSS, SATIN, MATTE, COLOUR." />
           <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">

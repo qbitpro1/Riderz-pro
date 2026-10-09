@@ -26,7 +26,7 @@ export function StickyPpfCta({ vehicle }: { vehicle?: string }) {
 
   return (
     <div
-      className={`fixed inset-x-0 bottom-[64px] z-40 border-t border-white/10 bg-void/95 backdrop-blur-xl transition-transform duration-300 lg:hidden ${
+      className={`fixed inset-x-0 bottom-[64px] z-40 border-t border-tint/10 bg-void/95 backdrop-blur-xl transition-transform duration-300 lg:hidden ${
         visible ? "translate-y-0" : "translate-y-full"
       }`}
     >

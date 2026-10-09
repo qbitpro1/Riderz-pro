@@ -55,7 +55,7 @@ export function SeoLandingPage({ landing }: { landing: SeoLanding }) {
         </div>
       </section>
 
-      <section className="section border-y border-white/8 bg-carbon">
+      <section className="section border-y border-tint/8 bg-carbon">
         <div className="shell">
           <SectionHead eyebrow="Where next" title="KEEP GOING." />
           <ul className="flex flex-wrap gap-2">

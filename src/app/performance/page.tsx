@@ -60,7 +60,7 @@ export default function PerformancePage() {
             title="WHAT WE ACTUALLY DO."
             blurb="Every job ends with a road test and a printed dyno sheet. If a modification does not measure, we do not charge for it."
           />
-          <ul className="divide-y divide-white/8 border-y border-white/8">
+          <ul className="divide-y divide-tint/8 border-y border-tint/8">
             {PERFORMANCE_SERVICES.map((s, i) => (
               <li key={s.name}>
                 <Reveal delay={Math.min(i * 30, 200)}>
@@ -82,7 +82,7 @@ export default function PerformancePage() {
         </div>
       </section>
 
-      <section className="section border-y border-white/8 bg-carbon">
+      <section className="section border-y border-tint/8 bg-carbon">
         <div className="shell grid items-center gap-10 lg:grid-cols-2">
           <Reveal>
             <div className="relative aspect-[4/3] overflow-hidden bg-graphite">
@@ -128,7 +128,7 @@ export default function PerformancePage() {
       </section>
 
       {/* compliance ------------------------------------------------ */}
-      <section className="section border-y border-white/8 bg-carbon">
+      <section className="section border-y border-tint/8 bg-carbon">
         <div className="shell">
           <div className="card border-gold/30 bg-gold/6 p-6">
             <p className="flex items-center gap-2 font-display text-base font-extrabold uppercase text-gold">

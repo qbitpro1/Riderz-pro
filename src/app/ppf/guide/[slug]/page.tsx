@@ -69,7 +69,7 @@ export default async function PpfGuideArticlePage({ params }: { params: Promise<
           </div>
 
           {article.related.length > 0 && (
-            <div className="mt-12 border-t border-white/8 pt-6">
+            <div className="mt-12 border-t border-tint/8 pt-6">
               <p className="label">Related</p>
               <ul className="flex flex-wrap gap-2">
                 {article.related.map((slug) => {

@@ -25,7 +25,9 @@ type IconName =
   | "instagram"
   | "youtube"
   | "facebook"
-  | "filter";
+  | "filter"
+  | "sun"
+  | "moon";
 
 const PATHS: Record<IconName, React.ReactNode> = {
   home: <path d="M3 10.2 12 3l9 7.2V21H3z" />,
@@ -61,6 +63,13 @@ const PATHS: Record<IconName, React.ReactNode> = {
     </>
   ),
   menu: <path d="M3 7h18M3 12h18M3 17h18" />,
+  sun: (
+    <>
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4" />
+    </>
+  ),
+  moon: <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5z" />,
   close: <path d="M5 5l14 14M19 5 5 19" />,
   arrow: <path d="M4 12h15m-5-6 6 6-6 6" />,
   chevron: <path d="m9 5 7 7-7 7" />,

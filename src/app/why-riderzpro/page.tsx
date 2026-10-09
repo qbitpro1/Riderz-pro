@@ -52,7 +52,7 @@ export default function WhyPage() {
         media="garageHeadlights"
         size="sm"
       >
-        <dl className="mt-8 grid max-w-2xl grid-cols-2 gap-x-6 gap-y-5 border-t border-white/12 pt-6 md:grid-cols-4">
+        <dl className="mt-8 grid max-w-2xl grid-cols-2 gap-x-6 gap-y-5 border-t border-tint/12 pt-6 md:grid-cols-4">
           {STATS.map((s) => (
             <div key={s.label}>
               <dd className="font-display text-2xl font-extrabold tnum">{s.value}</dd>
@@ -65,7 +65,7 @@ export default function WhyPage() {
       <section className="section">
         <div className="shell">
           <SectionHead eyebrow="How we work" title="SIX THINGS WE DON'T BEND ON." />
-          <ul className="grid gap-px overflow-hidden border border-white/8 bg-white/8 md:grid-cols-2 lg:grid-cols-3">
+          <ul className="grid gap-px overflow-hidden border border-tint/8 bg-tint/8 md:grid-cols-2 lg:grid-cols-3">
             {PRINCIPLES.map((p, i) => (
               <li key={p.title} className="bg-void p-6">
                 <Reveal delay={(i % 3) * 60}>
@@ -80,7 +80,7 @@ export default function WhyPage() {
         </div>
       </section>
 
-      <section className="section border-y border-white/8 bg-carbon">
+      <section className="section border-y border-tint/8 bg-carbon">
         <div className="shell">
           <SectionHead
             eyebrow="Trust system"

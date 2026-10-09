@@ -29,7 +29,7 @@ export default function GaragePage() {
         media="mechanicEngine"
         actions={[{ href: "#book", label: "Book an appointment", variant: "primary" }]}
       >
-        <dl className="mt-8 grid max-w-2xl grid-cols-2 gap-x-6 gap-y-5 border-t border-white/12 pt-6 md:grid-cols-4">
+        <dl className="mt-8 grid max-w-2xl grid-cols-2 gap-x-6 gap-y-5 border-t border-tint/12 pt-6 md:grid-cols-4">
           {STATS.map((s) => (
             <div key={s.label}>
               <dd className="font-display text-2xl font-extrabold tnum">{s.value}</dd>
@@ -47,7 +47,7 @@ export default function GaragePage() {
               title="EVERY JOB, ONE ROOF."
               blurb="If it can be done to a car, one of our bays does it. If we cannot do something properly, we say so instead of learning on your car."
             />
-            <ul className="grid gap-px overflow-hidden border border-white/8 bg-white/8 sm:grid-cols-2">
+            <ul className="grid gap-px overflow-hidden border border-tint/8 bg-tint/8 sm:grid-cols-2">
               {GARAGE_SERVICES.map((s) => (
                 <li key={s.name} className="bg-void p-4">
                   <p className="flex items-center gap-2 font-display text-sm font-extrabold uppercase">
@@ -64,7 +64,7 @@ export default function GaragePage() {
         </div>
       </section>
 
-      <section className="section border-y border-white/8 bg-carbon">
+      <section className="section border-y border-tint/8 bg-carbon">
         <div className="shell">
           <SectionHead eyebrow="Inside the workshop" title="WHERE IT HAPPENS." />
           <ul className="grid grid-cols-2 gap-3 lg:grid-cols-4">

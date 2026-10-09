@@ -94,7 +94,7 @@ export default function LaunchReadinessPage() {
               <div className="mt-4 overflow-x-auto">
                 <table className="w-full min-w-[620px] border-collapse text-sm">
                   <thead>
-                    <tr className="border-b border-white/10 text-left text-[11px] uppercase tracking-[0.12em] text-dim">
+                    <tr className="border-b border-tint/10 text-left text-[11px] uppercase tracking-[0.12em] text-dim">
                       <th className="py-2 pr-4 font-medium">Brand</th>
                       <th className="py-2 pr-4 font-medium">Reference</th>
                       <th className="py-2 pr-4 font-medium">Product</th>
@@ -103,7 +103,7 @@ export default function LaunchReadinessPage() {
                   </thead>
                   <tbody>
                     {b.items.map((i) => (
-                      <tr key={`${i.brand}-${i.ref}-${i.name}`} className="border-b border-white/6 align-top">
+                      <tr key={`${i.brand}-${i.ref}-${i.name}`} className="border-b border-tint/6 align-top">
                         <td className="py-2 pr-4 text-[11px] uppercase tracking-[0.1em] text-accent">{i.brand}</td>
                         <td className="py-2 pr-4 font-mono text-xs">{i.ref}</td>
                         <td className="py-2 pr-4 text-ash">{i.name}</td>

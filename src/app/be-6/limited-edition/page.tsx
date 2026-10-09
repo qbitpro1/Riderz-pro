@@ -57,7 +57,7 @@ export default function LimitedEditionPage() {
   return (
     <>
       {/* HERO ------------------------------------------------------------ */}
-      <section className="relative flex min-h-[92svh] flex-col justify-end overflow-hidden bg-void">
+      <section data-theme="dark" className="relative flex min-h-[92svh] flex-col justify-end overflow-hidden bg-void">
         <div className="absolute inset-0">
           <div className="absolute inset-0 grid-lines opacity-25" />
           <div className="absolute inset-0 bg-[radial-gradient(120%_85%_at_50%_15%,rgba(217,167,96,0.16),transparent_60%)]" />
@@ -103,7 +103,7 @@ export default function LimitedEditionPage() {
           </div>
 
           <div className="rise mt-6 flex flex-col gap-2.5 sm:flex-row" style={{ animationDelay: "500ms" }}>
-            <a href="#waitlist" className="btn btn-accent !bg-gold !text-[#1a1204]">
+            <a href="#waitlist" className="btn btn-accent !bg-gold !text-on-gold">
               JOIN THE WAITLIST
             </a>
             <a href="#build-process" className="btn btn-outline">
@@ -116,7 +116,7 @@ export default function LimitedEditionPage() {
       </section>
 
       {/* CONTENTS -------------------------------------------------------- */}
-      <nav aria-label="Sections" className="border-y border-white/[0.06] bg-carbon">
+      <nav aria-label="Sections" className="border-y border-tint/[0.06] bg-carbon">
         <div className="shell rail py-3">
           {[
             ["#exterior", "Exterior"],
@@ -291,7 +291,7 @@ export default function LimitedEditionPage() {
                 ))}
               </ul>
               {m.factoryOverlap && (
-                <p className="mt-auto border-t border-white/[0.07] pt-2.5 text-[0.625rem] leading-relaxed text-dim">
+                <p className="mt-auto border-t border-tint/[0.07] pt-2.5 text-[0.625rem] leading-relaxed text-dim">
                   <strong className="text-chalk">Already in the factory car:</strong> {m.factoryOverlap}
                 </p>
               )}
@@ -317,7 +317,7 @@ export default function LimitedEditionPage() {
               </li>
             ))}
           </ul>
-          <p className="mt-3 border-l-2 border-white/15 pl-3 text-[0.6875rem] leading-relaxed text-dim">
+          <p className="mt-3 border-l-2 border-tint/15 pl-3 text-[0.6875rem] leading-relaxed text-dim">
             {VOICE.caveat}
           </p>
         </div>
@@ -350,7 +350,7 @@ export default function LimitedEditionPage() {
       {/* WHEELS -------------------------------------------------------------- */}
       <Section id="wheels" eyebrow="08" title="WHEELS" blurb="RIDERZPRO WHEELS — with fitment validation, and a wheel we are refusing to sell yet.">
         <UpgradeStrip group="wheels" />
-        <div className="mt-4 border border-white/10 bg-white/[0.02] p-4">
+        <div className="mt-4 border border-tint/10 bg-tint/[0.02] p-4">
           <h3 className="font-display text-xs font-bold uppercase tracking-[0.16em] text-chalk">
             Why one of these has no price
           </h3>
@@ -428,7 +428,7 @@ export default function LimitedEditionPage() {
           />
           <Waitlist />
 
-          <div className="mt-8 border-t border-white/[0.07] pt-6">
+          <div className="mt-8 border-t border-tint/[0.07] pt-6">
             <h3 className="font-display text-xs font-bold uppercase tracking-[0.16em] text-gold">
               Important — please read
             </h3>
@@ -459,7 +459,7 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section id={id} className={`section border-t border-white/[0.06] ${alt ? "bg-carbon" : ""}`}>
+    <section id={id} className={`section border-t border-tint/[0.06] ${alt ? "bg-carbon" : ""}`}>
       <div className="shell">
         <SectionHead eyebrow={eyebrow} title={title} blurb={blurb} />
         {children}

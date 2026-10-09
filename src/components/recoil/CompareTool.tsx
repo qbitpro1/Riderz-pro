@@ -72,7 +72,7 @@ export function CompareTool({ rows, fieldOrder }: { rows: CompareRow[]; fieldOrd
           />
         </div>
         {suggestions.length > 0 && (
-          <ul className="mt-3 divide-y divide-white/8 border-t border-white/8">
+          <ul className="mt-3 divide-y divide-tint/8 border-t border-tint/8">
             {suggestions.map((s) => (
               <li key={s.sku}>
                 <button
@@ -120,11 +120,11 @@ export function CompareTool({ rows, fieldOrder }: { rows: CompareRow[]; fieldOrd
           <table className="w-full min-w-[640px] border-collapse text-sm">
             <thead>
               <tr>
-                <th className="w-36 border-b border-white/10 p-3 text-left align-bottom text-[10px] uppercase tracking-[0.14em] text-dim">
+                <th className="w-36 border-b border-tint/10 p-3 text-left align-bottom text-[10px] uppercase tracking-[0.14em] text-dim">
                   Specification
                 </th>
                 {chosen.map((c) => (
-                  <th key={c.sku} className="border-b border-white/10 p-3 align-bottom">
+                  <th key={c.sku} className="border-b border-tint/10 p-3 align-bottom">
                     <div className="relative mx-auto mb-3 aspect-square w-full max-w-[140px] overflow-hidden bg-[#f3f4f5]">
                       {c.image ? (
                         <Image src={c.image} alt={`RECOIL ${c.sku}`} fill sizes="140px" className="object-contain p-2" />
@@ -151,7 +151,7 @@ export function CompareTool({ rows, fieldOrder }: { rows: CompareRow[]; fieldOrd
             </thead>
             <tbody>
               {activeFields.map((field) => (
-                <tr key={field} className="border-b border-white/8">
+                <tr key={field} className="border-b border-tint/8">
                   <th className="p-3 text-left align-top text-xs font-medium text-dim">{field}</th>
                   {chosen.map((c) => (
                     <td key={c.sku} className="p-3 align-top">

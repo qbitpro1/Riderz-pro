@@ -25,7 +25,7 @@ export const metadata: Metadata = {
 export default function Be6SpecificationsPage() {
   return (
     <>
-      <section className="border-b border-white/[0.06] bg-carbon pb-10 pt-28 md:pt-32">
+      <section className="border-b border-tint/[0.06] bg-carbon pb-10 pt-28 md:pt-32">
         <div className="shell">
           <Link
             href="/be-6"
@@ -55,7 +55,7 @@ export default function Be6SpecificationsPage() {
           <div className="card overflow-x-auto">
             <table className="w-full min-w-[42rem] border-collapse text-left">
               <thead>
-                <tr className="border-b border-white/10">
+                <tr className="border-b border-tint/10">
                   {["Variant", "Battery", "Screens", "Wheels"].map((h) => (
                     <th key={h} className="p-3 font-display text-[0.5625rem] uppercase tracking-[0.14em] text-dim">
                       {h}
@@ -65,7 +65,7 @@ export default function Be6SpecificationsPage() {
               </thead>
               <tbody>
                 {VARIANTS.map((v) => (
-                  <tr key={v.slug} className="border-b border-white/[0.06] last:border-0">
+                  <tr key={v.slug} className="border-b border-tint/[0.06] last:border-0">
                     <td className="p-3 align-top">
                       <span className="font-display text-xs font-bold text-chalk">{v.name}</span>
                       {v.edition && <span className="ml-1.5 text-[0.5625rem] text-gold">EDITION</span>}
@@ -84,7 +84,7 @@ export default function Be6SpecificationsPage() {
       </section>
 
       {/* Explorer --------------------------------------------------------- */}
-      <section className="section border-t border-white/[0.06] bg-carbon">
+      <section className="section border-t border-tint/[0.06] bg-carbon">
         <div className="shell">
           <SectionHead
             eyebrow="Explore"
@@ -96,7 +96,7 @@ export default function Be6SpecificationsPage() {
       </section>
 
       {/* Spec tables ------------------------------------------------------ */}
-      <section className="section border-t border-white/[0.06]">
+      <section className="section border-t border-tint/[0.06]">
         <div className="shell">
           <SpecTables />
 
@@ -106,7 +106,7 @@ export default function Be6SpecificationsPage() {
                 {REAL_WORLD_RANGE.headline}
               </h3>
               <p className="mt-2 text-[0.6875rem] leading-relaxed text-ash">{REAL_WORLD_RANGE.body}</p>
-              <dl className="mt-3 divide-y divide-white/[0.06]">
+              <dl className="mt-3 divide-y divide-tint/[0.06]">
                 {REAL_WORLD_RANGE.estimates.map((e) => (
                   <div key={e.label} className="flex items-baseline justify-between gap-3 py-2">
                     <dt className="text-[0.6875rem] text-dim">{e.label} — certified</dt>
@@ -124,7 +124,7 @@ export default function Be6SpecificationsPage() {
       </section>
 
       {/* Feature explainers ------------------------------------------------ */}
-      <section className="section border-t border-white/[0.06] bg-carbon">
+      <section className="section border-t border-tint/[0.06] bg-carbon">
         <div className="shell">
           <SectionHead
             eyebrow="Plain English"
@@ -136,7 +136,7 @@ export default function Be6SpecificationsPage() {
       </section>
 
       {/* TEQ suites -------------------------------------------------------- */}
-      <section className="section border-t border-white/[0.06]">
+      <section className="section border-t border-tint/[0.06]">
         <div className="shell">
           <SectionHead
             eyebrow="Mahindra's own software"

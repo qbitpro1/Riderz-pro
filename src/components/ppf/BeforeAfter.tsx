@@ -97,7 +97,7 @@ export function BeforeAfter({
         max={100}
         value={Math.round(pos)}
         onChange={(e) => setPos(Number(e.target.value))}
-        className="h-1 w-full cursor-ew-resize appearance-none bg-white/10 accent-[var(--color-accent)]"
+        className="h-1 w-full cursor-ew-resize appearance-none bg-tint/10 accent-[var(--color-accent)]"
       />
 
       {caption && <figcaption className="p-4 text-xs leading-relaxed text-ash">{caption}</figcaption>}

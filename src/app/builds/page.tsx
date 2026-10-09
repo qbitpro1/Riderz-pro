@@ -64,7 +64,7 @@ export default function BuildsPage() {
         </div>
       </section>
 
-      <section className="section border-t border-white/8 bg-carbon">
+      <section className="section border-t border-tint/8 bg-carbon">
         <div className="shell">
           <SectionHead eyebrow="Owners" title="WHAT THEY SAY AFTER." />
           <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">

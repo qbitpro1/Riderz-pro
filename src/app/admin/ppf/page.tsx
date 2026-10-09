@@ -93,7 +93,7 @@ export default function PpfAdminPage() {
         <div className="mt-4 overflow-x-auto">
           <table className="w-full min-w-[900px] border-collapse text-sm">
             <thead>
-              <tr className="border-b border-white/12 text-left text-[10px] uppercase tracking-[0.14em] text-dim">
+              <tr className="border-b border-tint/12 text-left text-[10px] uppercase tracking-[0.14em] text-dim">
                 <th className="p-2.5">SKU</th>
                 <th className="p-2.5">Brand</th>
                 <th className="p-2.5">Tier</th>
@@ -110,7 +110,7 @@ export default function PpfAdminPage() {
                 const cov = verifiedFieldCount(film);
                 const live = isPublishable(film);
                 return (
-                  <tr key={film.sku} className="border-b border-white/8 align-top">
+                  <tr key={film.sku} className="border-b border-tint/8 align-top">
                     <td className="p-2.5 text-xs">
                       <Link href={`/ppf/films/${film.slug}`} className="text-accent hover:underline">
                         {film.sku}
@@ -154,7 +154,7 @@ export default function PpfAdminPage() {
           salesperson opens the conversation knowing the car, the coverage and the number the customer
           already saw.
         </p>
-        <ol className="mt-4 grid gap-px overflow-hidden border border-white/8 bg-white/8 sm:grid-cols-2 lg:grid-cols-4">
+        <ol className="mt-4 grid gap-px overflow-hidden border border-tint/8 bg-tint/8 sm:grid-cols-2 lg:grid-cols-4">
           {PIPELINE.map((s, i) => (
             <li key={s.stage} className="bg-void p-4">
               <p className="font-display text-lg font-extrabold text-accent/40 tnum">0{i + 1}</p>
@@ -203,7 +203,7 @@ export default function PpfAdminPage() {
                 </thead>
                 <tbody>
                   {VEHICLE_CLASSES.map((c) => (
-                    <tr key={c.id} className="border-t border-white/8">
+                    <tr key={c.id} className="border-t border-tint/8">
                       <td className="py-1.5">{c.label}</td>
                       <td className="py-1.5 text-right tnum">×{c.areaFactor}</td>
                       <td className="py-1.5 text-right tnum">×{c.complexityFactor}</td>

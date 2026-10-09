@@ -67,7 +67,7 @@ export default async function BrandPage({
         }
       />
 
-      <section className="border-b border-white/8 bg-carbon">
+      <section className="border-b border-tint/8 bg-carbon">
         <div className="shell flex flex-wrap items-center gap-x-8 gap-y-3 py-5">
           <p className="flex items-center gap-2 text-xs text-ash">
             <Icon name="shield" size={14} className="text-accent" />
@@ -105,7 +105,7 @@ export default async function BrandPage({
       </section>
 
       {categories.length > 0 && items.length > 0 && (
-        <section className="section border-t border-white/8 bg-carbon">
+        <section className="section border-t border-tint/8 bg-carbon">
           <div className="shell">
             <SectionHead
               eyebrow={`${b.name} in the shop`}

@@ -82,13 +82,13 @@ export function SearchPanel({ onClose }: { onClose: () => void }) {
             {index && (
               <>
                 <p className="eyebrow mb-4">Search by brand</p>
-                <ul className="mb-8 grid gap-px overflow-hidden border border-white/8 bg-white/8 sm:grid-cols-2 lg:grid-cols-4">
+                <ul className="mb-8 grid gap-px overflow-hidden border border-tint/8 bg-tint/8 sm:grid-cols-2 lg:grid-cols-4">
                   {index.brands.map((b) => (
                     <li key={b.slug} className="bg-void">
                       <Link
                         href={b.href}
                         onClick={onClose}
-                        className="group flex items-center justify-between gap-3 p-4 transition-colors hover:bg-white/4"
+                        className="group flex items-center justify-between gap-3 p-4 transition-colors hover:bg-tint/4"
                       >
                         <span className="min-w-0">
                           <span className="block truncate font-display text-base font-extrabold uppercase tracking-[-0.02em] group-hover:text-accent">
@@ -129,7 +129,7 @@ export function SearchPanel({ onClose }: { onClose: () => void }) {
             </p>
           </div>
         ) : (
-          <ul className="divide-y divide-white/8">
+          <ul className="divide-y divide-tint/8">
             {results.map((r) => (
               <ResultRow key={r.id} entry={r} onNavigate={onClose} />
             ))}

@@ -42,7 +42,7 @@ export function ListingCard({
               Riderzpro Verified
             </span>
           ) : (
-            <span className="chip border-white/20 bg-void/70">{listing.sourceLabel}</span>
+            <span className="chip border-tint/20 bg-void/70">{listing.sourceLabel}</span>
           )}
           {listing.priceDrop && <span className="chip border-accent/40 bg-accent/15 text-accent">Price drop</span>}
         </div>

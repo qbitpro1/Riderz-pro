@@ -96,7 +96,7 @@ export default async function PpfFilmPage({ params }: { params: Promise<{ slug: 
               <p className="mt-2 text-xs text-dim tnum">
                 {coverage.verified} of {coverage.total} fields confirmed from manufacturer documentation.
               </p>
-              <dl className="mt-4 divide-y divide-white/8 border-y border-white/8">
+              <dl className="mt-4 divide-y divide-tint/8 border-y border-tint/8">
                 <SpecRow label="Brand" spec={{ value: brand?.name ?? null, source: null, verifiedAt: null }} />
                 <SpecRow label="SKU" spec={{ value: film.sku, source: null, verifiedAt: null }} />
                 <SpecRow label="Finish" spec={{ value: film.finish, source: null, verifiedAt: null }} />
@@ -163,7 +163,7 @@ export default async function PpfFilmPage({ params }: { params: Promise<{ slug: 
                   </div>
 
                   {film.warrantyConditions.value && (
-                    <p className="mt-5 border-t border-white/8 pt-4 text-xs text-ash">
+                    <p className="mt-5 border-t border-tint/8 pt-4 text-xs text-ash">
                       <span className="text-dim">Conditions: </span>
                       {film.warrantyConditions.value}
                     </p>
@@ -207,7 +207,7 @@ export default async function PpfFilmPage({ params }: { params: Promise<{ slug: 
                 </a>
 
                 {coverage.missing.length > 0 && (
-                  <div className="mt-5 border-t border-white/8 pt-4">
+                  <div className="mt-5 border-t border-tint/8 pt-4">
                     <p className="label">Not yet confirmed</p>
                     <p className="flex flex-wrap gap-1.5">
                       {coverage.missing.map((m) => (
@@ -227,7 +227,7 @@ export default async function PpfFilmPage({ params }: { params: Promise<{ slug: 
         </div>
       </section>
 
-      <section className="section border-t border-white/8 bg-carbon">
+      <section className="section border-t border-tint/8 bg-carbon">
         <div className="shell">
           <SectionHead eyebrow="Other films" title="COMPARE THE RANGE." href="/ppf/films" hrefLabel="All films" />
           <ul className="flex flex-wrap gap-2">

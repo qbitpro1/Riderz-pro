@@ -247,10 +247,10 @@ export function PpfConfigurator({ films }: { films: PublishedFilm[] }) {
                           disabled={impliedByFullBody}
                           className={`flex w-full items-start justify-between gap-3 border p-3 text-left transition-colors ${
                             impliedByFullBody
-                              ? "cursor-not-allowed border-white/6 bg-white/2 opacity-45"
+                              ? "cursor-not-allowed border-tint/6 bg-tint/2 opacity-45"
                               : on
                                 ? "border-accent/60 bg-accent/10"
-                                : "border-white/8 bg-white/2 hover:border-white/25"
+                                : "border-tint/8 bg-tint/2 hover:border-tint/25"
                           }`}
                         >
                           <span className="min-w-0">
@@ -259,7 +259,7 @@ export function PpfConfigurator({ films }: { films: PublishedFilm[] }) {
                           </span>
                           <span
                             className={`mt-0.5 grid h-5 w-5 shrink-0 place-items-center border ${
-                              on || impliedByFullBody ? "border-accent bg-accent text-[#04161d]" : "border-white/25"
+                              on || impliedByFullBody ? "border-accent bg-accent text-on-accent" : "border-tint/25"
                             }`}
                           >
                             {(on || impliedByFullBody) && <Icon name="check" size={12} />}
@@ -287,7 +287,7 @@ export function PpfConfigurator({ films }: { films: PublishedFilm[] }) {
                 onClick={() => setTier(t)}
                 aria-pressed={tier === t}
                 className={`border p-3 text-left transition-colors ${
-                  tier === t ? "border-accent/60 bg-accent/10" : "border-white/8 bg-white/2 hover:border-white/25"
+                  tier === t ? "border-accent/60 bg-accent/10" : "border-tint/8 bg-tint/2 hover:border-tint/25"
                 }`}
               >
                 <span className="block text-sm font-semibold">{TIER_RATES[t].label}</span>
@@ -342,7 +342,7 @@ export function PpfConfigurator({ films }: { films: PublishedFilm[] }) {
                 onClick={() => setPaint(c.id)}
                 aria-pressed={paint === c.id}
                 className={`border p-3 text-left transition-colors ${
-                  paint === c.id ? "border-accent/60 bg-accent/10" : "border-white/8 bg-white/2 hover:border-white/25"
+                  paint === c.id ? "border-accent/60 bg-accent/10" : "border-tint/8 bg-tint/2 hover:border-tint/25"
                 }`}
               >
                 <span className="block text-sm font-semibold">{c.label}</span>
@@ -374,11 +374,11 @@ export function PpfConfigurator({ films }: { films: PublishedFilm[] }) {
                 {result.coveragePct}% of the painted body · ≈ {result.sqFt} sq ft
               </p>
 
-              <div className="mt-4 h-1.5 w-full bg-white/8">
+              <div className="mt-4 h-1.5 w-full bg-tint/8">
                 <div className="h-full bg-accent transition-all" style={{ width: `${result.coveragePct}%` }} />
               </div>
 
-              <dl className="mt-5 space-y-2 border-t border-white/8 pt-4 text-sm">
+              <dl className="mt-5 space-y-2 border-t border-tint/8 pt-4 text-sm">
                 {result.breakdown.map((row) => (
                   <div key={row.label} className="flex items-center justify-between gap-4">
                     <dt className="text-ash">{row.label}</dt>
@@ -420,7 +420,7 @@ export function PpfConfigurator({ films }: { films: PublishedFilm[] }) {
             Clear coverage
           </button>
 
-          <p className="mt-4 border-t border-white/8 pt-4 text-[11px] leading-relaxed text-dim">
+          <p className="mt-4 border-t border-tint/8 pt-4 text-[11px] leading-relaxed text-dim">
             {PRICE_DISCLAIMER}
           </p>
         </div>

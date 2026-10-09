@@ -20,7 +20,7 @@ export function BrandStrip({ exclude = [] as string[] }) {
           <li key={b.slug}>
             <Reveal delay={i * 55} className="h-full">
               <article className="card card-hover flex h-full flex-col">
-                <Link href={`/brands/${b.slug}`} className="relative block aspect-[16/9] overflow-hidden bg-graphite">
+                <Link data-theme="dark" href={`/brands/${b.slug}`} className="relative block aspect-[16/9] overflow-hidden bg-graphite">
                   <Photo media={b.image} sizes="(min-width:1024px) 25vw, (min-width:640px) 50vw, 92vw" className="zoom opacity-80" />
                   <div className="absolute inset-0 scrim-soft" />
                   <div className="absolute inset-x-0 bottom-0 p-4">

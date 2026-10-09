@@ -152,7 +152,7 @@ export default async function VehicleAccessoriesPage({
         </div>
       </section>
 
-      <section className="section border-y border-white/8 bg-carbon">
+      <section className="section border-y border-tint/8 bg-carbon">
         <div className="shell grid gap-8 lg:grid-cols-[1fr_1.15fr]">
           <SectionHead
             eyebrow="Most requested"
@@ -161,7 +161,7 @@ export default async function VehicleAccessoriesPage({
           />
           <ul className="grid gap-2.5 sm:grid-cols-2">
             {recommended.map((r) => (
-              <li key={r} className="flex items-start gap-2.5 border border-white/8 bg-white/2 p-3 text-sm text-ash">
+              <li key={r} className="flex items-start gap-2.5 border border-tint/8 bg-tint/2 p-3 text-sm text-ash">
                 <Icon name="check" size={15} className="mt-0.5 shrink-0 text-accent" />
                 {r}
               </li>
@@ -210,7 +210,7 @@ export default async function VehicleAccessoriesPage({
       )}
 
       {listings.length > 0 && (
-        <section className="section border-t border-white/8 bg-carbon">
+        <section className="section border-t border-tint/8 bg-carbon">
           <div className="shell">
             <SectionHead
               eyebrow="In stock now"

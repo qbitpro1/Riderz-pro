@@ -30,7 +30,7 @@ export function SpecTables() {
           </div>
           <p className="mb-3 text-[0.6875rem] leading-relaxed text-dim">{g.caption}</p>
 
-          <dl className="divide-y divide-white/[0.06]">
+          <dl className="divide-y divide-tint/[0.06]">
             {g.rows.map((r) => (
               <div key={r.label} className="grid grid-cols-[9rem_1fr] gap-3 py-2.5 xs:grid-cols-[10rem_1fr]">
                 <dt className="text-[0.6875rem] leading-snug text-dim">{r.label}</dt>
@@ -142,7 +142,7 @@ export function Pipeline() {
       {PIPELINE.map((p, i) => (
         <li
           key={p.slug}
-          className="relative w-[11rem] shrink-0 border border-white/10 bg-white/[0.02] p-3 md:w-auto"
+          className="relative w-[11rem] shrink-0 border border-tint/10 bg-tint/[0.02] p-3 md:w-auto"
         >
           <span className="font-display text-[0.5625rem] uppercase tracking-[0.16em] text-dim">
             {String(i + 1).padStart(2, "0")}
@@ -177,7 +177,7 @@ export function PrintedPartCard({ part }: { part: PrintedPart }) {
         <StageTag stage={part.stage} className="shrink-0" />
       </div>
 
-      <dl className="divide-y divide-white/[0.06]">
+      <dl className="divide-y divide-tint/[0.06]">
         {rows.map(([k, v]) => (
           <div key={k} className="grid grid-cols-[5.5rem_1fr] gap-2 py-1.5">
             <dt className="text-[0.625rem] text-dim">{k}</dt>
@@ -224,7 +224,7 @@ export function ConceptModuleBlock({ module: m }: { module: ConceptModule }) {
           </ul>
         </div>
 
-        <div className="border border-white/10 bg-white/[0.02] p-4">
+        <div className="border border-tint/10 bg-tint/[0.02] p-4">
           <h4 className="font-display text-[0.625rem] font-bold uppercase tracking-[0.16em] text-chalk">
             Engineering &amp; certification required
           </h4>
@@ -254,7 +254,7 @@ export function ComparisonTable() {
       <div className="card overflow-x-auto">
         <table className="w-full min-w-[34rem] border-collapse text-left">
           <thead>
-            <tr className="border-b border-white/10">
+            <tr className="border-b border-tint/10">
               <th className="p-3 font-display text-[0.625rem] uppercase tracking-[0.16em] text-dim">&nbsp;</th>
               <th className="p-3 font-display text-[0.625rem] uppercase tracking-[0.16em] text-chalk">
                 Factory BE 6
@@ -266,7 +266,7 @@ export function ComparisonTable() {
           </thead>
           <tbody>
             {COMPARISON.map((r) => (
-              <tr key={r.label} className="border-b border-white/[0.06] last:border-0">
+              <tr key={r.label} className="border-b border-tint/[0.06] last:border-0">
                 <td className="p-3 align-top text-[0.6875rem] leading-snug text-ash">{r.label}</td>
                 <td className="p-3 align-top text-[0.6875rem] leading-snug text-chalk">{r.factory}</td>
                 <td
@@ -306,7 +306,7 @@ export function SourceList() {
           <li key={s.id} className="flex flex-wrap items-baseline gap-2">
             <span
               className={`shrink-0 border px-1.5 py-0.5 font-display text-[0.5rem] font-bold uppercase tracking-[0.14em] ${
-                s.kind === "official" ? "border-accent/45 bg-accent/10 text-accent" : "border-white/20 text-dim"
+                s.kind === "official" ? "border-accent/45 bg-accent/10 text-accent" : "border-tint/20 text-dim"
               }`}
             >
               {s.kind}
@@ -315,7 +315,7 @@ export function SourceList() {
               href={s.url}
               target="_blank"
               rel="noopener noreferrer nofollow"
-              className="min-w-0 break-words text-[0.6875rem] text-ash underline decoration-white/25 underline-offset-2 transition-colors hover:text-accent"
+              className="min-w-0 break-words text-[0.6875rem] text-ash underline decoration-tint/25 underline-offset-2 transition-colors hover:text-accent"
             >
               {s.label}
             </a>

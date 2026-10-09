@@ -62,7 +62,7 @@ export default function BodyKitsPage() {
               <li key={f.slug} id={f.slug} className="scroll-mt-24">
                 <Reveal delay={i * 60} className="h-full">
                   <article className="card flex h-full flex-col">
-                    <div className="relative aspect-[16/10] overflow-hidden bg-graphite">
+                    <div data-theme="dark" className="relative aspect-[16/10] overflow-hidden bg-graphite">
                       <Photo media={f.image} sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 92vw" className="opacity-85" />
                       <div className="absolute inset-0 scrim-soft" />
                       {f.popular && <span className="absolute right-3 top-3 chip border-gold/40 bg-gold/12 text-gold">Popular</span>}
@@ -104,7 +104,7 @@ export default function BodyKitsPage() {
         </div>
       </section>
 
-      <section className="section border-y border-white/8 bg-carbon">
+      <section className="section border-y border-tint/8 bg-carbon">
         <div className="shell grid gap-8 lg:grid-cols-2 lg:items-center">
           <Reveal>
             <figure className="card overflow-hidden">

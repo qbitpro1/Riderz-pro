@@ -97,7 +97,7 @@ export function SellFlow() {
   return (
     <div className="card overflow-hidden">
       {/* progress ---------------------------------------------------- */}
-      <div className="flex border-b border-white/8">
+      <div className="flex border-b border-tint/8">
         {steps.map((s, i) => (
           <div key={s} className="relative flex-1 px-2 py-3 text-center">
             <span
@@ -247,7 +247,7 @@ export function SellFlow() {
                   onClick={() => setCondition(c.key)}
                   aria-pressed={condition === c.key}
                   className={`border p-3 text-left transition-colors ${
-                    condition === c.key ? "border-accent/60 bg-accent/10" : "border-white/8 hover:border-white/25"
+                    condition === c.key ? "border-accent/60 bg-accent/10" : "border-tint/8 hover:border-tint/25"
                   }`}
                 >
                   <span className="block text-sm font-semibold">{c.label}</span>

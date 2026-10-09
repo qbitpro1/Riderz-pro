@@ -150,7 +150,7 @@ export default async function CarDetailPage({ params }: { params: Promise<{ slug
               </div>
             )}
 
-            <dl className="mt-8 grid grid-cols-2 gap-px overflow-hidden border border-white/8 bg-white/8 sm:grid-cols-4">
+            <dl className="mt-8 grid grid-cols-2 gap-px overflow-hidden border border-tint/8 bg-tint/8 sm:grid-cols-4">
               <Spec label="Kilometres" value={fmtKm(car.km)} />
               <Spec label="Fuel" value={car.fuel} />
               <Spec label="Transmission" value={car.transmission} />
@@ -180,7 +180,7 @@ export default async function CarDetailPage({ params }: { params: Promise<{ slug
                   Every item below was fitted by a professional workshop with invoices retained. Original
                   parts are included in the sale where noted.
                 </p>
-                <ul className="mt-4 divide-y divide-white/8 border-y border-white/8">
+                <ul className="mt-4 divide-y divide-tint/8 border-y border-tint/8">
                   {car.modifications.map((m) => (
                     <li key={m.name} className="flex flex-col gap-1 py-3 sm:flex-row sm:gap-6">
                       <span className="w-32 shrink-0 font-display text-[11px] font-bold uppercase tracking-[0.14em] text-accent">
@@ -204,14 +204,14 @@ export default async function CarDetailPage({ params }: { params: Promise<{ slug
                       <span className="text-lg text-dim">/100</span>
                     </p>
                   </div>
-                  <div className="h-12 w-px bg-white/10" />
+                  <div className="h-12 w-px bg-tint/10" />
                   <ul className="grid flex-1 gap-1.5 text-sm text-ash sm:grid-cols-2">
                     <li>Insurance — {car.insurance}</li>
                     <li>Registration — {car.registration}</li>
                     <li className="sm:col-span-2">Service history — {car.serviceHistory}</li>
                   </ul>
                 </div>
-                <p className="mt-4 border-t border-white/8 pt-4 text-xs text-dim">
+                <p className="mt-4 border-t border-tint/8 pt-4 text-xs text-dim">
                   The full 200-point report, paint thickness readings and OBD scan are shared over
                   WhatsApp before any payment. Ask for it — we send it to everyone who asks.
                 </p>
@@ -333,12 +333,12 @@ export default async function CarDetailPage({ params }: { params: Promise<{ slug
               </div>
 
               {listing && (
-                <p className="mt-4 border-t border-white/8 pt-3 text-[11px] text-dim">
+                <p className="mt-4 border-t border-tint/8 pt-3 text-[11px] text-dim">
                   Last verified {formatIST(listing.lastVerifiedAt)}
                 </p>
               )}
 
-              <ul className="mt-5 space-y-2 border-t border-white/8 pt-4 text-xs text-ash">
+              <ul className="mt-5 space-y-2 border-t border-tint/8 pt-4 text-xs text-ash">
                 <li className="flex gap-2">
                   <Icon name="check" size={13} className="mt-0.5 shrink-0 text-accent" />
                   Free home test drive across {car.city}
@@ -369,14 +369,14 @@ export default async function CarDetailPage({ params }: { params: Promise<{ slug
       </section>
 
       {listing && (
-        <section className="section border-t border-white/8 bg-carbon">
+        <section className="section border-t border-tint/8 bg-carbon">
           <div className="shell">
             <BuildItNext listing={listing} />
           </div>
         </section>
       )}
 
-      <section className="section border-t border-white/8 bg-carbon">
+      <section className="section border-t border-tint/8 bg-carbon">
         <div className="shell">
           <SectionHead eyebrow="Financing" title="WORK OUT THE EMI." />
           <EmiCalculator

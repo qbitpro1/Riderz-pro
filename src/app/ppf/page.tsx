@@ -132,7 +132,7 @@ export default function PpfPage() {
       </section>
 
       {/* packages --------------------------------------------------- */}
-      <section className="section border-y border-white/8 bg-carbon" id="packages">
+      <section className="section border-y border-tint/8 bg-carbon" id="packages">
         <div className="shell">
           <SectionHead
             eyebrow="Choose your coverage"
@@ -216,7 +216,7 @@ export default function PpfPage() {
       </section>
 
       {/* films ------------------------------------------------------ */}
-      <section className="section border-y border-white/8 bg-carbon">
+      <section className="section border-y border-tint/8 bg-carbon">
         <div className="shell">
           <SectionHead
             eyebrow="PPF films"
@@ -267,7 +267,7 @@ export default function PpfPage() {
             title="TEN STEPS BEFORE YOU GET IT BACK."
             blurb="Film locks in whatever is underneath it. Most of this job happens before any film is cut."
           />
-          <ol className="grid gap-px overflow-hidden border border-white/8 bg-white/8 sm:grid-cols-2 lg:grid-cols-5">
+          <ol className="grid gap-px overflow-hidden border border-tint/8 bg-tint/8 sm:grid-cols-2 lg:grid-cols-5">
             {PREP_STEPS.map((s) => (
               <li key={s.n} className="bg-void p-5">
                 <p className="font-display text-2xl font-extrabold text-accent/40 tnum">{s.n}</p>
@@ -280,7 +280,7 @@ export default function PpfPage() {
       </section>
 
       {/* before/after ----------------------------------------------- */}
-      <section className="section border-y border-white/8 bg-carbon">
+      <section className="section border-y border-tint/8 bg-carbon">
         <div className="shell">
           <SectionHead eyebrow="Before / after" title="DRAG TO SEE THE DIFFERENCE." />
           <div className="grid gap-5 md:grid-cols-2">
@@ -339,7 +339,7 @@ export default function PpfPage() {
                 "12-month workmanship warranty",
                 "Manufacturer warranty passed through in full",
               ].map((t) => (
-                <li key={t} className="flex items-start gap-2 border border-white/8 bg-white/2 p-3 text-xs text-ash">
+                <li key={t} className="flex items-start gap-2 border border-tint/8 bg-tint/2 p-3 text-xs text-ash">
                   <Icon name="check" size={13} className="mt-0.5 shrink-0 text-accent" />
                   {t}
                 </li>
@@ -355,7 +355,7 @@ export default function PpfPage() {
       </section>
 
       {/* adjacent services ------------------------------------------ */}
-      <section className="section border-y border-white/8 bg-carbon">
+      <section className="section border-y border-tint/8 bg-carbon">
         <div className="shell">
           <SectionHead
             eyebrow="Goes with it"
@@ -442,7 +442,7 @@ function SegmentCard({
 }) {
   return (
     <div className="card card-hover flex h-full flex-col overflow-hidden">
-      <div className="relative aspect-[16/10] bg-graphite">
+      <div data-theme="dark" className="relative aspect-[16/10] bg-graphite">
         <Photo media={media} sizes="(min-width:1024px) 33vw, 100vw" className="opacity-85" />
         <div className="absolute inset-0 scrim-soft" />
         <p className="absolute bottom-3 left-4 font-display text-[11px] font-bold uppercase tracking-[0.18em] text-accent">

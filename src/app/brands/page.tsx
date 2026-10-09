@@ -29,7 +29,7 @@ export default function BrandsPage() {
           { href: "#brands", label: "See every brand", variant: "outline" },
         ]}
       >
-        <dl className="mt-8 grid max-w-2xl grid-cols-2 gap-x-6 gap-y-5 border-t border-white/12 pt-6 md:grid-cols-4">
+        <dl className="mt-8 grid max-w-2xl grid-cols-2 gap-x-6 gap-y-5 border-t border-tint/12 pt-6 md:grid-cols-4">
           <Stat value={String(BRANDS.length)} label="Brands stocked" />
           <Stat value={String(CATALOG_TOTALS.products)} label="Products listed" />
           <Stat value={String(CATALOG_TOTALS.subcategories)} label="Product types" />
@@ -48,7 +48,7 @@ export default function BrandsPage() {
         </div>
       </section>
 
-      <section className="section border-y border-white/8 bg-carbon">
+      <section className="section border-y border-tint/8 bg-carbon">
         <div className="shell">
           <SectionHead
             eyebrow="Brand stores"

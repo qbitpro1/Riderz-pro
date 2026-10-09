@@ -70,7 +70,7 @@ export default function Be6AdminPage() {
 
           <div className="mt-4 space-y-3">
             {OPEN_FLAGS.map((f) => (
-              <div key={f.id} className="border border-white/10 bg-white/[0.02] p-3">
+              <div key={f.id} className="border border-tint/10 bg-tint/[0.02] p-3">
                 <h3 className="font-display text-xs font-bold uppercase tracking-[0.12em] text-chalk">{f.field}</h3>
                 <p className="mt-1.5 text-[0.6875rem] leading-relaxed text-ash">{f.issue}</p>
 
@@ -84,7 +84,7 @@ export default function Be6AdminPage() {
                             className={`shrink-0 border px-1.5 py-0.5 font-display text-[0.5rem] font-bold uppercase tracking-[0.12em] ${
                               s?.kind === "official"
                                 ? "border-accent/45 bg-accent/10 text-accent"
-                                : "border-white/20 text-dim"
+                                : "border-tint/20 text-dim"
                             }`}
                           >
                             {s?.kind ?? "source"}
@@ -151,7 +151,7 @@ export default function Be6AdminPage() {
           <div className="overflow-x-auto">
             <table className="w-full min-w-[40rem] border-collapse text-left">
               <thead>
-                <tr className="border-b border-white/10">
+                <tr className="border-b border-tint/10">
                   {["Variant", "Rung", "Battery", "Ex-showroom", "BaaS", "Exclusive paint", "Source"].map((h) => (
                     <th key={h} className="p-2 font-display text-[0.5625rem] uppercase tracking-[0.14em] text-dim">
                       {h}
@@ -162,7 +162,7 @@ export default function Be6AdminPage() {
               <tbody>
                 {VARIANTS.flatMap((v) =>
                   v.prices.map((p, i) => (
-                    <tr key={`${v.slug}-${p.batteryId}`} className="border-b border-white/[0.06]">
+                    <tr key={`${v.slug}-${p.batteryId}`} className="border-b border-tint/[0.06]">
                       <td className="p-2 text-[0.6875rem] font-semibold text-chalk">
                         {i === 0 ? v.name : ""}
                         {i === 0 && v.edition && <span className="ml-1.5 text-[0.5625rem] text-gold">EDITION</span>}
@@ -200,7 +200,7 @@ export default function Be6AdminPage() {
               <ul className="mt-2 flex flex-wrap gap-1.5">
                 {COLOURS.map((c) => (
                   <li key={c.slug} className="chip !text-[0.5625rem]">
-                    <span className="h-2.5 w-2.5 border border-white/25" style={{ background: c.hex }} />
+                    <span className="h-2.5 w-2.5 border border-tint/25" style={{ background: c.hex }} />
                     {c.name}
                     {c.exclusiveTo && <span className="text-gold">·</span>}
                   </li>
@@ -214,7 +214,7 @@ export default function Be6AdminPage() {
         <Board title="RIDERZPRO PRODUCTS" note="Modification, price, availability and development stage.">
           <div className="mb-4 flex flex-wrap gap-2">
             {stageCounts.map((s) => (
-              <div key={s.stage} className="border border-white/10 bg-white/[0.02] px-3 py-2">
+              <div key={s.stage} className="border border-tint/10 bg-tint/[0.02] px-3 py-2">
                 <p className="font-display text-[0.5625rem] uppercase tracking-[0.14em] text-dim">{s.stage}</p>
                 <p className="tnum mt-0.5 font-display text-sm font-bold text-chalk">
                   {s.upgrades + s.parts}
@@ -229,7 +229,7 @@ export default function Be6AdminPage() {
           <div className="overflow-x-auto">
             <table className="w-full min-w-[40rem] border-collapse text-left">
               <thead>
-                <tr className="border-b border-white/10">
+                <tr className="border-b border-tint/10">
                   {["Product", "Group", "Provenance", "Stage", "Price", "Validation"].map((h) => (
                     <th key={h} className="p-2 font-display text-[0.5625rem] uppercase tracking-[0.14em] text-dim">
                       {h}
@@ -239,7 +239,7 @@ export default function Be6AdminPage() {
               </thead>
               <tbody>
                 {UPGRADES.map((u) => (
-                  <tr key={u.slug} className="border-b border-white/[0.06]">
+                  <tr key={u.slug} className="border-b border-tint/[0.06]">
                     <td className="p-2 text-[0.6875rem] font-semibold text-chalk">{u.name}</td>
                     <td className="p-2 text-[0.6875rem] text-ash">{u.group}</td>
                     <td className="p-2 text-[0.5625rem] text-dim">{u.provenance}</td>
@@ -262,7 +262,7 @@ export default function Be6AdminPage() {
           <div className="overflow-x-auto">
             <table className="w-full min-w-[40rem] border-collapse text-left">
               <thead>
-                <tr className="border-b border-white/10">
+                <tr className="border-b border-tint/10">
                   {["Part", "Ver", "Placement", "Material", "Weight", "Price", "Stage"].map((h) => (
                     <th key={h} className="p-2 font-display text-[0.5625rem] uppercase tracking-[0.14em] text-dim">
                       {h}
@@ -272,7 +272,7 @@ export default function Be6AdminPage() {
               </thead>
               <tbody>
                 {PRINTED_PARTS.map((p) => (
-                  <tr key={p.slug} className="border-b border-white/[0.06]">
+                  <tr key={p.slug} className="border-b border-tint/[0.06]">
                     <td className="p-2 text-[0.6875rem] font-semibold text-chalk">{p.name}</td>
                     <td className="tnum p-2 text-[0.6875rem] text-ash">{p.version}</td>
                     <td className="p-2 text-[0.6875rem] text-ash">{p.placement}</td>
@@ -330,7 +330,7 @@ export default function Be6AdminPage() {
               <li key={s.id} className="flex flex-wrap items-baseline gap-2">
                 <span
                   className={`shrink-0 border px-1.5 py-0.5 font-display text-[0.5rem] font-bold uppercase tracking-[0.12em] ${
-                    s.kind === "official" ? "border-accent/45 bg-accent/10 text-accent" : "border-white/20 text-dim"
+                    s.kind === "official" ? "border-accent/45 bg-accent/10 text-accent" : "border-tint/20 text-dim"
                   }`}
                 >
                   {s.kind}
@@ -340,7 +340,7 @@ export default function Be6AdminPage() {
                   href={s.url}
                   target="_blank"
                   rel="noopener noreferrer nofollow"
-                  className="min-w-0 break-words text-[0.6875rem] text-ash underline decoration-white/25 underline-offset-2 hover:text-accent"
+                  className="min-w-0 break-words text-[0.6875rem] text-ash underline decoration-tint/25 underline-offset-2 hover:text-accent"
                 >
                   {s.label}
                 </a>

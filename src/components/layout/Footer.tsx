@@ -51,7 +51,7 @@ const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
 
 export function Footer() {
   return (
-    <footer className="relative mt-px border-t border-white/8 bg-carbon">
+    <footer className="relative mt-px border-t border-tint/8 bg-carbon">
       <div className="shell py-12 md:py-16">
         <div className="grid gap-10 lg:grid-cols-[1.3fr_2.4fr]">
           <div>
@@ -108,7 +108,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 border-t border-white/8 pt-8">
+        <div className="mt-12 border-t border-tint/8 pt-8">
           <p className="mb-4 font-display text-[11px] font-bold uppercase tracking-[0.18em] text-dim">
             Popular accessory pages
           </p>
@@ -133,7 +133,7 @@ export function Footer() {
           </ul>
         </div>
 
-        <div className="mt-10 flex flex-col gap-3 border-t border-white/8 pt-6 text-xs text-dim md:flex-row md:items-center md:justify-between">
+        <div className="mt-10 flex flex-col gap-3 border-t border-tint/8 pt-6 text-xs text-dim md:flex-row md:items-center md:justify-between">
           <p>
             © {new Date().getFullYear()} {SITE.legalName} {SITE.name}® is a registered trademark of{" "}
             {SITE.legalName} All rights reserved.
@@ -152,7 +152,7 @@ function Social({ href, icon, label }: { href: string; icon: "instagram" | "yout
       target="_blank"
       rel="noreferrer noopener"
       aria-label={label}
-      className="grid h-10 w-10 place-items-center border border-white/12 text-ash transition-colors hover:border-accent hover:text-accent"
+      className="grid h-10 w-10 place-items-center border border-tint/12 text-ash transition-colors hover:border-accent hover:text-accent"
     >
       <Icon name={icon} size={18} />
     </a>

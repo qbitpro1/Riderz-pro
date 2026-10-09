@@ -122,7 +122,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               <div className="card relative aspect-square overflow-hidden bg-graphite">
                 <Photo media={gallery[0]} sizes="(min-width:1024px) 50vw, 100vw" priority />
                 {off > 0 && (
-                  <span className="absolute left-3 top-3 bg-accent px-2 py-1 font-display text-xs font-bold text-[#04161d]">
+                  <span className="absolute left-3 top-3 bg-accent px-2 py-1 font-display text-xs font-bold text-on-accent">
                     {off}% OFF
                   </span>
                 )}
@@ -217,7 +217,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           </div>
           <div>
             <h2 className="display-3 mb-4">SPECIFICATIONS</h2>
-            <dl className="divide-y divide-white/8 border-y border-white/8">
+            <dl className="divide-y divide-tint/8 border-y border-tint/8">
               {product.specs.map((s) => (
                 <div key={s.label} className="flex justify-between gap-6 py-3">
                   <dt className="text-sm text-dim">{s.label}</dt>
@@ -229,7 +229,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         </div>
       </section>
 
-      <section className="section border-y border-white/8 bg-carbon">
+      <section className="section border-y border-tint/8 bg-carbon">
         <div className="shell max-w-3xl">
           <SectionHead eyebrow="FAQs" title="BEFORE YOU BUY." />
           <Accordion items={faq} />
@@ -280,7 +280,7 @@ function Fact({
   tone?: "ok" | "warn";
 }) {
   return (
-    <li className="flex items-start gap-2.5 border border-white/8 bg-white/2 p-3 text-xs">
+    <li className="flex items-start gap-2.5 border border-tint/8 bg-tint/2 p-3 text-xs">
       <Icon name={icon} size={14} className={`mt-0.5 shrink-0 ${tone === "warn" ? "text-gold" : "text-accent"}`} />
       <span className={tone === "warn" ? "text-gold" : "text-ash"}>{label}</span>
     </li>

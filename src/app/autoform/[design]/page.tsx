@@ -135,7 +135,7 @@ export default async function AutoformDesignPage({ params }: { params: Promise<{
                   { label: "5-seater", sub: "2-row set", p: two },
                   { label: "6 / 7-seater", sub: "3-row set", p: three },
                 ].map((opt) => (
-                  <div key={opt.label} className="border border-white/10 bg-white/3 p-4">
+                  <div key={opt.label} className="border border-tint/10 bg-tint/3 p-4">
                     <p className="font-display text-xs font-bold uppercase tracking-[0.14em] text-accent">{opt.label}</p>
                     <p className="text-[11px] text-dim">{opt.sub}</p>
                     <p className="mt-3 font-display text-2xl font-extrabold tnum">{rupees(opt.p.sellingPrice)}</p>
@@ -217,7 +217,7 @@ export default async function AutoformDesignPage({ params }: { params: Promise<{
               Everything on this page is traceable to a document Autoform supplied. Nothing is
               inferred from one source to fill a gap in another.
             </p>
-            <dl className="mt-5 divide-y divide-white/8 border-y border-white/8">
+            <dl className="mt-5 divide-y divide-tint/8 border-y border-tint/8">
               {design.sources.map((s) => (
                 <div key={s} className="py-3">
                   <dt className="font-display text-xs font-bold uppercase tracking-[0.12em] text-accent">
@@ -262,7 +262,7 @@ export default async function AutoformDesignPage({ params }: { params: Promise<{
       </section>
 
       {siblings.length > 0 && (
-        <section className="section border-y border-white/8 bg-carbon">
+        <section className="section border-y border-tint/8 bg-carbon">
           <div className="shell">
             <SectionHead
               eyebrow={band.series}

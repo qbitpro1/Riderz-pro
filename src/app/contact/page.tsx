@@ -82,7 +82,7 @@ export default function ContactPage() {
         </div>
       </section>
 
-      <section className="section border-y border-white/8 bg-carbon">
+      <section className="section border-y border-tint/8 bg-carbon">
         <div className="shell grid gap-8 lg:grid-cols-[1fr_1.1fr] lg:items-start">
           <div>
             <SectionHead

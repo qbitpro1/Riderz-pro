@@ -61,7 +61,7 @@ export default function HomePage() {
   return (
     <>
       {/* 1 — CINEMATIC HERO — the BE 6 is the flagship ------------------ */}
-      <section className="relative flex min-h-[94svh] flex-col justify-end overflow-hidden bg-void">
+      <section data-theme="dark" className="relative flex min-h-[94svh] flex-col justify-end overflow-hidden bg-void">
         <div className="absolute inset-0">
           <div className="absolute inset-0 grid-lines opacity-30" />
           <div className="absolute inset-0 bg-[radial-gradient(120%_80%_at_50%_18%,rgba(92,225,255,0.12),transparent_62%)]" />
@@ -111,7 +111,7 @@ export default function HomePage() {
             </Link>
           </p>
 
-          <dl className="rise mt-12 grid max-w-2xl grid-cols-2 gap-x-6 gap-y-5 border-t border-white/12 pt-6 md:grid-cols-4" style={{ animationDelay: "420ms" }}>
+          <dl className="rise mt-12 grid max-w-2xl grid-cols-2 gap-x-6 gap-y-5 border-t border-tint/12 pt-6 md:grid-cols-4" style={{ animationDelay: "420ms" }}>
             {STATS.map((s) => (
               <div key={s.label}>
                 <dd className="font-display text-2xl font-extrabold tracking-[-0.03em] tnum md:text-3xl">
@@ -125,12 +125,12 @@ export default function HomePage() {
       </section>
 
       {/* 2 — QUICK ACTIONS -------------------------------------------- */}
-      <section className="border-y border-white/8 bg-carbon">
-        <ul className="shell grid grid-cols-2 gap-px bg-white/8 px-0 lg:grid-cols-4">
+      <section className="border-y border-tint/8 bg-carbon">
+        <ul className="shell grid grid-cols-2 gap-px bg-tint/8 px-0 lg:grid-cols-4">
           {QUICK_ACTIONS.map((a, i) => (
             <li key={a.href} className="bg-carbon">
               <Reveal delay={i * 60}>
-                <Link href={a.href} className="group flex h-full flex-col justify-between gap-8 p-5 transition-colors hover:bg-white/4 md:p-7">
+                <Link href={a.href} className="group flex h-full flex-col justify-between gap-8 p-5 transition-colors hover:bg-tint/4 md:p-7">
                   <Icon name={a.icon} size={26} className="text-accent" />
                   <div>
                     <p className="font-display text-base font-extrabold uppercase tracking-[-0.01em] md:text-lg">
@@ -150,7 +150,7 @@ export default function HomePage() {
       </section>
 
       {/* 2a — FLAGSHIP: THE BE 6 --------------------------------------- */}
-      <section className="section border-b border-white/[0.06] bg-void">
+      <section className="section border-b border-tint/[0.06] bg-void">
         <div className="shell grid gap-8 lg:grid-cols-[1.1fr_1fr] lg:items-center">
           <Reveal>
             <p className="eyebrow mb-3">The first car we build different</p>
@@ -251,7 +251,7 @@ export default function HomePage() {
       </section>
 
       {/* 4 — SHOP BY CAR ---------------------------------------------- */}
-      <section className="section border-y border-white/8 bg-carbon">
+      <section className="section border-y border-tint/8 bg-carbon">
         <div className="shell">
           <Reveal>
             <FitmentPicker />
@@ -332,7 +332,7 @@ export default function HomePage() {
       </section>
 
       {/* 6 — BUILD YOUR CAR ------------------------------------------- */}
-      <section className="relative overflow-hidden border-y border-white/8">
+      <section className="relative overflow-hidden border-y border-tint/8">
         <div className="absolute inset-0">
           <Photo media="garageSpotlit" sizes="100vw" className="opacity-45" position="center 60%" />
           <div className="absolute inset-0 bg-gradient-to-r from-void via-void/85 to-void/40" />
@@ -494,7 +494,7 @@ export default function HomePage() {
       />
 
       {/* 14 — RIDERZPRO BUILDS ---------------------------------------- */}
-      <section className="section border-y border-white/8 bg-carbon">
+      <section className="section border-y border-tint/8 bg-carbon">
         <div className="shell">
           <SectionHead
             eyebrow="Riderzpro builds"
@@ -537,14 +537,14 @@ export default function HomePage() {
       </section>
 
       {/* 16 — WHY RIDERZPRO ------------------------------------------- */}
-      <section className="section border-t border-white/8 bg-carbon">
+      <section className="section border-t border-tint/8 bg-carbon">
         <div className="shell">
           <SectionHead
             eyebrow="Trust system"
             title="BUY WITH CONFIDENCE."
             blurb="Selling cars means earning trust before anything else. This is what we do on every single listing."
           />
-          <ul className="grid gap-px overflow-hidden border border-white/8 bg-white/8 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="grid gap-px overflow-hidden border border-tint/8 bg-tint/8 sm:grid-cols-2 lg:grid-cols-3">
             {TRUST_POINTS.map((t, i) => (
               <li key={t.title} className="bg-carbon p-5">
                 <Reveal delay={(i % 3) * 60}>

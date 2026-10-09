@@ -73,10 +73,10 @@ export default function SellPage() {
         </div>
       </section>
 
-      <section className="section border-y border-white/8 bg-carbon">
+      <section className="section border-y border-tint/8 bg-carbon">
         <div className="shell">
           <SectionHead eyebrow="How it works" title="EIGHT STEPS. NO SURPRISES." />
-          <ol className="grid gap-px overflow-hidden border border-white/8 bg-white/8 sm:grid-cols-2 lg:grid-cols-4">
+          <ol className="grid gap-px overflow-hidden border border-tint/8 bg-tint/8 sm:grid-cols-2 lg:grid-cols-4">
             {STEPS.map((s) => (
               <li key={s.n} className="bg-carbon p-5">
                 <p className="font-display text-2xl font-extrabold text-accent/40 tnum">{s.n}</p>
@@ -109,7 +109,7 @@ export default function SellPage() {
         </div>
       </section>
 
-      <section className="section border-t border-white/8 bg-carbon">
+      <section className="section border-t border-tint/8 bg-carbon">
         <div className="shell grid gap-8 lg:grid-cols-2 lg:items-start">
           <div>
             <SectionHead eyebrow="Questions" title="BEFORE YOU DECIDE." />

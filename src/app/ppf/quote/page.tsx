@@ -61,7 +61,7 @@ export default function PpfQuotePage() {
         </div>
       </section>
 
-      <section className="section border-t border-white/8 bg-carbon">
+      <section className="section border-t border-tint/8 bg-carbon">
         <div className="shell grid gap-8 lg:grid-cols-2 lg:items-start">
           <div>
             <SectionHead eyebrow="What happens next" title="THE PRICE ON SCREEN IS NOT THE QUOTE." />
@@ -81,7 +81,7 @@ export default function PpfQuotePage() {
                 </li>
               ))}
             </ol>
-            <p className="mt-6 border-t border-white/8 pt-4 text-xs leading-relaxed text-dim">{PRICE_DISCLAIMER}</p>
+            <p className="mt-6 border-t border-tint/8 pt-4 text-xs leading-relaxed text-dim">{PRICE_DISCLAIMER}</p>
           </div>
 
           <div className="card p-6">

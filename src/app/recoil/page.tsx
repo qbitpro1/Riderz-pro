@@ -40,7 +40,7 @@ export default function RecoilPage() {
           { href: "/build-audio", label: "Build my system", variant: "outline" },
         ]}
       >
-        <dl className="mt-8 grid max-w-2xl grid-cols-2 gap-x-6 gap-y-5 border-t border-white/12 pt-6 md:grid-cols-4">
+        <dl className="mt-8 grid max-w-2xl grid-cols-2 gap-x-6 gap-y-5 border-t border-tint/12 pt-6 md:grid-cols-4">
           <Stat value={String(CATALOG_SUMMARY.totals.skus)} label="SKUs imported" />
           <Stat value={String(CATALOG_SUMMARY.totals.ready)} label="Live and verified" />
           <Stat value={String(CATALOG_SUMMARY.totals.images)} label="Manufacturer images" />
@@ -49,8 +49,8 @@ export default function RecoilPage() {
       </PageHero>
 
       {/* trust ------------------------------------------------------ */}
-      <section className="border-b border-white/8 bg-carbon">
-        <ul className="shell grid grid-cols-2 gap-px bg-white/8 px-0 lg:grid-cols-4">
+      <section className="border-b border-tint/8 bg-carbon">
+        <ul className="shell grid grid-cols-2 gap-px bg-tint/8 px-0 lg:grid-cols-4">
           {[
             { icon: "shield" as const, t: "Genuine products only", b: "Sourced against the official RECOIL price list." },
             { icon: "check" as const, t: "Exact model matching", b: "Every image is matched to its own SKU, never a similar one." },
@@ -106,7 +106,7 @@ export default function RecoilPage() {
       </section>
 
       {/* featured --------------------------------------------------- */}
-      <section className="section border-y border-white/8 bg-carbon">
+      <section className="section border-y border-tint/8 bg-carbon">
         <div className="shell">
           <SectionHead eyebrow="Flagships" title="WHERE PEOPLE START." href="/recoil/amplifiers" hrefLabel="All amplifiers" />
           <ul className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-6">
@@ -138,7 +138,7 @@ export default function RecoilPage() {
         </section>
       )}
 
-      <section className="section border-t border-white/8 bg-carbon">
+      <section className="section border-t border-tint/8 bg-carbon">
         <div className="shell grid gap-6 lg:grid-cols-[1.3fr_1fr] lg:items-center">
           <div>
             <p className="eyebrow mb-3">Can't find a model number?</p>

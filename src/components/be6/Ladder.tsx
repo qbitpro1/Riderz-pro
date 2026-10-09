@@ -24,7 +24,7 @@ const CHANGE_STYLE: Record<ChangeKind, { label: string; className: string }> = {
   upgraded: { label: "UPGRADED", className: "border-accent/45 bg-accent/10 text-accent" },
   optional: { label: "OPTIONAL", className: "border-gold/45 bg-gold/10 text-gold" },
   unavailable: { label: "NOT AVAILABLE", className: "border-danger/40 bg-danger/10 text-danger" },
-  unchanged: { label: "UNCHANGED", className: "border-white/20 bg-white/5 text-dim" },
+  unchanged: { label: "UNCHANGED", className: "border-tint/20 bg-tint/5 text-dim" },
 };
 
 export function Ladder() {
@@ -45,10 +45,10 @@ export function Ladder() {
             <article
               key={v.slug}
               className={`flex w-[16rem] shrink-0 flex-col border md:w-auto ${
-                on ? "border-accent bg-accent/[0.06]" : "border-white/10 bg-white/[0.02]"
+                on ? "border-accent bg-accent/[0.06]" : "border-tint/10 bg-tint/[0.02]"
               }`}
             >
-              <header className="border-b border-white/[0.07] p-4">
+              <header className="border-b border-tint/[0.07] p-4">
                 <p className="font-display text-[0.5625rem] uppercase tracking-[0.2em] text-dim">
                   BE 6 SPORTEQ
                 </p>
@@ -82,7 +82,7 @@ export function Ladder() {
                   ))}
                 </dl>
 
-                <p className="mt-3 border-t border-white/[0.07] pt-3 text-[0.6875rem] leading-relaxed text-ash">
+                <p className="mt-3 border-t border-tint/[0.07] pt-3 text-[0.6875rem] leading-relaxed text-ash">
                   {v.blurb}
                 </p>
               </div>
@@ -147,7 +147,7 @@ export function Ladder() {
                 </ul>
 
                 {s.unverified && (
-                  <p className="mt-3 border-l-2 border-white/15 pl-3 text-[0.6875rem] leading-relaxed text-dim">
+                  <p className="mt-3 border-l-2 border-tint/15 pl-3 text-[0.6875rem] leading-relaxed text-dim">
                     {s.unverified}
                   </p>
                 )}
@@ -179,7 +179,7 @@ export function Ladder() {
 function EditionNote() {
   const b = entryBattery("fe");
   return (
-    <div className="mt-4 border border-white/10 bg-white/[0.02] p-4">
+    <div className="mt-4 border border-tint/10 bg-tint/[0.02] p-4">
       <h4 className="font-display text-xs font-bold uppercase tracking-[0.16em] text-chalk">
         Editions sit outside this ladder
       </h4>

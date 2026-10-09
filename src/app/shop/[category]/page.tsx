@@ -97,7 +97,7 @@ export default async function CategoryPage({
         </div>
       </section>
 
-      <section className="section border-t border-white/8 bg-carbon">
+      <section className="section border-t border-tint/8 bg-carbon">
         <div className="shell">
           <SectionHead
             eyebrow={`${cat.name} range`}

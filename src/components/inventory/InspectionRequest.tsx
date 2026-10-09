@@ -39,7 +39,7 @@ export function InspectionRequest({ vehicle, city }: { vehicle: string; city: st
 
   return (
     <form
-      className="border border-white/10 bg-white/3 p-4"
+      className="border border-tint/10 bg-tint/3 p-4"
       onSubmit={(e) => {
         e.preventDefault();
         if (ready) window.open(whatsapp(message), "_blank", "noopener,noreferrer");

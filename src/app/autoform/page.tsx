@@ -79,13 +79,13 @@ export default function AutoformPage() {
       </section>
 
       {/* what the manufacturer states ------------------------------- */}
-      <section className="section border-y border-white/8 bg-carbon">
+      <section className="section border-y border-tint/8 bg-carbon">
         <div className="shell grid gap-8 lg:grid-cols-2 lg:items-start">
           <div>
             <SectionHead eyebrow="From the Autoform catalogue" title="WHAT EVERY DESIGN CARRIES." />
             <ul className="grid gap-2 sm:grid-cols-2">
               {DESIGN_FEATURES.map((f) => (
-                <li key={f} className="flex items-center gap-2 border border-white/8 bg-white/2 p-3 text-sm text-ash">
+                <li key={f} className="flex items-center gap-2 border border-tint/8 bg-tint/2 p-3 text-sm text-ash">
                   <Icon name="check" size={14} className="shrink-0 text-accent" />
                   {f}
                 </li>
@@ -132,7 +132,7 @@ export default function AutoformPage() {
           <div className="overflow-x-auto">
             <table className="w-full min-w-[720px] border-collapse text-sm">
               <thead>
-                <tr className="border-b border-white/12 text-left text-[10px] uppercase tracking-[0.14em] text-dim">
+                <tr className="border-b border-tint/12 text-left text-[10px] uppercase tracking-[0.14em] text-dim">
                   <th className="p-2.5">Series</th>
                   <th className="p-2.5">Designs</th>
                   <th className="p-2.5 text-right">5-seater MRP</th>
@@ -147,7 +147,7 @@ export default function AutoformPage() {
                   const two = sample ? priceFor(sample, 2) : null;
                   const three = sample ? priceFor(sample, 3) : null;
                   return (
-                    <tr key={band.id} className="border-b border-white/8 align-top">
+                    <tr key={band.id} className="border-b border-tint/8 align-top">
                       <td className="p-2.5 text-xs">{band.series}</td>
                       <td className="max-w-sm p-2.5 text-[11px] text-dim">{band.designsListed.join(", ")}</td>
                       <td className="p-2.5 text-right text-xs tnum">{rupees(band.twoRow.mrp)}</td>
@@ -176,7 +176,7 @@ export default function AutoformPage() {
       </section>
 
       {/* mats -------------------------------------------------------- */}
-      <section className="section border-y border-white/8 bg-carbon" id="mats">
+      <section className="section border-y border-tint/8 bg-carbon" id="mats">
         <div className="shell">
           <SectionHead
             eyebrow="Also from Autoform"
@@ -186,7 +186,7 @@ export default function AutoformPage() {
           <div className="overflow-x-auto">
             <table className="w-full min-w-[640px] border-collapse text-sm">
               <thead>
-                <tr className="border-b border-white/12 text-left text-[10px] uppercase tracking-[0.14em] text-dim">
+                <tr className="border-b border-tint/12 text-left text-[10px] uppercase tracking-[0.14em] text-dim">
                   <th className="p-2.5">Design</th>
                   <th className="p-2.5">Colours</th>
                   <th className="p-2.5 text-right">2-row MRP</th>
@@ -195,7 +195,7 @@ export default function AutoformPage() {
               </thead>
               <tbody>
                 {MATS.map((m) => (
-                  <tr key={m.sno} className="border-b border-white/8">
+                  <tr key={m.sno} className="border-b border-tint/8">
                     <td className="p-2.5 text-xs">
                       {m.design}
                       <span className="ml-2 text-[10px] text-dim">{m.category}</span>
@@ -256,7 +256,7 @@ export default function AutoformPage() {
       </section>
 
       {/* awaiting ---------------------------------------------------- */}
-      <section className="section border-t border-white/8 bg-carbon">
+      <section className="section border-t border-tint/8 bg-carbon">
         <div className="shell grid gap-8 lg:grid-cols-2 lg:items-start">
           <div>
             <SectionHead eyebrow="Not listed yet" title="TEN MORE DESIGNS." />

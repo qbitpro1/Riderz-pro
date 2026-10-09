@@ -29,7 +29,7 @@ export function SectionHead({
         {href && (
           <Link
             href={href}
-            className="hidden shrink-0 items-center gap-2 border-b border-white/20 pb-1 font-display text-xs font-bold uppercase tracking-[0.16em] text-chalk transition-colors hover:border-accent hover:text-accent md:inline-flex"
+            className="hidden shrink-0 items-center gap-2 border-b border-tint/20 pb-1 font-display text-xs font-bold uppercase tracking-[0.16em] text-chalk transition-colors hover:border-accent hover:text-accent md:inline-flex"
           >
             {hrefLabel}
             <Icon name="arrow" size={15} />
@@ -44,7 +44,7 @@ export function SectionFootLink({ href, label }: { href: string; label: string }
   return (
     <Link
       href={href}
-      className="mt-6 inline-flex items-center gap-2 border-b border-white/20 pb-1 font-display text-xs font-bold uppercase tracking-[0.16em] text-chalk transition-colors hover:border-accent hover:text-accent md:hidden"
+      className="mt-6 inline-flex items-center gap-2 border-b border-tint/20 pb-1 font-display text-xs font-bold uppercase tracking-[0.16em] text-chalk transition-colors hover:border-accent hover:text-accent md:hidden"
     >
       {label}
       <Icon name="arrow" size={15} />

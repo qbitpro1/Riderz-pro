@@ -20,7 +20,7 @@ export function ProductCard({
         <Photo media={product.image} sizes={sizes} className="zoom opacity-90" />
         <div className="absolute inset-0 bg-gradient-to-t from-void/80 via-transparent to-void/25" />
         {off > 0 && (
-          <span className="absolute left-2.5 top-2.5 bg-accent px-1.5 py-0.5 font-display text-[10px] font-bold tracking-[0.08em] text-[#04161d]">
+          <span className="absolute left-2.5 top-2.5 bg-accent px-1.5 py-0.5 font-display text-[10px] font-bold tracking-[0.08em] text-on-accent">
             {off}% OFF
           </span>
         )}

@@ -7,6 +7,8 @@ import { WhatsAppFab } from "@/components/layout/WhatsAppFab";
 import { Footer } from "@/components/layout/Footer";
 import { CartProvider } from "@/components/cart/CartContext";
 import { SITE } from "@/lib/data/site";
+import { THEME_COLOR, THEME_SCRIPT } from "@/components/theme/theme";
+import { InlineScript } from "@/components/theme/InlineScript";
 
 const archivo = Archivo({
   subsets: ["latin"],
@@ -58,7 +60,10 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#050607",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: THEME_COLOR.light },
+    { media: "(prefers-color-scheme: dark)", color: THEME_COLOR.dark },
+  ],
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
@@ -87,7 +92,11 @@ const ORG_SCHEMA = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en-IN" className={`${archivo.variable} ${inter.variable}`}>
+    // `data-theme` is corrected before paint by THEME_SCRIPT, hence suppressHydrationWarning.
+    <html lang="en-IN" data-theme="light" className={`${archivo.variable} ${inter.variable}`} suppressHydrationWarning>
+      <head>
+        <InlineScript html={THEME_SCRIPT} />
+      </head>
       <body>
         <script
           type="application/ld+json"
@@ -96,7 +105,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[80] focus:bg-accent focus:px-4 focus:py-2 focus:font-display focus:text-sm focus:text-[#04161d]"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[80] focus:bg-accent focus:px-4 focus:py-2 focus:font-display focus:text-sm focus:text-on-accent"
         >
           Skip to content
         </a>
