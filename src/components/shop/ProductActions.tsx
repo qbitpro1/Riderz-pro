@@ -6,6 +6,7 @@ import { Icon } from "@/components/ui/Icon";
 import { useCart } from "@/components/cart/CartContext";
 import { rupees } from "@/lib/format";
 import { whatsapp } from "@/lib/data/site";
+import { cartLineId } from "@/lib/store/types";
 import type { Product } from "@/lib/data/products";
 
 export function ProductActions({ product }: { product: Product }) {
@@ -20,8 +21,10 @@ export function ProductActions({ product }: { product: Product }) {
   function addToCart() {
     add(
       {
+        id: cartLineId(product.slug),
         slug: product.slug,
         name: product.name,
+        image: { kind: "media", key: product.image, alt: product.name },
         href: `/product/${product.slug}`,
         price: product.price,
         install: withInstall ? installPrice : 0,

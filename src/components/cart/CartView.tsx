@@ -5,9 +5,9 @@ import { Icon } from "@/components/ui/Icon";
 import { useCart } from "./CartContext";
 import { rupees } from "@/lib/format";
 import { whatsapp } from "@/lib/data/site";
-
-const FREE_SHIPPING_OVER = 2000;
-const SHIPPING = 149;
+import { FREE_SHIPPING_OVER, shippingFor } from "@/lib/store/shipping";
+import { CartThumb } from "./CartThumb";
+import { orderMessage } from "./cartMessage";
 
 export function CartView() {
   const { lines, subtotal, installTotal, setQty, remove, clear, ready, count } = useCart();
@@ -37,39 +37,21 @@ export function CartView() {
     );
   }
 
-  const shipping = subtotal >= FREE_SHIPPING_OVER ? 0 : SHIPPING;
+  const shipping = shippingFor(subtotal);
   const total = subtotal + installTotal + shipping;
-
-  const message = [
-    "Hi Riderzpro, I'd like to place this order:",
-    "",
-    ...lines.map(
-      (l) =>
-        `• ${l.name} × ${l.qty} — ${rupees(l.price * l.qty)}${
-          l.install ? ` (+ installation ${rupees(l.install * l.qty)})` : ""
-        }`,
-    ),
-    "",
-    `Subtotal: ${rupees(subtotal)}`,
-    installTotal ? `Installation: ${rupees(installTotal)}` : "",
-    `Shipping: ${shipping === 0 ? "Free" : rupees(shipping)}`,
-    `Total: ${rupees(total)}`,
-    "",
-    "My car is: ",
-    "Delivery address: ",
-  ]
-    .filter(Boolean)
-    .join("\n");
+  const message = orderMessage(lines, { subtotal, installTotal, shipping, total });
 
   return (
     <div className="grid gap-6 lg:grid-cols-[1.6fr_1fr] lg:items-start">
       <ul className="divide-y divide-tint/8 border-y border-tint/8">
         {lines.map((l) => (
-          <li key={l.slug} className="flex flex-wrap items-center gap-4 py-4">
+          <li key={l.id} className="flex flex-wrap items-center gap-4 py-4">
+            <CartThumb image={l.image} size={80} />
             <div className="min-w-0 flex-1">
               <Link href={l.href} className="text-sm font-semibold transition-colors hover:text-accent">
                 {l.name}
               </Link>
+              {l.variant && <p className="mt-0.5 text-xs text-ash">{l.variant}</p>}
               <p className="mt-0.5 text-xs text-dim tnum">
                 {rupees(l.price)} each
                 {l.install ? ` · installation ${rupees(l.install)}` : ""}
@@ -80,7 +62,7 @@ export function CartView() {
               <button
                 type="button"
                 aria-label={`Decrease ${l.name}`}
-                onClick={() => setQty(l.slug, l.qty - 1)}
+                onClick={() => setQty(l.id, l.qty - 1)}
                 className="grid h-10 w-9 place-items-center text-ash hover:text-accent"
               >
                 <Icon name="minus" size={14} />
@@ -89,7 +71,7 @@ export function CartView() {
               <button
                 type="button"
                 aria-label={`Increase ${l.name}`}
-                onClick={() => setQty(l.slug, l.qty + 1)}
+                onClick={() => setQty(l.id, l.qty + 1)}
                 className="grid h-10 w-9 place-items-center text-ash hover:text-accent"
               >
                 <Icon name="plus" size={14} />
@@ -102,7 +84,7 @@ export function CartView() {
 
             <button
               type="button"
-              onClick={() => remove(l.slug)}
+              onClick={() => remove(l.id)}
               aria-label={`Remove ${l.name}`}
               className="text-dim transition-colors hover:text-danger"
             >
