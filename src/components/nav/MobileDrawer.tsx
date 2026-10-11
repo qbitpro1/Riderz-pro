@@ -6,6 +6,7 @@ import { Icon } from "@/components/ui/Icon";
 import { Logo } from "@/components/brand/Logo";
 import { DEPARTMENT_MENUS, MORE_SECTIONS } from "@/lib/data/nav";
 import { SITE, whatsapp } from "@/lib/data/site";
+import { WishlistLink } from "@/components/wishlist/WishlistLink";
 
 const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
@@ -157,11 +158,31 @@ export function MobileDrawer({ onClose }: { onClose: () => void }) {
             ))}
           </ul>
 
+          <ul className="mt-6 border-t border-tint/10 pt-4">
+            <li>
+              <WishlistLink variant="text" className="flex min-h-11 items-center" />
+            </li>
+            {[
+              { label: "Collections", href: "/collections" },
+              { label: "Track Order", href: "/track-order" },
+              { label: "FAQ", href: "/faq" },
+            ].map((l) => (
+              <li key={l.href}>
+                <Link
+                  href={l.href}
+                  className="flex min-h-11 items-center font-display text-[13px] font-bold uppercase tracking-[0.12em] text-chalk hover:text-accent"
+                >
+                  {l.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+
           <div className="mt-8">
             <p className="eyebrow mb-3">Talk to us</p>
             <div className="flex flex-col gap-3">
               <a
-                href={whatsapp("Hi Riderzpro, I want to discuss a build.")}
+                href={whatsapp("Hi Riderzpro, I have a question.")}
                 target="_blank"
                 rel="noreferrer noopener"
                 className="btn btn-whatsapp btn-block"

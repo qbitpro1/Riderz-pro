@@ -17,6 +17,8 @@ const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
     title: "Support",
     links: [
       { label: "Contact", href: "/contact" },
+      { label: "FAQ", href: "/faq" },
+      { label: "Track Order", href: "/track-order" },
       { label: "Shipping", href: "/support/shipping" },
       { label: "Returns", href: "/support/returns" },
       { label: "Warranty", href: "/support/warranty" },

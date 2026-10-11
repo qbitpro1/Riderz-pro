@@ -97,6 +97,8 @@ export const SHOP_BY_LINKS: NavLink[] = [
   { label: "Car", href: "/shop" },
   { label: "Brand", href: "/brands" },
   { label: "OE", href: "/shop?oe=1" },
+  { label: "Collections", href: "/collections" },
+  { label: "Wishlist", href: "/wishlist" },
 ];
 
 /** Mobile bottom bar. `kind` decides how the item behaves. */
