@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { CatalogCard } from "./CatalogCard";
 import { Icon } from "@/components/ui/Icon";
@@ -14,6 +14,7 @@ import {
   categoryName,
   facetsFor,
   filterCatalog,
+  priceCeilingLabel,
   queryFromFilters,
   SORTS,
   TIER_LABELS,
@@ -98,6 +99,7 @@ export function CatalogBrowser({
         oe: false,
         subs: [],
         tiers: [],
+        maxPrice: null,
         availability: [],
         fits: null,
         installation: false,
@@ -159,7 +161,8 @@ export function CatalogBrowser({
             type="button"
             onClick={() => setPanelOpen(true)}
             className="btn btn-outline btn-sm lg:hidden"
-            aria-label="Open filters"
+            aria-label={active > 0 ? `Open filters, ${active} active` : "Open filters"}
+            aria-haspopup="dialog"
           >
             <Icon name="filter" size={14} />
             Filters{active > 0 ? ` (${active})` : ""}
@@ -232,38 +235,126 @@ export function CatalogBrowser({
         )}
       </div>
 
-      {/* mobile drawer ------------------------------------------------ */}
+      {/* mobile bottom sheet ------------------------------------------ */}
       {panelOpen && (
-        <div className="fixed inset-0 z-[80] flex flex-col bg-void/97 backdrop-blur-xl lg:hidden">
-          <div className="shell flex items-center justify-between py-4">
-            <p className="font-display text-lg font-extrabold uppercase">Filters</p>
-            <button
-              type="button"
-              onClick={() => setPanelOpen(false)}
-              aria-label="Close filters"
-              className="grid h-10 w-10 place-items-center text-ash"
-            >
-              <Icon name="close" size={22} />
-            </button>
-          </div>
-          <div className="hairline" />
-          <div className="shell flex-1 overflow-y-auto py-5">{panel}</div>
-          <div className="hairline" />
-          <div className="shell flex gap-3 py-4">
-            <button type="button" onClick={clearAll} className="btn btn-outline flex-1">
-              Clear all
-            </button>
-            <button type="button" onClick={() => setPanelOpen(false)} className="btn btn-primary flex-1">
-              Show {results.length}
-            </button>
-          </div>
-        </div>
+        <FilterSheet count={results.length} onClear={clearAll} onClose={() => setPanelOpen(false)}>
+          {panel}
+        </FilterSheet>
       )}
     </div>
   );
 }
 
 /* ------------------------------------------------------------------ panel */
+
+const PRICE_CEILINGS = [999, 2499, 4999];
+
+const FOCUSABLE =
+  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+/**
+ * The filter panel below lg, as a bottom sheet. Same behaviour as the menu
+ * drawer: Escape and the backdrop close it, body scroll is locked, Tab stays
+ * inside, and focus returns to the button that opened it.
+ */
+function FilterSheet({
+  count,
+  onClear,
+  onClose,
+  children,
+}: {
+  count: number;
+  onClear: () => void;
+  onClose: () => void;
+  children: React.ReactNode;
+}) {
+  const [shown, setShown] = useState(false);
+  const sheet = useRef<HTMLDivElement>(null);
+  const closeBtn = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const opener = document.activeElement as HTMLElement | null;
+    const raf = requestAnimationFrame(() => {
+      setShown(true);
+      closeBtn.current?.focus();
+    });
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        onClose();
+        return;
+      }
+      if (e.key !== "Tab" || !sheet.current) return;
+      const els = Array.from(sheet.current.querySelectorAll<HTMLElement>(FOCUSABLE));
+      if (els.length === 0) return;
+      const first = els[0];
+      const last = els[els.length - 1];
+      const cur = document.activeElement;
+      if (!sheet.current.contains(cur)) {
+        e.preventDefault();
+        first.focus();
+      } else if (e.shiftKey && cur === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && cur === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener("keydown", onKey);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+      opener?.focus?.();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return (
+    <div className="fixed inset-0 z-[80] lg:hidden" role="dialog" aria-modal="true" aria-label="Filters">
+      <button
+        type="button"
+        tabIndex={-1}
+        aria-label="Close filters"
+        onClick={onClose}
+        className={`absolute inset-0 bg-void/70 transition-opacity duration-200 ${shown ? "opacity-100" : "opacity-0"}`}
+      />
+      <div
+        ref={sheet}
+        className={`absolute inset-x-0 bottom-0 flex max-h-[88dvh] flex-col rounded-t-2xl border-t border-tint/10 bg-void shadow-2xl shadow-tint/10 transition-transform duration-300 md:mx-auto md:max-w-xl ${
+          shown ? "translate-y-0" : "translate-y-full"
+        }`}
+      >
+        <div className="flex shrink-0 items-center justify-between border-b border-tint/10 px-4 py-3">
+          <p className="font-display text-lg font-extrabold uppercase">Filters</p>
+          <button
+            ref={closeBtn}
+            type="button"
+            onClick={onClose}
+            aria-label="Close filters"
+            className="grid h-10 w-10 place-items-center text-ash transition-colors hover:text-accent"
+          >
+            <Icon name="close" size={22} />
+          </button>
+        </div>
+        <div className="flex-1 overflow-y-auto overscroll-contain px-4 py-5">{children}</div>
+        <div className="flex shrink-0 gap-3 border-t border-tint/10 bg-void px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+          <button type="button" onClick={onClear} className="btn btn-outline flex-1">
+            Clear all
+          </button>
+          <button type="button" onClick={onClose} className="btn btn-primary flex-1">
+            Show {count} product{count === 1 ? "" : "s"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 type ToggleFn = <K extends "brands" | "categories" | "groups" | "subs" | "tiers" | "availability">(
   key: K,
@@ -361,9 +452,25 @@ function FilterPanel({
         </Group>
       )}
 
-      {facets.tiers.length > 1 && (
-        <Group title="Price">
-          {facets.tiers.map((f) => (
+      <Group title="Price">
+        <div className="mb-2 flex flex-wrap gap-2" role="group" aria-label="Price ceiling">
+          {PRICE_CEILINGS.map((n) => {
+            const on = filters.maxPrice === n;
+            return (
+              <button
+                key={n}
+                type="button"
+                aria-pressed={on}
+                onClick={() => onPatch({ maxPrice: on ? null : n })}
+                className={`chip min-h-[36px] ${on ? "chip-active" : "hover:border-accent hover:text-accent"}`}
+              >
+                {priceCeilingLabel(n)}
+              </button>
+            );
+          })}
+        </div>
+        {facets.tiers.length > 1 &&
+          facets.tiers.map((f) => (
             <Check
               key={f.value}
               label={f.label}
@@ -372,8 +479,7 @@ function FilterPanel({
               onChange={() => onToggle("tiers", f.value)}
             />
           ))}
-        </Group>
-      )}
+      </Group>
 
       {facets.availability.length > 1 && (
         <Group title="Availability">
@@ -481,6 +587,8 @@ function ActiveChips({
   for (const s of filters.subs) chips.push({ key: `s-${s}`, label: s, remove: () => onToggle("subs", s) });
   for (const t of filters.tiers)
     chips.push({ key: `t-${t}`, label: TIER_LABELS[t], remove: () => onToggle("tiers", t) });
+  if (filters.maxPrice !== null)
+    chips.push({ key: "max", label: priceCeilingLabel(filters.maxPrice), remove: () => onPatch({ maxPrice: null }) });
   for (const a of filters.availability)
     chips.push({ key: `a-${a}`, label: AVAILABILITY_LABELS[a], remove: () => onToggle("availability", a) });
   if (filters.fits) chips.push({ key: "fits", label: "Fits my car", remove: () => onPatch({ fits: null }) });

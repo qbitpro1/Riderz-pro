@@ -36,6 +36,8 @@ export type CatalogFilters = {
   groups: string[];
   subs: string[];
   tiers: PriceTier[];
+  /** Price ceiling in rupees: items with a price at or under it. */
+  maxPrice: number | null;
   availability: Availability[];
   /** Original Equipment parts only. */
   oe: boolean;
@@ -52,6 +54,7 @@ export const EMPTY_FILTERS: CatalogFilters = {
   groups: [],
   subs: [],
   tiers: [],
+  maxPrice: null,
   availability: [],
   oe: false,
   fits: null,
@@ -68,6 +71,7 @@ export function activeFilterCount(f: CatalogFilters): number {
     f.groups.length +
     f.subs.length +
     f.tiers.length +
+    (f.maxPrice !== null ? 1 : 0) +
     f.availability.length +
     (f.fits ? 1 : 0) +
     (f.installation ? 1 : 0) +
@@ -95,6 +99,7 @@ function matches(item: CatalogItem, f: CatalogFilters, except?: Dimension): bool
   if (except !== "oe" && f.oe && !item.oe) return false;
   if (except !== "subs" && f.subs.length && !f.subs.includes(item.sub)) return false;
   if (except !== "tiers" && f.tiers.length && !f.tiers.includes(item.tier)) return false;
+  if (except !== "maxPrice" && f.maxPrice !== null && (item.price === null || item.price > f.maxPrice)) return false;
   if (except !== "availability" && f.availability.length && !f.availability.includes(item.availability)) return false;
   if (except !== "fits" && f.fits && !itemFits(item, f.fits)) return false;
   if (except !== "installation" && f.installation && !item.installation) return false;
@@ -254,6 +259,13 @@ export type CatalogQuery = Record<string, string | string[] | undefined>;
 const list = (v: string | string[] | undefined): string[] =>
   v === undefined ? [] : (Array.isArray(v) ? v : v.split(",")).map((s) => s.trim()).filter(Boolean);
 
+function parseMax(v: string | string[] | undefined): number | null {
+  const n = typeof v === "string" ? Number(v) : NaN;
+  return Number.isFinite(n) && n > 0 ? Math.round(n) : null;
+}
+
+export const priceCeilingLabel = (n: number): string => `Under ₹${n.toLocaleString("en-IN")}`;
+
 export function filtersFromQuery(query: CatalogQuery): CatalogFilters {
   const brandSlugs = new Set(BRANDS.map((b) => b.slug as string));
   const categorySlugs = new Set(DEPARTMENTS.map((d) => d.slug as string));
@@ -265,6 +277,7 @@ export function filtersFromQuery(query: CatalogQuery): CatalogFilters {
     groups: list(query.group),
     subs: list(query.sub),
     tiers: list(query.tier).filter((t): t is PriceTier => t === "value" || t === "mid" || t === "premium"),
+    maxPrice: parseMax(query.max),
     availability: list(query.stock).filter(
       (a): a is Availability => a === "in-stock" || a === "made-to-order" || a === "coming-soon",
     ),
@@ -284,6 +297,7 @@ export function queryFromFilters(f: CatalogFilters): string {
   if (f.oe) p.set("oe", "1");
   if (f.subs.length) p.set("sub", f.subs.join(","));
   if (f.tiers.length) p.set("tier", f.tiers.join(","));
+  if (f.maxPrice !== null) p.set("max", String(f.maxPrice));
   if (f.availability.length) p.set("stock", f.availability.join(","));
   if (f.fits) p.set("fits", f.fits);
   if (f.installation) p.set("install", "1");

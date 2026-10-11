@@ -9,7 +9,8 @@ import { CatalogCard } from "@/components/catalog/CatalogCard";
 import { BrandStrip } from "@/components/catalog/BrandStrip";
 import { FitmentPicker } from "@/components/fitment/FitmentPicker";
 import { ReviewCard } from "@/components/community/Cards";
-import { CATALOG, filterCatalog, sortItems, EMPTY_FILTERS, TIER_LABELS } from "@/lib/catalog";
+import { CATALOG, sortItems } from "@/lib/catalog";
+import { COLLECTIONS } from "@/lib/data/collections";
 import {
   DEPARTMENTS,
   DEPARTMENT_BY_SLUG,
@@ -133,38 +134,7 @@ export default function HomePage() {
     "popular",
   ).slice(0, 12);
 
-  const view = (patch: Partial<typeof EMPTY_FILTERS>) => filterCatalog(CATALOG, { ...EMPTY_FILTERS, ...patch }).length;
-  type Collection = { title: string; blurb: string; href: string; image: MediaKey; count: number };
-  const collections = ([
-    {
-      title: TIER_LABELS.value,
-      blurb: "Everyday pieces at easy prices.",
-      href: "/shop?tier=value",
-      image: "washBay",
-      count: view({ tiers: ["value"] }),
-    },
-    {
-      title: TIER_LABELS.mid,
-      blurb: "Audio, lighting and upgrades in the middle of the range.",
-      href: "/shop?tier=mid",
-      image: "studioMonitors",
-      count: view({ tiers: ["mid"] }),
-    },
-    {
-      title: "Biggest savings",
-      blurb: "Products with the largest gap between MRP and our price.",
-      href: "/shop?sort=discount",
-      image: "detailingPolish",
-      count: CATALOG.filter((i) => i.price && i.mrp && i.mrp > i.price).length,
-    },
-    {
-      title: "Installation available",
-      blurb: "Products we will fit for you at our garages.",
-      href: "/shop?install=1",
-      image: "mechanicEngine",
-      count: view({ installation: true }),
-    },
-  ] satisfies Collection[]).filter((c) => c.count > 0);
+  const collections = COLLECTIONS.map((c) => ({ c, count: CATALOG.filter(c.match).length })).filter((x) => x.count > 0);
 
   const models = LANDING_MODELS.slice(0, 12);
 
@@ -316,22 +286,22 @@ export default function HomePage() {
       {/* 7 — COLLECTIONS --------------------------------------------------- */}
       <section className="section bg-void">
         <div className="shell">
-          <SectionHead eyebrow="Collections" title="Shop by price and offer" />
+          <SectionHead eyebrow="Collections" title="Shop by price and offer" href="/collections" />
           <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 md:gap-4">
-            {collections.map((c, i) => (
-              <li key={c.title}>
+            {collections.map(({ c, count }, i) => (
+              <li key={c.slug}>
                 <Reveal delay={i * 55} className="h-full">
                   <Link
                     data-theme="dark"
-                    href={c.href}
+                    href={`/collections/${c.slug}`}
                     className="card card-hover relative flex aspect-[16/10] flex-col justify-end overflow-hidden bg-graphite lg:aspect-[4/5]"
                   >
                     <Photo media={c.image} sizes="(min-width:1024px) 24vw, (min-width:640px) 48vw, 92vw" className="zoom opacity-75" />
                     <div className="absolute inset-0 scrim-soft" />
                     <div className="relative p-4">
-                      <p className="font-display text-xl font-extrabold leading-tight">{c.title}</p>
-                      <p className="mt-1 text-xs text-ash">{c.blurb}</p>
-                      <p className="mt-2 text-xs text-accent tnum">{c.count} products</p>
+                      <p className="font-display text-xl font-extrabold leading-tight">{c.name}</p>
+                      <p className="mt-1 text-xs text-ash">{c.tagline}</p>
+                      <p className="mt-2 text-xs text-accent tnum">{count} product{count === 1 ? "" : "s"}</p>
                     </div>
                   </Link>
                 </Reveal>

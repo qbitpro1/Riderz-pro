@@ -12,6 +12,8 @@ import { PPF_FILMS } from "@/lib/ppf/films";
 import { GUIDE as PPF_GUIDE } from "@/lib/ppf/guide";
 import { CATEGORIES as RECOIL_CATEGORIES, COMING_SOON as RECOIL_COMING_SOON, PRODUCTS as RECOIL_PRODUCTS } from "@/lib/data/recoil";
 import { BRANDS } from "@/lib/catalog/brands";
+import { CATALOG } from "@/lib/catalog";
+import { COLLECTIONS } from "@/lib/data/collections";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
@@ -37,6 +39,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     entry("/ppf/guide", 0.75),
     entry("/sell", 0.8),
     entry("/shop", 0.9),
+    entry("/collections", 0.8),
     entry("/build", 0.9),
     entry("/audio", 0.8),
     entry("/ppf", 0.8),
@@ -56,6 +59,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     entry("/compare", 0.5),
 
     ...BRANDS.map((b) => entry(`/brands/${b.slug}`, 0.75)),
+    ...COLLECTIONS.filter((c) => CATALOG.some(c.match)).map((c) => entry(`/collections/${c.slug}`, 0.75)),
 
     ...SEO_LANDINGS.map((l) => entry(`/${l.slug}`, 0.75)),
     ...AUTOFORM_DESIGNS.map((d) => entry(`/autoform/${d.slug}`, 0.7)),

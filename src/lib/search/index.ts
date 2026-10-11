@@ -8,7 +8,8 @@ import { BUILDS } from "@/lib/data/community";
 import { LANDING_MODELS, findModelBySlug } from "@/lib/data/vehicles";
 import { COMING_SOON as RECOIL_COMING_SOON, PRODUCTS as RECOIL_PRODUCTS } from "@/lib/data/recoil";
 import { DESIGNS as AUTOFORM_DESIGNS, bandFor, priceFor } from "@/lib/autoform/catalog";
-import { BRANDS, CATALOG_BY_BRAND } from "@/lib/catalog";
+import { BRANDS, CATALOG, CATALOG_BY_BRAND } from "@/lib/catalog";
+import { COLLECTIONS } from "@/lib/data/collections";
 import { lakh, rupees } from "@/lib/format";
 import { norm, type SearchBrand, type SearchEntry, type SearchIndex } from "./match";
 
@@ -89,6 +90,16 @@ export const SEARCH_INDEX: SearchEntry[] = [
       `${d.name} ${d.groups.map((g) => `${g.name} ${g.subs.join(" ")}`).join(" ")} accessories shop department oe original equipment`,
     ),
   })),
+  ...COLLECTIONS.map((c) => ({ c, count: CATALOG.filter(c.match).length }))
+    .filter((x) => x.count > 0)
+    .map(({ c, count }) => ({
+      id: `collection-${c.slug}`,
+      kind: "Category" as const,
+      title: `${c.name} — collection`,
+      meta: `${c.tagline} · ${count} product${count === 1 ? "" : "s"}`,
+      href: `/collections/${c.slug}`,
+      keywords: norm(`${c.name} ${c.tagline} ${c.blurb} collection offers deals`),
+    })),
   ...LANDING_MODELS.map((m) => ({
     id: `model-${m.brandSlug}-${m.slug}`,
     kind: "My Car" as const,
