@@ -32,6 +32,9 @@ type CartState = {
 };
 
 const KEY = "riderzpro.cart.v1";
+/** The most of one line the cart — and the checkout endpoint — accepts. */
+export const MAX_QTY = 99;
+
 const CartCtx = createContext<CartState | null>(null);
 
 /**
@@ -79,16 +82,20 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setLines((prev) => {
       const found = prev.find((l) => l.id === line.id);
       if (found) {
-        return prev.map((l) => (l.id === line.id ? { ...l, ...line, qty: l.qty + qty } : l));
+        // Same product and options: only the quantity grows. The line keeps the
+        // installation choice it was first added with.
+        return prev.map((l) => (l.id === line.id ? { ...l, qty: Math.min(MAX_QTY, l.qty + qty) } : l));
       }
-      return [...prev, { ...line, qty }];
+      return [...prev, { ...line, qty: Math.min(MAX_QTY, qty) }];
     });
     if (opts?.open !== false) setDrawerOpen(true);
   }, []);
 
   const setQty = useCallback((id: string, qty: number) => {
     setLines((prev) =>
-      qty <= 0 ? prev.filter((l) => l.id !== id) : prev.map((l) => (l.id === id ? { ...l, qty } : l)),
+      qty <= 0
+        ? prev.filter((l) => l.id !== id)
+        : prev.map((l) => (l.id === id ? { ...l, qty: Math.min(MAX_QTY, qty) } : l)),
     );
   }, []);
 

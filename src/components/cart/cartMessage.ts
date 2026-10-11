@@ -17,13 +17,11 @@ export function orderMessage(
     ),
     "",
     `Subtotal: ${rupees(t.subtotal)}`,
-    t.installTotal ? `Installation: ${rupees(t.installTotal)}` : "",
+    ...(t.installTotal ? [`Installation: ${rupees(t.installTotal)}`] : []),
     `Shipping: ${t.shipping === 0 ? "Free" : rupees(t.shipping)}`,
     `Total: ${rupees(t.total)}`,
     "",
     "My car is: ",
     "Delivery address: ",
-  ]
-    .filter(Boolean)
-    .join("\n");
+  ].join("\n");
 }

@@ -63,7 +63,9 @@ export const SKIP_LABELS: Record<SkipReason, string> = {
 
 export function csvCell(raw: string): string {
   // Some source text has a NUL where an "fi" ligature was lost; other control characters break imports.
-  const v = raw.replace(/\u0000/g, "fi").replace(/[\u0001-\u0008\u000B\u000C\u000E-\u001F]/g, "");
+  let v = raw.replace(/\u0000/g, "fi").replace(/[\u0001-\u0008\u000B\u000C\u000E-\u001F]/g, "");
+  // A cell that starts like a formula is run by spreadsheet apps; a leading apostrophe makes it text.
+  if (/^[=+\-@]/.test(v) && !/^-?\d+(\.\d+)?$/.test(v)) v = `'${v}`;
   return /[",\r\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v;
 }
 
@@ -164,8 +166,9 @@ export function buildShopifyCsv(): CsvBuild {
       }
       d.options.forEach((opt, k) => {
         const n = k + 1;
-        if (i === 0) r[`Option${n}Name` as keyof Row] = opt.name;
-        r[`Option${n}Value` as keyof Row] = combo.values[k].label;
+        // Shopify wants the option name on every variant row, not only the first.
+        r[`Option${n} Name` as keyof Row] = opt.name;
+        r[`Option${n} Value` as keyof Row] = combo.values[k].label;
       });
       const delta = combo.values.reduce((s, v) => s + v.priceDelta, 0);
       const mrpDelta = combo.values.reduce((s, v) => s + v.mrpDelta, 0);
