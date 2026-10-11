@@ -17,7 +17,7 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const { drawer, search } = useNavState();
   const pathname = usePathname();
-  const { count } = useCart();
+  const { count, openCart } = useCart();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -48,8 +48,10 @@ export function Header() {
               <Icon name="search" size={20} />
             </IconButton>
 
-            <Link
-              href="/cart"
+            <button
+              type="button"
+              onClick={openCart}
+              aria-haspopup="dialog"
               aria-label={`Cart, ${count} item${count === 1 ? "" : "s"}`}
               className="relative grid h-10 w-10 place-items-center text-chalk/85 transition-colors hover:text-accent"
             >
@@ -59,7 +61,7 @@ export function Header() {
                   {count > 9 ? "9+" : count}
                 </span>
               )}
-            </Link>
+            </button>
 
             {/* Icon-only at xl so the department row fits at 1280px; labelled again from 2xl. */}
             <a

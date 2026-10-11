@@ -6,6 +6,7 @@ import { Icon } from "@/components/ui/Icon";
 import { useCart } from "@/components/cart/CartContext";
 import { rupees } from "@/lib/format";
 import { whatsapp } from "@/lib/data/site";
+import { cartLineId } from "@/lib/store/types";
 import type { PublicProduct } from "@/lib/data/recoil";
 import { readStored } from "@/lib/storage";
 
@@ -24,7 +25,11 @@ export function RecoilActions({ product }: { product: PublicProduct }) {
     if (!price) return;
     add(
       {
+        id: cartLineId(product.slug),
         slug: product.slug,
+        image: product.images[0]
+          ? { kind: "remote", src: product.images[0].url, alt: product.images[0].alt, fit: "contain", tone: "light" }
+          : undefined,
         name: `RECOIL ${product.sku} — ${product.priceListName}`,
         href: `/products/${product.slug}`,
         price,

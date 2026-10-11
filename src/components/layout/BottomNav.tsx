@@ -12,7 +12,7 @@ const labelCls = "font-display text-[10px] font-bold uppercase tracking-[0.1em]"
 
 export function BottomNav() {
   const pathname = usePathname();
-  const { count } = useCart();
+  const { count, openCart, drawerOpen } = useCart();
   const { drawer, search } = useNavState();
 
   return (
@@ -42,6 +42,31 @@ export function BottomNav() {
             );
           }
 
+          if (item.kind === "cart") {
+            return (
+              <li key={item.label}>
+                <button
+                  type="button"
+                  onClick={openCart}
+                  aria-haspopup="dialog"
+                  aria-expanded={drawerOpen}
+                  aria-label={`Cart, ${count} item${count === 1 ? "" : "s"}`}
+                  className={`${cell} ${drawerOpen ? "text-accent" : "text-ash"}`}
+                >
+                  <span className="relative">
+                    {icon}
+                    {count > 0 && (
+                      <span className="absolute -right-2 -top-1.5 grid h-4 min-w-4 place-items-center rounded-full bg-accent px-1 text-[10px] font-bold text-on-accent tnum">
+                        {count > 9 ? "9+" : count}
+                      </span>
+                    )}
+                  </span>
+                  <span className={labelCls}>{item.label}</span>
+                </button>
+              </li>
+            );
+          }
+
           const href = item.href ?? "/";
           const active = href === "/" ? pathname === "/" : pathname.startsWith(href);
           return (
@@ -49,17 +74,11 @@ export function BottomNav() {
               <Link
                 href={href}
                 aria-current={active ? "page" : undefined}
-                aria-label={item.kind === "cart" ? `Cart, ${count} item${count === 1 ? "" : "s"}` : undefined}
                 className={`${cell} ${active ? "text-accent" : "text-ash"}`}
               >
                 <span className="relative">
                   {icon}
                   {active && <span className="absolute -top-3 left-1/2 h-0.5 w-6 -translate-x-1/2 bg-accent" />}
-                  {item.kind === "cart" && count > 0 && (
-                    <span className="absolute -right-2 -top-1.5 grid h-4 min-w-4 place-items-center rounded-full bg-accent px-1 text-[10px] font-bold text-on-accent tnum">
-                      {count > 9 ? "9+" : count}
-                    </span>
-                  )}
                 </span>
                 <span className={labelCls}>{item.label}</span>
               </Link>

@@ -10,51 +10,55 @@ import {
   type ReactNode,
 } from "react";
 import { readStored } from "@/lib/storage";
+import type { CartLine } from "@/lib/store/types";
+import { CartDrawer } from "./CartDrawer";
 
-export type CartLine = {
-  slug: string;
-  name: string;
-  /** The product page this line links back to — each brand owns its own route. */
-  href: string;
-  price: number;
-  qty: number;
-  /** Optional installation add-on booked with the part. */
-  install?: number;
-};
+export type { CartLine };
 
 type CartState = {
   lines: CartLine[];
   count: number;
   subtotal: number;
   installTotal: number;
+  /** Adds `qty` of a line (merging with the same `id`) and opens the cart drawer. */
   add: (line: Omit<CartLine, "qty">, qty?: number) => void;
-  setQty: (slug: string, qty: number) => void;
-  remove: (slug: string) => void;
+  setQty: (id: string, qty: number) => void;
+  remove: (id: string) => void;
   clear: () => void;
   ready: boolean;
+  drawerOpen: boolean;
+  openCart: () => void;
+  closeCart: () => void;
 };
 
 const KEY = "riderzpro.cart.v1";
 const CartCtx = createContext<CartState | null>(null);
 
 /**
- * Lines saved before `href` existed were all linked to `/product/…`, which only
- * the house range lives under. RECOIL lines are recognisable by their name.
+ * Repairs lines saved by older versions: they have no `id` (the slug was the
+ * key, so `id = slug`) and early ones have no `href`, all of which linked to
+ * `/product/…`, which only the house range lives under. RECOIL lines are
+ * recognisable by their name.
  */
-function withHref(line: CartLine): CartLine {
-  if (line.href) return line;
+function repair(line: CartLine): CartLine {
+  const id = line.id || line.slug;
+  if (line.href) return line.id ? line : { ...line, id };
   const base = line.name.startsWith("RECOIL ") ? "/products" : "/product";
-  return { ...line, href: `${base}/${line.slug}` };
+  return { ...line, id, href: `${base}/${line.slug}` };
 }
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [lines, setLines] = useState<CartLine[]>([]);
   const [ready, setReady] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
     try {
       const raw = readStored(KEY);
-      if (raw) setLines((JSON.parse(raw) as CartLine[]).map(withHref));
+      if (raw) {
+        const parsed: unknown = JSON.parse(raw);
+        if (Array.isArray(parsed)) setLines((parsed as CartLine[]).map(repair));
+      }
     } catch {
       // A corrupt or unavailable store should never block the page.
     }
@@ -70,24 +74,28 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, [lines, ready]);
 
+  const openCart = useCallback(() => setDrawerOpen(true), []);
+  const closeCart = useCallback(() => setDrawerOpen(false), []);
+
   const add = useCallback((line: Omit<CartLine, "qty">, qty = 1) => {
     setLines((prev) => {
-      const found = prev.find((l) => l.slug === line.slug);
+      const found = prev.find((l) => l.id === line.id);
       if (found) {
-        return prev.map((l) => (l.slug === line.slug ? { ...l, ...line, qty: l.qty + qty } : l));
+        return prev.map((l) => (l.id === line.id ? { ...l, ...line, qty: l.qty + qty } : l));
       }
       return [...prev, { ...line, qty }];
     });
+    setDrawerOpen(true);
   }, []);
 
-  const setQty = useCallback((slug: string, qty: number) => {
+  const setQty = useCallback((id: string, qty: number) => {
     setLines((prev) =>
-      qty <= 0 ? prev.filter((l) => l.slug !== slug) : prev.map((l) => (l.slug === slug ? { ...l, qty } : l)),
+      qty <= 0 ? prev.filter((l) => l.id !== id) : prev.map((l) => (l.id === id ? { ...l, qty } : l)),
     );
   }, []);
 
-  const remove = useCallback((slug: string) => {
-    setLines((prev) => prev.filter((l) => l.slug !== slug));
+  const remove = useCallback((id: string) => {
+    setLines((prev) => prev.filter((l) => l.id !== id));
   }, []);
 
   const clear = useCallback(() => setLines([]), []);
@@ -96,10 +104,28 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const count = lines.reduce((n, l) => n + l.qty, 0);
     const subtotal = lines.reduce((n, l) => n + l.price * l.qty, 0);
     const installTotal = lines.reduce((n, l) => n + (l.install ?? 0) * l.qty, 0);
-    return { lines, count, subtotal, installTotal, add, setQty, remove, clear, ready };
-  }, [lines, add, setQty, remove, clear, ready]);
+    return {
+      lines,
+      count,
+      subtotal,
+      installTotal,
+      add,
+      setQty,
+      remove,
+      clear,
+      ready,
+      drawerOpen,
+      openCart,
+      closeCart,
+    };
+  }, [lines, add, setQty, remove, clear, ready, drawerOpen, openCart, closeCart]);
 
-  return <CartCtx.Provider value={value}>{children}</CartCtx.Provider>;
+  return (
+    <CartCtx.Provider value={value}>
+      {children}
+      {drawerOpen && <CartDrawer />}
+    </CartCtx.Provider>
+  );
 }
 
 export function useCart(): CartState {
