@@ -6,7 +6,8 @@
  * pulling the brand catalogues — and their dealer pricing — into the browser.
  */
 
-import { CATEGORIES, type CategorySlug, type PriceTier } from "@/lib/data/products";
+import type { CategorySlug, PriceTier } from "@/lib/data/products";
+import { DEPARTMENTS, DEPARTMENT_BY_SLUG } from "@/lib/data/taxonomy";
 import { BRANDS, type BrandSlug } from "./brands";
 import { TIER_BOUNDS, type Availability, type CatalogItem } from "./types";
 
@@ -31,9 +32,13 @@ export const AVAILABILITY_LABELS: Record<Availability, string> = {
 export type CatalogFilters = {
   brands: BrandSlug[];
   categories: CategorySlug[];
+  /** Group slugs within the department. */
+  groups: string[];
   subs: string[];
   tiers: PriceTier[];
   availability: Availability[];
+  /** Original Equipment parts only. */
+  oe: boolean;
   /** Vehicle model slug from the garage picker. */
   fits: string | null;
   installation: boolean;
@@ -44,9 +49,11 @@ export type CatalogFilters = {
 export const EMPTY_FILTERS: CatalogFilters = {
   brands: [],
   categories: [],
+  groups: [],
   subs: [],
   tiers: [],
   availability: [],
+  oe: false,
   fits: null,
   installation: false,
   q: "",
@@ -58,11 +65,13 @@ export function activeFilterCount(f: CatalogFilters): number {
   return (
     f.brands.length +
     f.categories.length +
+    f.groups.length +
     f.subs.length +
     f.tiers.length +
     f.availability.length +
     (f.fits ? 1 : 0) +
     (f.installation ? 1 : 0) +
+    (f.oe ? 1 : 0) +
     (f.q.trim() ? 1 : 0)
   );
 }
@@ -82,6 +91,8 @@ type Dimension = keyof CatalogFilters;
 function matches(item: CatalogItem, f: CatalogFilters, except?: Dimension): boolean {
   if (except !== "brands" && f.brands.length && !f.brands.includes(item.brand)) return false;
   if (except !== "categories" && f.categories.length && !f.categories.includes(item.category)) return false;
+  if (except !== "groups" && f.groups.length && !f.groups.includes(item.group)) return false;
+  if (except !== "oe" && f.oe && !item.oe) return false;
   if (except !== "subs" && f.subs.length && !f.subs.includes(item.sub)) return false;
   if (except !== "tiers" && f.tiers.length && !f.tiers.includes(item.tier)) return false;
   if (except !== "availability" && f.availability.length && !f.availability.includes(item.availability)) return false;
@@ -148,10 +159,14 @@ export type Facet<T extends string> = { value: T; label: string; count: number }
 export type CatalogFacets = {
   brands: Facet<BrandSlug>[];
   categories: Facet<CategorySlug>[];
+  /** Groups of the one department in view; empty when the view spans departments. */
+  groups: Facet<string>[];
   subs: Facet<string>[];
   tiers: Facet<PriceTier>[];
   availability: Facet<Availability>[];
   installation: number;
+  /** Original Equipment items in the current view. */
+  oe: number;
   fits: number;
 };
 
@@ -188,7 +203,16 @@ function count<T extends string>(
  */
 /** Brands and categories are shown by their own name, never by their slug. */
 export const brandName = (slug: BrandSlug): string => BRANDS.find((b) => b.slug === slug)?.name ?? slug;
-export const categoryName = (slug: CategorySlug): string => CATEGORIES.find((c) => c.slug === slug)?.name ?? slug;
+export const categoryName = (slug: CategorySlug): string => DEPARTMENT_BY_SLUG[slug]?.name ?? slug;
+
+/** Group names are only unique within a department, so groups are faceted for one department at a time. */
+function groupFacets(items: CatalogItem[], f: CatalogFilters): Facet<string>[] {
+  if (f.categories.length !== 1) return [];
+  const dept = DEPARTMENT_BY_SLUG[f.categories[0]];
+  if (!dept) return [];
+  const names = new Map(dept.groups.map((g) => [g.slug, g.name]));
+  return count<string>(items, f, "groups", (i) => i.group, (v) => names.get(v) ?? v, dept.groups.map((g) => g.slug));
+}
 
 export function facetsFor(items: CatalogItem[], f: CatalogFilters): CatalogFacets {
   return {
@@ -199,8 +223,9 @@ export function facetsFor(items: CatalogItem[], f: CatalogFilters): CatalogFacet
       "categories",
       (i) => i.category,
       categoryName,
-      CATEGORIES.map((c) => c.slug),
+      DEPARTMENTS.map((d) => d.slug),
     ),
+    groups: groupFacets(items, f),
     subs: count<string>(items, f, "subs", (i) => i.sub, (v) => v),
     tiers: count<PriceTier>(items, f, "tiers", (i) => i.tier, (v) => TIER_LABELS[v], ["value", "mid", "premium"]),
     availability: count<Availability>(
@@ -212,6 +237,7 @@ export function facetsFor(items: CatalogItem[], f: CatalogFilters): CatalogFacet
       ["in-stock", "made-to-order", "coming-soon"],
     ),
     installation: items.filter((i) => i.installation && matches(i, f, "installation")).length,
+    oe: items.filter((i) => i.oe && matches(i, f, "oe")).length,
     fits: f.fits ? items.filter((i) => itemFits(i, f.fits!) && matches(i, f, "fits")).length : 0,
   };
 }
@@ -220,7 +246,7 @@ export function facetsFor(items: CatalogItem[], f: CatalogFilters): CatalogFacet
 
 /**
  * Filters round-trip through the query string so a filtered view is a real,
- * shareable URL — `/shop?brand=recoil&category=audio` is what "search by brand"
+ * shareable URL — `/shop?brand=recoil&category=multimedia` is what "search by brand"
  * links to from anywhere in the site.
  */
 export type CatalogQuery = Record<string, string | string[] | undefined>;
@@ -230,17 +256,19 @@ const list = (v: string | string[] | undefined): string[] =>
 
 export function filtersFromQuery(query: CatalogQuery): CatalogFilters {
   const brandSlugs = new Set(BRANDS.map((b) => b.slug as string));
-  const categorySlugs = new Set(CATEGORIES.map((c) => c.slug as string));
+  const categorySlugs = new Set(DEPARTMENTS.map((d) => d.slug as string));
   const sort = typeof query.sort === "string" ? query.sort : "";
 
   return {
     brands: list(query.brand).filter((b) => brandSlugs.has(b)) as BrandSlug[],
     categories: list(query.category).filter((c) => categorySlugs.has(c)) as CategorySlug[],
+    groups: list(query.group),
     subs: list(query.sub),
     tiers: list(query.tier).filter((t): t is PriceTier => t === "value" || t === "mid" || t === "premium"),
     availability: list(query.stock).filter(
       (a): a is Availability => a === "in-stock" || a === "made-to-order" || a === "coming-soon",
     ),
+    oe: query.oe === "1",
     fits: typeof query.fits === "string" && query.fits ? query.fits : null,
     installation: query.install === "1",
     q: typeof query.q === "string" ? query.q : "",
@@ -252,6 +280,8 @@ export function queryFromFilters(f: CatalogFilters): string {
   const p = new URLSearchParams();
   if (f.brands.length) p.set("brand", f.brands.join(","));
   if (f.categories.length) p.set("category", f.categories.join(","));
+  if (f.groups.length) p.set("group", f.groups.join(","));
+  if (f.oe) p.set("oe", "1");
   if (f.subs.length) p.set("sub", f.subs.join(","));
   if (f.tiers.length) p.set("tier", f.tiers.join(","));
   if (f.availability.length) p.set("stock", f.availability.join(","));

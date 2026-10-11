@@ -114,7 +114,7 @@ export const SEO_LANDINGS: SeoLanding[] = [
     secondary: { href: "/garage", label: "Book installation" },
     sections: [
       {
-        heading: "Six categories, one fitment engine",
+        heading: "Eight departments, one fitment engine",
         body: "Exterior, lighting, interior, audio, off-road and performance. Save your car once and every listing is filtered against it, including on your phone.",
       },
       {
@@ -134,9 +134,9 @@ export const SEO_LANDINGS: SeoLanding[] = [
       { label: "Exterior", href: "/shop/exterior" },
       { label: "Lighting", href: "/shop/lighting" },
       { label: "Interior", href: "/shop/interior" },
-      { label: "Audio", href: "/shop/audio" },
-      { label: "Off-road", href: "/shop/off-road" },
-      { label: "Performance", href: "/shop/performance" },
+      { label: "Audio", href: "/shop/multimedia" },
+      { label: "Off-road", href: "/shop/off-roading" },
+      { label: "Performance", href: "/shop/accessories?group=performance" },
     ],
   },
   {

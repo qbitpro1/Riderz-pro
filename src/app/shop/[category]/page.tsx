@@ -7,6 +7,7 @@ import { FitmentPicker } from "@/components/fitment/FitmentPicker";
 import { SectionHead } from "@/components/ui/Section";
 import { Icon } from "@/components/ui/Icon";
 import { CATEGORIES, getCategory, type CategorySlug } from "@/lib/data/products";
+import { DEPARTMENT_BY_SLUG, groupHref, oeHref } from "@/lib/data/taxonomy";
 import { BRANDS, CATALOG, filtersFromQuery, type CatalogQuery } from "@/lib/catalog";
 
 export function generateStaticParams() {
@@ -40,9 +41,13 @@ export default async function CategoryPage({
   if (!cat) notFound();
 
   const slug = cat.slug as CategorySlug;
+  const dept = DEPARTMENT_BY_SLUG[slug];
   const items = CATALOG.filter((i) => i.category === slug);
   // The category is the page; everything else stays a filter the visitor owns.
   const filters = { ...filtersFromQuery(await searchParams), categories: [slug] };
+  const groupCounts = new Map<string, number>();
+  for (const i of items) groupCounts.set(i.group, (groupCounts.get(i.group) ?? 0) + 1);
+  const oeCount = items.filter((i) => i.oe).length;
 
   // Only brands that actually sell into this category get a shortcut.
   const brands = BRANDS.filter((b) => items.some((i) => i.brand === b.slug));
@@ -72,6 +77,40 @@ export default async function CategoryPage({
               { label: cat.name },
             ]}
           />
+
+          <div className="mb-6 flex flex-wrap items-center gap-2">
+            <span className="text-[11px] uppercase tracking-[0.14em] text-dim">Shop by group</span>
+            <Link
+              href={`/shop/${cat.slug}`}
+              className={`chip hover:border-accent hover:text-accent ${
+                filters.groups.length === 0 && !filters.oe ? "chip-active" : ""
+              }`}
+            >
+              All
+              <span className="text-dim tnum">{items.length}</span>
+            </Link>
+            {dept.groups
+              .filter((g) => groupCounts.has(g.slug))
+              .map((g) => (
+                <Link
+                  key={g.slug}
+                  href={groupHref(slug, g.slug)}
+                  className={`chip hover:border-accent hover:text-accent ${
+                    filters.groups.includes(g.slug) ? "chip-active" : ""
+                  }`}
+                >
+                  {g.name}
+                  <span className="text-dim tnum">{groupCounts.get(g.slug)}</span>
+                </Link>
+              ))}
+            <Link
+              href={oeHref(slug)}
+              className={`chip hover:border-accent hover:text-accent ${filters.oe ? "chip-active" : ""}`}
+            >
+              OE
+              <span className="text-dim tnum">{oeCount}</span>
+            </Link>
+          </div>
 
           {brands.length > 1 && (
             <div className="mb-6 flex flex-wrap items-center gap-2">

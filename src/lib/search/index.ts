@@ -1,7 +1,8 @@
 import "server-only";
 
 import { CARS } from "@/lib/data/cars";
-import { CATEGORIES, PRODUCTS } from "@/lib/data/products";
+import { PRODUCTS } from "@/lib/data/products";
+import { DEPARTMENTS, departmentHref } from "@/lib/data/taxonomy";
 import { AUDIO_PACKAGES, DETAIL_SERVICES, FACELIFT_CONVERSIONS } from "@/lib/data/services";
 import { BUILDS } from "@/lib/data/community";
 import { LANDING_MODELS, findModelBySlug } from "@/lib/data/vehicles";
@@ -78,13 +79,15 @@ export const SEARCH_INDEX: SearchEntry[] = [
     href: `/autoform/${d.slug}`,
     keywords: norm(`autoform ${d.code} ${d.tagline} ${bandFor(d).series} seat cover seat covers interior`),
   })),
-  ...CATEGORIES.map((c) => ({
-    id: `cat-${c.slug}`,
+  ...DEPARTMENTS.map((d) => ({
+    id: `cat-${d.slug}`,
     kind: "Category" as const,
-    title: `${c.name} accessories`,
-    meta: c.tagline,
-    href: `/shop/${c.slug}`,
-    keywords: norm(`${c.name} ${c.subcategories.join(" ")} accessories shop`),
+    title: d.name,
+    meta: d.tagline,
+    href: departmentHref(d.slug),
+    keywords: norm(
+      `${d.name} ${d.groups.map((g) => `${g.name} ${g.subs.join(" ")}`).join(" ")} accessories shop department oe original equipment`,
+    ),
   })),
   ...LANDING_MODELS.map((m) => ({
     id: `model-${m.brandSlug}-${m.slug}`,

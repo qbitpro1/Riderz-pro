@@ -187,8 +187,8 @@ export function BuildItNext({ listing }: { listing: Listing }) {
     ...(offroad
       ? [
           { label: "Off-road suspension", href: "/off-road" },
-          { label: "All-terrain tyres", href: "/shop/off-road" },
-          { label: "Roof rack", href: "/shop/off-road" },
+          { label: "All-terrain tyres", href: "/shop/off-roading" },
+          { label: "Roof rack", href: "/shop/off-roading" },
           { label: "LED lighting", href: "/shop/lighting" },
         ]
       : [

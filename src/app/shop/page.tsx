@@ -9,11 +9,12 @@ import { CatalogBrowser } from "@/components/catalog/CatalogBrowser";
 import { BrandStrip } from "@/components/catalog/BrandStrip";
 import { FitmentPicker } from "@/components/fitment/FitmentPicker";
 import { CATEGORIES, PRICE_BANDS } from "@/lib/data/products";
+import { DEPARTMENT_BY_SLUG } from "@/lib/data/taxonomy";
 import { CATALOG, CATALOG_TOTALS, filtersFromQuery, type CatalogQuery } from "@/lib/catalog";
 import { LANDING_MODELS } from "@/lib/data/vehicles";
 
 export const metadata: Metadata = {
-  title: "Car Accessories Online — Exterior, Lighting, Interior, Audio, Off-Road",
+  title: "Car Accessories Online — Interior, Exterior, Multimedia, Protection, Lighting, Off-Roading",
   description:
     "Shop car accessories from ₹299 to ₹2,00,000 across every brand we stock. Filter by brand, category, price and fitment, with installation available at Riderzpro garages in Bengaluru, Hyderabad and Pune.",
   alternates: { canonical: "/shop" },
@@ -27,7 +28,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
       <PageHero
         eyebrow="Accessories store"
         title="EVERYTHING THAT BOLTS ON."
-        blurb="Six categories, every brand we stock, every part fitment-checked against your variant. If it shows up for your car, it fits your car — or we collect it and refund in full."
+        blurb="Eight departments, every brand we stock, every part fitment-checked against your variant. If it shows up for your car, it fits your car — or we collect it and refund in full."
         media="tailLightBokeh"
         size="sm"
       />
@@ -56,12 +57,17 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
                     <div className="p-4">
                       <p className="text-xs leading-relaxed text-ash">{c.blurb}</p>
                       <p className="mt-3 flex flex-wrap gap-1.5">
-                        {c.subcategories.slice(0, 4).map((s) => (
-                          <span key={s} className="chip">
-                            {s}
-                          </span>
-                        ))}
-                        <span className="chip">+{c.subcategories.length - 4}</span>
+                        {DEPARTMENT_BY_SLUG[c.slug].groups
+                          .filter((g) => g.slug !== "more")
+                          .slice(0, 4)
+                          .map((g) => (
+                            <span key={g.slug} className="chip">
+                              {g.name}
+                            </span>
+                          ))}
+                        {DEPARTMENT_BY_SLUG[c.slug].groups.length > 4 && (
+                          <span className="chip">+{DEPARTMENT_BY_SLUG[c.slug].groups.length - 4}</span>
+                        )}
                       </p>
                     </div>
                   </Link>

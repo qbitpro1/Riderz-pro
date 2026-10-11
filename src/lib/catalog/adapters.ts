@@ -29,7 +29,13 @@ import {
 import { PRODUCTS as BLAUPUNKT_PRODUCTS, type BlaupunktProduct } from "@/lib/data/blaupunkt";
 import { BRAND_BY_SLUG } from "./brands";
 import { tierFor, type CatalogItem } from "./types";
-import type { CategorySlug } from "@/lib/data/products";
+import { placeSub } from "@/lib/data/taxonomy";
+
+/** Department, group and OE flag for a `sub` — the one place items are shelved. No product data is flagged OE yet. */
+const shelve = (sub: string) => {
+  const { department, group } = placeSub(sub);
+  return { category: department, group, oe: false };
+};
 
 const lower = (...parts: (string | null | undefined)[]) =>
   parts.filter(Boolean).join(" ").toLowerCase().replace(/\s+/g, " ").trim();
@@ -48,7 +54,7 @@ function houseItem(p: Product): CatalogItem {
     href: `/product/${p.slug}`,
     title: p.name,
     code: null,
-    category: p.category,
+    ...shelve(p.sub),
     sub: p.sub,
     price: p.price,
     mrp: p.mrp,
@@ -62,7 +68,7 @@ function houseItem(p: Product): CatalogItem {
     installation: p.installation,
     bestseller: Boolean(p.bestseller),
     badges: p.bestseller ? ["Bestseller"] : [],
-    keywords: lower(p.name, p.sub, p.category, p.maker, p.summary, p.fitment.join(" ")),
+    keywords: lower(p.name, p.sub, placeSub(p.sub).department, p.maker, p.summary, p.fitment.join(" ")),
   };
 }
 
@@ -74,7 +80,7 @@ export function houseItems(): CatalogItem[] {
 
 /**
  * Every RECOIL line — amplifiers through to damping and distribution blocks —
- * sits under the shop's `audio` category; its own subcategory carries the
+ * is shelved by its category through the taxonomy (mostly Multimedia); its own subcategory carries the
  * detail. Vehicle fitment is left empty rather than guessed: the price list
  * marks universal fitment explicitly and says nothing about the rest.
  */
@@ -88,7 +94,9 @@ function recoilItem(p: RecoilProduct): CatalogItem {
     href: `/products/${p.slug}`,
     title: p.priceListName,
     code: p.sku,
-    category: "audio",
+    // RECOIL's own `category` (Amplifiers, Wiring, Marine…) is the label the taxonomy names;
+    // its `subcategory` (Mono, 4-Channel…) is finer detail and stays as `sub`.
+    ...shelve(p.category),
     sub: p.subcategory,
     price: comingSoon ? null : p.sellingPrice,
     mrp: p.mrp,
@@ -129,7 +137,7 @@ function autoformDesignItem(d: AutoformDesign): CatalogItem {
     href: `/autoform/${d.slug}`,
     title: `Autoform ${d.code}`,
     code: d.code,
-    category: "interior",
+    ...shelve("Seat covers"),
     sub: "Seat covers",
     price: price.sellingPrice,
     mrp: price.mrp,
@@ -165,7 +173,7 @@ function autoformMatItem(m: MatProduct): CatalogItem {
     href: "/autoform#mats",
     title: `Autoform ${m.design}`,
     code: null,
-    category: "interior",
+    ...shelve(m.category === "7D Mats" ? "7D mats" : "Foot mats"),
     sub: m.category === "7D Mats" ? "7D mats" : "Foot mats",
     price,
     mrp,
@@ -191,8 +199,6 @@ function autoformMatItem(m: MatProduct): CatalogItem {
 const ACCESSORY_SUBS: Record<string, string> = {
   "Stitch Type Steering Cover": "Steering covers",
   Polyfill: "Neck cushions",
-  "Boot Organiser": "Organizers",
-  "Tissue Box": "Organizers",
 };
 
 function autoformAccessoryItem(a: AccessoryRow): CatalogItem {
@@ -205,7 +211,7 @@ function autoformAccessoryItem(a: AccessoryRow): CatalogItem {
     href: "/autoform#accessories",
     title: `Autoform ${a.productName}`,
     code: null,
-    category: "interior",
+    ...shelve(sub),
     sub,
     price,
     mrp: a.mrp,
@@ -237,7 +243,7 @@ function blaupunktItem(p: BlaupunktProduct): CatalogItem {
     href: `/brands/blaupunkt#${p.slug}`,
     title: `Blaupunkt ${p.name}`,
     code: p.model,
-    category: p.category as CategorySlug,
+    ...shelve(p.subcategory),
     sub: p.subcategory,
     price: p.sellingPrice,
     mrp: p.mrp,

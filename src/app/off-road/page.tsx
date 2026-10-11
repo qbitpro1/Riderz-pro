@@ -53,7 +53,7 @@ const FAQ = [
 ];
 
 export default function OffRoadPage() {
-  const offroadProducts = productsIn("off-road");
+  const offroadProducts = productsIn("off-roading");
   const offroadBuilds = BUILDS.filter((b) => b.tag === "Off-Road");
 
   return (
@@ -66,7 +66,7 @@ export default function OffRoadPage() {
         size="lg"
         actions={[
           { href: "#gear", label: "Build my off-road SUV", variant: "primary" },
-          { href: "/shop/off-road", label: "Shop off-road", variant: "outline" },
+          { href: "/shop/off-roading", label: "Shop off-road", variant: "outline" },
         ]}
       >
         <ul className="mt-8 flex flex-wrap gap-2">
@@ -118,7 +118,7 @@ export default function OffRoadPage() {
           <SectionHead
             eyebrow="Off-road store"
             title="RATED GEAR ONLY."
-            href="/shop/off-road"
+            href="/shop/off-roading"
             hrefLabel="All off-road"
             blurb="Everything here carries a working load rating and a warranty. Nothing decorative, nothing untested."
           />

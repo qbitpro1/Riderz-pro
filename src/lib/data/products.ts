@@ -1,12 +1,12 @@
 import type { MediaKey } from "@/lib/media";
+import { DEPARTMENTS, placeSub, type DepartmentSlug } from "@/lib/data/taxonomy";
 
-export type CategorySlug =
-  | "exterior"
-  | "lighting"
-  | "interior"
-  | "audio"
-  | "off-road"
-  | "performance";
+/**
+ * The shop's categories ARE the eight departments in `taxonomy.ts`. These
+ * names are kept so existing callers keep working; nothing here decides what a
+ * department is — the taxonomy does.
+ */
+export type CategorySlug = DepartmentSlug;
 
 export type PriceTier = "value" | "mid" | "premium";
 
@@ -16,147 +16,18 @@ export type Category = {
   tagline: string;
   blurb: string;
   image: MediaKey;
+  /** Every catalogue `sub` label the department shelves, across its groups. */
   subcategories: string[];
 };
 
-export const CATEGORIES: Category[] = [
-  {
-    slug: "exterior",
-    name: "Exterior",
-    tagline: "Protect it. Sharpen it.",
-    blurb:
-      "Body covers, guards, garnishes, side steps and roof carriers — everything that changes how your car meets the world.",
-    image: "chromeGrille",
-    subcategories: [
-      "Car covers",
-      "Body covers",
-      "Mud flaps",
-      "Door guards",
-      "Door visors",
-      "Chrome accessories",
-      "Grilles",
-      "Spoilers",
-      "Side steps",
-      "Roof rails",
-      "Roof racks",
-      "Number plate frames",
-    ],
-  },
-  {
-    slug: "lighting",
-    name: "Lighting",
-    tagline: "Be seen. See everything.",
-    blurb:
-      "Projector conversions, DRLs, sequential indicators, ambient kits and auxiliary bars — wired with relays, fused properly, warranted.",
-    image: "tailLightBokeh",
-    subcategories: [
-      "LED bulbs",
-      "LED bars",
-      "DRLs",
-      "Projector lamps",
-      "Projector headlamps",
-      "Fog lamps",
-      "Sequential indicators",
-      "Ambient lighting",
-      "Off-road lights",
-      "Auxiliary lights",
-    ],
-  },
-  {
-    slug: "interior",
-    name: "Interior",
-    tagline: "Where you actually sit.",
-    blurb:
-      "Mats, covers, trim, organisers and comfort upgrades cut to your exact model — no universal fudging.",
-    image: "cockpitScreen",
-    subcategories: [
-      "Foot mats",
-      "7D mats",
-      "9D mats",
-      "Steering covers",
-      "Seat covers",
-      "Sunshades",
-      "Car curtains",
-      "Dashboard accessories",
-      "Neck cushions",
-      "Armrests",
-      "Organizers",
-      "Phone holders",
-      "Charging accessories",
-    ],
-  },
-  {
-    slug: "audio",
-    name: "Audio",
-    tagline: "Sound. Power. Control.",
-    blurb:
-      "Component sets, tweeters, subwoofers, amplifiers, DSP and deadening — sold as parts or as a fully tuned Riderzpro build.",
-    image: "studioMonitors",
-    subcategories: [
-      "Speakers",
-      "Midrange",
-      "Tweeters",
-      "Component speakers",
-      "Subwoofers",
-      "Amplifiers",
-      "DSP",
-      "Wiring",
-      "Sound deadening",
-      "Android head units",
-      "Digital screens",
-      "Rear entertainment systems",
-    ],
-  },
-  {
-    slug: "off-road",
-    name: "Off-Road",
-    tagline: "Built for the unpaved.",
-    blurb:
-      "Recovery, protection, suspension and expedition hardware, rated and load-tested. The gear that gets you home.",
-    image: "defenderSaltFlat",
-    subcategories: [
-      "Recovery boards",
-      "Tow straps",
-      "Shackles",
-      "Winches",
-      "Roof tents",
-      "Roof racks",
-      "Auxiliary lights",
-      "Snorkels",
-      "Skid plates",
-      "Rock sliders",
-      "Bull bars",
-      "Lift kits",
-      "Off-road suspension",
-      "All-terrain tyres",
-      "Mud-terrain tyres",
-      "Air compressors",
-      "Portable recovery equipment",
-      "Camping equipment",
-      "Storage systems",
-    ],
-  },
-  {
-    slug: "performance",
-    name: "Performance",
-    tagline: "More power. More control.",
-    blurb:
-      "Intake, exhaust, cooling, braking and suspension hardware. Fitted, mapped and road-tested at the Riderzpro garage.",
-    image: "engineBay",
-    subcategories: [
-      "Air filters",
-      "Intake systems",
-      "Exhaust",
-      "ECU tuning",
-      "Intercoolers",
-      "Performance plugs",
-      "Cooling systems",
-      "Brakes",
-      "Suspension",
-      "Performance tyres",
-    ],
-  },
-];
+export const CATEGORIES: Category[] = DEPARTMENTS.map((d) => ({
+  slug: d.slug,
+  name: d.name,
+  tagline: d.tagline,
+  blurb: d.blurb,
+  image: d.image,
+  subcategories: d.groups.flatMap((g) => g.subs),
+}));
 
 export type Product = {
   slug: string;
@@ -186,7 +57,7 @@ export type Product = {
   bestseller?: boolean;
 };
 
-export const PRODUCTS: Product[] = [
+const HOUSE_PRODUCTS: (Omit<Product, "category"> & { category: string })[] = [
   // ---------------------------------------------------------------- interior
   {
     slug: "riderzpro-9d-floor-mats",
@@ -1408,6 +1279,9 @@ export const PRODUCTS: Product[] = [
     bestseller: true,
   },
 ];
+
+/** The department is always derived from `sub`, never from the hand-written `category` above. */
+export const PRODUCTS: Product[] = HOUSE_PRODUCTS.map((p) => ({ ...p, category: placeSub(p.sub).department }));
 
 export function getProduct(slug: string): Product | undefined {
   return PRODUCTS.find((p) => p.slug === slug);

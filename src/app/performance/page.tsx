@@ -7,7 +7,8 @@ import { Reveal } from "@/components/ui/Reveal";
 import { Accordion } from "@/components/ui/Accordion";
 import { ProductCard } from "@/components/shop/ProductCard";
 import { PERFORMANCE_DISCLAIMER, PERFORMANCE_SERVICES } from "@/lib/data/services";
-import { productsIn } from "@/lib/data/products";
+import { PRODUCTS } from "@/lib/data/products";
+import { groupHref, placeSub } from "@/lib/data/taxonomy";
 import { rupees } from "@/lib/format";
 import { whatsapp } from "@/lib/data/site";
 
@@ -38,7 +39,7 @@ const FAQ = [
 ];
 
 export default function PerformancePage() {
-  const perfProducts = productsIn("performance");
+  const perfProducts = PRODUCTS.filter((p) => placeSub(p.sub).group === "performance");
 
   return (
     <>
@@ -116,7 +117,7 @@ export default function PerformancePage() {
 
       <section className="section">
         <div className="shell">
-          <SectionHead eyebrow="Performance store" title="PARTS WE FIT." href="/shop/performance" hrefLabel="All performance" />
+          <SectionHead eyebrow="Performance store" title="PARTS WE FIT." href={groupHref("accessories", "performance")} hrefLabel="All performance" />
           <ul className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-6">
             {perfProducts.map((p) => (
               <li key={p.slug}>

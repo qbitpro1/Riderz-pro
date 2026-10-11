@@ -41,7 +41,7 @@ const FAQ = [
 ];
 
 export default function AudioPage() {
-  const audioProducts = productsIn("audio");
+  const audioProducts = productsIn("multimedia");
   const audioReviews = REVIEWS.filter((r) => r.service.toLowerCase().includes("audio"));
 
   return (
@@ -167,7 +167,7 @@ export default function AudioPage() {
           <SectionHead
             eyebrow="Audio store"
             title="BUY THE PARTS."
-            href="/shop/audio"
+            href="/shop/multimedia"
             hrefLabel="All audio"
             blurb="Prefer to fit it yourself, or upgrade one piece at a time? Everything we install is on the shelf."
           />

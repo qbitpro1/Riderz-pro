@@ -36,8 +36,12 @@ export type CatalogItem = {
   title: string;
   /** SKU, design code or series — whatever the source uses to identify the item. */
   code: string | null;
-  /** One of the six shop categories. */
+  /** The department this item is shelved under, derived from `sub` via the taxonomy. */
   category: CategorySlug;
+  /** Group slug within the department. */
+  group: string;
+  /** Original Equipment part. Nothing is flagged OE yet. */
+  oe: boolean;
   /** Subcategory label, as the source names it. */
   sub: string;
   /** Selling price in rupees, or null when the source carries no price. */

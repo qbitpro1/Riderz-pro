@@ -58,7 +58,7 @@ export const BRANDS: Brand[] = [
     storeHref: null,
     storeLabel: null,
     image: "heroWorkshopNight",
-    categories: ["interior", "exterior", "lighting", "audio", "off-road", "performance"],
+    categories: ["interior", "exterior", "multimedia", "protection", "utilities", "off-roading", "lighting", "accessories"],
     state: "live",
     provenance: "Specified, stocked and warranted by Riderzpro. Fitted at our own workshops.",
   },
@@ -72,7 +72,7 @@ export const BRANDS: Brand[] = [
     storeHref: "/recoil",
     storeLabel: "RECOIL catalogue",
     image: "studioMonitors",
-    categories: ["audio"],
+    categories: ["multimedia"],
     state: "live",
     provenance:
       "Imported from the official RECOIL price list and matched model number by model number to the manufacturer's own catalogue.",
@@ -105,7 +105,7 @@ export const BRANDS: Brand[] = [
     storeHref: null,
     storeLabel: null,
     image: "speakerCone",
-    categories: ["audio"],
+    categories: ["multimedia"],
     state: "live",
     provenance:
       "Imported from the Blaupunkt Brochure 2026 supplied by the distributor. MRP and specifications are reproduced as printed; a model is only listed where the catalogue gives it a photograph of its own.",

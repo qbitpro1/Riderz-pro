@@ -4,6 +4,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { CatalogCard } from "./CatalogCard";
 import { Icon } from "@/components/ui/Icon";
+import { whatsapp } from "@/lib/data/site";
+import { DEPARTMENT_BY_SLUG } from "@/lib/data/taxonomy";
 import { readGarage } from "@/components/fitment/FitmentPicker";
 import {
   activeFilterCount,
@@ -76,7 +78,7 @@ export function CatalogBrowser({
   const patch = useCallback((next: Partial<CatalogFilters>) => setFilters((f) => ({ ...f, ...next })), []);
 
   const toggle = useCallback(
-    <K extends "brands" | "categories" | "subs" | "tiers" | "availability">(key: K, value: CatalogFilters[K][number]) =>
+    <K extends "brands" | "categories" | "groups" | "subs" | "tiers" | "availability">(key: K, value: CatalogFilters[K][number]) =>
       setFilters((f) => {
         const current = f[key] as CatalogFilters[K][number][];
         const has = current.includes(value);
@@ -92,6 +94,8 @@ export function CatalogBrowser({
         // Locked dimensions belong to the page, not the user's filter set.
         brands: locked.includes("brands") ? f.brands : [],
         categories: locked.includes("categories") ? f.categories : [],
+        groups: [],
+        oe: false,
         subs: [],
         tiers: [],
         availability: [],
@@ -105,6 +109,8 @@ export function CatalogBrowser({
   const lockedCount =
     (locked.includes("brands") ? filters.brands.length : 0) +
     (locked.includes("categories") ? filters.categories.length : 0);
+  const oeDepartment =
+    filters.categories.length === 1 ? categoryName(filters.categories[0]) : "these departments";
   const active = activeFilterCount(filters) - lockedCount;
 
   const panel = (
@@ -180,7 +186,22 @@ export function CatalogBrowser({
           {results.length !== items.length && <span className="text-dim"> of {items.length}</span>}
         </p>
 
-        {results.length === 0 ? (
+        {results.length === 0 && filters.oe && items.every((i) => !i.oe) ? (
+          <div className="card p-10 text-center">
+            <p className="font-display text-xl uppercase">Original Equipment</p>
+            <p className="mt-2 text-sm text-ash">
+              Original Equipment parts for {oeDepartment} are being added. Ask us on WhatsApp for OE availability.
+            </p>
+            <a
+              href={whatsapp(`Hi Riderzpro, do you have Original Equipment (OE) parts for ${oeDepartment}?`)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-primary btn-sm mt-5"
+            >
+              Ask on WhatsApp
+            </a>
+          </div>
+        ) : results.length === 0 ? (
           <div className="card p-10 text-center">
             <p className="font-display text-xl uppercase">Nothing matches those filters</p>
             <p className="mt-2 text-sm text-ash">
@@ -244,7 +265,7 @@ export function CatalogBrowser({
 
 /* ------------------------------------------------------------------ panel */
 
-type ToggleFn = <K extends "brands" | "categories" | "subs" | "tiers" | "availability">(
+type ToggleFn = <K extends "brands" | "categories" | "groups" | "subs" | "tiers" | "availability">(
   key: K,
   value: CatalogFilters[K][number],
 ) => void;
@@ -312,6 +333,20 @@ function FilterPanel({
         </Group>
       )}
 
+      {facets.groups.length > 1 && (
+        <Group title="Group">
+          {facets.groups.map((f) => (
+            <Check
+              key={f.value}
+              label={f.label}
+              count={f.count}
+              checked={filters.groups.includes(f.value)}
+              onChange={() => onToggle("groups", f.value)}
+            />
+          ))}
+        </Group>
+      )}
+
       {facets.subs.length > 1 && (
         <Group title="Type" scroll>
           {facets.subs.map((f) => (
@@ -353,6 +388,15 @@ function FilterPanel({
           ))}
         </Group>
       )}
+
+      <Group title="Original Equipment">
+        <Check
+          label="OE (Original Equipment) only"
+          count={facets.oe}
+          checked={filters.oe}
+          onChange={(on) => onPatch({ oe: on })}
+        />
+      </Group>
 
       <Group title="Service">
         <Check
@@ -428,6 +472,12 @@ function ActiveChips({
   if (!locked.includes("categories"))
     for (const c of filters.categories)
       chips.push({ key: `c-${c}`, label: categoryName(c), remove: () => onToggle("categories", c) });
+  const groupNames = new Map(
+    (filters.categories.length === 1 ? (DEPARTMENT_BY_SLUG[filters.categories[0]]?.groups ?? []) : []).map((g) => [g.slug, g.name]),
+  );
+  for (const g of filters.groups)
+    chips.push({ key: `g-${g}`, label: groupNames.get(g) ?? g, remove: () => onToggle("groups", g) });
+  if (filters.oe) chips.push({ key: "oe", label: "Original Equipment", remove: () => onPatch({ oe: false }) });
   for (const s of filters.subs) chips.push({ key: `s-${s}`, label: s, remove: () => onToggle("subs", s) });
   for (const t of filters.tiers)
     chips.push({ key: `t-${t}`, label: TIER_LABELS[t], remove: () => onToggle("tiers", t) });

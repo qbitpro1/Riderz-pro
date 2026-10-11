@@ -33,6 +33,10 @@ const nextConfig: NextConfig = {
         destination: "/product/riderzpro-signature-component-set",
         permanent: true,
       },
+      // Pre-taxonomy shop categories, folded into the eight departments.
+      { source: "/shop/audio", destination: "/shop/multimedia", permanent: true },
+      { source: "/shop/off-road", destination: "/shop/off-roading", permanent: true },
+      { source: "/shop/performance", destination: "/shop/accessories?group=performance", permanent: true },
     ];
   },
 };
