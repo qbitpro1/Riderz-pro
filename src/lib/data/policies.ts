@@ -244,7 +244,7 @@ export const LEGAL_POLICIES: Policy[] = [
         id: "on-this-site",
         heading: "What this website stores",
         body: [
-          "There are no customer accounts yet. Your cart, your saved car, your theme choice, your recently viewed products and any saved or compared items are kept in your browser's local storage, on your own device. We do not receive them unless you send them to us.",
+          "There are no customer accounts yet. Your cart, your saved car, your theme choice, your recently viewed products and your wishlist are kept in your browser's local storage, on your own device. We do not receive them unless you send them to us.",
           "You can clear this at any time from your browser settings. Doing so empties your cart and forgets your saved car.",
         ],
       },

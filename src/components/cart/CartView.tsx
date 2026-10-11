@@ -116,8 +116,11 @@ export function CartView() {
 
         <CheckoutButton lines={lines} whatsappHref={whatsapp(message)} className="mt-5" />
         <p className="mt-3 text-[11px] leading-relaxed text-dim">
-          We confirm fitment against your variant, then send a payment link. Card, UPI, net banking
-          and no-cost EMI on orders above ₹10,000.
+          We confirm fitment against your variant on WhatsApp before you pay. See the{" "}
+          <Link href="/support/payments" className="underline hover:text-accent">
+            payments page
+          </Link>{" "}
+          for how payment works today.
         </p>
 
         <div className="mt-5 flex justify-between border-t border-tint/8 pt-4">
