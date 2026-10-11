@@ -1,35 +1,37 @@
-import Image from "next/image";
+import { LOGO_INK, LOGO_RED, LOGO_VIEWBOX } from "./logo-paths";
+
+/** The red of the registered logo. Fixed: the mark keeps its own colour in both themes. */
+const LOGO_RED_COLOUR = "#f03030";
 
 /**
- * The registered Riderzpro logo. Two renderings of the supplied artwork with
- * the white ground removed: dark ink for the light theme, light ink for the
- * dark theme (the red is the same in both). CSS shows the one that matches the
- * page theme, so it is right before hydration.
+ * The registered Riderzpro logo as a vector: the car emblem and wordmark,
+ * traced from the supplied artwork. The ink follows the text colour, so it is
+ * dark on light surfaces and light on dark ones (including dark photo bands);
+ * the red never changes.
  *
- * The source artwork is small (184px); replace the two files in public/brand
- * with exports from the vector logo when it is available.
- *
- * Size it through `className` (a height); the default is the header's.
+ * `tagline` adds the "Car & Bike Accessories" line, set in type — at the
+ * artwork's size that line is too small to trace, and too small to read in a
+ * header. Size the logo through `className` (a height); the default is the header's.
  */
-export function Logo({ className = "h-12 md:h-14" }: { className?: string }) {
+export function Logo({ className = "h-10 md:h-12", tagline = false }: { className?: string; tagline?: boolean }) {
+  const mark = (
+    <svg
+      viewBox={LOGO_VIEWBOX}
+      role="img"
+      aria-label="Riderzpro"
+      className={`w-auto text-chalk ${tagline ? "h-full" : className}`}
+    >
+      <path fill="currentColor" fillRule="evenodd" d={LOGO_INK} />
+      <path fill={LOGO_RED_COLOUR} fillRule="evenodd" d={LOGO_RED} />
+    </svg>
+  );
+  if (!tagline) return mark;
   return (
-    <>
-      <Image
-        src="/brand/logo-light.png"
-        alt="Riderzpro — Car & Bike Accessories"
-        width={660}
-        height={288}
-        priority
-        className={`when-light w-auto ${className}`}
-      />
-      <Image
-        src="/brand/logo-dark.png"
-        alt="Riderzpro — Car & Bike Accessories"
-        width={660}
-        height={288}
-        priority
-        className={`when-dark w-auto ${className}`}
-      />
-    </>
+    <span className="inline-flex flex-col items-center">
+      <span className={`block ${className}`}>{mark}</span>
+      <span className="mt-1.5 font-display text-[10px] font-semibold uppercase tracking-[0.28em] text-ash">
+        Car &amp; Bike Accessories
+      </span>
+    </span>
   );
 }

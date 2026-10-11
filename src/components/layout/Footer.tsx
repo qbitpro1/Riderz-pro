@@ -36,7 +36,7 @@ export function Footer() {
       <div className="shell py-12 md:py-16">
         <div className="grid gap-10 lg:grid-cols-[1fr_2.6fr]">
           <div>
-            <Logo className="h-20" />
+            <Logo className="h-20" tagline />
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-ash">
               Accessories we make, source and fit ourselves — checked against your car before they
               ship.
