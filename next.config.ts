@@ -27,12 +27,16 @@ const nextConfig: NextConfig = {
     return [
       { source: "/why-motorbotz", destination: "/why-riderzpro", permanent: true },
       { source: "/brands/motorbotz", destination: "/brands/riderzpro", permanent: true },
-      { source: "/product/motorbotz-9d-floor-mats", destination: "/product/riderzpro-9d-floor-mats", permanent: true },
+      { source: "/product/motorbotz-9d-floor-mats", destination: "/products/riderzpro-9d-floor-mats", permanent: true },
       {
         source: "/product/motorbotz-signature-component-set",
-        destination: "/product/riderzpro-signature-component-set",
+        destination: "/products/riderzpro-signature-component-set",
         permanent: true,
       },
+      // One product page for every brand, at /products/{slug}. The explicit
+      // rules above come first so the Motorbotz URLs resolve in a single hop.
+      { source: "/product/:slug", destination: "/products/:slug", permanent: true },
+      { source: "/autoform/:design", destination: "/products/autoform-:design", permanent: true },
       // Pre-taxonomy shop categories, folded into the eight departments.
       { source: "/shop/audio", destination: "/shop/multimedia", permanent: true },
       { source: "/shop/off-road", destination: "/shop/off-roading", permanent: true },

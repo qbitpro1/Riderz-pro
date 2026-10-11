@@ -1,16 +1,17 @@
 import type { MetadataRoute } from "next";
 import { SITE } from "@/lib/data/site";
 import { CARS } from "@/lib/data/cars";
-import { CATEGORIES, PRODUCTS } from "@/lib/data/products";
+import { CATEGORIES } from "@/lib/data/products";
 import { BUILDS } from "@/lib/data/community";
 import { LANDING_MODELS } from "@/lib/data/vehicles";
 import { SEO_LANDINGS } from "@/lib/data/seo";
 import { LEGAL_POLICIES, SUPPORT_POLICIES } from "@/lib/data/policies";
-import { DESIGNS as AUTOFORM_DESIGNS } from "@/lib/autoform/catalog";
+import { PRODUCT_DETAILS } from "@/lib/store/products";
+import { productHref } from "@/lib/store/types";
 import { PPF_LANDINGS } from "@/lib/ppf/landings";
 import { PPF_FILMS } from "@/lib/ppf/films";
 import { GUIDE as PPF_GUIDE } from "@/lib/ppf/guide";
-import { CATEGORIES as RECOIL_CATEGORIES, COMING_SOON as RECOIL_COMING_SOON, PRODUCTS as RECOIL_PRODUCTS } from "@/lib/data/recoil";
+import { CATEGORIES as RECOIL_CATEGORIES } from "@/lib/data/recoil";
 import { BRANDS } from "@/lib/catalog/brands";
 import { CATALOG } from "@/lib/catalog";
 import { COLLECTIONS } from "@/lib/data/collections";
@@ -62,18 +63,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...COLLECTIONS.filter((c) => CATALOG.some(c.match)).map((c) => entry(`/collections/${c.slug}`, 0.75)),
 
     ...SEO_LANDINGS.map((l) => entry(`/${l.slug}`, 0.75)),
-    ...AUTOFORM_DESIGNS.map((d) => entry(`/autoform/${d.slug}`, 0.7)),
     ...PPF_LANDINGS.map((l) => entry(`/ppf/${l.slug}`, 0.75)),
     ...PPF_FILMS.map((f) => entry(`/ppf/films/${f.slug}`, 0.6)),
     ...PPF_GUIDE.map((a) => entry(`/ppf/guide/${a.slug}`, 0.6)),
     ...RECOIL_CATEGORIES.map((c) => entry(`/recoil/${c.slug}`, 0.7)),
-    // Coming-soon SKUs stay in the sitemap but their pages are noindex.
-    ...RECOIL_PRODUCTS.map((p) => entry(`/products/${p.slug}`, 0.6)),
-    ...RECOIL_COMING_SOON.map((p) => entry(`/products/${p.slug}`, 0.3, "monthly")),
+    // Every indexable product once, at its unified URL. Held-back products
+    // (coming-soon, unpriced) are not indexable and stay out.
+    ...PRODUCT_DETAILS.filter((d) => d.indexable).map((d) => entry(productHref(d.slug), 0.65)),
     ...CATEGORIES.map((c) => entry(`/shop/${c.slug}`, 0.8)),
     ...LANDING_MODELS.map((m) => entry(`/accessories/${m.slug}`, 0.8)),
     ...CARS.map((c) => entry(`/cars/${c.slug}`, 0.7, "daily")),
-    ...PRODUCTS.map((p) => entry(`/product/${p.slug}`, 0.65)),
     ...BUILDS.map((b) => entry(`/builds/${b.slug}`, 0.6)),
     ...SUPPORT_POLICIES.map((p) => entry(`/support/${p.slug}`, 0.4, "monthly")),
     ...LEGAL_POLICIES.map((p) => entry(`/legal/${p.slug}`, 0.3, "yearly")),

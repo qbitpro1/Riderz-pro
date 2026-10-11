@@ -35,19 +35,11 @@ import {
 } from "@/lib/autoform/catalog";
 import { PRODUCTS as BLAUPUNKT_PRODUCTS, type BlaupunktProduct } from "@/lib/data/blaupunkt";
 import type { ProductDetail, ProductImage, ProductOption } from "./types";
+import { storeSlug } from "./slugs";
 
 /* ------------------------------------------------------------------ slugs */
 
-export const storeSlug = {
-  house: (p: { slug: string }) => p.slug,
-  recoil: (p: { slug: string }) => p.slug,
-  autoformDesign: (d: { slug: string }) => `autoform-${d.slug}`,
-  autoformMat: (m: { sno: number }) => `autoform-mat-${m.sno}`,
-  autoformAccessory: (a: { sno: number }) => `autoform-accessory-${a.sno}`,
-  // Blaupunkt's own slugs already begin "blaupunkt-"; prefixing again would give
-  // "blaupunkt-blaupunkt-…", so the prefix is added only where it is missing.
-  blaupunkt: (p: { slug: string }) => (p.slug.startsWith("blaupunkt-") ? p.slug : `blaupunkt-${p.slug}`),
-};
+export { storeSlug };
 
 /* ---------------------------------------------------------------- helpers */
 
