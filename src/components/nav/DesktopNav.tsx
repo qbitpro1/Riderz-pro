@@ -10,7 +10,7 @@ const OPEN_DELAY = 80;
 const CLOSE_DELAY = 160;
 
 const triggerCls =
-  "relative inline-flex h-full items-center gap-1 whitespace-nowrap px-2.5 font-display text-[11px] font-bold uppercase tracking-[0.12em] transition-colors 2xl:px-3";
+  "relative inline-flex h-full items-center gap-1 whitespace-nowrap px-1.5 font-display text-[11px] font-bold uppercase tracking-[0.1em] transition-colors 2xl:px-3";
 
 const itemCls =
   "block px-3 py-2 text-[13px] text-ash transition-colors hover:bg-tint/5 hover:text-chalk focus-visible:bg-tint/5 focus-visible:text-chalk";

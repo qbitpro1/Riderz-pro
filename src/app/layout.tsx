@@ -26,7 +26,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: {
-    default: "Riderzpro — Buy. Build. Drive. | Cars, Accessories & Modification in India",
+    default: "Riderzpro — Car Accessories, Fitted Right",
     template: "%s | Riderzpro",
   },
   description: SITE.description,
@@ -50,11 +50,11 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_IN",
     siteName: SITE.name,
-    title: "Riderzpro — Buy. Build. Drive.",
+    title: "Riderzpro — Car Accessories, Fitted Right",
     description: SITE.description,
     url: SITE.url,
   },
-  twitter: { card: "summary_large_image", title: "Riderzpro — Buy. Build. Drive.", description: SITE.description },
+  twitter: { card: "summary_large_image", title: "Riderzpro — Car Accessories, Fitted Right", description: SITE.description },
   robots: { index: true, follow: true },
   alternates: { canonical: "/" },
 };

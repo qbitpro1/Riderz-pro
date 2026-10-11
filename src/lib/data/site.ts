@@ -3,7 +3,7 @@ export const SITE = {
   tagline: "BUY. BUILD. DRIVE.",
   support: "Your Car. Your Build. Your Ride.",
   description:
-    "Riderzpro is India's automotive ecosystem — buy and sell verified cars, build them at our workshop, and shop accessories, audio, PPF, off-road and performance upgrades.",
+    "Riderzpro makes and sells car accessories in India — interior, exterior, multimedia, protection, lighting and off-roading parts, fitment-checked for your car and fitted at our garages.",
   url: "https://riderzpro.com",
   phone: "+91 98860 44488",
   phoneHref: "tel:+919886044488",
