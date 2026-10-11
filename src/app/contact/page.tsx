@@ -40,6 +40,13 @@ const CHANNELS = [
   },
 ];
 
+const ORDER_SUPPORT = [
+  { label: "Frequently asked questions", href: "/faq" },
+  { label: "Track your order", href: "/track-order" },
+  { label: "Shipping & delivery", href: "/support/shipping" },
+  { label: "Returns & refunds", href: "/support/returns" },
+];
+
 const QUICK_LINKS = [
   { label: "Shipping", href: "/support/shipping" },
   { label: "Returns", href: "/support/returns" },
@@ -58,6 +65,21 @@ export default function ContactPage() {
         media="mechanicEngine"
         size="sm"
       />
+
+      <section className="section pb-0">
+        <div className="shell">
+          <p className="label">Order support</p>
+          <ul className="mt-2 flex flex-wrap gap-2">
+            {ORDER_SUPPORT.map((l) => (
+              <li key={l.href}>
+                <Link href={l.href} className="chip hover:border-accent hover:text-accent">
+                  {l.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
 
       <section className="section">
         <div className="shell">
