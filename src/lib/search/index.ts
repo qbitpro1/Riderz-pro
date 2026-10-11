@@ -82,6 +82,21 @@ export const SEARCH_INDEX: SearchEntry[] = [
     href: productHref(storeSlug.autoformDesign(d)),
     keywords: norm(`autoform ${d.code} ${d.tagline} ${bandFor(d).series} seat cover seat covers interior`),
   })),
+  // Help pages people look for by name.
+  ...[
+    { id: "faq", title: "FAQ — ordering, fitment, delivery, returns", href: "/faq", k: "faq help questions ordering fitment delivery returns payment" },
+    { id: "track", title: "Track your order", href: "/track-order", k: "track order tracking where is my order delivery status" },
+    { id: "shipping", title: "Shipping & delivery", href: "/support/shipping", k: "shipping delivery charges free shipping dispatch" },
+    { id: "returns", title: "Returns & refunds", href: "/support/returns", k: "returns refund exchange cancel cancellation fitment guarantee" },
+    { id: "wishlist", title: "Your wishlist", href: "/wishlist", k: "wishlist saved items favourites" },
+  ].map((h) => ({
+    id: `help-${h.id}`,
+    kind: "Service" as const,
+    title: h.title,
+    meta: "Help",
+    href: h.href,
+    keywords: norm(h.k),
+  })),
   ...DEPARTMENTS.map((d) => ({
     id: `cat-${d.slug}`,
     kind: "Category" as const,

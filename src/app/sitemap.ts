@@ -72,6 +72,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...LANDING_MODELS.map((m) => entry(`/accessories/${m.slug}`, 0.8)),
     ...CARS.map((c) => entry(`/cars/${c.slug}`, 0.7, "daily")),
     ...BUILDS.map((b) => entry(`/builds/${b.slug}`, 0.6)),
+    entry("/faq", 0.5, "monthly"),
+    entry("/track-order", 0.3, "yearly"),
     ...SUPPORT_POLICIES.map((p) => entry(`/support/${p.slug}`, 0.4, "monthly")),
     ...LEGAL_POLICIES.map((p) => entry(`/legal/${p.slug}`, 0.3, "yearly")),
   ];
