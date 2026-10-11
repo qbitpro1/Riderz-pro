@@ -20,8 +20,8 @@ type CartState = {
   count: number;
   subtotal: number;
   installTotal: number;
-  /** Adds `qty` of a line (merging with the same `id`) and opens the cart drawer. */
-  add: (line: Omit<CartLine, "qty">, qty?: number) => void;
+  /** Adds `qty` of a line (merging with the same `id`) and opens the cart drawer unless `opts.open` is false. */
+  add: (line: Omit<CartLine, "qty">, qty?: number, opts?: { open?: boolean }) => void;
   setQty: (id: string, qty: number) => void;
   remove: (id: string) => void;
   clear: () => void;
@@ -36,15 +36,13 @@ const CartCtx = createContext<CartState | null>(null);
 
 /**
  * Repairs lines saved by older versions: they have no `id` (the slug was the
- * key, so `id = slug`) and early ones have no `href`, all of which linked to
- * `/product/…`, which only the house range lives under. RECOIL lines are
- * recognisable by their name.
+ * key, so `id = slug`) and early ones have no `href`; every product now
+ * lives at `/products/{slug}`.
  */
 function repair(line: CartLine): CartLine {
   const id = line.id || line.slug;
   if (line.href) return line.id ? line : { ...line, id };
-  const base = line.name.startsWith("RECOIL ") ? "/products" : "/product";
-  return { ...line, id, href: `${base}/${line.slug}` };
+  return { ...line, id, href: `/products/${line.slug}` };
 }
 
 export function CartProvider({ children }: { children: ReactNode }) {
@@ -77,7 +75,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const openCart = useCallback(() => setDrawerOpen(true), []);
   const closeCart = useCallback(() => setDrawerOpen(false), []);
 
-  const add = useCallback((line: Omit<CartLine, "qty">, qty = 1) => {
+  const add = useCallback((line: Omit<CartLine, "qty">, qty = 1, opts?: { open?: boolean }) => {
     setLines((prev) => {
       const found = prev.find((l) => l.id === line.id);
       if (found) {
@@ -85,7 +83,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       }
       return [...prev, { ...line, qty }];
     });
-    setDrawerOpen(true);
+    if (opts?.open !== false) setDrawerOpen(true);
   }, []);
 
   const setQty = useCallback((id: string, qty: number) => {
