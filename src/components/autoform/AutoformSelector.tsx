@@ -7,6 +7,8 @@ import { Icon } from "@/components/ui/Icon";
 import { rupees } from "@/lib/format";
 import { whatsapp } from "@/lib/data/site";
 import { BRANDS } from "@/lib/data/vehicles";
+import { storeSlug } from "@/lib/store/slugs";
+import { productHref } from "@/lib/store/types";
 
 export type DesignCard = {
   code: string;
@@ -188,13 +190,13 @@ export function AutoformSelector({ designs }: { designs: DesignCard[] }) {
           return (
             <li key={d.slug}>
               <article className="card card-hover flex h-full flex-col">
-                <Link href={`/autoform/${d.slug}`} className="relative block aspect-[4/3] overflow-hidden bg-[#f3f4f5]">
+                <Link href={productHref(storeSlug.autoformDesign(d))} className="relative block aspect-[4/3] overflow-hidden bg-[#f3f4f5]">
                   <Image src={d.image} alt={`Autoform ${d.code} seat cover design`} fill sizes="(min-width:1024px) 25vw, 46vw" className="object-cover" />
                 </Link>
                 <div className="flex flex-1 flex-col p-3.5">
                   <p className="font-display text-[10px] font-bold uppercase tracking-[0.16em] text-accent">{d.series}</p>
                   <h3 className="mt-1 font-display text-base font-extrabold uppercase tracking-[-0.01em]">
-                    <Link href={`/autoform/${d.slug}`} className="transition-colors hover:text-accent">
+                    <Link href={productHref(storeSlug.autoformDesign(d))} className="transition-colors hover:text-accent">
                       {d.code}
                     </Link>
                   </h3>

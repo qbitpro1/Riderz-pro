@@ -11,6 +11,8 @@ import { DESIGNS as AUTOFORM_DESIGNS, bandFor, priceFor } from "@/lib/autoform/c
 import { BRANDS, CATALOG, CATALOG_BY_BRAND } from "@/lib/catalog";
 import { COLLECTIONS } from "@/lib/data/collections";
 import { lakh, rupees } from "@/lib/format";
+import { storeSlug } from "@/lib/store/slugs";
+import { productHref } from "@/lib/store/types";
 import { norm, type SearchBrand, type SearchEntry, type SearchIndex } from "./match";
 
 export * from "./match";
@@ -54,7 +56,7 @@ export const SEARCH_INDEX: SearchEntry[] = [
       kind: "Product" as const,
       title: p.name,
       meta: `${rupees(p.price)} · ${p.sub}`,
-      href: `/product/${p.slug}`,
+      href: productHref(storeSlug.house(p)),
       keywords: norm(`${p.name} ${p.sub} ${p.category} ${p.maker} ${fitment} accessories`),
     };
   }),
@@ -67,7 +69,7 @@ export const SEARCH_INDEX: SearchEntry[] = [
       p.status === "COMING_SOON"
         ? `Coming soon · ${p.subcategory}`
         : `${p.sellingPrice ? rupees(p.sellingPrice) : "Price on request"} · ${p.subcategory}`,
-    href: `/products/${p.slug}`,
+    href: productHref(storeSlug.recoil(p)),
     keywords: norm(`recoil ${p.sku} ${p.searchTokens.join(" ")} car audio`),
   })),
   // Autoform designs are named things people search for by code — "u-volt",
@@ -77,7 +79,7 @@ export const SEARCH_INDEX: SearchEntry[] = [
     kind: "Autoform" as const,
     title: `Autoform ${d.code}`,
     meta: `From ${rupees(priceFor(d, 2).sellingPrice)} · ${d.tagline}`,
-    href: `/autoform/${d.slug}`,
+    href: productHref(storeSlug.autoformDesign(d)),
     keywords: norm(`autoform ${d.code} ${d.tagline} ${bandFor(d).series} seat cover seat covers interior`),
   })),
   ...DEPARTMENTS.map((d) => ({

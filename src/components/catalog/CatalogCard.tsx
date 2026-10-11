@@ -5,6 +5,7 @@ import { Photo } from "@/components/ui/Photo";
 import { Stars } from "@/components/ui/Section";
 import { rupees } from "@/lib/format";
 import type { CatalogItem } from "@/lib/catalog/types";
+import { CatalogQuickAction } from "./CatalogQuickAction";
 
 /**
  * One card for every brand. Two things vary and both are carried by the item
@@ -95,6 +96,10 @@ export function CatalogCard({
               </>
             )}
           </p>
+        </div>
+
+        <div className="pt-3">
+          <CatalogQuickAction item={item} />
         </div>
       </div>
     </article>

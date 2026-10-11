@@ -31,8 +31,12 @@ export type CatalogItem = {
   id: string;
   brand: BrandSlug;
   brandName: string;
-  /** The product page this item resolves to — on the brand store where one exists. */
+  /** The store slug — unique across brands; the product lives at `/products/{slug}`. */
+  slug: string;
+  /** The unified product page, `/products/{slug}`. */
   href: string;
+  /** True when a choice (seat rows, colour…) is needed before it can be bought. */
+  hasOptions: boolean;
   title: string;
   /** SKU, design code or series — whatever the source uses to identify the item. */
   code: string | null;

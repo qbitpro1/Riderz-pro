@@ -3,6 +3,7 @@ import { Photo } from "@/components/ui/Photo";
 import { Icon } from "@/components/ui/Icon";
 import { Stars } from "@/components/ui/Section";
 import { rupees } from "@/lib/format";
+import { productHref } from "@/lib/store/types";
 import type { Product } from "@/lib/data/products";
 
 export function ProductCard({
@@ -16,7 +17,7 @@ export function ProductCard({
 
   return (
     <article className="card card-hover flex h-full flex-col">
-      <Link href={`/product/${product.slug}`} className="relative block aspect-square overflow-hidden bg-graphite">
+      <Link href={productHref(product.slug)} className="relative block aspect-square overflow-hidden bg-graphite">
         <Photo media={product.image} sizes={sizes} className="zoom opacity-90" />
         <div className="absolute inset-0 bg-gradient-to-t from-void/80 via-transparent to-void/25" />
         {off > 0 && (
@@ -36,7 +37,7 @@ export function ProductCard({
       <div className="flex flex-1 flex-col p-3.5">
         <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-dim">{product.sub}</p>
         <h3 className="mt-1 line-clamp-2 text-sm font-semibold leading-snug">
-          <Link href={`/product/${product.slug}`} className="transition-colors hover:text-accent">
+          <Link href={productHref(product.slug)} className="transition-colors hover:text-accent">
             {product.name}
           </Link>
         </h3>

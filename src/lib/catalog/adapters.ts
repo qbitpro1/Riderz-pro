@@ -30,6 +30,8 @@ import { PRODUCTS as BLAUPUNKT_PRODUCTS, type BlaupunktProduct } from "@/lib/dat
 import { BRAND_BY_SLUG } from "./brands";
 import { tierFor, type CatalogItem } from "./types";
 import { placeSub } from "@/lib/data/taxonomy";
+import { storeSlug } from "@/lib/store/slugs";
+import { productHref } from "@/lib/store/types";
 
 /** Department, group and OE flag for a `sub` — the one place items are shelved. No product data is flagged OE yet. */
 const shelve = (sub: string) => {
@@ -51,7 +53,9 @@ function houseItem(p: Product): CatalogItem {
     id: `riderzpro:${p.slug}`,
     brand: "riderzpro",
     brandName: BRAND_BY_SLUG.riderzpro.name,
-    href: `/product/${p.slug}`,
+    slug: storeSlug.house(p),
+    hasOptions: false,
+    href: productHref(storeSlug.house(p)),
     title: p.name,
     code: null,
     ...shelve(p.sub),
@@ -91,7 +95,9 @@ function recoilItem(p: RecoilProduct): CatalogItem {
     id: `recoil:${p.slug}`,
     brand: "recoil",
     brandName: BRAND_BY_SLUG.recoil.name,
-    href: `/products/${p.slug}`,
+    slug: storeSlug.recoil(p),
+    hasOptions: false,
+    href: productHref(storeSlug.recoil(p)),
     title: p.priceListName,
     code: p.sku,
     // RECOIL's own `category` (Amplifiers, Wiring, Marine…) is the label the taxonomy names;
@@ -134,7 +140,9 @@ function autoformDesignItem(d: AutoformDesign): CatalogItem {
     id: `autoform:design-${d.slug}`,
     brand: "autoform",
     brandName: BRAND_BY_SLUG.autoform.name,
-    href: `/autoform/${d.slug}`,
+    slug: storeSlug.autoformDesign(d),
+    hasOptions: true,
+    href: productHref(storeSlug.autoformDesign(d)),
     title: `Autoform ${d.code}`,
     code: d.code,
     ...shelve("Seat covers"),
@@ -170,7 +178,9 @@ function autoformMatItem(m: MatProduct): CatalogItem {
     id: `autoform:mat-${m.sno}`,
     brand: "autoform",
     brandName: BRAND_BY_SLUG.autoform.name,
-    href: "/autoform#mats",
+    slug: storeSlug.autoformMat(m),
+    hasOptions: true,
+    href: productHref(storeSlug.autoformMat(m)),
     title: `Autoform ${m.design}`,
     code: null,
     ...shelve(m.category === "7D Mats" ? "7D mats" : "Foot mats"),
@@ -208,7 +218,9 @@ function autoformAccessoryItem(a: AccessoryRow): CatalogItem {
     id: `autoform:accessory-${a.sno}`,
     brand: "autoform",
     brandName: BRAND_BY_SLUG.autoform.name,
-    href: "/autoform#accessories",
+    slug: storeSlug.autoformAccessory(a),
+    hasOptions: false,
+    href: productHref(storeSlug.autoformAccessory(a)),
     title: `Autoform ${a.productName}`,
     code: null,
     ...shelve(sub),
@@ -240,7 +252,9 @@ function blaupunktItem(p: BlaupunktProduct): CatalogItem {
     id: `blaupunkt:${p.slug}`,
     brand: "blaupunkt",
     brandName: BRAND_BY_SLUG.blaupunkt.name,
-    href: `/brands/blaupunkt#${p.slug}`,
+    slug: storeSlug.blaupunkt(p),
+    hasOptions: false,
+    href: productHref(storeSlug.blaupunkt(p)),
     title: `Blaupunkt ${p.name}`,
     code: p.model,
     ...shelve(p.subcategory),
