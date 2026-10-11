@@ -46,7 +46,7 @@ export function Explorer() {
         <ProvenanceTag provenance="MAHINDRA FACTORY" />
       </div>
 
-      <div className="relative bg-[radial-gradient(110%_80%_at_50%_20%,rgba(92,225,255,0.06),transparent_65%)]">
+      <div className="relative bg-[radial-gradient(110%_80%_at_50%_20%,color-mix(in_oklab,var(--accent)_6%,transparent),transparent_65%)]">
         <VehicleImage colour={shell} sizes="(min-width: 768px) 60rem, 100vw" className={view === "interior" ? "opacity-40" : ""} />
 
         {/* Hotspots sit over the drawing in percentage space, so they track it

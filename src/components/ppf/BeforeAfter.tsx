@@ -43,7 +43,7 @@ export function BeforeAfter({
     <figure className="card overflow-hidden">
       <div
         ref={wrapRef}
-        className="relative aspect-[4/3] touch-none select-none md:aspect-[16/10]"
+        data-theme="dark" className="relative aspect-[4/3] touch-none select-none md:aspect-[16/10]"
         onPointerDown={(e) => {
           dragging.current = true;
           e.currentTarget.setPointerCapture(e.pointerId);

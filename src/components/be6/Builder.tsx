@@ -243,7 +243,7 @@ function UpgradeRow({
           checked={checked}
           disabled={!sellable}
           onChange={onToggle}
-          className="mt-0.5 h-4 w-4 shrink-0 accent-[#5ce1ff]"
+          className="mt-0.5 h-4 w-4 shrink-0 accent-accent"
         />
         <span className="min-w-0 flex-1">
           <span className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">

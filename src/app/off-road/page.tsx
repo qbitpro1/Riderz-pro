@@ -5,7 +5,8 @@ import { SectionHead } from "@/components/ui/Section";
 import { Icon } from "@/components/ui/Icon";
 import { Photo } from "@/components/ui/Photo";
 import { Reveal } from "@/components/ui/Reveal";
-import { ProductCard } from "@/components/shop/ProductCard";
+import { CatalogCard } from "@/components/catalog/CatalogCard";
+import { itemsBySlug } from "@/components/shop/catalogLookup";
 import { BuildCard } from "@/components/community/Cards";
 import { Accordion } from "@/components/ui/Accordion";
 import { OFFROAD_GROUPS } from "@/lib/data/services";
@@ -53,7 +54,7 @@ const FAQ = [
 ];
 
 export default function OffRoadPage() {
-  const offroadProducts = productsIn("off-roading");
+  const offroadProducts = itemsBySlug(productsIn("off-roading").map((p) => p.slug));
   const offroadBuilds = BUILDS.filter((b) => b.tag === "Off-Road");
 
   return (
@@ -86,7 +87,7 @@ export default function OffRoadPage() {
           {OFFROAD_GROUPS.map((g, i) => (
             <Reveal key={g.slug} delay={i * 50}>
               <div className="grid items-center gap-6 lg:grid-cols-[1fr_1.2fr] lg:gap-10">
-                <div className={`relative aspect-[16/10] overflow-hidden bg-graphite ${i % 2 ? "lg:order-2" : ""}`}>
+                <div data-theme="dark" className={`relative aspect-[16/10] overflow-hidden bg-graphite ${i % 2 ? "lg:order-2" : ""}`}>
                   <Photo media={g.image} sizes="(min-width:1024px) 45vw, 100vw" />
                   <div className="absolute inset-0 bg-gradient-to-t from-void/75 to-transparent" />
                   <p className="absolute bottom-4 left-4 font-display text-3xl font-extrabold uppercase leading-none tracking-[-0.03em]">
@@ -125,7 +126,7 @@ export default function OffRoadPage() {
           <ul className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
             {offroadProducts.slice(0, 8).map((p) => (
               <li key={p.slug}>
-                <ProductCard product={p} />
+                <CatalogCard item={p} />
               </li>
             ))}
           </ul>

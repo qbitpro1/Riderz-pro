@@ -1,12 +1,11 @@
 /**
  * Browser-storage keys renamed in the Motorbotz → Riderzpro rebrand. The first
  * read of a renamed key moves the visitor's saved value across, so nobody loses
- * a cart, a chosen car or a compare list to the rename.
+ * a cart or a chosen car to the rename.
  */
 const RENAMED: Record<string, string> = {
   "riderzpro.cart.v1": "motorbotz.cart.v1",
   "riderzpro.garage.v1": "motorbotz.garage.v1",
-  "riderzpro.compare.v1": "motorbotz.compare.v1",
   "rp:be6-build": "mb:be6-build",
 };
 

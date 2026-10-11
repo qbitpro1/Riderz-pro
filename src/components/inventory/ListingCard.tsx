@@ -18,7 +18,7 @@ export function ListingCard({
 }) {
   return (
     <article className="card card-hover flex h-full flex-col">
-      <Link href={`/cars/${listing.slug}`} className="relative block aspect-[4/3] overflow-hidden bg-graphite">
+      <Link href={`/cars/${listing.slug}`} data-theme="dark" className="relative block aspect-[4/3] overflow-hidden bg-graphite">
         {listing.image ? (
           listing.image.media ? (
             <Photo media={listing.image.media} sizes={sizes} className="zoom" alt={listing.image.alt} />

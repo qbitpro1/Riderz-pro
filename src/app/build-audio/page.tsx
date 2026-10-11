@@ -5,7 +5,7 @@ import { PageHero } from "@/components/layout/PageHero";
 import { SectionHead } from "@/components/ui/Section";
 import { Icon } from "@/components/ui/Icon";
 import { SystemForm } from "@/components/recoil/SystemForm";
-import { ProductShot } from "@/components/recoil/RecoilCard";
+import { ProductShot } from "@/components/recoil/ProductShot";
 import { toPublic } from "@/lib/data/recoil";
 import { buildSystem, BUDGETS, GOALS, type Budget, type Goal } from "@/lib/data/recoil/system-builder";
 import { findModel } from "@/lib/data/vehicles";

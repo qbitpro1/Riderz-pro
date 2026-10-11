@@ -37,6 +37,8 @@ const nextConfig: NextConfig = {
       // rules above come first so the Motorbotz URLs resolve in a single hop.
       { source: "/product/:slug", destination: "/products/:slug", permanent: true },
       { source: "/autoform/:design", destination: "/products/autoform-:design", permanent: true },
+      // The compare feature was dropped; its URL goes to the shop.
+      { source: "/compare", destination: "/shop", permanent: true },
       // Pre-taxonomy shop categories, folded into the eight departments.
       { source: "/shop/audio", destination: "/shop/multimedia", permanent: true },
       { source: "/shop/off-road", destination: "/shop/off-roading", permanent: true },

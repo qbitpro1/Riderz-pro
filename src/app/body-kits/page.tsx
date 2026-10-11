@@ -108,7 +108,7 @@ export default function BodyKitsPage() {
         <div className="shell grid gap-8 lg:grid-cols-2 lg:items-center">
           <Reveal>
             <figure className="card overflow-hidden">
-              <div className="relative aspect-[4/3] bg-graphite md:aspect-[16/10]">
+              <div data-theme="dark" className="relative aspect-[4/3] bg-graphite md:aspect-[16/10]">
                 <Photo media="frontGrilleRed" sizes="(min-width:1024px) 50vw, 100vw" />
                 <div className="absolute inset-0 bg-gradient-to-t from-void/80 via-transparent to-transparent" />
                 <span className="absolute bottom-3 left-3 chip bg-void/75">Front-end conversion</span>
