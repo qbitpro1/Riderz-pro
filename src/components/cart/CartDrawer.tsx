@@ -10,6 +10,7 @@ import { FREE_SHIPPING_OVER, shippingFor } from "@/lib/store/shipping";
 import { useCart } from "./CartContext";
 import { CartThumb } from "./CartThumb";
 import { orderMessage } from "./cartMessage";
+import { CheckoutButton } from "./CheckoutButton";
 
 const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
@@ -213,15 +214,10 @@ export function CartDrawer() {
                 </div>
               </dl>
               <p className="mt-1 text-[11px] text-dim">Prices inclusive of GST.</p>
-              <a
-                href={whatsapp(orderMessage(lines, { subtotal, installTotal, shipping, total }))}
-                target="_blank"
-                rel="noreferrer noopener"
-                className="btn btn-whatsapp btn-block mt-4"
-              >
-                <Icon name="whatsapp" size={16} />
-                Confirm order on WhatsApp
-              </a>
+              <CheckoutButton
+                lines={lines}
+                whatsappHref={whatsapp(orderMessage(lines, { subtotal, installTotal, shipping, total }))}
+              />
               <Link href="/cart" onClick={closeCart} className="btn btn-outline btn-block mt-2">
                 View cart
               </Link>

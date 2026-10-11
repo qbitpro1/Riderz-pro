@@ -8,6 +8,7 @@ import { whatsapp } from "@/lib/data/site";
 import { FREE_SHIPPING_OVER, shippingFor } from "@/lib/store/shipping";
 import { CartThumb } from "./CartThumb";
 import { orderMessage } from "./cartMessage";
+import { CheckoutButton } from "./CheckoutButton";
 
 export function CartView() {
   const { lines, subtotal, installTotal, setQty, remove, clear, ready, count } = useCart();
@@ -113,15 +114,7 @@ export function CartView() {
           </p>
         )}
 
-        <a
-          href={whatsapp(message)}
-          target="_blank"
-          rel="noreferrer noopener"
-          className="btn btn-whatsapp btn-block mt-5"
-        >
-          <Icon name="whatsapp" size={16} />
-          Confirm order on WhatsApp
-        </a>
+        <CheckoutButton lines={lines} whatsappHref={whatsapp(message)} className="mt-5" />
         <p className="mt-3 text-[11px] leading-relaxed text-dim">
           We confirm fitment against your variant, then send a payment link. Card, UPI, net banking
           and no-cost EMI on orders above ₹10,000.
