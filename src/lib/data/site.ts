@@ -1,6 +1,6 @@
 export const SITE = {
   name: "Riderzpro",
-  tagline: "BUY. BUILD. DRIVE.",
+  tagline: "CAR & BIKE ACCESSORIES",
   support: "Your Car. Your Build. Your Ride.",
   description:
     "Riderzpro makes and sells car accessories in India — interior, exterior, multimedia, protection, lighting and off-roading parts, fitment-checked for your car and fitted at our garages.",

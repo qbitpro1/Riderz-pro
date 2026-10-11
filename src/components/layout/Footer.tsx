@@ -35,12 +35,9 @@ export function Footer() {
         <div className="grid gap-10 lg:grid-cols-[1fr_2.6fr]">
           <div>
             <Logo className="text-3xl" />
-            <p className="mt-3 font-display text-sm font-bold uppercase tracking-[0.24em] text-ash">
-              {SITE.tagline}
-            </p>
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-ash">
-              If it has wheels, Riderzpro can help you buy it, sell it, modify it, protect it,
-              upgrade it or build it.
+              Accessories we make, source and fit ourselves — checked against your car before they
+              ship.
             </p>
 
             <div className="mt-6 flex flex-wrap gap-3">

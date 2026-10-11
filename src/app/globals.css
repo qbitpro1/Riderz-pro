@@ -10,7 +10,8 @@
    RIDERZPRO design tokens
    Two themes, one set of names. Surfaces run void → slate (page to raised),
    text runs chalk → ash → dim (primary to quiet), and one accent is used
-   sparingly: active states, verification, micro-detail.
+   sparingly: active states, verification, micro-detail. The accent is the
+   red of the Riderzpro logo, deepened on light and brightened on dark for contrast.
 
    Colour utilities read the theme variables directly (`@theme inline`), so
    any element carrying `data-theme` re-themes everything inside it — that is
@@ -59,12 +60,12 @@
     --chalk: #f4f5f6;
     --ash: #9aa1aa;
     --dim: #6c737c;
-    --accent: #5ce1ff;
-    --accent-deep: #0b7f9c;
+    --accent: #ff4d4d;
+    --accent-deep: #c22a2a;
     --gold: #d9a760;
     --danger: #ff5c5c;
     --tint: #ffffff;
-    --on-accent: #04161d;
+    --on-accent: #1c0606;
     --on-gold: #1a1204;
     --shadow-lift: 0 26px 60px -30px rgba(0, 0, 0, 0.9);
   }
@@ -81,8 +82,8 @@
     --chalk: #0f1216;
     --ash: #4a525c;
     --dim: #626b76;
-    --accent: #0a7396;
-    --accent-deep: #075a76;
+    --accent: #c81e1e;
+    --accent-deep: #9c1515;
     --gold: #8a5a12;
     --danger: #c42b2b;
     --tint: #0f1216;
