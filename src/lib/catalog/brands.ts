@@ -58,7 +58,7 @@ export const BRANDS: Brand[] = [
     storeHref: null,
     storeLabel: null,
     image: "heroWorkshopNight",
-    categories: ["interior", "exterior", "multimedia", "protection", "utilities", "off-roading", "lighting", "accessories"],
+    categories: ["interior", "exterior", "multimedia", "covers-guards", "utilities", "off-roading", "lighting", "accessories"],
     state: "live",
     provenance: "Specified, stocked and warranted by Riderzpro. Fitted at our own workshops.",
   },

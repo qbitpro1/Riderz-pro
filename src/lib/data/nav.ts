@@ -70,7 +70,7 @@ export const SERVICES_NAV: NavSection = {
     { label: "PPF & Detailing", href: "/ppf" },
     { label: "Audio Builds", href: "/audio" },
     { label: "Body Kits", href: "/body-kits" },
-    { label: "Off-Road Builds", href: "/off-road" },
+    { label: "Off-Roading Builds", href: "/off-road" },
     { label: "Custom Interiors", href: "/interiors" },
     { label: "Performance", href: "/performance" },
     { label: "Build Your Car", href: "/build" },

@@ -18,7 +18,7 @@ export type DepartmentSlug =
   | "interior"
   | "exterior"
   | "multimedia"
-  | "protection"
+  | "covers-guards"
   | "utilities"
   | "off-roading"
   | "lighting"
@@ -114,20 +114,20 @@ export const DEPARTMENTS: Department[] = [
     ],
   },
   {
-    slug: "protection",
-    name: "Protection",
-    short: "Protection",
+    slug: "covers-guards",
+    name: "Covers & Guards",
+    short: "Covers",
     tagline: "Keep new looking new.",
-    blurb: "Interior, exterior and dashboard protection: covers, guards and flaps that take the wear so your car doesn't.",
+    blurb: "Covers, guards and flaps for the interior, exterior and dashboard that take the wear so your car doesn't.",
     image: "detailingPolish",
     groups: [
-      { slug: "interior", name: "Interior Protection", subs: ["Seat protectors", "Boot mats"] },
+      { slug: "interior", name: "Interior Covers", subs: ["Seat protectors", "Boot mats"] },
       {
         slug: "exterior",
-        name: "Exterior Protection",
+        name: "Exterior Covers & Guards",
         subs: ["Car covers", "Body covers", "Door guards", "Mud flaps"],
       },
-      { slug: "dashboard", name: "Dashboard Protection", subs: ["Dashboard covers", "Dashboard accessories"] },
+      { slug: "dashboard", name: "Dashboard Covers", subs: ["Dashboard covers", "Dashboard accessories"] },
     ],
   },
   {
@@ -152,7 +152,7 @@ export const DEPARTMENTS: Department[] = [
   {
     slug: "off-roading",
     name: "Off-Roading",
-    short: "Off-Road",
+    short: "Off-Roading",
     tagline: "Built for the unpaved.",
     blurb: "Recovery, protection, suspension and expedition hardware, rated and load-tested.",
     image: "defenderSaltFlat",
@@ -262,4 +262,5 @@ export const LEGACY_DEPARTMENT_SLUGS: Record<string, string> = {
   audio: "/shop/multimedia",
   "off-road": "/shop/off-roading",
   performance: "/shop/accessories?group=performance",
+  protection: "/shop/covers-guards",
 };

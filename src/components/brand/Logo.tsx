@@ -3,35 +3,45 @@ import { LOGO_INK, LOGO_RED, LOGO_VIEWBOX } from "./logo-paths";
 /** The red of the registered logo. Fixed: the mark keeps its own colour in both themes. */
 const LOGO_RED_COLOUR = "#f03030";
 
+/* The traced artwork is 165 × 58; the tagline band sits under it, as on the original. */
+const [, , MARK_W, MARK_H] = LOGO_VIEWBOX.split(" ").map(Number);
+const FULL_H = MARK_H + 13;
+
 /**
- * The registered Riderzpro logo as a vector: the car emblem and wordmark,
- * traced from the supplied artwork. The ink follows the text colour, so it is
- * dark on light surfaces and light on dark ones (including dark photo bands);
- * the red never changes.
+ * The complete registered Riderzpro logo as one vector: the car emblem, the
+ * wordmark and the "Car & Bike Accessories" line beneath, between its two red
+ * dots. The emblem and wordmark are traced from the supplied artwork; the
+ * tagline is set as text inside the same drawing (it is too small on the
+ * artwork to trace), so the whole lockup scales as one piece.
  *
- * `tagline` adds the "Car & Bike Accessories" line, set in type — at the
- * artwork's size that line is too small to trace, and too small to read in a
- * header. Size the logo through `className` (a height); the default is the header's.
+ * The ink follows the text colour — dark on light surfaces, light on dark ones
+ * — and the red never changes. Size it through `className` (a height).
  */
-export function Logo({ className = "h-10 md:h-12", tagline = false }: { className?: string; tagline?: boolean }) {
-  const mark = (
+export function Logo({ className = "h-12 md:h-[60px]" }: { className?: string }) {
+  return (
     <svg
-      viewBox={LOGO_VIEWBOX}
+      viewBox={`0 0 ${MARK_W} ${FULL_H}`}
       role="img"
-      aria-label="Riderzpro"
-      className={`w-auto text-chalk ${tagline ? "h-full" : className}`}
+      aria-label="Riderzpro — Car & Bike Accessories"
+      className={`w-auto text-chalk ${className}`}
     >
       <path fill="currentColor" fillRule="evenodd" d={LOGO_INK} />
       <path fill={LOGO_RED_COLOUR} fillRule="evenodd" d={LOGO_RED} />
+      <circle cx="27" cy={MARK_H + 6.4} r="1" fill={LOGO_RED_COLOUR} />
+      <circle cx={MARK_W - 27} cy={MARK_H + 6.4} r="1" fill={LOGO_RED_COLOUR} />
+      <text
+        x={MARK_W / 2}
+        y={MARK_H + 8.6}
+        textAnchor="middle"
+        textLength="100"
+        lengthAdjust="spacing"
+        fill="currentColor"
+        fontSize="6.2"
+        fontWeight="700"
+        style={{ fontFamily: "var(--font-display)" }}
+      >
+        CAR &amp; BIKE ACCESSORIES
+      </text>
     </svg>
-  );
-  if (!tagline) return mark;
-  return (
-    <span className="inline-flex flex-col items-center">
-      <span className={`block ${className}`}>{mark}</span>
-      <span className="mt-1.5 font-display text-[10px] font-semibold uppercase tracking-[0.28em] text-ash">
-        Car &amp; Bike Accessories
-      </span>
-    </span>
   );
 }
