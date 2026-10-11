@@ -4,18 +4,21 @@ import { PageHero, Breadcrumbs } from "@/components/layout/PageHero";
 import { Photo } from "@/components/ui/Photo";
 import { CATALOG } from "@/lib/catalog";
 import { COLLECTIONS } from "@/lib/data/collections";
+import { breadcrumbLd, itemListLd, ldJson, pageMeta } from "@/lib/data/seo";
 
-export const metadata: Metadata = {
-  title: "Collections — Car Accessories by Price and Offer",
+export const metadata: Metadata = pageMeta({
+  title: "Collections: Car Accessories by Price and Offer",
   description: "Bestsellers, price-capped picks, biggest savings, Riderzpro Originals and products we fit for you.",
-  alternates: { canonical: "/collections" },
-};
+  path: "/collections",
+});
 
 export default function CollectionsPage() {
   const collections = COLLECTIONS.map((c) => ({ c, count: CATALOG.filter(c.match).length })).filter((x) => x.count > 0);
 
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: ldJson(breadcrumbLd([{ name: "Home", path: "/" }, { name: "Collections", path: "/collections" }])) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: ldJson(itemListLd("Collections", collections.map(({ c }) => ({ name: c.name, path: `/collections/${c.slug}` })))) }} />
       <PageHero
         eyebrow="Collections"
         title="SHOP BY PRICE AND OFFER."

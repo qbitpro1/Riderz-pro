@@ -33,7 +33,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     entry("/be-6/limited-edition", 0.8, "weekly"),
     entry("/cars", 0.9, "daily"),
     entry("/cars/latest", 0.85, "daily"),
-    entry("/partners", 0.8),
     entry("/autoform", 0.85),
     entry("/ppf/quote", 0.85),
     entry("/ppf/films", 0.8),
@@ -57,7 +56,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     entry("/recoil", 0.85),
     entry("/brands", 0.85),
     entry("/build-audio", 0.75),
-    entry("/compare", 0.5),
 
     ...BRANDS.map((b) => entry(`/brands/${b.slug}`, 0.75)),
     ...COLLECTIONS.filter((c) => CATALOG.some(c.match)).map((c) => entry(`/collections/${c.slug}`, 0.75)),

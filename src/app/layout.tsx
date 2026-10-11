@@ -23,40 +23,36 @@ const inter = Inter({
   display: "swap",
 });
 
+const DEFAULT_TITLE = "Riderzpro: Car & Bike Accessories";
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
-  title: {
-    default: "Riderzpro — Car Accessories, Fitted Right",
-    template: "%s | Riderzpro",
-  },
+  title: { default: DEFAULT_TITLE, template: "%s | Riderzpro" },
   description: SITE.description,
+  applicationName: SITE.name,
   keywords: [
     "car accessories",
-    "car modification",
+    "bike accessories",
+    "car accessories online India",
+    "car seat covers",
+    "car floor mats",
     "car audio",
-    "car PPF",
-    "body kits",
-    "car facelift",
+    "car lighting",
     "off-road accessories",
-    "SUV modification",
-    "used cars",
-    "buy used cars",
-    "sell used cars",
+    "SUV accessories",
     "Thar accessories",
     "Fortuner accessories",
-    "Creta facelift",
+    "Riderzpro",
   ],
   openGraph: {
     type: "website",
     locale: "en_IN",
     siteName: SITE.name,
-    title: "Riderzpro — Car Accessories, Fitted Right",
+    title: DEFAULT_TITLE,
     description: SITE.description,
-    url: SITE.url,
   },
-  twitter: { card: "summary_large_image", title: "Riderzpro — Car Accessories, Fitted Right", description: SITE.description },
+  twitter: { card: "summary_large_image", title: DEFAULT_TITLE, description: SITE.description },
   robots: { index: true, follow: true },
-  alternates: { canonical: "/" },
 };
 
 export const viewport: Viewport = {
@@ -71,7 +67,11 @@ export const viewport: Viewport = {
 
 const ORG_SCHEMA = {
   "@context": "https://schema.org",
-  "@type": "AutomotiveBusiness",
+  "@type": "AutoPartsStore",
+  "@id": `${SITE.url}/#organization`,
+  legalName: SITE.legalName.replace(/\.$/, ""),
+  logo: `${SITE.url}/brand/riderzpro-logo.png`,
+  image: `${SITE.url}/opengraph-image`,
   name: SITE.name,
   description: SITE.description,
   url: SITE.url,
@@ -90,6 +90,21 @@ const ORG_SCHEMA = {
   sameAs: [SITE.instagram, SITE.youtube, SITE.facebook],
 };
 
+// /shop?q= is read by the catalogue filters, so this search action really searches.
+const WEBSITE_SCHEMA = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": `${SITE.url}/#website`,
+  name: SITE.name,
+  url: SITE.url,
+  publisher: { "@id": `${SITE.url}/#organization` },
+  potentialAction: {
+    "@type": "SearchAction",
+    target: { "@type": "EntryPoint", urlTemplate: `${SITE.url}/shop?q={search_term_string}` },
+    "query-input": "required name=search_term_string",
+  },
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     // `data-theme` is corrected before paint by THEME_SCRIPT, hence suppressHydrationWarning.
@@ -100,9 +115,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <script
           type="application/ld+json"
-          // Structured data for the automotive business, rendered once at the root.
+          // Structured data for the store, rendered once at the root.
           dangerouslySetInnerHTML={{ __html: JSON.stringify(ORG_SCHEMA) }}
         />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(WEBSITE_SCHEMA) }} />
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[80] focus:bg-accent focus:px-4 focus:py-2 focus:font-display focus:text-sm focus:text-on-accent"

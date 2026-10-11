@@ -7,17 +7,20 @@ import { Reveal } from "@/components/ui/Reveal";
 import { BrandStrip } from "@/components/catalog/BrandStrip";
 import { BRAND_STORES, BRANDS, CATALOG_BY_BRAND, CATALOG_TOTALS } from "@/lib/catalog";
 import { CATEGORIES } from "@/lib/data/products";
+import { breadcrumbLd, itemListLd, ldJson, pageMeta } from "@/lib/data/seo";
 
-export const metadata: Metadata = {
-  title: "Shop by Brand — RECOIL, Autoform, Blaupunkt & Riderzpro",
+export const metadata: Metadata = pageMeta({
+  title: "Shop Car Accessories by Brand: RECOIL, Autoform, Blaupunkt & Riderzpro",
   description:
-    "Every brand Riderzpro stocks in one place. Browse RECOIL car audio, Autoform seat covers and the Riderzpro house range by brand, category, price and fitment.",
-  alternates: { canonical: "/brands" },
-};
+    "Every brand Riderzpro stocks in one place. Browse RECOIL and Blaupunkt car audio, Autoform seat covers and the Riderzpro house range by brand, category, price and fitment.",
+  path: "/brands",
+});
 
 export default function BrandsPage() {
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: ldJson(breadcrumbLd([{ name: "Home", path: "/" }, { name: "Brands", path: "/brands" }])) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: ldJson(itemListLd("Brands", BRANDS.map((b) => ({ name: b.name, path: `/brands/${b.slug}` })))) }} />
       <PageHero
         eyebrow="Shop by brand"
         title="THE BRANDS WE STAND BEHIND."

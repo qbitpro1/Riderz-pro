@@ -3,8 +3,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PageHero, Breadcrumbs } from "@/components/layout/PageHero";
 import { CatalogBrowser } from "@/components/catalog/CatalogBrowser";
-import { CATALOG, filtersFromQuery, type CatalogQuery } from "@/lib/catalog";
+import { CATALOG, filtersFromQuery, sortItems, type CatalogQuery } from "@/lib/catalog";
 import { COLLECTIONS, COLLECTION_BY_SLUG } from "@/lib/data/collections";
+import { breadcrumbLd, itemListLd, ldJson, pageMeta } from "@/lib/data/seo";
 
 const LIVE = COLLECTIONS.filter((c) => CATALOG.some(c.match));
 
@@ -16,11 +17,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const c = COLLECTION_BY_SLUG[slug];
   if (!c) return {};
-  return {
-    title: `${c.name} — ${c.tagline}`,
-    description: c.blurb,
-    alternates: { canonical: `/collections/${c.slug}` },
-  };
+  return pageMeta({
+    title: `${c.name}: ${c.tagline}`,
+    description: `${c.blurb} Car accessories from Riderzpro.`,
+    path: `/collections/${c.slug}`,
+  });
 }
 
 export default async function CollectionPage({
@@ -43,6 +44,8 @@ export default async function CollectionPage({
 
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: ldJson(breadcrumbLd([{ name: "Home", path: "/" }, { name: "Collections", path: "/collections" }, { name: c.name, path: `/collections/${c.slug}` }])) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: ldJson(itemListLd("Products", sortItems(items, c.sort).slice(0, 24).map((i) => ({ name: i.title, path: i.href })))) }} />
       <PageHero
         eyebrow="Collection"
         title={c.name.toUpperCase()}

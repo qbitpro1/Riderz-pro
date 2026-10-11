@@ -12,19 +12,22 @@ import { CATEGORIES, PRICE_BANDS } from "@/lib/data/products";
 import { DEPARTMENT_BY_SLUG } from "@/lib/data/taxonomy";
 import { CATALOG, CATALOG_TOTALS, filtersFromQuery, type CatalogQuery } from "@/lib/catalog";
 import { LANDING_MODELS } from "@/lib/data/vehicles";
+import { breadcrumbLd, itemListLd, ldJson, pageMeta } from "@/lib/data/seo";
 
-export const metadata: Metadata = {
-  title: "Car Accessories Online — Interior, Exterior, Multimedia, Protection, Lighting, Off-Roading",
+export const metadata: Metadata = pageMeta({
+  title: "Car Accessories Online India: Interior, Exterior, Audio, Lighting & Off-Road",
   description:
-    "Shop car accessories from ₹299 to ₹2,00,000 across every brand we stock. Filter by brand, category, price and fitment, with installation available at Riderzpro garages in Bengaluru, Hyderabad and Pune.",
-  alternates: { canonical: "/shop" },
-};
+    "Shop car accessories across eight departments and every brand we stock. Filter by brand, department, price and fitment, with installation at Riderzpro garages in Bengaluru, Hyderabad and Pune.",
+  path: "/shop",
+});
 
 export default async function ShopPage({ searchParams }: { searchParams: Promise<CatalogQuery> }) {
   const filters = filtersFromQuery(await searchParams);
 
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: ldJson(breadcrumbLd([{ name: "Home", path: "/" }, { name: "Shop", path: "/shop" }])) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: ldJson(itemListLd("Shop departments", CATEGORIES.map((c) => ({ name: c.name, path: `/shop/${c.slug}` })))) }} />
       <PageHero
         eyebrow="Accessories store"
         title="EVERYTHING THAT BOLTS ON."
