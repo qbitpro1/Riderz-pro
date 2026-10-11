@@ -1,24 +1,35 @@
+import Image from "next/image";
+
 /**
- * The Riderzpro wordmark, set in type after the registered logo: wide-spaced
- * capitals with the logo's red, over the "Car & Bike Accessories" line.
+ * The registered Riderzpro logo. Two renderings of the supplied artwork with
+ * the white ground removed: dark ink for the light theme, light ink for the
+ * dark theme (the red is the same in both). CSS shows the one that matches the
+ * page theme, so it is right before hydration.
  *
- * The supplied artwork (public/brand/riderzpro-logo.png) is 184px on a white
- * ground — right for the favicon, too small and too opaque for a header in two
- * themes. Swap this markup for the vector logo when it is available.
+ * The source artwork is small (184px); replace the two files in public/brand
+ * with exports from the vector logo when it is available.
  *
- * Size it through `className` (a font size); the default is the header's.
+ * Size it through `className` (a height); the default is the header's.
  */
-export function Logo({ className = "text-[17px] md:text-[20px]" }: { className?: string }) {
+export function Logo({ className = "h-12 md:h-14" }: { className?: string }) {
   return (
-    <span className={`flex flex-col leading-none ${className}`}>
-      <span className="flex items-baseline font-display font-bold tracking-[0.14em]">
-        RIDERZ
-        <span className="text-accent">PRO</span>
-      </span>
-      <span className="mt-[0.3em] flex items-center gap-[0.5em] text-[0.38em] font-semibold uppercase tracking-[0.22em] text-ash">
-        <span aria-hidden className="h-px w-[1.2em] bg-accent" />
-        Car &amp; Bike Accessories
-      </span>
-    </span>
+    <>
+      <Image
+        src="/brand/logo-light.png"
+        alt="Riderzpro — Car & Bike Accessories"
+        width={660}
+        height={288}
+        priority
+        className={`when-light w-auto ${className}`}
+      />
+      <Image
+        src="/brand/logo-dark.png"
+        alt="Riderzpro — Car & Bike Accessories"
+        width={660}
+        height={288}
+        priority
+        className={`when-dark w-auto ${className}`}
+      />
+    </>
   );
 }
