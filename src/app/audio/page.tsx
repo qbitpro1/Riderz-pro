@@ -5,7 +5,8 @@ import { SectionHead } from "@/components/ui/Section";
 import { Icon } from "@/components/ui/Icon";
 import { Photo } from "@/components/ui/Photo";
 import { Reveal } from "@/components/ui/Reveal";
-import { ProductCard } from "@/components/shop/ProductCard";
+import { CatalogCard } from "@/components/catalog/CatalogCard";
+import { itemsBySlug } from "@/components/shop/catalogLookup";
 import { ReviewCard } from "@/components/community/Cards";
 import { Accordion } from "@/components/ui/Accordion";
 import { AUDIO_PACKAGES } from "@/lib/data/services";
@@ -41,7 +42,7 @@ const FAQ = [
 ];
 
 export default function AudioPage() {
-  const audioProducts = productsIn("multimedia");
+  const audioProducts = itemsBySlug(productsIn("multimedia").map((p) => p.slug));
   const audioReviews = REVIEWS.filter((r) => r.service.toLowerCase().includes("audio"));
 
   return (
@@ -174,7 +175,7 @@ export default function AudioPage() {
           <ul className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
             {audioProducts.slice(0, 8).map((p) => (
               <li key={p.slug}>
-                <ProductCard product={p} />
+                <CatalogCard item={p} />
               </li>
             ))}
           </ul>

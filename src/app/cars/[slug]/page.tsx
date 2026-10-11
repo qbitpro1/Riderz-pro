@@ -99,7 +99,7 @@ export default async function CarDetailPage({ params }: { params: Promise<{ slug
       {/* gallery ---------------------------------------------------- */}
       <section className="relative pt-14 md:pt-[68px]">
         <div className="grid gap-1 md:grid-cols-4 md:grid-rows-2">
-          <div className="relative col-span-2 row-span-2 aspect-[4/3] bg-graphite md:aspect-auto md:min-h-[62vh]">
+          <div data-theme="dark" className="relative col-span-2 row-span-2 aspect-[4/3] bg-graphite md:aspect-auto md:min-h-[62vh]">
             <Photo media={car.images[0]} sizes="(min-width:768px) 50vw, 100vw" priority />
             <div className="absolute inset-0 bg-gradient-to-t from-void/70 to-transparent md:from-void/40" />
             <div className="absolute bottom-4 left-4 flex flex-wrap gap-2">

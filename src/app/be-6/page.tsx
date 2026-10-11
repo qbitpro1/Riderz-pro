@@ -41,7 +41,7 @@ export default function Be6Page() {
       <section id="be6-hero" data-theme="dark" className="relative flex min-h-[92svh] flex-col justify-end overflow-hidden bg-void">
         <div className="absolute inset-0">
           <div className="absolute inset-0 grid-lines opacity-25" />
-          <div className="absolute inset-0 bg-[radial-gradient(120%_80%_at_50%_20%,rgba(92,225,255,0.13),transparent_62%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(120%_80%_at_50%_20%,color-mix(in_oklab,var(--accent)_13%,transparent),transparent_62%)]" />
           <div className="absolute inset-x-0 top-1/2 mx-auto max-w-5xl -translate-y-[42%] px-3">
             <VehicleImage colour={hero} sizes="100vw" priority />
           </div>

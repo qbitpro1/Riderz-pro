@@ -5,10 +5,10 @@ import { Photo } from "@/components/ui/Photo";
 import { Icon } from "@/components/ui/Icon";
 import { Breadcrumbs } from "@/components/layout/PageHero";
 import { SectionHead } from "@/components/ui/Section";
-import { ProductCard } from "@/components/shop/ProductCard";
+import { CatalogCard } from "@/components/catalog/CatalogCard";
+import { itemsBySlug } from "@/components/shop/catalogLookup";
 import { BuildCard } from "@/components/community/Cards";
 import { BUILDS, getBuild } from "@/lib/data/community";
-import { getProduct } from "@/lib/data/products";
 import { rupees } from "@/lib/format";
 import { whatsapp } from "@/lib/data/site";
 import { MEDIA } from "@/lib/media";
@@ -38,7 +38,7 @@ export default async function BuildDetailPage({ params }: { params: Promise<{ sl
   const build = getBuild(slug);
   if (!build) notFound();
 
-  const shopItems = build.shop.map(getProduct).filter(Boolean);
+  const shopItems = itemsBySlug(build.shop);
   const others = BUILDS.filter((b) => b.slug !== build.slug).slice(0, 3);
 
   return (
@@ -138,8 +138,8 @@ export default async function BuildDetailPage({ params }: { params: Promise<{ sl
             <SectionHead eyebrow="Shop the build" title="THE PARTS ON THIS CAR." href="/shop" hrefLabel="Shop all" />
             <ul className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
               {shopItems.map((p) => (
-                <li key={p!.slug}>
-                  <ProductCard product={p!} />
+                <li key={p.slug}>
+                  <CatalogCard item={p} />
                 </li>
               ))}
             </ul>

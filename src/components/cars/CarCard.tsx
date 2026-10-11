@@ -7,7 +7,7 @@ import type { Car } from "@/lib/data/cars";
 export function CarCard({ car, sizes = "(min-width:1024px) 33vw, (min-width:640px) 50vw, 86vw" }: { car: Car; sizes?: string }) {
   return (
     <article className="card card-hover flex h-full flex-col">
-      <Link href={`/cars/${car.slug}`} className="relative block aspect-[4/3] overflow-hidden bg-graphite">
+      <Link href={`/cars/${car.slug}`} data-theme="dark" className="relative block aspect-[4/3] overflow-hidden bg-graphite">
         <Photo media={car.images[0]} sizes={sizes} className="zoom" />
         <div className="absolute inset-0 bg-gradient-to-t from-void/90 via-void/10 to-transparent" />
 

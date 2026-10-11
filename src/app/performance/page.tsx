@@ -5,7 +5,8 @@ import { Icon } from "@/components/ui/Icon";
 import { Photo } from "@/components/ui/Photo";
 import { Reveal } from "@/components/ui/Reveal";
 import { Accordion } from "@/components/ui/Accordion";
-import { ProductCard } from "@/components/shop/ProductCard";
+import { CatalogCard } from "@/components/catalog/CatalogCard";
+import { itemsBySlug } from "@/components/shop/catalogLookup";
 import { PERFORMANCE_DISCLAIMER, PERFORMANCE_SERVICES } from "@/lib/data/services";
 import { PRODUCTS } from "@/lib/data/products";
 import { groupHref, placeSub } from "@/lib/data/taxonomy";
@@ -39,7 +40,9 @@ const FAQ = [
 ];
 
 export default function PerformancePage() {
-  const perfProducts = PRODUCTS.filter((p) => placeSub(p.sub).group === "performance");
+  const perfProducts = itemsBySlug(
+    PRODUCTS.filter((p) => placeSub(p.sub).group === "performance").map((p) => p.slug),
+  );
 
   return (
     <>
@@ -121,7 +124,7 @@ export default function PerformancePage() {
           <ul className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-6">
             {perfProducts.map((p) => (
               <li key={p.slug}>
-                <ProductCard product={p} sizes="(min-width:1024px) 16vw, (min-width:768px) 33vw, 46vw" />
+                <CatalogCard item={p} sizes="(min-width:1024px) 16vw, (min-width:768px) 33vw, 46vw" />
               </li>
             ))}
           </ul>

@@ -4,15 +4,17 @@ import { PageHero } from "@/components/layout/PageHero";
 import { SectionHead } from "@/components/ui/Section";
 import { Icon } from "@/components/ui/Icon";
 import { Reveal } from "@/components/ui/Reveal";
-import { RecoilCard } from "@/components/recoil/RecoilCard";
+import { CatalogCard } from "@/components/catalog/CatalogCard";
+import { itemsBySlug } from "@/components/shop/catalogLookup";
 import { BrandShopBar } from "@/components/catalog/BrandShopBar";
+import { CatalogBrowser } from "@/components/catalog/CatalogBrowser";
+import { catalogFor, filtersFromQuery, type CatalogQuery } from "@/lib/catalog";
 import {
   CATALOG_SUMMARY,
   CATEGORIES,
   COMING_SOON,
   FEATURED,
   PRODUCTS,
-  toPublic,
 } from "@/lib/data/recoil";
 import { whatsapp } from "@/lib/data/site";
 
@@ -23,9 +25,13 @@ export const metadata: Metadata = {
   alternates: { canonical: "/recoil" },
 };
 
-export default function RecoilPage() {
+export default async function RecoilPage({ searchParams }: { searchParams: Promise<CatalogQuery> }) {
+  const query = await searchParams;
+  const filters = { ...filtersFromQuery(query), brands: ["recoil" as const] };
   const audio = CATEGORIES.filter((c) => c.group === "CAR AUDIO");
   const install = CATEGORIES.filter((c) => c.group === "INSTALLATION");
+  const featured = itemsBySlug(FEATURED.map((p) => p.slug));
+  const comingSoon = itemsBySlug(COMING_SOON.slice(0, 12).map((p) => p.slug));
 
   return (
     <>
@@ -110,12 +116,20 @@ export default function RecoilPage() {
         <div className="shell">
           <SectionHead eyebrow="Flagships" title="WHERE PEOPLE START." href="/recoil/amplifiers" hrefLabel="All amplifiers" />
           <ul className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-6">
-            {FEATURED.map((p) => (
+            {featured.map((p) => (
               <li key={p.slug}>
-                <RecoilCard product={toPublic(p)} sizes="(min-width:1024px) 16vw, (min-width:768px) 33vw, 46vw" />
+                <CatalogCard item={p} sizes="(min-width:1024px) 16vw, (min-width:768px) 33vw, 46vw" showBrand={false} />
               </li>
             ))}
           </ul>
+        </div>
+      </section>
+
+      {/* the whole range, through the shared catalogue browser ---------- */}
+      <section className="section border-t border-tint/8" id="range">
+        <div className="shell">
+          <SectionHead eyebrow="Every model" title="FILTER THE WHOLE RANGE." blurb="The same catalogue as the rest of the shop, locked to RECOIL." />
+          <CatalogBrowser items={catalogFor("recoil")} initial={filters} locked={["brands"]} showBrandOnCards={false} />
         </div>
       </section>
 
@@ -128,9 +142,9 @@ export default function RecoilPage() {
               blurb={`${COMING_SOON.length} model numbers are listed as Coming Soon in the current price list. We show them because you asked what exists — not because you can buy them today.`}
             />
             <ul className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4 lg:grid-cols-6">
-              {COMING_SOON.slice(0, 12).map((p) => (
+              {comingSoon.map((p) => (
                 <li key={p.slug}>
-                  <RecoilCard product={toPublic(p)} sizes="(min-width:1024px) 16vw, (min-width:768px) 25vw, 46vw" />
+                  <CatalogCard item={p} sizes="(min-width:1024px) 16vw, (min-width:768px) 25vw, 46vw" showBrand={false} />
                 </li>
               ))}
             </ul>

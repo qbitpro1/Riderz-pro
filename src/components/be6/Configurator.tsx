@@ -34,7 +34,7 @@ export function Configurator() {
   return (
     <div className="card">
       {/* --- The vehicle ------------------------------------------------ */}
-      <div className="relative border-b border-tint/[0.07] bg-[radial-gradient(120%_90%_at_50%_0%,rgba(92,225,255,0.07),transparent_60%)] px-4 pb-4 pt-6 md:px-8 md:pt-10">
+      <div className="relative border-b border-tint/[0.07] bg-[radial-gradient(120%_90%_at_50%_0%,color-mix(in_oklab,var(--accent)_7%,transparent),transparent_60%)] px-4 pb-4 pt-6 md:px-8 md:pt-10">
         <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
           <ProvenanceTag provenance="MAHINDRA FACTORY" />
           <span className="font-display text-[0.5625rem] uppercase tracking-[0.18em] text-dim">

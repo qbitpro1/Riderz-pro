@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PageHero, Breadcrumbs } from "@/components/layout/PageHero";
-import { RecoilBrowser } from "@/components/recoil/RecoilBrowser";
+import { CatalogBrowser } from "@/components/catalog/CatalogBrowser";
+import { itemsBySlug } from "@/components/shop/catalogLookup";
+import { filtersFromQuery, type CatalogQuery } from "@/lib/catalog";
 import { SectionHead } from "@/components/ui/Section";
-import { CATEGORIES, getCategory, productsInCategory, toPublic } from "@/lib/data/recoil";
+import { CATEGORIES, getCategory, productsInCategory } from "@/lib/data/recoil";
 import type { MediaKey } from "@/lib/media";
 
 export function generateStaticParams() {
@@ -46,12 +48,20 @@ export async function generateMetadata({
   };
 }
 
-export default async function RecoilCategoryPage({ params }: { params: Promise<{ category: string }> }) {
+export default async function RecoilCategoryPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ category: string }>;
+  searchParams: Promise<CatalogQuery>;
+}) {
   const { category } = await params;
+  const query = await searchParams;
   const cat = getCategory(category);
   if (!cat) notFound();
 
-  const products = productsInCategory(cat.slug).map(toPublic);
+  const items = itemsBySlug(productsInCategory(cat.slug).map((p) => p.slug));
+  const filters = { ...filtersFromQuery(query), brands: ["recoil" as const] };
   const hero = HERO[cat.slug] ?? { media: "studioMonitors" as MediaKey, line: cat.name.toUpperCase() };
 
   return (
@@ -73,7 +83,7 @@ export default async function RecoilCategoryPage({ params }: { params: Promise<{
               { label: cat.name },
             ]}
           />
-          <RecoilBrowser products={products} />
+          <CatalogBrowser items={items} initial={filters} locked={["brands"]} showBrandOnCards={false} />
         </div>
       </section>
 
