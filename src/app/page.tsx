@@ -1,281 +1,338 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { Photo } from "@/components/ui/Photo";
-import { VehicleImage } from "@/components/be6/VehicleImage";
 import { Icon } from "@/components/ui/Icon";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHead, SectionFootLink } from "@/components/ui/Section";
-import { Studio } from "@/components/home/Studio";
-import { CarCard } from "@/components/cars/CarCard";
-import { ProductCard } from "@/components/shop/ProductCard";
-import { BuildCard, ReviewCard } from "@/components/community/Cards";
+import { HeroCarousel } from "@/components/home/HeroCarousel";
+import { CatalogCard } from "@/components/catalog/CatalogCard";
+import { BrandStrip } from "@/components/catalog/BrandStrip";
 import { FitmentPicker } from "@/components/fitment/FitmentPicker";
-import { ListingCard } from "@/components/inventory/ListingCard";
-import { toCardData } from "@/lib/inventory/card-data";
-import { justLanded } from "@/lib/inventory/store";
-import { formatIST } from "@/lib/inventory/freshness";
-import { FEATURED_CARS } from "@/lib/data/cars";
-import { BESTSELLERS, CATEGORIES, PRICE_BANDS } from "@/lib/data/products";
-import { BUILDS, REVIEWS, STATS } from "@/lib/data/community";
-import { lakh } from "@/lib/format";
-import { SITE, TRUST_POINTS, whatsapp } from "@/lib/data/site";
-import { PRICE_FROM as BE6_PRICE_FROM, colour as be6Colour } from "@/lib/data/be6/factory";
+import { ReviewCard } from "@/components/community/Cards";
+import { CATALOG, filterCatalog, sortItems, EMPTY_FILTERS, TIER_LABELS } from "@/lib/catalog";
+import {
+  DEPARTMENTS,
+  DEPARTMENT_BY_SLUG,
+  departmentHref,
+  groupHref,
+  oeHref,
+  type DepartmentSlug,
+} from "@/lib/data/taxonomy";
+import { REVIEWS, STATS } from "@/lib/data/community";
+import { LANDING_MODELS } from "@/lib/data/vehicles";
+import { LOCATIONS, SITE, whatsapp } from "@/lib/data/site";
+import { rupees } from "@/lib/format";
+import type { MediaKey } from "@/lib/media";
 
 export const metadata: Metadata = {
-  title: "Riderzpro — Buy. Build. Drive. | Cars, Accessories & Modification in India",
+  title: "Riderzpro — Car Accessories, Fitted Right",
   description:
-    "Buy and sell verified cars, build your own with our configurator, and shop accessories, audio, PPF, off-road and performance upgrades. Riderzpro garages in Bengaluru, Hyderabad and Pune.",
+    "Seat covers, floor mats, audio, lighting, protection and off-road gear for your car. Made and sold by Riderzpro, fitment-checked for your model and fitted at our garages in Bengaluru, Hyderabad and Pune.",
   alternates: { canonical: "/" },
 };
 
-const QUICK_ACTIONS = [
+const FREE_SHIPPING_OVER = 2000;
+
+const SLIDES: {
+  eyebrow: string;
+  title: string;
+  copy: string;
+  cta: string;
+  href: string;
+  image: MediaKey;
+}[] = [
   {
-    href: "/cars",
-    title: "BUY A CAR",
-    blurb: "Verified, inspected, warranted cars ready to drive home.",
-    icon: "car" as const,
+    eyebrow: "Interior",
+    title: "Seat covers, cut to your car",
+    copy: "Covers, mats and comfort pieces made for your exact model.",
+    cta: "Shop seat covers",
+    href: groupHref("interior", "seat-covers"),
+    image: "cockpitScreen",
   },
   {
-    href: "/sell",
-    title: "SELL YOUR CAR",
-    blurb: "Free valuation, free inspection, payment before transfer.",
-    icon: "shield" as const,
+    eyebrow: "Multimedia",
+    title: "Sound that fills the cabin",
+    copy: "Speakers, subwoofers, amplifiers and head units, installed properly.",
+    cta: "Shop multimedia",
+    href: departmentHref("multimedia"),
+    image: "speakerCone",
   },
   {
-    href: "/build",
-    title: "MODIFY YOUR CAR",
-    blurb: "Configure a build and get a costed quote in minutes.",
-    icon: "build" as const,
+    eyebrow: "Lighting Solutions",
+    title: "See further. Be seen.",
+    copy: "Projectors, LED bulbs, DRLs and fog lamps, wired with relays and fuses.",
+    cta: "Shop lighting",
+    href: departmentHref("lighting"),
+    image: "tailLightBokeh",
   },
   {
-    href: "/shop",
-    title: "SHOP ACCESSORIES",
-    blurb: "From ₹499 mats to ₹2 lakh audio. Fitment guaranteed.",
-    icon: "bag" as const,
+    eyebrow: "Off-Roading",
+    title: "Gear for the unpaved",
+    copy: "Recovery, armour and expedition hardware for the trail.",
+    cta: "Shop off-roading",
+    href: departmentHref("off-roading"),
+    image: "defenderSaltFlat",
+  },
+];
+
+const SERVICES = [
+  { href: "/ppf", label: "Paint protection film" },
+  { href: "/audio", label: "Audio installation" },
+  { href: "/body-kits", label: "Body kits" },
+];
+
+const WHY = [
+  {
+    title: "We make what we sell",
+    body: "Riderzpro is our own registered brand. We manufacture car accessories and sell them directly.",
+  },
+  {
+    title: "Checked against your car",
+    body: "Pick your car once and we show what fits it. Parts without a confirmed fit are not claimed to fit.",
+  },
+  {
+    title: "Fitted by people who know them",
+    body: "Installation is available at our garages for the products marked with the wrench.",
+  },
+  {
+    title: "Support on WhatsApp",
+    body: "Ask about fitment, fitting or an order and talk to a real person.",
   },
 ];
 
 export default function HomePage() {
-  const landed = justLanded(8).map(toCardData);
+  /* ---- everything below is computed from CATALOG; nothing is typed in ---- */
+  const lowest = new Map<DepartmentSlug, number>();
+  const groupCount = new Map<string, number>();
+  for (const i of CATALOG) {
+    if (i.price !== null) {
+      const cur = lowest.get(i.category);
+      if (cur === undefined || i.price < cur) lowest.set(i.category, i.price);
+    }
+    const k = `${i.category}/${i.group}`;
+    groupCount.set(k, (groupCount.get(k) ?? 0) + 1);
+  }
+
+  // Busiest groups, at most two per department so the row isn't one aisle.
+  const perDept = new Map<string, number>();
+  const needs = DEPARTMENTS.flatMap((d) =>
+    d.groups.map((g) => ({ d, g, n: groupCount.get(`${d.slug}/${g.slug}`) ?? 0 })),
+  )
+    .filter((x) => x.n > 0 && x.g.slug !== "more")
+    .sort((a, b) => b.n - a.n)
+    .filter((x) => {
+      const used = perDept.get(x.d.slug) ?? 0;
+      if (used >= 2) return false;
+      perDept.set(x.d.slug, used + 1);
+      return true;
+    })
+    .slice(0, 8);
+
+  const bestsellers = sortItems(
+    CATALOG.filter((i) => i.bestseller),
+    "popular",
+  ).slice(0, 12);
+
+  const view = (patch: Partial<typeof EMPTY_FILTERS>) => filterCatalog(CATALOG, { ...EMPTY_FILTERS, ...patch }).length;
+  type Collection = { title: string; blurb: string; href: string; image: MediaKey; count: number };
+  const collections = ([
+    {
+      title: TIER_LABELS.value,
+      blurb: "Everyday pieces at easy prices.",
+      href: "/shop?tier=value",
+      image: "washBay",
+      count: view({ tiers: ["value"] }),
+    },
+    {
+      title: TIER_LABELS.mid,
+      blurb: "Audio, lighting and upgrades in the middle of the range.",
+      href: "/shop?tier=mid",
+      image: "studioMonitors",
+      count: view({ tiers: ["mid"] }),
+    },
+    {
+      title: "Biggest savings",
+      blurb: "Products with the largest gap between MRP and our price.",
+      href: "/shop?sort=discount",
+      image: "detailingPolish",
+      count: CATALOG.filter((i) => i.price && i.mrp && i.mrp > i.price).length,
+    },
+    {
+      title: "Installation available",
+      blurb: "Products we will fit for you at our garages.",
+      href: "/shop?install=1",
+      image: "mechanicEngine",
+      count: view({ installation: true }),
+    },
+  ] satisfies Collection[]).filter((c) => c.count > 0);
+
+  const models = LANDING_MODELS.slice(0, 12);
 
   return (
     <>
-      {/* 1 — CINEMATIC HERO — the BE 6 is the flagship ------------------ */}
-      <section data-theme="dark" className="relative flex min-h-[94svh] flex-col justify-end overflow-hidden bg-void">
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 grid-lines opacity-30" />
-          <div className="absolute inset-0 bg-[radial-gradient(120%_80%_at_50%_18%,rgba(92,225,255,0.12),transparent_62%)]" />
-          <div className="absolute inset-x-0 top-[30%] mx-auto max-w-5xl px-4 md:top-[26%]">
-            <VehicleImage colour={be6Colour("stealth-black")} sizes="100vw" priority />
-          </div>
-          <div className="absolute inset-0 scrim" />
-        </div>
+      <h1 className="sr-only">Riderzpro — car accessories, fitted right</h1>
 
-        <div className="shell relative pb-14 pt-28 md:pb-20">
-          <p className="rise eyebrow mb-4 flex items-center gap-2" style={{ animationDelay: "80ms" }}>
-            <span className="h-1.5 w-1.5 bg-accent pulse-dot" />
-            Riderzpro flagship · Mahindra BE 6 SPORTEQ
-          </p>
-
-          <h1 className="rise display-1 max-w-4xl" style={{ animationDelay: "160ms" }}>
-            THE BE 6.
-            <br />
-            REIMAGINED.
-          </h1>
-
-          <p
-            className="rise mt-5 max-w-md text-base text-ash md:text-lg"
-            style={{ animationDelay: "260ms" }}
-          >
-            Meet the first RIDERZPRO Limited Edition concept. Every factory variant explained, every
-            upgrade priced, and a clear line between what Mahindra builds and what we do to it.
-          </p>
-
-          <div className="rise mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap" style={{ animationDelay: "340ms" }}>
-            <Link href="/be-6" className="btn btn-primary">
-              Explore BE 6
-              <Icon name="arrow" size={15} />
-            </Link>
-            <Link href="/be-6#build" className="btn btn-outline">
-              Build your BE 6
-            </Link>
-            <Link href="/be-6/limited-edition" className="btn btn-outline !border-gold/45 !text-gold">
-              Riderzpro Edition — coming soon
-            </Link>
-          </div>
-
-          <p className="rise mt-6 text-[0.6875rem] text-dim" style={{ animationDelay: "380ms" }}>
-            {SITE.tagline} · Cars, accessories, audio, PPF and modification —{" "}
-            <Link href="/cars" className="underline underline-offset-2 transition-colors hover:text-accent">
-              browse everything
-            </Link>
-          </p>
-
-          <dl className="rise mt-12 grid max-w-2xl grid-cols-2 gap-x-6 gap-y-5 border-t border-tint/12 pt-6 md:grid-cols-4" style={{ animationDelay: "420ms" }}>
-            {STATS.map((s) => (
-              <div key={s.label}>
-                <dd className="font-display text-2xl font-extrabold tracking-[-0.03em] tnum md:text-3xl">
-                  {s.value}
-                </dd>
-                <dt className="mt-1 text-[11px] uppercase tracking-[0.14em] text-dim">{s.label}</dt>
-              </div>
-            ))}
-          </dl>
-        </div>
-      </section>
-
-      {/* 2 — QUICK ACTIONS -------------------------------------------- */}
-      <section className="border-y border-tint/8 bg-carbon">
-        <ul className="shell grid grid-cols-2 gap-px bg-tint/8 px-0 lg:grid-cols-4">
-          {QUICK_ACTIONS.map((a, i) => (
-            <li key={a.href} className="bg-carbon">
-              <Reveal delay={i * 60}>
-                <Link href={a.href} className="group flex h-full flex-col justify-between gap-8 p-5 transition-colors hover:bg-tint/4 md:p-7">
-                  <Icon name={a.icon} size={26} className="text-accent" />
-                  <div>
-                    <p className="font-display text-base font-extrabold uppercase tracking-[-0.01em] md:text-lg">
-                      {a.title}
-                    </p>
-                    <p className="mt-1.5 text-xs leading-snug text-ash md:text-sm">{a.blurb}</p>
-                    <span className="mt-3 inline-flex items-center gap-1.5 font-display text-[10px] font-bold uppercase tracking-[0.16em] text-dim transition-colors group-hover:text-accent">
-                      Go
-                      <Icon name="arrow" size={13} />
-                    </span>
-                  </div>
-                </Link>
-              </Reveal>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      {/* 2a — FLAGSHIP: THE BE 6 --------------------------------------- */}
-      <section className="section border-b border-tint/[0.06] bg-void">
-        <div className="shell grid gap-8 lg:grid-cols-[1.1fr_1fr] lg:items-center">
-          <Reveal>
-            <p className="eyebrow mb-3">The first car we build different</p>
-            <h2 className="display-2">
-              RIDERZPRO
-              <br />
-              BE 6.
-            </h2>
-            <p className="mt-4 max-w-lg text-sm leading-relaxed text-ash md:text-base">
-              Every Mahindra BE 6 SPORTEQ variant, battery, colour and specification — verified against
-              official sources and dated. Then a configurator that turns it into your car, and a
-              concept that shows where we would take it next.
-            </p>
-
-            <dl className="mt-6 grid max-w-lg grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-4">
-              {[
-                ["From", lakh(BE6_PRICE_FROM)],
-                ["Variants", "8"],
-                ["Colours", "12"],
-                ["Range to", "683 km"],
-              ].map(([k, v]) => (
-                <div key={k}>
-                  <dt className="font-display text-[0.5625rem] uppercase tracking-[0.16em] text-dim">{k}</dt>
-                  <dd className="tnum mt-0.5 font-display text-base font-extrabold text-chalk">{v}</dd>
-                </div>
-              ))}
-            </dl>
-
-            <div className="mt-7 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap">
-              <Link href="/be-6" className="btn btn-accent">
-                Explore the BE 6
-                <Icon name="arrow" size={15} />
-              </Link>
-              <Link href="/be-6/limited-edition" className="btn btn-outline !border-gold/45 !text-gold">
-                Limited Edition — coming soon
+      {/* 1 — HERO CAROUSEL ------------------------------------------------ */}
+      <HeroCarousel labels={SLIDES.map((s) => s.eyebrow)}>
+        {SLIDES.map((s, i) => (
+          <div key={s.eyebrow} className="relative flex min-h-[80svh] flex-col justify-end overflow-hidden bg-void md:min-h-[88svh]">
+            <Photo media={s.image} sizes="100vw" priority={i === 0} className="opacity-90" />
+            <div className="absolute inset-0 scrim" />
+            <div className="shell relative pb-24 pt-28 md:pb-32">
+              <p className="eyebrow mb-3 text-accent">{s.eyebrow}</p>
+              <h2 className="display-1 max-w-3xl text-balance !text-[clamp(2.25rem,9vw,5rem)] !leading-[0.95]">{s.title}</h2>
+              <p className="mt-4 max-w-md text-base text-ash md:text-lg">{s.copy}</p>
+              <Link href={s.href} className="btn btn-accent mt-7">
+                {s.cta}
+                <Icon name="arrow" size={16} />
               </Link>
             </div>
-          </Reveal>
+          </div>
+        ))}
+      </HeroCarousel>
 
-          <Reveal delay={80} className="relative">
-            <div className="absolute inset-0 bg-[radial-gradient(90%_70%_at_50%_50%,rgba(92,225,255,0.1),transparent_65%)]" />
-            <VehicleImage colour={be6Colour("firestorm-orange")} sizes="(min-width: 1024px) 40rem, 100vw" className="relative" />
-            <p className="relative mt-1 text-center text-[0.5625rem] text-dim">
-              Official Mahindra render
-            </p>
-          </Reveal>
+      {/* 2 — TRUST STRIP --------------------------------------------------- */}
+      <section className="bg-carbon py-6 md:py-8" aria-label="Why shop with us">
+        <div className="shell">
+          <ul className="grid grid-cols-2 gap-x-4 gap-y-5 md:grid-cols-4 lg:grid-cols-8">
+            {STATS.map((s) => (
+              <li key={s.label}>
+                <p className="font-display text-xl font-extrabold tnum">{s.value}</p>
+                <p className="text-[11px] text-dim">{s.label}</p>
+              </li>
+            ))}
+            {[
+              "Fitment-checked for your car",
+              `Free shipping over ${rupees(FREE_SHIPPING_OVER)}`,
+              "Installation at our garages",
+            ].map((t) => (
+              <li key={t} className="flex items-start gap-2 text-xs text-ash">
+                <Icon name="check" size={14} className="mt-0.5 shrink-0 text-accent" />
+                {t}
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
-      {/* 2b — JUST LANDED --------------------------------------------- */}
-      {landed.length > 0 && (
-        <section className="section">
-          <div className="shell">
-            <SectionHead
-              eyebrow="Just landed"
-              title="NEWEST IN THE MARKETPLACE."
-              blurb={`Ordered by most recently verified. Inventory snapshot ${formatIST(new Date().toISOString())}.`}
-              href="/cars/latest"
-              hrefLabel="All latest cars"
-            />
-            <ul className="rail -mx-4 px-4 md:mx-0 md:grid md:grid-cols-2 md:gap-4 md:px-0 lg:grid-cols-4">
-              {landed.map((l, i) => (
-                <li key={l.id} className="w-[78vw] max-w-[340px] md:w-auto md:max-w-none">
-                  <Reveal delay={(i % 4) * 70} className="h-full">
-                    <ListingCard listing={l} sizes="(min-width:1024px) 25vw, (min-width:768px) 50vw, 78vw" />
+      {/* 3 — SHOP BY DEPARTMENT ------------------------------------------- */}
+      <section className="section bg-void">
+        <div className="shell">
+          <SectionHead eyebrow="Shop" title="Shop by department" href="/shop" hrefLabel="View all" />
+          <ul className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
+            {DEPARTMENTS.map((d, i) => {
+              const from = lowest.get(d.slug);
+              return (
+                <li key={d.slug}>
+                  <Reveal delay={(i % 4) * 55} className="h-full">
+                    <Link
+                      data-theme="dark"
+                      href={departmentHref(d.slug)}
+                      className="card card-hover relative block aspect-[4/5] overflow-hidden bg-graphite"
+                    >
+                      <Photo media={d.image} sizes="(min-width:1024px) 22vw, (min-width:768px) 24vw, 46vw" className="zoom opacity-85" />
+                      <div className="absolute inset-0 scrim-soft" />
+                      <div className="absolute inset-x-0 bottom-0 p-3.5 md:p-4">
+                        <p className="font-display text-lg font-extrabold leading-tight md:text-xl">{d.name}</p>
+                        {from !== undefined && <p className="mt-1 text-xs text-ash">Starting at {rupees(from)}</p>}
+                      </div>
+                    </Link>
                   </Reveal>
+                </li>
+              );
+            })}
+          </ul>
+          <SectionFootLink href="/shop" label="View all" />
+        </div>
+      </section>
+
+      {/* 4 — SHOP BY CAR --------------------------------------------------- */}
+      <section className="section bg-carbon">
+        <div className="shell">
+          <SectionHead
+            eyebrow="Fitment"
+            title="Shop by car"
+            blurb="Tell us what you drive and we will show what fits it."
+          />
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-10">
+            <div className="card p-5 md:p-6">
+              <FitmentPicker />
+            </div>
+            <div>
+              <p className="eyebrow mb-3">Popular models</p>
+              <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                {models.map((m) => (
+                  <li key={`${m.brandSlug}/${m.slug}`}>
+                    <Link
+                      href={`/accessories/${m.slug}`}
+                      className="card card-hover flex min-h-[44px] flex-col justify-center px-3.5 py-3"
+                    >
+                      <span className="text-[10px] uppercase tracking-[0.14em] text-dim">{m.brand}</span>
+                      <span className="text-sm font-semibold">{m.name}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 5 — SHOP BY NEED -------------------------------------------------- */}
+      <section className="section bg-void">
+        <div className="shell">
+          <SectionHead eyebrow="Popular" title="Shop by need" href="/shop" hrefLabel="All products" />
+          <ul className="grid grid-cols-2 gap-3 md:grid-cols-4">
+            {needs.map(({ d, g, n }) => (
+              <li key={`${d.slug}/${g.slug}`}>
+                <Link href={groupHref(d.slug, g.slug)} className="card card-hover flex h-full min-h-[88px] flex-col justify-between p-4">
+                  <span className="text-[10px] uppercase tracking-[0.14em] text-dim">{d.name}</span>
+                  <span className="mt-2 block font-display text-base font-bold leading-snug">{g.name}</span>
+                  <span className="mt-2 text-xs text-accent tnum">{n} products</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* 6 — BESTSELLERS --------------------------------------------------- */}
+      {bestsellers.length > 0 && (
+        <section className="section bg-carbon">
+          <div className="shell">
+            <SectionHead eyebrow="Customer favourites" title="Bestsellers" href="/shop?sort=popular" />
+            <ul className="rail -mx-4 px-4 pb-2 md:mx-0 md:px-0">
+              {bestsellers.map((item) => (
+                <li key={item.id} className="w-[62%] sm:w-[36%] md:w-[28%] lg:w-[22%]">
+                  <CatalogCard item={item} sizes="(min-width:1024px) 22vw, (min-width:768px) 28vw, 62vw" />
                 </li>
               ))}
             </ul>
-            <SectionFootLink href="/cars/latest" label="All latest cars" />
+            <SectionFootLink href="/shop?sort=popular" label="View all" />
           </div>
         </section>
       )}
 
-      {/* 3 — FEATURED CARS -------------------------------------------- */}
-      <section className="section">
+      {/* 7 — COLLECTIONS --------------------------------------------------- */}
+      <section className="section bg-void">
         <div className="shell">
-          <SectionHead
-            eyebrow="Riderzpro Certified"
-            title="CARS WORTH BUYING."
-            blurb="Every car is inspected on 200 points, its paperwork verified against VAHAN, and its price published without negotiation games."
-            href="/cars"
-            hrefLabel="All cars"
-          />
-          <ul className="rail -mx-4 px-4 md:mx-0 md:grid md:grid-cols-2 md:gap-4 md:px-0 lg:grid-cols-4">
-            {FEATURED_CARS.map((car, i) => (
-              <li key={car.slug} className="w-[78vw] max-w-[340px] md:w-auto md:max-w-none">
-                <Reveal delay={i * 70} className="h-full">
-                  <CarCard car={car} sizes="(min-width:1024px) 25vw, (min-width:768px) 50vw, 78vw" />
-                </Reveal>
-              </li>
-            ))}
-          </ul>
-          <div className="shell px-0">
-            <SectionFootLink href="/cars" label="All cars" />
-          </div>
-        </div>
-      </section>
-
-      {/* 4 — SHOP BY CAR ---------------------------------------------- */}
-      <section className="section border-y border-tint/8 bg-carbon">
-        <div className="shell">
-          <Reveal>
-            <FitmentPicker />
-          </Reveal>
-
-          <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-            {[
-              { slug: "thar", name: "Thar", brand: "Mahindra" },
-              { slug: "fortuner", name: "Fortuner", brand: "Toyota" },
-              { slug: "creta", name: "Creta", brand: "Hyundai" },
-              { slug: "scorpio-n", name: "Scorpio N", brand: "Mahindra" },
-              { slug: "xuv700", name: "XUV700", brand: "Mahindra" },
-              { slug: "seltos", name: "Seltos", brand: "Kia" },
-            ].map((m, i) => (
-              <li key={m.slug}>
-                <Reveal delay={i * 45}>
+          <SectionHead eyebrow="Collections" title="Shop by price and offer" />
+          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 md:gap-4">
+            {collections.map((c, i) => (
+              <li key={c.title}>
+                <Reveal delay={i * 55} className="h-full">
                   <Link
-                    href={`/accessories/${m.slug}`}
-                    className="card card-hover flex flex-col gap-1 p-4 text-center"
+                    data-theme="dark"
+                    href={c.href}
+                    className="card card-hover relative flex aspect-[16/10] flex-col justify-end overflow-hidden bg-graphite lg:aspect-[4/5]"
                   >
-                    <span className="font-display text-sm font-extrabold uppercase tracking-[-0.01em]">
-                      {m.name}
-                    </span>
-                    <span className="text-[10px] uppercase tracking-[0.12em] text-dim">{m.brand}</span>
+                    <Photo media={c.image} sizes="(min-width:1024px) 24vw, (min-width:640px) 48vw, 92vw" className="zoom opacity-75" />
+                    <div className="absolute inset-0 scrim-soft" />
+                    <div className="relative p-4">
+                      <p className="font-display text-xl font-extrabold leading-tight">{c.title}</p>
+                      <p className="mt-1 text-xs text-ash">{c.blurb}</p>
+                      <p className="mt-2 text-xs text-accent tnum">{c.count} products</p>
+                    </div>
                   </Link>
                 </Reveal>
               </li>
@@ -284,323 +341,161 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 5 — POPULAR ACCESSORIES -------------------------------------- */}
-      <section className="section">
-        <div className="shell">
-          <SectionHead
-            eyebrow="Accessories store"
-            title="WHAT EVERYONE'S FITTING."
-            blurb="Six categories, one fitment engine. If it shows up for your car, it fits your car."
-            href="/shop"
-            hrefLabel="Shop all"
-          />
-
-          <div className="rail -mx-4 mb-6 px-4 md:mx-0 md:flex-wrap md:px-0">
-            {CATEGORIES.map((c) => (
-              <Link key={c.slug} href={`/shop/${c.slug}`} className="chip hover:border-accent hover:text-accent">
-                {c.name}
-              </Link>
-            ))}
+      {/* 8 — ORIGINAL EQUIPMENT ------------------------------------------- */}
+      <section className="section border-y border-tint/10 bg-graphite">
+        <div className="shell grid gap-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-center lg:gap-14">
+          <div>
+            <p className="eyebrow mb-3 text-accent">Original Equipment</p>
+            <h2 className="display-3">OE parts, in every department</h2>
+            <p className="mt-4 max-w-md text-sm leading-relaxed text-ash md:text-base">
+              Original Equipment (OE) parts are made to the car maker&apos;s own specification, for a factory fit and finish.
+            </p>
           </div>
-
-          <ul className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-6">
-            {BESTSELLERS.map((p, i) => (
-              <li key={p.slug}>
-                <Reveal delay={i * 50} className="h-full">
-                  <ProductCard product={p} sizes="(min-width:1024px) 16vw, (min-width:768px) 33vw, 46vw" />
-                </Reveal>
-              </li>
-            ))}
-          </ul>
-
-          <ul className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {PRICE_BANDS.map((b, i) => (
-              <li key={b.slug}>
-                <Reveal delay={i * 50} className="h-full">
-                  <div className="card h-full p-4">
-                    <p className="font-display text-xs font-bold uppercase tracking-[0.16em] text-accent">
-                      {b.label}
-                    </p>
-                    <p className="mt-1.5 font-display text-lg font-extrabold tnum">{b.range}</p>
-                    <p className="mt-2 text-xs leading-snug text-ash">{b.blurb}</p>
-                  </div>
-                </Reveal>
+          <ul className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+            {DEPARTMENTS.map((d) => (
+              <li key={d.slug}>
+                <Link
+                  href={oeHref(d.slug)}
+                  className="chip flex min-h-[44px] w-full items-center justify-between gap-2 hover:border-accent hover:text-accent"
+                >
+                  <span className="truncate">{DEPARTMENT_BY_SLUG[d.slug].short} OE</span>
+                  <Icon name="chevron" size={11} className="shrink-0 text-accent" />
+                </Link>
               </li>
             ))}
           </ul>
         </div>
       </section>
 
-      {/* 6 — BUILD YOUR CAR ------------------------------------------- */}
-      <section className="relative overflow-hidden border-y border-tint/8">
-        <div className="absolute inset-0">
-          <Photo media="garageSpotlit" sizes="100vw" className="opacity-45" position="center 60%" />
-          <div className="absolute inset-0 bg-gradient-to-r from-void via-void/85 to-void/40" />
+      {/* 9 — BRANDS -------------------------------------------------------- */}
+      <section className="section bg-void">
+        <div className="shell">
+          <SectionHead eyebrow="Brands" title="Shop by brand" />
+          <BrandStrip />
         </div>
-        <div className="shell relative py-16 md:py-24">
-          <Reveal className="max-w-2xl">
-            <p className="eyebrow mb-3">Build your car</p>
-            <h2 className="display-2">NOT STOCK.</h2>
-            <p className="mt-4 max-w-lg text-sm leading-relaxed text-ash md:text-base">
-              Pick your car, then walk through exterior, wheels, interior, audio and performance. Every
-              option is a real part we stock, at a real installed price. You leave with a costed build
-              sheet, not a vague enquiry form.
-            </p>
+      </section>
 
-            <ul className="mt-7 grid gap-2.5 sm:grid-cols-2">
+      {/* 10 — INSTALLATION TEASER ----------------------------------------- */}
+      <section className="section bg-carbon">
+        <div className="shell grid items-center gap-8 lg:grid-cols-2 lg:gap-14">
+          <div className="card relative aspect-[16/10] overflow-hidden bg-graphite">
+            <Photo media="mechanicEngine" sizes="(min-width:1024px) 46vw, 92vw" />
+          </div>
+          <div>
+            <p className="eyebrow mb-3">Installation</p>
+            <h2 className="display-2">We fit what we sell</h2>
+            <ul className="mt-5 space-y-3 text-sm text-ash md:text-base">
               {[
-                "Live estimated build cost as you select",
-                "Parts filtered to your platform",
-                "Labour and GST included in the estimate",
-                "One tap to send the sheet to our team",
-              ].map((p) => (
-                <li key={p} className="flex items-start gap-2.5 text-sm text-chalk/85">
-                  <Icon name="check" size={15} className="mt-0.5 shrink-0 text-accent" />
-                  {p}
+                "Fitting at our garages in Bengaluru, Hyderabad and Pune.",
+                "Look for the wrench on a product: installation is available for it.",
+                "Book a slot and we confirm fitment before we start.",
+              ].map((t) => (
+                <li key={t} className="flex gap-3">
+                  <Icon name="check" size={16} className="mt-1 shrink-0 text-accent" />
+                  {t}
                 </li>
               ))}
             </ul>
-
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="/build" className="btn btn-accent">
-                Start building
-                <Icon name="arrow" size={15} />
+            <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
+              <Link href="/garage" className="btn btn-primary">
+                Visit the garage
+                <Icon name="arrow" size={16} />
               </Link>
-              <Link href="/builds" className="btn btn-outline">
-                See finished builds
-              </Link>
+              {SERVICES.map((s) => (
+                <Link
+                  key={s.href}
+                  href={s.href}
+                  className="inline-flex min-h-[44px] items-center text-sm text-ash underline underline-offset-4 hover:text-accent"
+                >
+                  {s.label}
+                </Link>
+              ))}
             </div>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* 7 — RIDERZPRO GARAGE ----------------------------------------- */}
-      <Studio
-        eyebrow="Riderzpro Garage"
-        title="26 BAYS. ONE STANDARD."
-        blurb="Installation, modification, detailing, PPF, audio, performance, off-road and interiors — all under one roof, by people who own modified cars themselves."
-        points={[
-          "Dust-controlled PPF and paint rooms",
-          "Dedicated audio bay with an RTA rig",
-          "In-house trim shop and welding bay",
-          "Photo updates on WhatsApp through your build",
-        ]}
-        media="mechanicEngine"
-        href="/garage"
-        cta="Book an appointment"
-        secondary={{ href: "/locations", label: "Find a garage" }}
-        priceNote="Bengaluru · Hyderabad · Pune"
-      />
-
-      {/* 8 — PREMIUM AUDIO -------------------------------------------- */}
-      <Studio
-        eyebrow="Premium audio"
-        title="HEAR EVERY DETAIL."
-        blurb="From an honest first upgrade to an audiophile-grade custom build. Every system is measured, tuned and re-tuned free within the first month."
-        points={[
-          "Component, DSP and fully active builds",
-          "Sound deadening done properly, in butyl",
-          "Fibreglass pods trimmed to your interior",
-          "Four packages from ₹24,900 to ₹4,50,000",
-        ]}
-        media="studioMonitors"
-        href="/audio"
-        cta="Build your audio system"
-        flip
-      />
-
-      {/* 9 — PPF & DETAILING ------------------------------------------ */}
-      <Studio
-        eyebrow="PPF & detailing"
-        title="PROTECT THE PAINT."
-        blurb="Plotter-cut paint protection film with wrapped edges, real ceramic and graphene chemistry, and correction work you can see under inspection lighting."
-        points={[
-          "10-year PPF with self-healing top coat",
-          "9H ceramic and 7-year graphene options",
-          "Before-and-after paint depth readings",
-          "Colour change wraps and chrome delete",
-        ]}
-        media="wrapHeatGun"
-        href="/ppf"
-        cta="Book detailing"
-      />
-
-      {/* 10 — OFF-ROAD ------------------------------------------------ */}
-      <Studio
-        eyebrow="Off-road garage"
-        title="BUILT FOR THE UNPAVED."
-        blurb="Thar, Gurkha, Fortuner, Wrangler, V-Cross, Scorpio N, Jimny, Hilux, Defender. Lift, protection, recovery and expedition hardware that has actually been to Ladakh."
-        points={[
-          "Lift kits with corrected geometry",
-          "Chassis-mounted sliders and skid plates",
-          "Rated recovery points and winch cradles",
-          "Roof racks, tents, drawers, dual battery",
-        ]}
-        media="defenderSaltFlat"
-        href="/off-road"
-        cta="Build my off-road SUV"
-        flip
-      />
-
-      {/* 11 — BODY KITS & FACELIFTS ----------------------------------- */}
-      <Studio
-        eyebrow="Body kits & facelifts"
-        title="MAKE YOUR CAR LOOK NEW AGAIN."
-        blurb="Turn a 2020 Creta into a 2024 Creta. A 2016 Fortuner into a Legender. Panel gaps checked with a feeler gauge, everything painted to your VIN colour code."
-        points={[
-          "Bumper, grille, lamp and DRL conversions",
-          "Wide-arch and street body kits",
-          "Painted to your factory colour code",
-          "Original parts returned to you",
-        ]}
-        media="chromeGrille"
-        href="/body-kits"
-        cta="Get a facelift quote"
-        priceNote="Popular conversions from ₹68,000"
-      />
-
-      {/* 12 — CUSTOM INTERIORS ---------------------------------------- */}
-      <Studio
-        eyebrow="Custom interiors"
-        title="THE BEST SEAT IN THE CAR."
-        blurb="Leather, alcantara, diamond stitching, ventilated and heated seats, captain conversions, electric recliners and ambient lighting — trimmed in our own workshop."
-        points={[
-          "Airbag-safe seams on every seat rebuild",
-          "Concealed fibre-optic ambient runs",
-          "Captain seats and automatic footrests",
-          "Full luxury SUV lounge conversions",
-        ]}
-        media="cockpitScreen"
-        href="/interiors"
-        cta="Design my interior"
-        flip
-      />
-
-      {/* 13 — PERFORMANCE --------------------------------------------- */}
-      <Studio
-        eyebrow="Performance garage"
-        title="MORE POWER. MORE CONTROL."
-        blurb="Custom maps written on our dyno with your fuel, not generic files. Intake, exhaust, cooling, brakes and suspension — set up as a package, not a parts list."
-        points={[
-          "Stage 1 and Stage 2 custom remapping",
-          "Original ECU map archived and restorable",
-          "Dyno sheet before and after, every time",
-          "Emissions hardware retained and functional",
-        ]}
-        media="engineBay"
-        href="/performance"
-        cta="Talk to the tuner"
-        priceNote="All work carried out within Central Motor Vehicles Rules."
-      />
-
-      {/* 14 — RIDERZPRO BUILDS ---------------------------------------- */}
-      <section className="section border-y border-tint/8 bg-carbon">
-        <div className="shell">
-          <SectionHead
-            eyebrow="Riderzpro builds"
-            title="BUILT BY US. DRIVEN BY THEM."
-            blurb="Real cars, real invoices, real owners. Every build lists what went into it and what it cost."
-            href="/builds"
-            hrefLabel="All builds"
-          />
-          <ul className="rail -mx-4 px-4 md:mx-0 md:grid md:grid-cols-3 md:gap-4 md:px-0">
-            {BUILDS.slice(0, 3).map((b, i) => (
-              <li key={b.slug} className="w-[74vw] max-w-[330px] md:w-auto md:max-w-none">
-                <Reveal delay={i * 80} className="h-full">
-                  <BuildCard build={b} sizes="(min-width:768px) 33vw, 74vw" />
-                </Reveal>
-              </li>
-            ))}
-          </ul>
-          <SectionFootLink href="/builds" label="All builds" />
-        </div>
-      </section>
-
-      {/* 15 — REVIEWS -------------------------------------------------- */}
-      <section className="section">
-        <div className="shell">
-          <SectionHead
-            eyebrow="4.8 / 5 from 3,184 customers"
-            title="WHAT THEY SAY AFTER."
-            blurb="Not testimonials we wrote. Reviews left after the car went home."
-          />
-          <ul className="rail -mx-4 px-4 md:mx-0 md:grid md:grid-cols-3 md:gap-4 md:px-0">
-            {REVIEWS.slice(0, 6).map((r, i) => (
-              <li key={r.name} className="w-[82vw] max-w-[380px] md:w-auto md:max-w-none">
-                <Reveal delay={(i % 3) * 70} className="h-full">
-                  <ReviewCard review={r} />
-                </Reveal>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
-      {/* 16 — WHY RIDERZPRO ------------------------------------------- */}
-      <section className="section border-t border-tint/8 bg-carbon">
-        <div className="shell">
-          <SectionHead
-            eyebrow="Trust system"
-            title="BUY WITH CONFIDENCE."
-            blurb="Selling cars means earning trust before anything else. This is what we do on every single listing."
-          />
-          <ul className="grid gap-px overflow-hidden border border-tint/8 bg-tint/8 sm:grid-cols-2 lg:grid-cols-3">
-            {TRUST_POINTS.map((t, i) => (
-              <li key={t.title} className="bg-carbon p-5">
-                <Reveal delay={(i % 3) * 60}>
-                  <p className="flex items-center gap-2 font-display text-sm font-extrabold uppercase tracking-[0.02em]">
-                    <Icon name="check" size={16} className="text-accent" />
-                    {t.title}
-                  </p>
-                  <p className="mt-2 text-xs leading-relaxed text-ash">{t.body}</p>
-                </Reveal>
-              </li>
-            ))}
-          </ul>
-
-          <div className="mt-8 flex flex-wrap items-center gap-4">
-            <span className="verified text-sm">
-              <Icon name="shield" size={14} />
-              Riderzpro Verified
-            </span>
-            <p className="text-sm text-ash">
-              The badge only goes on a car once all nine checks are cleared and signed off.
-            </p>
           </div>
         </div>
       </section>
 
-      {/* 17 — WHATSAPP CTA -------------------------------------------- */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0">
-          <Photo media="cityNightRain" sizes="100vw" className="opacity-35" />
-          <div className="absolute inset-0 bg-gradient-to-b from-void via-void/80 to-void" />
+      {/* 11 — WHY RIDERZPRO ------------------------------------------------ */}
+      <section className="section bg-void">
+        <div className="shell">
+          <SectionHead eyebrow="Why Riderzpro" title="Made, fitted and backed by us" />
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-14">
+            <ul className="grid gap-4 sm:grid-cols-2">
+              {WHY.map((w) => (
+                <li key={w.title} className="card p-5">
+                  <h3 className="font-display text-base font-bold">{w.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-ash">{w.body}</p>
+                </li>
+              ))}
+            </ul>
+            <dl className="grid grid-cols-2 content-start gap-x-4 gap-y-6">
+              {STATS.map((s) => (
+                <div key={s.label} className="border-t border-tint/15 pt-3">
+                  <dd className="font-display text-3xl font-extrabold tnum">{s.value}</dd>
+                  <dt className="mt-1 text-xs text-dim">{s.label}</dt>
+                </div>
+              ))}
+            </dl>
+          </div>
         </div>
-        <div className="shell relative py-16 text-center md:py-24">
-          <Reveal>
-            <p className="eyebrow mb-4">One message. Any question.</p>
-            <h2 className="display-2 mx-auto max-w-3xl">YOUR CAR. YOUR RULES.</h2>
-            <p className="mx-auto mt-4 max-w-lg text-sm text-ash md:text-base">
-              Fitment doubts, build budgets, a car you want us to source, a quote you want matched —
-              message us and a human replies. Usually inside twenty minutes.
-            </p>
-            <div className="mt-8 flex flex-wrap justify-center gap-3">
-              <a
-                href={whatsapp("Hi Riderzpro, I'd like to talk about my car.")}
-                target="_blank"
-                rel="noreferrer noopener"
-                className="btn btn-whatsapp"
-              >
-                <Icon name="whatsapp" size={17} />
-                Ask on WhatsApp
-              </a>
-              <a href={SITE.phoneHref} className="btn btn-outline">
-                <Icon name="phone" size={15} />
-                {SITE.phone}
-              </a>
-            </div>
-            <p className="mt-6 text-xs text-dim">{SITE.hours}</p>
-          </Reveal>
+      </section>
+
+      {/* 12 — REVIEWS ------------------------------------------------------ */}
+      <section className="section bg-carbon">
+        <div className="shell">
+          <SectionHead eyebrow="Reviews" title="What customers say" />
+          <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {REVIEWS.slice(0, 6).map((r) => (
+              <li key={r.name}>
+                <ReviewCard review={r} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* 13 — STORES ------------------------------------------------------- */}
+      <section className="section bg-void">
+        <div className="shell">
+          <SectionHead eyebrow="Visit us" title="Our garages" href="/locations" hrefLabel="All locations" />
+          <ul className="grid gap-3 md:grid-cols-3 md:gap-4">
+            {LOCATIONS.map((l) => (
+              <li key={l.slug}>
+                <Link href="/locations" className="card card-hover flex h-full min-h-[44px] flex-col p-5">
+                  <span className="font-display text-lg font-bold">{l.city}</span>
+                  <span className="mt-1 text-sm text-ash">{l.name}</span>
+                  <span className="mt-2 text-xs leading-relaxed text-dim">{l.address}</span>
+                  <span className="mt-4 inline-flex items-center gap-1 text-xs text-accent">
+                    Hours and directions
+                    <Icon name="arrow" size={12} />
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <SectionFootLink href="/locations" label="All locations" />
+        </div>
+      </section>
+
+      {/* 14 — WHATSAPP ----------------------------------------------------- */}
+      <section data-theme="dark" className="relative overflow-hidden bg-void py-16 md:py-24">
+        <Photo media="garageSpotlit" sizes="100vw" className="opacity-60" />
+        <div className="absolute inset-0 scrim" />
+        <div className="shell relative text-center">
+          <h2 className="display-2 mx-auto max-w-2xl text-balance">Not sure what fits your car?</h2>
+          <p className="mx-auto mt-4 max-w-md text-base text-ash">
+            Message us your car model and what you are looking for. A real person replies.
+          </p>
+          <a
+            href={whatsapp("Hi Riderzpro, I'd like help choosing accessories for my car.")}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn-accent mt-7"
+          >
+            <Icon name="whatsapp" size={18} />
+            Chat on WhatsApp
+          </a>
+          <p className="mt-4 text-xs text-dim">{SITE.hours}</p>
         </div>
       </section>
     </>
