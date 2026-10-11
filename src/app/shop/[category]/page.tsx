@@ -82,12 +82,10 @@ export default async function CategoryPage({
             <span className="text-[11px] uppercase tracking-[0.14em] text-dim">Shop by group</span>
             <Link
               href={`/shop/${cat.slug}`}
-              className={`chip hover:border-accent hover:text-accent ${
-                filters.groups.length === 0 && !filters.oe ? "chip-active" : ""
-              }`}
+              className={`chip ${filters.groups.length === 0 && !filters.oe ? "chip-active" : "hover:border-accent hover:text-accent"}`}
             >
               All
-              <span className="text-dim tnum">{items.length}</span>
+              <span className="opacity-60 tnum">{items.length}</span>
             </Link>
             {dept.groups
               .filter((g) => groupCounts.has(g.slug))
@@ -95,20 +93,18 @@ export default async function CategoryPage({
                 <Link
                   key={g.slug}
                   href={groupHref(slug, g.slug)}
-                  className={`chip hover:border-accent hover:text-accent ${
-                    filters.groups.includes(g.slug) ? "chip-active" : ""
-                  }`}
+                  className={`chip ${filters.groups.includes(g.slug) ? "chip-active" : "hover:border-accent hover:text-accent"}`}
                 >
                   {g.name}
-                  <span className="text-dim tnum">{groupCounts.get(g.slug)}</span>
+                  <span className="opacity-60 tnum">{groupCounts.get(g.slug)}</span>
                 </Link>
               ))}
             <Link
               href={oeHref(slug)}
-              className={`chip hover:border-accent hover:text-accent ${filters.oe ? "chip-active" : ""}`}
+              className={`chip ${filters.oe ? "chip-active" : "hover:border-accent hover:text-accent"}`}
             >
               OE
-              <span className="text-dim tnum">{oeCount}</span>
+              <span className="opacity-60 tnum">{oeCount}</span>
             </Link>
           </div>
 
@@ -122,7 +118,7 @@ export default async function CategoryPage({
                   className="chip hover:border-accent hover:text-accent"
                 >
                   {b.name}
-                  <span className="text-dim tnum">{items.filter((i) => i.brand === b.slug).length}</span>
+                  <span className="opacity-60 tnum">{items.filter((i) => i.brand === b.slug).length}</span>
                 </Link>
               ))}
             </div>
@@ -156,7 +152,7 @@ export default async function CategoryPage({
                   >
                     <Icon name="chevron" size={11} className="text-accent" />
                     {s.name}
-                    <span className="text-dim tnum">{s.count}</span>
+                    <span className="opacity-60 tnum">{s.count}</span>
                   </Link>
                 </li>
               ) : (
