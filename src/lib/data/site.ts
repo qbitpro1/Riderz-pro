@@ -23,45 +23,6 @@ export function whatsapp(message: string): string {
   return `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(message)}`;
 }
 
-export type NavItem = { label: string; href: string; blurb?: string };
-
-export const PRIMARY_NAV: NavItem[] = [
-  { label: "BE 6", href: "/be-6", blurb: "The flagship — every variant, then built your way" },
-  { label: "Buy Cars", href: "/cars", blurb: "Verified, inspected, ready to drive" },
-  { label: "Sell Car", href: "/sell", blurb: "Valuation in 60 seconds" },
-  { label: "Shop", href: "/shop", blurb: "₹499 to ₹4 lakh, fitment-checked" },
-  { label: "Build", href: "/build", blurb: "Configure your car, get a costed quote" },
-  { label: "Audio", href: "/audio", blurb: "Component, DSP and signature builds" },
-  { label: "PPF", href: "/ppf", blurb: "Film, ceramic, correction, wraps" },
-  { label: "Off-Road", href: "/off-road", blurb: "Lift, protection, recovery, expedition" },
-  { label: "Garage", href: "/garage", blurb: "Book installation and service" },
-];
-
-export const SECONDARY_NAV: NavItem[] = [
-  { label: "BE 6 Specifications", href: "/be-6/specifications" },
-  { label: "RIDERZPRO BE 6 Limited Edition", href: "/be-6/limited-edition" },
-  { label: "Shop by Brand", href: "/brands" },
-  { label: "RECOIL Catalogue", href: "/recoil" },
-  { label: "Build My Audio System", href: "/build-audio" },
-  { label: "Compare Products", href: "/compare" },
-  { label: "PPF Films & Guide", href: "/ppf/films" },
-  { label: "Autoform Seat Covers", href: "/autoform" },
-  { label: "Body Kits & Facelifts", href: "/body-kits" },
-  { label: "Custom Interiors", href: "/interiors" },
-  { label: "Performance", href: "/performance" },
-  { label: "Riderzpro Builds", href: "/builds" },
-  { label: "Locations", href: "/locations" },
-  { label: "List Your Cars", href: "/partners" },
-];
-
-export const BOTTOM_NAV = [
-  { label: "Home", href: "/", icon: "home" },
-  { label: "Cars", href: "/cars", icon: "car" },
-  { label: "Shop", href: "/shop", icon: "bag" },
-  { label: "Build", href: "/build", icon: "build" },
-  { label: "Garage", href: "/garage", icon: "garage" },
-] as const;
-
 export type Location = {
   slug: string;
   name: string;

@@ -2,11 +2,18 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Icon, type IconName } from "@/components/ui/Icon";
-import { BOTTOM_NAV } from "@/lib/data/site";
+import { Icon } from "@/components/ui/Icon";
+import { useCart } from "@/components/cart/CartContext";
+import { navActions, useNavState } from "@/components/nav/navStore";
+import { BOTTOM_NAV } from "@/lib/data/nav";
+
+const cell = "flex h-16 w-full flex-col items-center justify-center gap-1 transition-colors";
+const labelCls = "font-display text-[10px] font-bold uppercase tracking-[0.1em]";
 
 export function BottomNav() {
   const pathname = usePathname();
+  const { count } = useCart();
+  const { drawer, search } = useNavState();
 
   return (
     <nav
@@ -15,25 +22,46 @@ export function BottomNav() {
     >
       <ul className="grid grid-cols-5">
         {BOTTOM_NAV.map((item) => {
-          const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+          const icon = <Icon name={item.icon} size={21} />;
+
+          if (item.kind === "search" || item.kind === "menu") {
+            const on = item.kind === "search" ? search : drawer;
+            return (
+              <li key={item.label}>
+                <button
+                  type="button"
+                  onClick={item.kind === "search" ? navActions.openSearch : navActions.openDrawer}
+                  aria-haspopup="dialog"
+                  aria-expanded={on}
+                  className={`${cell} ${on ? "text-accent" : "text-ash"}`}
+                >
+                  {icon}
+                  <span className={labelCls}>{item.label}</span>
+                </button>
+              </li>
+            );
+          }
+
+          const href = item.href ?? "/";
+          const active = href === "/" ? pathname === "/" : pathname.startsWith(href);
           return (
-            <li key={item.href}>
+            <li key={item.label}>
               <Link
-                href={item.href}
+                href={href}
                 aria-current={active ? "page" : undefined}
-                className={`flex h-16 flex-col items-center justify-center gap-1 transition-colors ${
-                  active ? "text-accent" : "text-ash"
-                }`}
+                aria-label={item.kind === "cart" ? `Cart, ${count} item${count === 1 ? "" : "s"}` : undefined}
+                className={`${cell} ${active ? "text-accent" : "text-ash"}`}
               >
                 <span className="relative">
-                  <Icon name={item.icon as IconName} size={21} />
-                  {active && (
-                    <span className="absolute -top-3 left-1/2 h-0.5 w-6 -translate-x-1/2 bg-accent" />
+                  {icon}
+                  {active && <span className="absolute -top-3 left-1/2 h-0.5 w-6 -translate-x-1/2 bg-accent" />}
+                  {item.kind === "cart" && count > 0 && (
+                    <span className="absolute -right-2 -top-1.5 grid h-4 min-w-4 place-items-center rounded-full bg-accent px-1 text-[10px] font-bold text-on-accent tnum">
+                      {count > 9 ? "9+" : count}
+                    </span>
                   )}
                 </span>
-                <span className="font-display text-[10px] font-bold uppercase tracking-[0.1em]">
-                  {item.label}
-                </span>
+                <span className={labelCls}>{item.label}</span>
               </Link>
             </li>
           );
