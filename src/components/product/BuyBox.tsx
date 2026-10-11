@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useCart } from "@/components/cart/CartContext";
 import { Icon } from "@/components/ui/Icon";
 import { Stars } from "@/components/ui/Section";
+import { WishlistButton } from "@/components/wishlist/WishlistButton";
 import { whatsapp } from "@/lib/data/site";
 import { rupees } from "@/lib/format";
 import { FREE_SHIPPING_OVER } from "@/lib/store/shipping";
@@ -238,6 +239,8 @@ export function BuyBox({ detail }: { detail: ProductDetail }) {
           </a>
         )}
       </div>
+
+      <WishlistButton variant="inline" className="mt-3" item={{ slug: detail.slug, href: productHref(detail.slug), title: detail.title, brandName: detail.brandName, price: detail.price, mrp: detail.mrp, image: detail.images[0], hasOptions: detail.options.length > 0 }} />
 
       {/* Availability */}
       <p className="mt-4 flex flex-wrap items-center gap-x-3 text-sm">

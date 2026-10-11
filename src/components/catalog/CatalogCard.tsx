@@ -6,6 +6,8 @@ import { Stars } from "@/components/ui/Section";
 import { rupees } from "@/lib/format";
 import type { CatalogItem } from "@/lib/catalog/types";
 import { CatalogQuickAction } from "./CatalogQuickAction";
+import { WishlistButton } from "@/components/wishlist/WishlistButton";
+import type { WishlistInput } from "@/components/wishlist/wishlistStore";
 
 /**
  * One card for every brand. Two things vary and both are carried by the item
@@ -24,7 +26,7 @@ export function CatalogCard({
   const off = item.price && item.mrp && item.mrp > item.price ? Math.round(((item.mrp - item.price) / item.mrp) * 100) : 0;
 
   return (
-    <article className="card card-hover flex h-full flex-col">
+    <article className="card card-hover relative flex h-full flex-col">
       <Link
         href={item.href}
         className={`relative block aspect-square overflow-hidden ${
@@ -46,6 +48,7 @@ export function CatalogCard({
           <span className="chip absolute bottom-2.5 left-2.5 border-gold/40 bg-void/70 text-gold">Bestseller</span>
         )}
       </Link>
+      <WishlistButton variant="overlay" item={wishlistItem(item)} className="absolute right-2.5 top-2.5" />
 
       <div className="flex flex-1 flex-col p-3.5">
         <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em]">
@@ -104,6 +107,25 @@ export function CatalogCard({
       </div>
     </article>
   );
+}
+
+function wishlistItem(item: CatalogItem): WishlistInput {
+  const img = item.image;
+  return {
+    slug: item.slug,
+    href: item.href,
+    title: item.title,
+    brandName: item.brandName,
+    price: item.price,
+    mrp: item.mrp,
+    hasOptions: item.hasOptions,
+    image:
+      img.kind === "media"
+        ? { kind: "media", key: img.key, alt: img.alt ?? item.title }
+        : img.kind === "remote"
+          ? { kind: "remote", src: img.src, alt: img.alt, fit: img.fit, tone: img.tone }
+          : undefined,
+  };
 }
 
 function CardImage({ item, sizes }: { item: CatalogItem; sizes: string }) {
