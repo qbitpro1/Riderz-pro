@@ -34,6 +34,8 @@ export function WhatsAppFab() {
   }, []);
 
   const ctx = CONTEXT.find((c) => c.match.test(pathname));
+  // Product pages pin an add-to-cart bar above the bottom nav on phones; sit above it.
+  const lift = pathname.startsWith("/products/") ? "bottom-[152px]" : "bottom-[76px]";
   const label = ctx?.label ?? "Chat with us";
   const message = ctx?.message ?? "Hi Riderzpro, I have a question about ";
 
@@ -43,7 +45,7 @@ export function WhatsAppFab() {
       target="_blank"
       rel="noreferrer noopener"
       aria-label={`${label} on WhatsApp`}
-      className={`fixed bottom-[76px] right-4 z-50 flex h-13 items-center gap-2 rounded-full bg-[#1faa53] pl-3.5 pr-4 py-3 font-display text-xs font-bold uppercase tracking-[0.12em] text-white shadow-[0_14px_40px_-12px_rgba(31,170,83,0.85)] transition-all duration-300 lg:bottom-6 lg:right-6 ${
+      className={`fixed ${lift} right-4 z-50 flex h-13 items-center gap-2 rounded-full bg-[#1faa53] pl-3.5 pr-4 py-3 font-display text-xs font-bold uppercase tracking-[0.12em] text-white shadow-[0_14px_40px_-12px_rgba(31,170,83,0.85)] transition-all duration-300 lg:bottom-6 lg:right-6 ${
         visible ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-4 opacity-0"
       }`}
     >
