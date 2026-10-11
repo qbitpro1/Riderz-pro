@@ -3,32 +3,16 @@ import { Logo } from "@/components/brand/Logo";
 import { Icon } from "@/components/ui/Icon";
 import { LOCATIONS, SITE, whatsapp } from "@/lib/data/site";
 import { LANDING_MODELS } from "@/lib/data/vehicles";
+import { CARS_NAV, DEPARTMENT_MENUS, SERVICES_NAV, SHOP_BY_LINKS } from "@/lib/data/nav";
 
 const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
   {
-    title: "Riderzpro",
-    links: [
-      { label: "Buy Cars", href: "/cars" },
-      { label: "Sell Your Car", href: "/sell" },
-      { label: "Shop Accessories", href: "/shop" },
-      { label: "Build Your Car", href: "/build" },
-      { label: "Riderzpro Builds", href: "/builds" },
-    ],
+    title: "Shop",
+    links: DEPARTMENT_MENUS.map((d) => ({ label: d.label, href: d.href })),
   },
-  {
-    title: "Studios",
-    links: [
-      { label: "Premium Audio", href: "/audio" },
-      { label: "RECOIL Catalogue", href: "/recoil" },
-      { label: "Build My Audio System", href: "/build-audio" },
-      { label: "PPF & Detailing", href: "/ppf" },
-      { label: "Off-Road Garage", href: "/off-road" },
-      { label: "Body Kits & Facelifts", href: "/body-kits" },
-      { label: "Custom Interiors", href: "/interiors" },
-      { label: "Performance Garage", href: "/performance" },
-      { label: "Riderzpro Garage", href: "/garage" },
-    ],
-  },
+  { title: "Shop by", links: SHOP_BY_LINKS },
+  { title: "Services", links: SERVICES_NAV.links },
+  { title: "Cars", links: CARS_NAV.links },
   {
     title: "Support",
     links: [
@@ -37,11 +21,6 @@ const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
       { label: "Returns", href: "/support/returns" },
       { label: "Warranty", href: "/support/warranty" },
       { label: "Locations", href: "/locations" },
-    ],
-  },
-  {
-    title: "Company",
-    links: [
       { label: "Why Riderzpro", href: "/why-riderzpro" },
       { label: "Privacy Policy", href: "/legal/privacy" },
       { label: "Terms of Service", href: "/legal/terms" },
@@ -53,7 +32,7 @@ export function Footer() {
   return (
     <footer className="relative mt-px border-t border-tint/8 bg-carbon">
       <div className="shell py-12 md:py-16">
-        <div className="grid gap-10 lg:grid-cols-[1.3fr_2.4fr]">
+        <div className="grid gap-10 lg:grid-cols-[1fr_2.6fr]">
           <div>
             <Logo className="text-3xl" />
             <p className="mt-3 font-display text-sm font-bold uppercase tracking-[0.24em] text-ash">
@@ -88,7 +67,7 @@ export function Footer() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-8 sm:grid-cols-4">
+          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 xl:grid-cols-5">
             {COLUMNS.map((col) => (
               <div key={col.title}>
                 <p className="mb-4 font-display text-[11px] font-bold uppercase tracking-[0.18em] text-dim">
