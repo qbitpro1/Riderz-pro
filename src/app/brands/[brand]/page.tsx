@@ -12,10 +12,12 @@ import {
   catalogFor,
   filtersFromQuery,
   getBrand,
+  sortItems,
   type CatalogQuery,
 } from "@/lib/catalog";
 import { CATEGORIES } from "@/lib/data/products";
 import { whatsapp } from "@/lib/data/site";
+import { breadcrumbLd, itemListLd, ldJson, pageMeta } from "@/lib/data/seo";
 
 export function generateStaticParams() {
   return BRANDS.map((b) => ({ brand: b.slug }));
@@ -25,11 +27,11 @@ export async function generateMetadata({ params }: { params: Promise<{ brand: st
   const { brand } = await params;
   const b = getBrand(brand);
   if (!b) return {};
-  return {
-    title: `${b.name} — ${b.tagline}`,
+  return pageMeta({
+    title: `${b.name}: ${b.tagline}`,
     description: b.blurb,
-    alternates: { canonical: `/brands/${b.slug}` },
-  };
+    path: `/brands/${b.slug}`,
+  });
 }
 
 export default async function BrandPage({
@@ -51,6 +53,8 @@ export default async function BrandPage({
 
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: ldJson(breadcrumbLd([{ name: "Home", path: "/" }, { name: "Brands", path: "/brands" }, { name: b.name, path: `/brands/${b.slug}` }])) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: ldJson(itemListLd(`${b.name} products`, sortItems(items, "popular").slice(0, 24).map((i) => ({ name: i.title, path: i.href })))) }} />
       <PageHero
         eyebrow={b.position}
         title={`${b.name.toUpperCase()}.`}

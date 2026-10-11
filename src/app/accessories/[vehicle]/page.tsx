@@ -7,13 +7,14 @@ import { SectionHead } from "@/components/ui/Section";
 import { Icon } from "@/components/ui/Icon";
 import { Accordion } from "@/components/ui/Accordion";
 import { LANDING_MODELS, findModelBySlug } from "@/lib/data/vehicles";
-import { EMPTY_FILTERS, itemsForModel } from "@/lib/catalog";
+import { EMPTY_FILTERS, itemsForModel, sortItems } from "@/lib/catalog";
 import { FACELIFT_CONVERSIONS } from "@/lib/data/services";
 import { CARS } from "@/lib/data/cars";
 import { CarCard } from "@/components/cars/CarCard";
 import { whatsapp } from "@/lib/data/site";
 import { rupees } from "@/lib/format";
 import type { MediaKey } from "@/lib/media";
+import { breadcrumbLd, itemListLd, ldJson, pageMeta } from "@/lib/data/seo";
 
 export function generateStaticParams() {
   return LANDING_MODELS.map((m) => ({ vehicle: m.slug }));
@@ -28,13 +29,13 @@ export async function generateMetadata({
   const model = findModelBySlug(vehicle);
   if (!model) return {};
   const title = `${model.name} Accessories & Modification — ${model.brand} ${model.name}`;
-  return {
+  return pageMeta({
     title,
     description: `Accessories, lighting, audio, interiors, PPF and ${
       model.offroad ? "off-road" : "performance"
     } upgrades for the ${model.brand} ${model.name}. Fitment-checked for every variant and year, installed at Riderzpro garages.`,
-    alternates: { canonical: `/accessories/${model.slug}` },
-  };
+    path: `/accessories/${model.slug}`,
+  });
 }
 
 const HERO_MEDIA: Record<string, MediaKey> = {
@@ -109,6 +110,8 @@ export default async function VehicleAccessoriesPage({
 
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: ldJson(breadcrumbLd([{ name: "Home", path: "/" }, { name: "Shop", path: "/shop" }, { name: `${model.brand} ${model.name} accessories`, path: `/accessories/${model.slug}` }])) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: ldJson(itemListLd(`${model.brand} ${model.name} accessories`, sortItems(products, "popular").slice(0, 24).map((i) => ({ name: i.title, path: i.href })))) }} />
       <PageHero
         eyebrow={`${model.brand} ${model.name}`}
         title={`${model.name.toUpperCase()} ACCESSORIES & MODIFICATION.`}

@@ -1,4 +1,75 @@
+import type { Metadata } from "next";
 import type { MediaKey } from "@/lib/media";
+import { SITE } from "@/lib/data/site";
+
+/* ------------------------------------------------------- shared SEO helpers */
+/* Pure functions, no catalogue import: safe in any server file. */
+
+/** Absolute URL for a site path. */
+export const absUrl = (path: string): string => `${SITE.url}${path}`;
+
+/** JSON for a `<script type="application/ld+json">`; `<` is escaped so data can never close the tag. */
+export const ldJson = (data: unknown): string => JSON.stringify(data).replace(/</g, "\\u003c");
+
+export type LdLink = { name: string; path: string };
+
+export function breadcrumbLd(trail: LdLink[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: trail.map((t, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: t.name,
+      item: absUrl(t.path),
+    })),
+  };
+}
+
+export function itemListLd(name: string, items: LdLink[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name,
+    numberOfItems: items.length,
+    itemListElement: items.map((t, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: t.name,
+      url: absUrl(t.path),
+    })),
+  };
+}
+
+/**
+ * Page metadata with a canonical that ignores the query string (filtered views
+ * such as `?group=…&oe=1&sort=…` all point at the clean page), plus Open Graph
+ * fields. A page's own `openGraph` replaces the layout's wholesale, so
+ * siteName / locale / type are repeated here.
+ */
+export function pageMeta(opts: { title: string; description: string; path: string }): Metadata {
+  return {
+    title: opts.title,
+    description: opts.description,
+    alternates: { canonical: opts.path },
+    openGraph: {
+      type: "website",
+      locale: "en_IN",
+      siteName: SITE.name,
+      title: `${opts.title} | ${SITE.name}`,
+      description: opts.description,
+      url: opts.path,
+      images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Riderzpro: Car & Bike Accessories" }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${opts.title} | ${SITE.name}`,
+      description: opts.description,
+      images: ["/twitter-image"],
+    },
+  };
+}
+
 
 export type SeoLanding = {
   slug: string;
@@ -13,6 +84,8 @@ export type SeoLanding = {
   secondary?: { href: string; label: string };
   sections: { heading: string; body: string }[];
   links: { label: string; href: string }[];
+  /** Render the store block: departments, collections and brands. */
+  store?: boolean;
 };
 
 export const SEO_LANDINGS: SeoLanding[] = [
@@ -102,41 +175,46 @@ export const SEO_LANDINGS: SeoLanding[] = [
   },
   {
     slug: "car-accessories",
-    eyebrow: "Car accessories",
+    eyebrow: "Car & bike accessories",
     h1: "CAR ACCESSORIES THAT ACTUALLY FIT.",
-    title: "Car Accessories Online — Fitment-Checked for Your Exact Variant",
+    title: "Car Accessories Online India — Seat Covers, Floor Mats, Audio, Lighting & More",
     description:
-      "Buy car accessories online in India: floor mats, seat covers, lighting, audio, roof carriers, off-road gear and performance parts. Checked against your variant before dispatch.",
+      "Buy car accessories online in India: seat covers, floor mats, speakers and amplifiers, lighting, protection, utilities and off-road gear. Made and sold by Riderzpro, fitment-checked for your car and fitted at our garages.",
     intro:
-      "Ninety percent of accessory returns are fitment problems. Tell us your brand, model, variant and year once, and we only ever show you parts that fit that car.",
+      "Riderzpro makes and sells car accessories. Pick your car once and the shop shows what fits it: seat covers cut to your seat pattern, mats cut to your floor, lighting and audio matched to your model.",
     media: "tailLightBokeh",
     cta: { href: "/shop", label: "Shop accessories" },
     secondary: { href: "/garage", label: "Book installation" },
+    store: true,
     sections: [
       {
-        heading: "Eight departments, one fitment engine",
-        body: "Exterior, lighting, interior, audio, off-road and performance. Save your car once and every listing is filtered against it, including on your phone.",
+        heading: "Eight departments, one shop",
+        body: "Interior, exterior, multimedia, protection, utilities, off-roading, lighting and a performance and travel section. Each department is split into the product types people actually search for, and every one has an Original Equipment view.",
       },
       {
-        heading: "₹299 to ₹2 lakh, deliberately",
-        body: "We stock the ₹899 steering cover and the ₹4 lakh audio build, because the same customer often buys both — three years apart.",
+        heading: "Fitment checked before dispatch",
+        body: "Tell us your make, model, variant and year and we confirm the part fits before it ships. If a part we confirmed as compatible does not fit, we collect it and refund in full.",
       },
       {
-        heading: "Installation available on everything",
-        body: "Anything bought from us can be fitted at a Riderzpro garage, usually the same day, with a 12-month workmanship warranty.",
+        heading: "Several brands, one cart",
+        body: "The Riderzpro house range sits next to RECOIL and Blaupunkt car audio and Autoform seat covers. Filter across all of them by brand, department, price and fitment, and check out once.",
       },
       {
-        heading: "Fitment guarantee",
-        body: "If a part we confirmed as compatible does not fit, we collect it at our cost and refund in full — including the labour you paid us.",
+        heading: "Fitted at our garages",
+        body: "Anything bought here can be fitted at a Riderzpro garage in Bengaluru, Hyderabad or Pune, with a 12-month workmanship warranty on the fitting.",
+      },
+      {
+        heading: "Savings only where they are real",
+        body: "Products show their selling price and MRP. The Biggest savings collection only includes items where the price sits at least 10% below the MRP.",
       },
     ],
     links: [
-      { label: "Exterior", href: "/shop/exterior" },
-      { label: "Lighting", href: "/shop/lighting" },
-      { label: "Interior", href: "/shop/interior" },
-      { label: "Audio", href: "/shop/multimedia" },
-      { label: "Off-road", href: "/shop/off-roading" },
-      { label: "Performance", href: "/shop/accessories?group=performance" },
+      { label: "Bestsellers", href: "/collections/bestsellers" },
+      { label: "Under \u20b9999", href: "/collections/under-999" },
+      { label: "All collections", href: "/collections" },
+      { label: "Shop by brand", href: "/brands" },
+      { label: "Book installation", href: "/garage" },
+      { label: "Audio builds", href: "/audio" },
     ],
   },
   {

@@ -8,7 +8,8 @@ import { SectionHead } from "@/components/ui/Section";
 import { Icon } from "@/components/ui/Icon";
 import { CATEGORIES, getCategory, type CategorySlug } from "@/lib/data/products";
 import { DEPARTMENT_BY_SLUG, groupHref, oeHref } from "@/lib/data/taxonomy";
-import { BRANDS, CATALOG, filtersFromQuery, type CatalogQuery } from "@/lib/catalog";
+import { BRANDS, CATALOG, filtersFromQuery, sortItems, type CatalogQuery } from "@/lib/catalog";
+import { breadcrumbLd, itemListLd, ldJson, pageMeta } from "@/lib/data/seo";
 
 export function generateStaticParams() {
   return CATEGORIES.map((c) => ({ category: c.slug }));
@@ -22,11 +23,12 @@ export async function generateMetadata({
   const { category } = await params;
   const cat = getCategory(category);
   if (!cat) return {};
-  return {
-    title: `${cat.name} Car Accessories — ${cat.tagline}`,
+  // Canonical ignores ?group= / ?oe= / ?max= / ?sort= so every filtered view consolidates here.
+  return pageMeta({
+    title: `${cat.name} Car Accessories: ${cat.tagline}`,
     description: cat.blurb,
-    alternates: { canonical: `/shop/${cat.slug}` },
-  };
+    path: `/shop/${cat.slug}`,
+  });
 }
 
 export default async function CategoryPage({
@@ -66,6 +68,8 @@ export default async function CategoryPage({
 
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: ldJson(breadcrumbLd([{ name: "Home", path: "/" }, { name: "Shop", path: "/shop" }, { name: cat.name, path: `/shop/${cat.slug}` }])) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: ldJson(itemListLd("Products", sortItems(items, "popular").slice(0, 24).map((i) => ({ name: i.title, path: i.href })))) }} />
       <PageHero eyebrow={`${cat.name} accessories`} title={cat.tagline.toUpperCase()} blurb={cat.blurb} media={cat.image} size="sm" />
 
       <section className="section">

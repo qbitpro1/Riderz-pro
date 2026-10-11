@@ -5,11 +5,29 @@ import { Reveal } from "@/components/ui/Reveal";
 import { SectionHead } from "@/components/ui/Section";
 import { LANDING_MODELS } from "@/lib/data/vehicles";
 import { LOCATIONS, whatsapp } from "@/lib/data/site";
-import type { SeoLanding } from "@/lib/data/seo";
+import { DEPARTMENTS, departmentHref } from "@/lib/data/taxonomy";
+import { COLLECTIONS } from "@/lib/data/collections";
+import { BRANDS, CATALOG } from "@/lib/catalog";
+import { breadcrumbLd, itemListLd, ldJson, type SeoLanding } from "@/lib/data/seo";
 
 export function SeoLandingPage({ landing }: { landing: SeoLanding }) {
+  const path = `/${landing.slug}`;
+  const collections = landing.store ? COLLECTIONS.filter((c) => CATALOG.some(c.match)) : [];
+  const schema: object[] = [
+    breadcrumbLd([
+      { name: "Home", path: "/" },
+      { name: landing.eyebrow, path },
+    ]),
+    ...(landing.store
+      ? [itemListLd("Car accessory departments", DEPARTMENTS.map((d) => ({ name: d.name, path: departmentHref(d.slug) })))]
+      : []),
+  ];
+
   return (
     <>
+      {schema.map((data, i) => (
+        <script key={i} type="application/ld+json" dangerouslySetInnerHTML={{ __html: ldJson(data) }} />
+      ))}
       <PageHero
         eyebrow={landing.eyebrow}
         title={landing.h1}
@@ -54,6 +72,46 @@ export function SeoLandingPage({ landing }: { landing: SeoLanding }) {
           </div>
         </div>
       </section>
+
+      {landing.store && (
+        <section className="section border-t border-tint/8">
+          <div className="shell">
+            <SectionHead eyebrow="Departments" title="SHOP BY DEPARTMENT." href="/shop" hrefLabel="Whole shop" />
+            <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {DEPARTMENTS.map((d) => (
+                <li key={d.slug}>
+                  <Link href={departmentHref(d.slug)} className="card block h-full p-5 hover:border-accent">
+                    <p className="font-display text-base font-extrabold uppercase">{d.name}</p>
+                    <p className="mt-2 text-xs leading-relaxed text-ash">{d.tagline}</p>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+
+            <p className="label mt-10">Collections</p>
+            <ul className="flex flex-wrap gap-2">
+              {collections.map((c) => (
+                <li key={c.slug}>
+                  <Link href={`/collections/${c.slug}`} className="chip hover:border-accent hover:text-accent">
+                    {c.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+
+            <p className="label mt-8">Brands</p>
+            <ul className="flex flex-wrap gap-2">
+              {BRANDS.map((b) => (
+                <li key={b.slug}>
+                  <Link href={`/brands/${b.slug}`} className="chip hover:border-accent hover:text-accent">
+                    {b.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
 
       <section className="section border-y border-tint/8 bg-carbon">
         <div className="shell">
