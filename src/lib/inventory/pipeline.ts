@@ -1,3 +1,4 @@
+import "server-only";
 import { normalizeVehicle, type NormalizedVehicle, type RawVehicle } from "./normalize-vehicle";
 import type { InventoryType, VerificationTier } from "./network";
 

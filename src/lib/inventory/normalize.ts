@@ -1,3 +1,4 @@
+import "server-only";
 import { lakh, number as fmtNumber } from "@/lib/format";
 import type { DataConfidence, Listing } from "./types";
 

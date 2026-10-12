@@ -1,3 +1,4 @@
+import "server-only";
 import feed from "../../../../data/inventory/dealer-feed.json";
 import { buildDescription, scoreConfidence, slugFor } from "../normalize";
 import { emptyCondition, type Listing } from "../types";

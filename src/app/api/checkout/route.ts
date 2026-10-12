@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
-import { getProductDetail } from "@/lib/store/products";
 import { assertNoUserErrors, ShopifyError, storefront, type UserError } from "@/lib/shopify/client";
 import { isShopifyConfigured } from "@/lib/shopify/config";
-import { parseLineId, resolveLines, type LineRequest } from "@/lib/shopify/variants";
+import { canonicalLineId, checkBuyable, resolveLines, type LineRequest } from "@/lib/shopify/variants";
 
 export const dynamic = "force-dynamic";
 
@@ -64,11 +63,16 @@ export async function POST(req: Request) {
     if (typeof qty !== "number" || !Number.isInteger(qty) || qty < 1 || qty > 99) {
       return bad("qty must be an integer from 1 to 99");
     }
-    const parsed = parseLineId(id);
-    if (!parsed || !getProductDetail(parsed.slug)) return bad("Unknown product");
-    if (seen.has(id)) return bad("Duplicate line");
-    seen.add(id);
-    lines.push({ id, qty });
+    // Option order must not make two copies of one line look different.
+    const canonical = canonicalLineId(id);
+    if (!canonical) return bad("Invalid line id");
+    if (seen.has(canonical)) return bad("Duplicate line");
+    seen.add(canonical);
+    // Buyability is judged from the catalogue before Shopify config is consulted,
+    // so a bad cart gets the same 400 whether or not checkout is switched on.
+    const buyable = checkBuyable(canonical);
+    if (!buyable.ok) return bad(buyable.reason);
+    lines.push({ id: canonical, qty });
   }
 
   if (!isShopifyConfigured()) {

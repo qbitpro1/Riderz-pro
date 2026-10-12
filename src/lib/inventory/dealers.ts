@@ -1,3 +1,5 @@
+import "server-only";
+import { createHash, timingSafeEqual } from "node:crypto";
 import file from "../../../data/inventory/dealers.json";
 import type { InventoryType, VerificationTier } from "./network";
 
@@ -55,9 +57,19 @@ export function getDealer(id: string): Dealer | undefined {
   return DEALERS.find((d) => d.id === id);
 }
 
+/** Digest both sides so the comparison is constant-time whatever the key lengths. */
+function sameKey(a: string, b: string): boolean {
+  return timingSafeEqual(createHash("sha256").update(a).digest(), createHash("sha256").update(b).digest());
+}
+
 export function dealerByApiKey(key: string): Dealer | undefined {
   if (!key) return undefined;
-  return ACTIVE_DEALERS.find((d) => d.apiKey && d.apiKey === key);
+  // Every dealer is checked, so the time taken does not reveal which key matched.
+  let found: Dealer | undefined;
+  for (const d of ACTIVE_DEALERS) {
+    if (d.apiKey && sameKey(d.apiKey, key) && !found) found = d;
+  }
+  return found;
 }
 
 /**

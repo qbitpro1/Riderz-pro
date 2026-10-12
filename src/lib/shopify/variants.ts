@@ -1,5 +1,6 @@
 import "server-only";
 import { getProductDetail } from "@/lib/store/products";
+import { cartLineId, type ProductDetail } from "@/lib/store/types";
 import { storefront } from "./client";
 
 export type LineRequest = { id: string; qty: number };
@@ -53,6 +54,45 @@ const PRODUCT_VARIANTS = /* GraphQL */ `
   }
 `;
 
+/** Same line, same id: option order in the query string does not matter. */
+export function canonicalLineId(id: string): string | null {
+  const parsed = parseLineId(id);
+  return parsed ? cartLineId(parsed.slug, parsed.choices) : null;
+}
+
+export type Buyable =
+  | { ok: true; detail: ProductDetail; wanted: Map<string, string> }
+  | { ok: false; reason: string };
+
+/**
+ * Whether a cart line can be bought at all, judged from the catalogue alone
+ * (no Shopify call): the product exists, has a price, is purchasable and
+ * indexable, and every option choice is present, known and available.
+ * `wanted` maps option name -> value label, which is how Shopify names variants.
+ */
+export function checkBuyable(id: string): Buyable {
+  const parsed = parseLineId(id);
+  if (!parsed) return { ok: false, reason: "Invalid cart line" };
+  const detail = getProductDetail(parsed.slug);
+  if (!detail) return { ok: false, reason: "Unknown product" };
+  if (detail.price === null) return { ok: false, reason: "Price on request" };
+  if (detail.availability === "coming-soon") return { ok: false, reason: "Not available to order yet" };
+  if (!detail.indexable) return { ok: false, reason: "Not available to order yet" };
+
+  const wanted = new Map<string, string>();
+  for (const opt of detail.options) {
+    const valueId = parsed.choices[opt.id];
+    if (!valueId) return { ok: false, reason: `Missing choice for ${opt.name}` };
+    const value = opt.values.find((v) => v.id === valueId);
+    if (!value || !value.available) return { ok: false, reason: `${opt.name} choice is not available` };
+    wanted.set(opt.name, value.label);
+  }
+  for (const k of Object.keys(parsed.choices)) {
+    if (!detail.options.some((o) => o.id === k)) return { ok: false, reason: "Unknown option on cart line" };
+  }
+  return { ok: true, detail, wanted };
+}
+
 /**
  * Maps a cart line to the Shopify variant (merchandise) id.
  * Product handle = store slug; option/value ids are translated to their labels,
@@ -61,23 +101,9 @@ const PRODUCT_VARIANTS = /* GraphQL */ `
 export async function resolveLine(line: LineRequest): Promise<LineResult> {
   const fail = (reason: string): LineResult => ({ ok: false, id: line.id, reason });
 
-  const parsed = parseLineId(line.id);
-  if (!parsed) return fail("Invalid cart line");
-  const detail = getProductDetail(parsed.slug);
-  if (!detail) return fail("Unknown product");
-
-  // Expected option name -> value label for this line.
-  const wanted = new Map<string, string>();
-  for (const opt of detail.options) {
-    const valueId = parsed.choices[opt.id];
-    if (!valueId) return fail(`Missing choice for ${opt.name}`);
-    const value = opt.values.find((v) => v.id === valueId);
-    if (!value || !value.available) return fail(`${opt.name} choice is not available`);
-    wanted.set(opt.name, value.label);
-  }
-  for (const k of Object.keys(parsed.choices)) {
-    if (!detail.options.some((o) => o.id === k)) return fail("Unknown option on cart line");
-  }
+  const buyable = checkBuyable(line.id);
+  if (!buyable.ok) return fail(buyable.reason);
+  const { detail, wanted } = buyable;
 
   const data = await storefront<ProductQuery>(PRODUCT_VARIANTS, { handle: detail.slug });
   const variants = data.product?.variants.nodes;
