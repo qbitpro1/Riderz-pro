@@ -37,6 +37,7 @@ export function InventoryUploader() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [sheetUrl, setSheetUrl] = useState("");
+  const [dealerKey, setDealerKey] = useState("");
   const [dragging, setDragging] = useState(false);
   const [showRows, setShowRows] = useState<"all" | "rejected">("rejected");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -46,6 +47,7 @@ export function InventoryUploader() {
     setError(null);
     try {
       const res = await promise;
+      if (res.status === 401) throw new Error("That dealer key was not recognised. Check it, or ask us for one.");
       const json = await res.json();
       if (!json.ok) throw new Error(json.message ?? "Upload failed.");
       setReport(json.report as Report);
@@ -60,7 +62,7 @@ export function InventoryUploader() {
   function upload(file: File) {
     const form = new FormData();
     form.append("file", file);
-    void send(fetch("/api/dealer/inventory/upload", { method: "POST", body: form }));
+    void send(fetch("/api/dealer/inventory/upload", { method: "POST", headers: { "x-dealer-key": dealerKey.trim() }, body: form }));
   }
 
   function syncSheet() {
@@ -68,7 +70,7 @@ export function InventoryUploader() {
     void send(
       fetch("/api/dealer/inventory/upload", {
         method: "POST",
-        headers: { "content-type": "application/json" },
+        headers: { "content-type": "application/json", "x-dealer-key": dealerKey.trim() },
         body: JSON.stringify({ sheetUrl }),
       }),
     );
@@ -76,6 +78,24 @@ export function InventoryUploader() {
 
   return (
     <div>
+      {/* dealer key ----------------------------------------------- */}
+      <div className="card mb-4 p-5">
+        <label htmlFor="dealer-key" className="font-display text-sm font-extrabold uppercase">
+          Your dealer key
+        </label>
+        <p className="mt-1 text-xs text-ash">
+          Uploads are checked against your dealer account. We send the key when your agreement is signed.
+        </p>
+        <input
+          id="dealer-key"
+          type="password"
+          autoComplete="off"
+          className="field mt-3 w-full"
+          value={dealerKey}
+          onChange={(e) => setDealerKey(e.target.value)}
+        />
+      </div>
+
       {/* file drop ------------------------------------------------- */}
       <div
         onDragOver={(e) => {
@@ -87,7 +107,7 @@ export function InventoryUploader() {
           e.preventDefault();
           setDragging(false);
           const file = e.dataTransfer.files?.[0];
-          if (file) upload(file);
+          if (file && dealerKey.trim()) upload(file);
         }}
         className={`card flex flex-col items-center justify-center gap-3 p-10 text-center transition-colors ${
           dragging ? "border-accent bg-accent/6" : ""
@@ -109,7 +129,7 @@ export function InventoryUploader() {
             if (file) upload(file);
           }}
         />
-        <button type="button" onClick={() => inputRef.current?.click()} disabled={busy} className="btn btn-primary btn-sm mt-2">
+        <button type="button" onClick={() => inputRef.current?.click()} disabled={busy || !dealerKey.trim()} className="btn btn-primary btn-sm mt-2">
           {busy ? "Checking…" : "Choose a file"}
         </button>
         <p className="text-[11px] text-dim">Up to 5,000 vehicles per file · 12 MB max</p>
@@ -130,7 +150,7 @@ export function InventoryUploader() {
             onChange={(e) => setSheetUrl(e.target.value)}
             aria-label="Google Sheet URL"
           />
-          <button type="button" onClick={syncSheet} disabled={busy || !sheetUrl.trim()} className="btn btn-outline btn-sm sm:w-auto">
+          <button type="button" onClick={syncSheet} disabled={busy || !sheetUrl.trim() || !dealerKey.trim()} className="btn btn-outline btn-sm sm:w-auto">
             Check sheet
           </button>
         </div>
