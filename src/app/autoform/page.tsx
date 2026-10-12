@@ -56,7 +56,7 @@ export default function AutoformPage() {
   return (
     <>
       <PageHero
-        eyebrow="Genuine Autoform · Authorised Riderzpro reseller"
+        eyebrow="Genuine Autoform · Authorised Autoform reseller"
         title="SEATS THAT LOOK BUILT IN."
         blurb={`Twenty Autoform designs across the Eco and Signature series, cut to your car rather than pulled over it. From ${rupees(cheapest)} for a 5-seater set, fitted at a Riderzpro workshop.`}
         media="cockpitScreen"

@@ -70,7 +70,7 @@ const ORG_SCHEMA = {
   "@context": "https://schema.org",
   "@type": "AutoPartsStore",
   "@id": `${SITE.url}/#organization`,
-  legalName: SITE.legalName.replace(/\.$/, ""),
+  legalName: SITE.legalName,
   logo: `${SITE.url}/brand/riderzpro-logo.png`,
   image: `${SITE.url}/opengraph-image`,
   name: SITE.name,

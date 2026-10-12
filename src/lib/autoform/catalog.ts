@@ -114,7 +114,6 @@ export const CUSTOM_CHARGE = { amount: 895, note: "Custom charges applicable on 
 
 /** [PRICE] "PRICE WITH GS 99+GST Logistic Charges & Installation charges extra" */
 export const PRICE_NOTES = [
-  "Dealer pricing is quoted inclusive of transport logistics.",
   "Logistics charges and installation charges are extra, as stated on the price list.",
   "Custom charges of ₹895 (incl. 18% GST) apply on all designs.",
 ];
@@ -188,12 +187,14 @@ export const DESIGNS_AWAITING_CATALOGUE: { listedAs: string; bandId: string }[] 
 
 /**
  * [CAT24] The feature icons printed on every design page. Reproduced as the
- * manufacturer states them — no interpretation, no added claims.
+ * manufacturer states them — no interpretation, no added claims. The bare
+ * "Warranty" icon is left out: it states no period or terms (see NOT_IN_SOURCE),
+ * so on its own it reads as an empty chip. "Hi Recoil" is the manufacturer's own
+ * feature name (high-recoil foam) and is kept as printed.
  */
 export const DESIGN_FEATURES = [
   "UV Resistant",
   "Skin Fit",
-  "Warranty",
   "Hi Recoil",
   "Dry Feel",
   "Odour Free",

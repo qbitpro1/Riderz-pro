@@ -181,7 +181,7 @@ export default function PpfPage() {
           <div className="grid gap-4 lg:grid-cols-3">
             <SegmentCard
               eyebrow="Mid-range"
-              title="PPF FROM ₹XX"
+              title="PROTECTION FOR EVERYDAY DRIVERS."
               price={rupees(fromPrice("compact-suv"))}
               media="crossoverTeal"
               blurb="Tata, Hyundai, Kia, Mahindra, Toyota, Honda, Maruti Suzuki, Volkswagen, Skoda, MG, Jeep. Start with the high-impact areas and build up."
@@ -367,7 +367,7 @@ export default function PpfPage() {
             {DETAIL_SERVICES.filter((s) => s.slug !== "paint-protection-film")
               .slice(0, 4)
               .map((s) => (
-                <li key={s.slug}>
+                <li key={s.slug} id={s.slug} className="scroll-mt-24">
                   <div className="card flex h-full flex-col p-5">
                     <p className="font-display text-base font-extrabold uppercase">{s.name}</p>
                     <p className="mt-2 flex-1 text-xs leading-relaxed text-ash">{s.blurb}</p>

@@ -98,7 +98,7 @@ export function FitmentPicker({ compact = false }: { compact?: boolean }) {
           <p className="eyebrow mb-2">Car-specific shopping</p>
           <h3 className="display-3">WHAT DO YOU DRIVE?</h3>
           <p className="mt-2 max-w-md text-sm text-ash">
-            Tell us once and we only show you parts that actually fit — no returns, no guessing at
+            Tell us once and we only show you parts confirmed to fit — no guessing at
             the checkout.
           </p>
         </div>

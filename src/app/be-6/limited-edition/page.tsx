@@ -33,7 +33,7 @@ import {
 export const metadata: Metadata = pageMeta({
   title: "RIDERZPRO BE 6 Limited Edition — Independent Custom Concept",
   description:
-    "The RIDERZPRO BE 6 Limited Edition: an independent customization concept, not a factory Mahindra variant. Exterior, interior, printed parts, audio and security.",
+    "The RIDERZPRO BE 6 Limited Edition: an independent customisation concept, not a factory Mahindra variant. Exterior, interior, printed parts, audio and security.",
   path: "/be-6/limited-edition",
   ogTitle: "RIDERZPRO BE 6 LIMITED EDITION — COMING SOON",
   ogDescription: "The BE 6, rebuilt without limits. An independent RIDERZPRO concept.",
