@@ -69,6 +69,7 @@ function houseItem(p: Product): CatalogItem {
     reviews: p.reviews,
     fitment: p.fitment,
     availability: p.stock > 0 ? "in-stock" : "made-to-order",
+    buyable: true,
     installation: p.installation,
     bestseller: Boolean(p.bestseller),
     badges: p.bestseller ? ["Bestseller"] : [],
@@ -90,6 +91,8 @@ export function houseItems(): CatalogItem[] {
  */
 function recoilItem(p: RecoilProduct): CatalogItem {
   const comingSoon = p.status === "COMING_SOON";
+  // Mirrors `indexable: p.published` in the product-detail builder (store/products.ts).
+  const buyable = !comingSoon && p.published;
   const image = p.images[0];
   return {
     id: `recoil:${p.slug}`,
@@ -107,7 +110,7 @@ function recoilItem(p: RecoilProduct): CatalogItem {
     price: comingSoon ? null : p.sellingPrice,
     mrp: p.mrp,
     priceFrom: false,
-    tier: comingSoon ? null : tierFor(p.sellingPrice),
+    tier: buyable ? tierFor(p.sellingPrice) : null,
     image: image
       ? { kind: "remote" as const, src: image.url, alt: image.alt, fit: "contain" as const, tone: "light" as const }
       : { kind: "none" as const },
@@ -115,6 +118,7 @@ function recoilItem(p: RecoilProduct): CatalogItem {
     reviews: null,
     fitment: p.compatibility.type === "universal" ? ["universal"] : [],
     availability: comingSoon ? "coming-soon" : "in-stock",
+    buyable,
     installation: true,
     bestseller: false,
     badges: comingSoon ? ["Coming soon"] : [],
@@ -163,6 +167,7 @@ function autoformDesignItem(d: AutoformDesign): CatalogItem {
     // Cut to the vehicle at order time; the source carries no model list.
     fitment: [],
     availability: "made-to-order",
+    buyable: true,
     installation: true,
     bestseller: false,
     badges: ["Made to order"],
@@ -194,6 +199,7 @@ function autoformMatItem(m: MatProduct): CatalogItem {
     reviews: null,
     fitment: [],
     availability: "made-to-order",
+    buyable: price !== null,
     installation: false,
     bestseller: false,
     badges: mrp === null ? ["Price on request"] : ["Made to order"],
@@ -241,6 +247,7 @@ function autoformAccessoryItem(a: AccessoryRow): CatalogItem {
     reviews: null,
     fitment: ["universal"],
     availability: "in-stock",
+    buyable: price !== null,
     installation: false,
     bestseller: false,
     badges: [],
@@ -278,6 +285,7 @@ function blaupunktItem(p: BlaupunktProduct): CatalogItem {
     // The brochure states no vehicle fitment for any line.
     fitment: [],
     availability: "in-stock",
+    buyable: p.sellingPrice !== null,
     installation: true,
     bestseller: false,
     badges: [],

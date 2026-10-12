@@ -23,7 +23,7 @@ export function CatalogCard({
   sizes?: string;
   showBrand?: boolean;
 }) {
-  const off = item.price && item.mrp && item.mrp > item.price ? Math.round(((item.mrp - item.price) / item.mrp) * 100) : 0;
+  const off = item.buyable && item.price && item.mrp && item.mrp > item.price ? Math.round(((item.mrp - item.price) / item.mrp) * 100) : 0;
 
   return (
     <article className="card card-hover relative flex h-full flex-col">
@@ -73,7 +73,7 @@ export function CatalogCard({
         )}
 
         <div className="mt-auto pt-3">
-          {item.price === null ? (
+          {item.price === null || !item.buyable ? (
             <p className="font-display text-sm font-bold uppercase tracking-[0.1em] text-gold">
               {item.availability === "coming-soon" ? "Launching soon" : "Price on request"}
             </p>
@@ -86,19 +86,21 @@ export function CatalogCard({
               )}
             </p>
           )}
-          <p className="mt-1 flex items-center gap-1 text-[11px] text-dim">
-            {item.installation ? (
-              <>
-                <Icon name="wrench" size={11} className="text-accent" />
-                Installation available
-              </>
-            ) : (
-              <>
-                <Icon name="check" size={11} className="text-accent" />
-                {item.availability === "made-to-order" ? "Made to order" : "In stock"}
-              </>
-            )}
-          </p>
+          {item.buyable && (
+            <p className="mt-1 flex items-center gap-1 text-[11px] text-dim">
+              {item.installation ? (
+                <>
+                  <Icon name="wrench" size={11} className="text-accent" />
+                  Installation available
+                </>
+              ) : (
+                <>
+                  <Icon name="check" size={11} className="text-accent" />
+                  {item.availability === "made-to-order" ? "Made to order" : "In stock"}
+                </>
+              )}
+            </p>
+          )}
         </div>
 
         <div className="pt-3">
@@ -116,8 +118,8 @@ function wishlistItem(item: CatalogItem): WishlistInput {
     href: item.href,
     title: item.title,
     brandName: item.brandName,
-    price: item.price,
-    mrp: item.mrp,
+    price: item.buyable ? item.price : null,
+    mrp: item.buyable ? item.mrp : null,
     hasOptions: item.hasOptions,
     image:
       img.kind === "media"

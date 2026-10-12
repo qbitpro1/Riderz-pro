@@ -98,8 +98,8 @@ function matches(item: CatalogItem, f: CatalogFilters, except?: Dimension): bool
   if (except !== "groups" && f.groups.length && !f.groups.includes(item.group)) return false;
   if (except !== "oe" && f.oe && !item.oe) return false;
   if (except !== "subs" && f.subs.length && !f.subs.includes(item.sub)) return false;
-  if (except !== "tiers" && f.tiers.length && (item.tier === null || !f.tiers.includes(item.tier))) return false;
-  if (except !== "maxPrice" && f.maxPrice !== null && (item.price === null || item.price > f.maxPrice)) return false;
+  if (except !== "tiers" && f.tiers.length && (item.tier === null || !item.buyable || !f.tiers.includes(item.tier))) return false;
+  if (except !== "maxPrice" && f.maxPrice !== null && (item.price === null || !item.buyable || item.price > f.maxPrice)) return false;
   if (except !== "availability" && f.availability.length && !f.availability.includes(item.availability)) return false;
   if (except !== "fits" && f.fits && !itemFits(item, f.fits)) return false;
   if (except !== "installation" && f.installation && !item.installation) return false;
@@ -114,15 +114,15 @@ function matches(item: CatalogItem, f: CatalogFilters, except?: Dimension): bool
 }
 
 function discountPct(i: CatalogItem): number {
-  if (!i.price || !i.mrp || i.mrp <= i.price) return 0;
+  if (!i.buyable || !i.price || !i.mrp || i.mrp <= i.price) return 0;
   return (i.mrp - i.price) / i.mrp;
 }
 
 /** Sorts nulls last regardless of direction, so "no price" never leads the grid. */
 function byPrice(dir: 1 | -1) {
   return (a: CatalogItem, b: CatalogItem) => {
-    if (a.price === null) return 1;
-    if (b.price === null) return -1;
+    if (a.price === null || !a.buyable) return 1;
+    if (b.price === null || !b.buyable) return -1;
     return (a.price - b.price) * dir;
   };
 }

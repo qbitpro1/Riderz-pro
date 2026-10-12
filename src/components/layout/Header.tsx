@@ -11,9 +11,10 @@ import { useCart } from "@/components/cart/CartContext";
 import { DesktopNav } from "@/components/nav/DesktopNav";
 import { MobileDrawer } from "@/components/nav/MobileDrawer";
 import { navActions, useNavState } from "@/components/nav/navStore";
+import type { LiveGroups } from "@/lib/data/nav";
 import { whatsapp } from "@/lib/data/site";
 
-export function Header() {
+export function Header({ liveGroups }: { liveGroups?: LiveGroups }) {
   const [scrolled, setScrolled] = useState(false);
   const { drawer, search } = useNavState();
   const pathname = usePathname();
@@ -40,7 +41,7 @@ export function Header() {
             <Logo />
           </Link>
 
-          <DesktopNav />
+          <DesktopNav liveGroups={liveGroups} />
 
           <div className="flex shrink-0 items-center gap-1">
             <ThemeToggle />
@@ -82,7 +83,7 @@ export function Header() {
         </div>
       </header>
 
-      {drawer && <MobileDrawer onClose={navActions.closeDrawer} />}
+      {drawer && <MobileDrawer liveGroups={liveGroups} onClose={navActions.closeDrawer} />}
       {search && <SearchPanel onClose={navActions.closeSearch} />}
     </>
   );

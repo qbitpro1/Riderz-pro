@@ -11,11 +11,19 @@ import type { CatalogItem } from "@/lib/catalog/types";
  *
  *   firm price, nothing to choose → Add to cart
  *   a choice is needed first      → Choose options  (opens the product page)
- *   no price / coming soon        → View details
+ *   no price / coming soon / held back → View details
  */
 export function CatalogQuickAction({ item }: { item: CatalogItem }) {
   const { add } = useCart();
   const cls = "btn btn-outline btn-sm btn-block min-h-10";
+
+  if (!item.buyable) {
+    return (
+      <Link href={item.href} className={cls}>
+        View details
+      </Link>
+    );
+  }
 
   if (item.hasOptions) {
     return (

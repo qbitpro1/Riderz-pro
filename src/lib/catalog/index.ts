@@ -45,6 +45,20 @@ export const CATALOG_TOTALS = {
   subcategories: new Set(CATALOG.map((i) => i.sub)).size,
 };
 
+/**
+ * Shelf groups that hold at least one product, by department: `{ interior: ["seat-covers", …] }`.
+ * Plain data so the layout can hand it to the (client) menus, which hide empty groups. A group
+ * reappears here as soon as a product is shelved in it.
+ */
+export const LIVE_GROUPS: Record<string, string[]> = (() => {
+  const seen = new Map<string, Set<string>>();
+  for (const i of CATALOG) {
+    if (!seen.has(i.category)) seen.set(i.category, new Set());
+    seen.get(i.category)!.add(i.group);
+  }
+  return Object.fromEntries([...seen].map(([d, g]) => [d, [...g]]));
+})();
+
 /* ------------------------------------------------------- related / helpers */
 
 /** House fitment logic, re-exported so callers don't reach past this module. */

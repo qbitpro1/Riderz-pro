@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { Logo } from "@/components/brand/Logo";
-import { DEPARTMENT_MENUS, MORE_SECTIONS } from "@/lib/data/nav";
+import { DEPARTMENT_MENUS, MORE_SECTIONS, liveMenuGroups, type LiveGroups } from "@/lib/data/nav";
 import { SITE, whatsapp } from "@/lib/data/site";
 import { WishlistLink } from "@/components/wishlist/WishlistLink";
 
@@ -16,7 +16,7 @@ const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1
  * Escape closes, body scroll is locked while open, focus moves in on open and
  * returns to whatever opened it on close.
  */
-export function MobileDrawer({ onClose }: { onClose: () => void }) {
+export function MobileDrawer({ onClose, liveGroups }: { onClose: () => void; liveGroups?: LiveGroups }) {
   const [shown, setShown] = useState(false);
   const [openId, setOpenId] = useState<string | null>(null);
   const panel = useRef<HTMLDivElement>(null);
@@ -113,7 +113,7 @@ export function MobileDrawer({ onClose }: { onClose: () => void }) {
               <li key={d.slug} className="border-b border-tint/10">
                 <Accordion id={`dept-${d.slug}`} title={d.label} open={openId === d.slug} onToggle={() => toggle(d.slug)}>
                   <ul>
-                    {d.groups.map((g) => (
+                    {liveMenuGroups(d, liveGroups).map((g) => (
                       <DrawerLink key={g.href} href={g.href} onClose={onClose}>
                         {g.label}
                       </DrawerLink>

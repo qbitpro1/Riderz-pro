@@ -6,6 +6,7 @@ import { BottomNav } from "@/components/layout/BottomNav";
 import { WhatsAppFab } from "@/components/layout/WhatsAppFab";
 import { Footer } from "@/components/layout/Footer";
 import { CartProvider } from "@/components/cart/CartContext";
+import { LIVE_GROUPS } from "@/lib/catalog";
 import { SITE } from "@/lib/data/site";
 import { ldJson } from "@/lib/data/seo";
 import { THEME_COLOR, THEME_SCRIPT } from "@/components/theme/theme";
@@ -127,7 +128,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to content
         </a>
         <CartProvider>
-          <Header />
+          <Header liveGroups={LIVE_GROUPS} />
           <main id="main">{children}</main>
           <Footer />
           <BottomNav />
