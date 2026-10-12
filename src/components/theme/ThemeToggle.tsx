@@ -2,7 +2,7 @@
 
 import { useLayoutEffect, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
-import { THEME_KEY, type Theme } from "./theme";
+import { THEME_KEY, applyThemeColor, type Theme } from "./theme";
 
 function storedTheme(): Theme | null {
   try {
@@ -19,6 +19,7 @@ function systemTheme(): Theme {
 
 function apply(theme: Theme) {
   document.documentElement.setAttribute("data-theme", theme);
+  applyThemeColor(theme);
 }
 
 /**

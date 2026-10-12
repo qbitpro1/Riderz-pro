@@ -14,13 +14,14 @@ import { productsIn } from "@/lib/data/products";
 import { REVIEWS } from "@/lib/data/community";
 import { rupees } from "@/lib/format";
 import { whatsapp } from "@/lib/data/site";
+import { pageMeta } from "@/lib/data/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Premium Car Audio — Component, DSP & Signature Builds",
   description:
-    "Car audio done properly: component front stages, DSP tuning, subwoofers, sound deadening and fully custom builds. Four packages from ₹24,900. Measured, tuned and re-tuned free.",
-  alternates: { canonical: "/audio" },
-};
+    "Car audio done properly: component front stages, DSP tuning, subwoofers, sound deadening and custom builds. Four packages from ₹24,900. Tuned and re-tuned free.",
+  path: "/audio",
+});
 
 const FAQ = [
   {
@@ -133,7 +134,7 @@ export default function AudioPage() {
           <Reveal>
             <div className="relative aspect-[4/3] overflow-hidden bg-graphite">
               <Photo media="speakerCone" sizes="(min-width:1024px) 50vw, 100vw" />
-              <div className="absolute inset-0 bg-gradient-to-t from-void/70 to-transparent" />
+              <div className="absolute inset-0 scrim-soft" />
             </div>
           </Reveal>
           <Reveal delay={80}>

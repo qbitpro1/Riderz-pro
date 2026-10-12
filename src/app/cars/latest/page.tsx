@@ -9,13 +9,14 @@ import { BUCKET_LABEL, bucketFor, formatIST, type Bucket } from "@/lib/inventory
 import { latestFirst, SNAPSHOT } from "@/lib/inventory/store";
 import { LIVE_SOURCES } from "@/lib/inventory/sources";
 import { whatsapp } from "@/lib/data/site";
+import { pageMeta } from "@/lib/data/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Latest Used Cars — Just Listed",
   description:
-    "The newest cars in the Riderzpro marketplace, ordered by when they were last verified. Delhi NCR and every other city we cover, with the verification timestamp shown on every listing.",
-  alternates: { canonical: "/cars/latest" },
-};
+    "The newest cars in the Riderzpro marketplace, ordered by last verification. Delhi NCR and every other city we cover, with the verification time on every listing.",
+  path: "/cars/latest",
+});
 
 const ORDER: Bucket[] = ["today", "yesterday", "this-week", "older"];
 

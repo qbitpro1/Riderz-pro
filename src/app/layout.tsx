@@ -7,6 +7,7 @@ import { WhatsAppFab } from "@/components/layout/WhatsAppFab";
 import { Footer } from "@/components/layout/Footer";
 import { CartProvider } from "@/components/cart/CartContext";
 import { SITE } from "@/lib/data/site";
+import { ldJson } from "@/lib/data/seo";
 import { THEME_COLOR, THEME_SCRIPT } from "@/components/theme/theme";
 import { InlineScript } from "@/components/theme/InlineScript";
 
@@ -116,9 +117,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script
           type="application/ld+json"
           // Structured data for the store, rendered once at the root.
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(ORG_SCHEMA) }}
+          dangerouslySetInnerHTML={{ __html: ldJson(ORG_SCHEMA) }}
         />
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(WEBSITE_SCHEMA) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: ldJson(WEBSITE_SCHEMA) }} />
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[80] focus:bg-accent focus:px-4 focus:py-2 focus:font-display focus:text-sm focus:text-on-accent"

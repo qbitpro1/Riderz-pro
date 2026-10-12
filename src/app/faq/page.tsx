@@ -2,20 +2,21 @@ import type { Metadata } from "next";
 import { PageHero } from "@/components/layout/PageHero";
 import { FaqList } from "./FaqList";
 import { FAQ_GROUPS, faqJsonLd } from "@/lib/data/faq";
+import { ldJson, pageMeta } from "@/lib/data/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "FAQ — Ordering, Delivery, Returns & Fitment",
   description:
     "Answers on ordering, fitment, delivery, returns, installation, OE parts and payments at the Riderzpro accessories store.",
-  alternates: { canonical: "/faq" },
-};
+  path: "/faq",
+});
 
 export default function FaqPage() {
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd()).replace(/</g, "\\u003c") }}
+        dangerouslySetInnerHTML={{ __html: ldJson(faqJsonLd()) }}
       />
       <PageHero
         eyebrow="Customer support"

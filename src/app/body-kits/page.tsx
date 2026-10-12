@@ -8,13 +8,14 @@ import { Accordion } from "@/components/ui/Accordion";
 import { BODY_KIT_SERVICES, FACELIFT_CONVERSIONS } from "@/lib/data/services";
 import { rupees } from "@/lib/format";
 import { whatsapp } from "@/lib/data/site";
+import { pageMeta } from "@/lib/data/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Body Kits & Facelift Conversions",
   description:
     "Turn a 2020 Creta into a 2024 Creta, a 2016 Fortuner into a Legender. Bumper, grille, headlamp, DRL and tail lamp conversions, body kits and custom paint at Riderzpro.",
-  alternates: { canonical: "/body-kits" },
-};
+  path: "/body-kits",
+});
 
 const FAQ = [
   {

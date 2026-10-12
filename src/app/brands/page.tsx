@@ -12,7 +12,7 @@ import { breadcrumbLd, itemListLd, ldJson, pageMeta } from "@/lib/data/seo";
 export const metadata: Metadata = pageMeta({
   title: "Shop Car Accessories by Brand: RECOIL, Autoform, Blaupunkt & Riderzpro",
   description:
-    "Every brand Riderzpro stocks in one place. Browse RECOIL and Blaupunkt car audio, Autoform seat covers and the Riderzpro house range by brand, category, price and fitment.",
+    "Every brand Riderzpro stocks in one place. Browse RECOIL and Blaupunkt car audio, Autoform seat covers and the Riderzpro range by brand, category, price and fitment.",
   path: "/brands",
 });
 

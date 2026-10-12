@@ -10,13 +10,14 @@ import { INTERIOR_SERVICES } from "@/lib/data/services";
 import { REVIEWS } from "@/lib/data/community";
 import { rupees } from "@/lib/format";
 import { whatsapp } from "@/lib/data/site";
+import { pageMeta } from "@/lib/data/seo";
 
-export const metadata: Metadata = {
-  title: "Custom Car Interiors — Leather, Alcantara, Captain Seats & Ambient Lighting",
+export const metadata: Metadata = pageMeta({
+  title: "Custom Car Interiors — Leather, Alcantara & Captain Seats",
   description:
-    "Custom leather and alcantara interiors, diamond stitching, ventilated and heated seats, captain seat conversions, electric recliners, ambient lighting and luxury SUV conversions.",
-  alternates: { canonical: "/interiors" },
-};
+    "Custom leather and alcantara interiors, diamond stitching, ventilated and heated seats, captain seat conversions, recliners, ambient lighting and luxury SUV conversions.",
+  path: "/interiors",
+});
 
 const FAQ = [
   {
@@ -81,7 +82,7 @@ export default function InteriorsPage() {
           <Reveal>
             <div className="relative aspect-[4/3] overflow-hidden bg-graphite">
               <Photo media="steeringNight" sizes="(min-width:1024px) 50vw, 100vw" />
-              <div className="absolute inset-0 bg-gradient-to-t from-void/70 to-transparent" />
+              <div className="absolute inset-0 scrim-soft" />
             </div>
           </Reveal>
           <Reveal delay={80}>

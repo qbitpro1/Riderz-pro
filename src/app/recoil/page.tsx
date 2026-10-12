@@ -17,13 +17,14 @@ import {
   PRODUCTS,
 } from "@/lib/data/recoil";
 import { whatsapp } from "@/lib/data/site";
+import { pageMeta } from "@/lib/data/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "RECOIL Car Audio & Installation — Authorised Reseller",
   description:
-    "The full RECOIL range at Riderzpro: amplifiers, DSP, component and coaxial speakers, subwoofers, damping, wiring, distribution and installation accessories. Authorised reseller, genuine product.",
-  alternates: { canonical: "/recoil" },
-};
+    "The full RECOIL range at Riderzpro: amplifiers, DSP, speakers, subwoofers, damping, wiring and installation accessories. Authorised reseller, genuine product.",
+  path: "/recoil",
+});
 
 export default async function RecoilPage({ searchParams }: { searchParams: Promise<CatalogQuery> }) {
   const query = await searchParams;

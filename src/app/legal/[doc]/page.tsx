@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/data/seo";
 import { notFound } from "next/navigation";
 import { PolicyPage } from "@/components/layout/PolicyPage";
 import { LEGAL_POLICIES, findPolicy } from "@/lib/data/policies";
@@ -15,12 +16,12 @@ export async function generateMetadata({
   const { doc } = await params;
   const policy = findPolicy(LEGAL_POLICIES, doc);
   if (!policy) return {};
-  return {
+  return pageMeta({
     title: `${policy.title.charAt(0)}${policy.title.slice(1).toLowerCase()}`,
     description: policy.intro,
-    alternates: { canonical: `/legal/${policy.slug}` },
+    path: `/legal/${policy.slug}`,
     robots: { index: true, follow: true },
-  };
+  });
 }
 
 export default async function LegalDocPage({ params }: { params: Promise<{ doc: string }> }) {

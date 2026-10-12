@@ -5,13 +5,14 @@ import { StickyPpfCta } from "@/components/ppf/StickyPpfCta";
 import { SectionHead } from "@/components/ui/Section";
 import { Icon } from "@/components/ui/Icon";
 import { GUIDE } from "@/lib/ppf/guide";
+import { pageMeta } from "@/lib/data/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "PPF Guide — Paint Protection Film Explained",
   description:
-    "Straight answers on paint protection film: what it is, PPF vs ceramic coating, how long it lasts, whether it damages paint, gloss vs matte, maintenance, removal and warranty.",
-  alternates: { canonical: "/ppf/guide" },
-};
+    "Straight answers on paint protection film: what it is, PPF vs ceramic coating, how long it lasts, whether it damages paint, gloss vs matte, care, removal and warranty.",
+  path: "/ppf/guide",
+});
 
 export default function PpfGuidePage() {
   return (

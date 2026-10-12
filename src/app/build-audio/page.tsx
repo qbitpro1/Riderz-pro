@@ -11,13 +11,14 @@ import { buildSystem, BUDGETS, GOALS, type Budget, type Goal } from "@/lib/data/
 import { findModel } from "@/lib/data/vehicles";
 import { rupees } from "@/lib/format";
 import { whatsapp } from "@/lib/data/site";
+import { pageMeta } from "@/lib/data/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Build My Audio System — RECOIL, Costed to Your Budget",
   description:
-    "Pick a budget, your car and what you want from the system. Riderzpro builds a matched RECOIL specification — amplifier, speakers, subwoofer, processing, damping and wiring — with a real total.",
-  alternates: { canonical: "/build-audio" },
-};
+    "Pick a budget, your car and your goals. Riderzpro builds a matched RECOIL spec: amplifier, speakers, subwoofer, DSP, damping and wiring, with a real total.",
+  path: "/build-audio",
+});
 
 type Params = Promise<{ budget?: string; goal?: string; brand?: string; model?: string; year?: string }>;
 

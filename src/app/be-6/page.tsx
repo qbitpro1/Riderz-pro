@@ -10,19 +10,17 @@ import { Waitlist } from "@/components/be6/Waitlist";
 import { StickyBar } from "@/components/be6/StickyBar";
 import { VehicleImage, ImageCredit } from "@/components/be6/VehicleImage";
 import { lakh } from "@/lib/format";
+import { pageMeta } from "@/lib/data/seo";
 import { BAAS_FROM, BE6, PRICE_FROM, colour } from "@/lib/data/be6";
 
-export const metadata: Metadata = {
-  title: "Mahindra BE 6 — Every Variant, Configured, Then Built Your Way",
+export const metadata: Metadata = pageMeta({
+  title: "Mahindra BE 6 — Configure Every Variant, Build It Your Way",
   description:
-    "Configure any Mahindra BE 6 SPORTEQ — variant, battery, colour, price — verified against Mahindra's official brochure, then build it your way with Riderzpro PPF, audio, interior and 3D-printed parts.",
-  alternates: { canonical: "/be-6" },
-  openGraph: {
-    title: "THE BE 6. REIMAGINED.",
-    description: "Every factory variant, a build configurator, and the first RIDERZPRO Limited Edition concept.",
-    url: "/be-6",
-  },
-};
+    "Configure any Mahindra BE 6 SPORTEQ by variant, battery, colour and price, verified against Mahindra's brochure, then build it your way with Riderzpro upgrades.",
+  path: "/be-6",
+  ogTitle: "THE BE 6. REIMAGINED.",
+  ogDescription: "Every factory variant, a build configurator, and the first RIDERZPRO Limited Edition concept.",
+});
 
 /**
  * The BE 6 flagship page.
@@ -142,7 +140,7 @@ export default function Be6Page() {
       </section>
 
       {/* 5 — LIMITED EDITION ---------------------------------------------- */}
-      <section className="relative overflow-hidden border-y border-gold/20 bg-[radial-gradient(110%_90%_at_50%_10%,rgba(217,167,96,0.12),transparent_62%)] py-14 md:py-20">
+      <section className="relative overflow-hidden border-y border-gold/20 bg-[radial-gradient(110%_90%_at_50%_10%,color-mix(in_oklab,var(--gold)_12%,transparent),transparent_62%)] py-14 md:py-20">
         <div className="shell text-center">
           <p className="eyebrow !text-gold">Coming soon</p>
           <h2 className="display-2 mt-3">

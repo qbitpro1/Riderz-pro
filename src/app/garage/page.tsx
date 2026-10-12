@@ -9,13 +9,14 @@ import { Reveal } from "@/components/ui/Reveal";
 import { GARAGE_SERVICES } from "@/lib/data/services";
 import { LOCATIONS, SITE } from "@/lib/data/site";
 import { STATS } from "@/lib/data/community";
+import { pageMeta } from "@/lib/data/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Riderzpro Garage — Installation, Modification & Service Workshop",
   description:
-    "Book installation, modification, detailing, PPF, audio, performance, off-road and interior work at Riderzpro garages in Bengaluru, Hyderabad and Pune. 26 bays, one standard.",
-  alternates: { canonical: "/garage" },
-};
+    "Book installation, modification, detailing, PPF, audio, performance, off-road and interior work at Riderzpro garages in Bengaluru, Hyderabad and Pune. 26 bays.",
+  path: "/garage",
+});
 
 const WORKSHOP_MEDIA = ["mechanicEngine", "garageSpotlit", "washBay", "detailingPolish"] as const;
 
@@ -73,7 +74,7 @@ export default function GaragePage() {
                 <Reveal delay={i * 60}>
                   <div className="relative aspect-[4/5] overflow-hidden bg-graphite">
                     <Photo media={m} sizes="(min-width:1024px) 25vw, 46vw" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-void/60 to-transparent" />
+                    <div className="absolute inset-0 scrim-soft" />
                   </div>
                 </Reveal>
               </li>

@@ -70,7 +70,7 @@
     --shadow-lift: 0 26px 60px -30px rgba(0, 0, 0, 0.9);
   }
 
-  /* Every pairing here clears WCAG AA (4.5:1) on void, carbon and steel. */
+  /* Every pairing here clears WCAG AA (4.5:1) on void, carbon and steel. --danger is a crimson (hue ~340) so error text reads apart from the brand red accent. */
   [data-theme="light"] {
     color-scheme: light;
     --ink: #f8f9fa;
@@ -85,7 +85,7 @@
     --accent: #c81e1e;
     --accent-deep: #9c1515;
     --gold: #8a5a12;
-    --danger: #c42b2b;
+    --danger: #9f1239;
     --tint: #0f1216;
     --on-accent: #ffffff;
     --on-gold: #ffffff;
@@ -294,11 +294,11 @@
     box-shadow: 0 10px 40px -10px color-mix(in oklab, var(--accent) 60%, transparent);
   }
   .btn-whatsapp {
-    --btn-bg: #1faa53;
+    --btn-bg: #0b7a43;
     --btn-fg: #ffffff;
   }
   .btn-whatsapp:hover {
-    --btn-bg: #24c25e;
+    --btn-bg: #0a6a37;
   }
   .btn-sm {
     min-height: 2.375rem;

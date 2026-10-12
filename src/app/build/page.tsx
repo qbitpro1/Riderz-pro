@@ -7,13 +7,14 @@ import { BuildCard } from "@/components/community/Cards";
 import { Icon } from "@/components/ui/Icon";
 import { BUILD_STAGES } from "@/lib/data/configurator";
 import { BUILDS } from "@/lib/data/community";
+import { pageMeta } from "@/lib/data/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Build Your Car — Configurator with Live Build Cost",
   description:
-    "Configure your car at Riderzpro: exterior, wheels and tyres, interior, audio and performance. Real parts, real installed prices, a live estimated build cost and a one-tap quote.",
-  alternates: { canonical: "/build" },
-};
+    "Configure your car at Riderzpro: exterior, wheels, interior, audio and performance. Real parts, real installed prices, a live estimated build cost and a one-tap quote.",
+  path: "/build",
+});
 
 export default function BuildPage() {
   return (

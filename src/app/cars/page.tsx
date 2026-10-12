@@ -9,13 +9,14 @@ import { toCardData } from "@/lib/inventory/card-data";
 import { BROWSABLE, FACETS, KM_BANDS, PRICE_BANDS, SPECIAL_FILTERS } from "@/lib/inventory/store";
 import { SEARCH_EXAMPLES } from "@/lib/inventory/query";
 import { TRUST_POINTS, whatsapp } from "@/lib/data/site";
+import { pageMeta } from "@/lib/data/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Buy Used Cars in India — Verified, Inspected & Certified",
   description:
     "Browse Riderzpro Certified used, modified, off-road and luxury cars. 200-point inspection, RC and insurance verification, transparent pricing and finance from 11 lenders.",
-  alternates: { canonical: "/cars" },
-};
+  path: "/cars",
+});
 
 const COLLECTIONS = [
   { label: "Off-road ready", note: "4x4 and lifted builds" },

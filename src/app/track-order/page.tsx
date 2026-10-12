@@ -3,13 +3,14 @@ import Link from "next/link";
 import { PageHero } from "@/components/layout/PageHero";
 import { TrackForm } from "./TrackForm";
 import { SITE } from "@/lib/data/site";
+import { pageMeta } from "@/lib/data/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Track Your Order",
   description:
     "Orders are confirmed on WhatsApp and tracking details are sent there. Ask where your Riderzpro order is.",
-  alternates: { canonical: "/track-order" },
-};
+  path: "/track-order",
+});
 
 export default function TrackOrderPage() {
   return (

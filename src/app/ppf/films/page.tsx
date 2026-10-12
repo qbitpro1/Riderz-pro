@@ -6,13 +6,14 @@ import { SectionHead } from "@/components/ui/Section";
 import { Icon } from "@/components/ui/Icon";
 import { FINISHES, NOT_SPECIFIED, PPF_BRANDS, PPF_FILMS, filmsByBrand, specText } from "@/lib/ppf/films";
 import { TIER_RATES } from "@/lib/ppf/coverage";
+import { pageMeta } from "@/lib/data/seo";
 
-export const metadata: Metadata = {
-  title: "PPF Films & Brands — Specifications, Finishes and Warranties",
+export const metadata: Metadata = pageMeta({
+  title: "PPF Films & Brands — Specifications and Warranties",
   description:
-    "The paint protection films Riderzpro installs, with each manufacturer's published warranty period, conditions and exclusions. Specifications we cannot verify are marked as such.",
-  alternates: { canonical: "/ppf/films" },
-};
+    "The paint protection films Riderzpro installs, with each manufacturer's published warranty period, conditions and exclusions. Specs we cannot verify are marked as such.",
+  path: "/ppf/films",
+});
 
 export default function PpfFilmsPage() {
   return (

@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
 import { CartView } from "@/components/cart/CartView";
+import { pageMeta } from "@/lib/data/seo";
 
 export const metadata: Metadata = {
-  title: "Your Cart",
-  description: "Review your Riderzpro order, add installation and check out over WhatsApp.",
+  ...pageMeta({
+    title: "Your Cart",
+    description: "Review your Riderzpro order, add installation and check out over WhatsApp.",
+    path: "/cart",
+  }),
   robots: { index: false, follow: false },
 };
 

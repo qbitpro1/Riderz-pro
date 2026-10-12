@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/data/seo";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Photo } from "@/components/ui/Photo";
@@ -25,12 +26,15 @@ export async function generateMetadata({
   const { slug } = await params;
   const build = getBuild(slug);
   if (!build) return {};
-  return {
+  return pageMeta({
     title: `${build.title} — ${build.vehicle} Build`,
     description: `${build.brief} Full modification list and a build cost of ${rupees(build.cost)}.`,
-    alternates: { canonical: `/builds/${build.slug}` },
-    openGraph: { title: build.title, description: build.brief, images: [MEDIA[build.image].src] },
-  };
+    path: `/builds/${build.slug}`,
+    image: MEDIA[build.image].src,
+    imageAlt: MEDIA[build.image].alt,
+    ogTitle: build.title,
+    ogDescription: build.brief,
+  });
 }
 
 export default async function BuildDetailPage({ params }: { params: Promise<{ slug: string }> }) {

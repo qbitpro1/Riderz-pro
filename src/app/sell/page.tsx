@@ -5,13 +5,14 @@ import { SectionHead } from "@/components/ui/Section";
 import { Icon } from "@/components/ui/Icon";
 import { Accordion } from "@/components/ui/Accordion";
 import { whatsapp } from "@/lib/data/site";
+import { pageMeta } from "@/lib/data/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Sell Your Car — Free Valuation & Same-Day Payment",
   description:
     "Sell your used car to Riderzpro. Free valuation, free 200-point inspection at your home, payment before RC transfer, and full documentation support.",
-  alternates: { canonical: "/sell" },
-};
+  path: "/sell",
+});
 
 const STEPS = [
   { n: "01", title: "Enter registration number", body: "We pull make, model, variant and year from VAHAN." },

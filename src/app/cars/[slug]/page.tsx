@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ldJson, pageMeta } from "@/lib/data/seo";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Photo } from "@/components/ui/Photo";
@@ -35,12 +36,14 @@ export async function generateMetadata({
   const car = getCar(slug);
   if (!car) return {};
   const title = `${car.year} ${car.brand} ${car.model} ${car.variant} — ${lakh(car.price)}`;
-  return {
+  return pageMeta({
     title,
     description: `${car.note} ${fmtKm(car.km)}, ${car.fuel}, ${car.transmission}, ${car.owner}, ${car.city}. Riderzpro Certified with a 200-point inspection report.`,
-    alternates: { canonical: `/cars/${car.slug}` },
-    openGraph: { title, description: car.note, images: [MEDIA[car.images[0]].src] },
-  };
+    path: `/cars/${car.slug}`,
+    image: MEDIA[car.images[0]].src,
+    imageAlt: MEDIA[car.images[0]].alt,
+    ogDescription: car.note,
+  });
 }
 
 const FAQ = [
@@ -94,7 +97,7 @@ export default async function CarDetailPage({ params }: { params: Promise<{ slug
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: ldJson(schema) }} />
 
       {/* gallery ---------------------------------------------------- */}
       <section className="relative pt-14 md:pt-[68px]">

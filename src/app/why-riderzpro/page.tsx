@@ -7,13 +7,14 @@ import { Reveal } from "@/components/ui/Reveal";
 import { ReviewCard } from "@/components/community/Cards";
 import { TRUST_POINTS, whatsapp } from "@/lib/data/site";
 import { REVIEWS, STATS } from "@/lib/data/community";
+import { pageMeta } from "@/lib/data/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Why Riderzpro",
   description:
     "What Riderzpro does differently: one workshop for the whole car, published prices, documented builds, legal compliance, and a badge that means something.",
-  alternates: { canonical: "/why-riderzpro" },
-};
+  path: "/why-riderzpro",
+});
 
 const PRINCIPLES = [
   {

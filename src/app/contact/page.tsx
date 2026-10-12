@@ -5,13 +5,14 @@ import { BookingForm } from "@/components/garage/BookingForm";
 import { SectionHead } from "@/components/ui/Section";
 import { Icon } from "@/components/ui/Icon";
 import { LOCATIONS, SITE, whatsapp } from "@/lib/data/site";
+import { pageMeta } from "@/lib/data/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Contact Riderzpro",
   description:
     "Talk to Riderzpro on WhatsApp or by phone about cars, accessories, builds, audio, PPF, off-road work and workshop bookings across Bengaluru, Hyderabad and Pune.",
-  alternates: { canonical: "/contact" },
-};
+  path: "/contact",
+});
 
 const CHANNELS = [
   {

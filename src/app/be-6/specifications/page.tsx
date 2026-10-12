@@ -7,13 +7,14 @@ import { Explorer } from "@/components/be6/Explorer";
 import { ProvenanceTag } from "@/components/be6/Label";
 import { FeatureExplainers, ManualNotice, SourceList, SpecTables, TeqSuites } from "@/components/be6/Blocks";
 import { VARIANTS, REAL_WORLD_RANGE, BE6 } from "@/lib/data/be6";
+import { pageMeta } from "@/lib/data/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Mahindra BE 6 SPORTEQ — Full Factory Specifications",
   description:
-    "Every published Mahindra BE 6 SPORTEQ specification — powertrain, range, charging, dimensions, wheels, safety and warranty — sourced from Mahindra's official brochure, with the gaps left visible.",
-  alternates: { canonical: "/be-6/specifications" },
-};
+    "Every published Mahindra BE 6 SPORTEQ specification: powertrain, range, charging, dimensions, wheels, safety and warranty, from Mahindra's brochure, gaps left visible.",
+  path: "/be-6/specifications",
+});
 
 /**
  * The factory detail, on its own page.

@@ -12,13 +12,14 @@ import { PRODUCTS } from "@/lib/data/products";
 import { groupHref, placeSub } from "@/lib/data/taxonomy";
 import { rupees } from "@/lib/format";
 import { whatsapp } from "@/lib/data/site";
+import { pageMeta } from "@/lib/data/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Performance Tuning — ECU Remap, Exhaust, Intake & Brakes",
   description:
-    "Stage 1 and Stage 2 ECU remapping on our dyno, performance exhaust and intake, intercoolers, cooling, big brake kits and coilovers. All work within Central Motor Vehicles Rules.",
-  alternates: { canonical: "/performance" },
-};
+    "Stage 1 and 2 ECU remapping on our dyno, performance exhaust and intake, intercoolers, cooling, big brake kits and coilovers. All within Central Motor Vehicles Rules.",
+  path: "/performance",
+});
 
 const FAQ = [
   {
@@ -91,7 +92,7 @@ export default function PerformancePage() {
           <Reveal>
             <div className="relative aspect-[4/3] overflow-hidden bg-graphite">
               <Photo media="exhaustSpray" sizes="(min-width:1024px) 50vw, 100vw" />
-              <div className="absolute inset-0 bg-gradient-to-t from-void/70 to-transparent" />
+              <div className="absolute inset-0 scrim-soft" />
             </div>
           </Reveal>
           <Reveal delay={80}>
