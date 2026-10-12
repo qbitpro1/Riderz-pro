@@ -120,12 +120,24 @@ function houseDetail(p: HouseProduct): ProductDetail {
 
 const SPEC_PAIR = /^([^:：@]{2,40}?)\s*[:：]\s*(\S.*)$/;
 
+/**
+ * Source rows carry an internal annotation, e.g. "Special Dimensions: -8 × -5 mm
+ * (retained reference)" on the RCX65. The note is not for shoppers and negative
+ * dimensions are placeholders, so strip a trailing "(retained reference)" and
+ * drop any line whose value contains a negative number.
+ */
+function cleanSourceLine(line: string): string | null {
+  const cleaned = line.replace(/\s*\(retained reference\)\s*$/i, "").trim();
+  if (/[:：]\s*-\d|[×x]\s*-\d/.test(cleaned)) return null;
+  return cleaned || null;
+}
+
 /** Split "Label: value" lines into specs; anything else is a highlight. */
 function splitSpecLines(lines: string[]) {
   const specs: { label: string; value: string }[] = [];
   const highlights: string[] = [];
   for (const raw of lines) {
-    const line = raw.trim();
+    const line = cleanSourceLine(raw.trim());
     if (!line) continue;
     const m = SPEC_PAIR.exec(line);
     if (m) specs.push({ label: m[1].trim(), value: m[2].trim() });
@@ -143,7 +155,9 @@ function manufacturerText(p: RecoilProduct) {
     const lines = text
       .split(/\r?\n/)
       .map((l) => l.replace(/^\s*[*•-]\s*/, "").trim())
-      .filter((l) => l && !/N\/A/i.test(l));
+      .filter((l) => l && !/N\/A/i.test(l))
+      .map(cleanSourceLine)
+      .filter((l): l is string => l !== null);
     if (lines.length === 1 && lines[0].length >= 40 && !summary) summary = lines[0];
     else bullets.push(...lines);
   }

@@ -29,7 +29,7 @@ import { pageMeta } from "@/lib/data/seo";
 export const metadata: Metadata = pageMeta({
   title: "Riderzpro — Car Accessories, Fitted Right",
   description:
-    "Seat covers, floor mats, audio, lighting, protection and off-road gear. Made by Riderzpro, fitment-checked for your model and fitted in Bengaluru, Hyderabad and Pune.",
+    "Seat covers, floor mats, multimedia, lighting, covers and guards, and off-roading gear. Made by Riderzpro, fitment-checked for your model and fitted in Bengaluru, Hyderabad and Pune.",
   path: "/",
 });
 

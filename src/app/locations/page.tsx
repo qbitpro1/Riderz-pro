@@ -22,7 +22,7 @@ export default function LocationsPage() {
       <PageHero
         eyebrow="Visit Riderzpro"
         title="COME AND SEE THE WORK."
-        blurb="Walk into any bay, look at what's on the lifts, talk to the person who will actually build your car. No appointment needed to visit."
+        blurb="Walk into any bay, look at what's on the lifts, talk to the person who will actually build your car. No appointment needed Monday to Saturday."
         media="garageSpotlit"
         size="sm"
       />

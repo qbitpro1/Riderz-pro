@@ -18,7 +18,7 @@ export async function generateMetadata({
   if (!policy) return {};
   return pageMeta({
     title: `${policy.title.charAt(0)}${policy.title.slice(1).toLowerCase()}`,
-    description: policy.intro,
+    description: policy.metaDescription ?? policy.intro,
     path: `/legal/${policy.slug}`,
     robots: { index: true, follow: true },
   });

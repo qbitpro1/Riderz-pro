@@ -17,6 +17,13 @@ import { norm, type SearchBrand, type SearchEntry, type SearchIndex } from "./ma
 
 export * from "./match";
 
+/** Detail-service ids rendered as anchors on /ppf ("Goes with it" cards: the first four non-film services). */
+const PPF_PAGE_ANCHORS = new Set(
+  DETAIL_SERVICES.filter((s) => s.slug !== "paint-protection-film")
+    .slice(0, 4)
+    .map((s) => s.slug),
+);
+
 export const SEARCH_INDEX: SearchEntry[] = [
   // Brands come first in construction order so an exact brand name — "recoil",
   // "autoform", "blaupunkt" — always has a destination, whether or not that
@@ -137,8 +144,11 @@ export const SEARCH_INDEX: SearchEntry[] = [
     id: `ppf-${d.slug}`,
     kind: "Service" as const,
     title: d.name,
-    meta: `From ${rupees(d.price)}`,
-    href: `/ppf#${d.slug}`,
+    // The PPF entry is priced per car on /ppf (from the quote helper), so no
+    // "from" figure is shown here that could contradict it.
+    meta: d.slug === "paint-protection-film" ? "Priced for your car" : `From ${rupees(d.price)}`,
+    // Only the services /ppf lists as cards have an anchor; the rest go to the page.
+    href: PPF_PAGE_ANCHORS.has(d.slug) ? `/ppf#${d.slug}` : d.slug === "paint-protection-film" ? "/ppf#packages" : "/ppf",
     keywords: norm(`${d.name} ppf paint protection ceramic detailing wrap ${d.category}`),
   })),
   ...FACELIFT_CONVERSIONS.map((f) => ({

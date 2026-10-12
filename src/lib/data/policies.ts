@@ -13,6 +13,8 @@ export type Policy = {
   title: string;
   eyebrow: string;
   intro: string;
+  /** Short search/share description; falls back to `intro` when absent. */
+  metaDescription?: string;
   sections: PolicySection[];
 };
 
@@ -238,6 +240,7 @@ export const LEGAL_POLICIES: Policy[] = [
     slug: "privacy",
     title: "PRIVACY POLICY",
     eyebrow: "Legal",
+    metaDescription: "What personal information Riderzpro collects, why we collect it, and how to access, correct or delete it.",
     intro: `This policy is issued by ${COMPANY} It owns the Riderzpro trademark and runs this store. It explains what we collect, why, and what you can ask us to do about it.`,
     sections: [
       {
@@ -301,6 +304,7 @@ export const LEGAL_POLICIES: Policy[] = [
     slug: "terms",
     title: "TERMS OF SERVICE",
     eyebrow: "Legal",
+    metaDescription: "The terms for buying from Riderzpro: online orders, workshop bookings and vehicle transactions.",
     intro: `These terms govern purchases from this website, workshop bookings and vehicle transactions. The seller is ${COMPANY} It owns the Riderzpro trademark.`,
     sections: [
       {

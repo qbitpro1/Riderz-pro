@@ -202,9 +202,9 @@ export const SEO_LANDINGS: SeoLanding[] = [
     slug: "car-accessories",
     eyebrow: "Car & bike accessories",
     h1: "CAR ACCESSORIES THAT ACTUALLY FIT.",
-    title: "Car Accessories Online India — Seat Covers, Mats & Audio",
+    title: "Car Accessories Online India — Seat Covers, Mats & Multimedia",
     description:
-      "Buy car accessories online in India: seat covers, floor mats, speakers, lighting, protection, utilities and off-road gear. Made by Riderzpro, fitted at our garages.",
+      "Buy car accessories online in India: seat covers, floor mats, speakers, lighting, covers and guards, utilities and off-roading gear. Made by Riderzpro, fitted at our garages.",
     intro:
       "Riderzpro makes and sells car accessories. Pick your car once and the shop shows what fits it: seat covers cut to your seat pattern, mats cut to your floor, lighting and audio matched to your model.",
     media: "tailLightBokeh",
@@ -214,7 +214,7 @@ export const SEO_LANDINGS: SeoLanding[] = [
     sections: [
       {
         heading: "Eight departments, one shop",
-        body: "Interior, exterior, multimedia, protection, utilities, off-roading, lighting and a performance and travel section. Each department is split into the product types people actually search for, and every one has an Original Equipment view.",
+        body: "Interior, exterior, multimedia, covers and guards, utilities, off-roading, lighting and a performance and travel section. Each department is split into the product types people actually search for, and every one has an Original Equipment view.",
       },
       {
         heading: "Fitment checked before dispatch",
@@ -248,7 +248,7 @@ export const SEO_LANDINGS: SeoLanding[] = [
     h1: "SUV MODIFICATION & OFF-ROAD BUILDS.",
     title: "SUV Modification & Off-Road Accessories in India",
     description:
-      "SUV modification for Thar, Fortuner, Scorpio N, XUV700, Gurkha, Jimny, Wrangler, Hilux and Defender. Lift kits, protection, recovery, expedition gear, interiors.",
+      "SUV modification for Thar, Fortuner, Scorpio N, XUV700, Gurkha, Jimny, Wrangler, Hilux and Defender. Lift kits, underbody guards, recovery, expedition gear, interiors.",
     intro:
       "An SUV can be built three ways: for the trail, for the highway, or for the second row. We do all three, and the first question we ask is which one you actually want.",
     media: "defenderSaltFlat",

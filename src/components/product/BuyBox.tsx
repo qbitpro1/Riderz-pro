@@ -150,7 +150,7 @@ export function BuyBox({ detail }: { detail: ProductDetail }) {
                 </>
               )}
             </p>
-            <p className="mt-1 text-xs text-dim">Inclusive of all taxes</p>
+            <p className="mt-1 text-xs text-dim">Inclusive of GST</p>
           </>
         )}
       </div>
@@ -187,7 +187,13 @@ export function BuyBox({ detail }: { detail: ProductDetail }) {
       ))}
 
       {/* Installation */}
-      {installPrice !== null && detail.installation && (
+      {installPrice === 0 && detail.installation && (
+        <p className="mt-5 border border-tint/10 p-3 text-sm">
+          <span className="font-semibold">Installation included</span>
+          {detail.installation.time && <span className="block text-xs text-dim">Takes about {detail.installation.time}</span>}
+        </p>
+      )}
+      {installPrice !== null && installPrice > 0 && detail.installation && (
         <label className="mt-5 flex min-h-11 cursor-pointer items-start gap-3 border border-tint/10 p-3">
           <input
             type="checkbox"

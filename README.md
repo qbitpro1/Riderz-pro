@@ -5,7 +5,7 @@ Motorbotz Automotive Pvt. Ltd., which makes and sells the range. The store carri
 house range plus RECOIL, Blaupunkt and Autoform, across eight departments, with fitment checks per
 car and installation at the company's garages in Bengaluru, Hyderabad and Pune.
 
-Secondary areas, under the "More" menu: garage and detailing services (PPF, audio, body kits,
+Secondary areas, under the "Cars" and "Services" menus: garage and detailing services (PPF, audio, body kits,
 off-road, interiors, performance), used-car buy/sell, and the Mahindra BE 6 programme.
 
 ## Stack
@@ -32,7 +32,7 @@ Other scripts (`package.json`): `catalog:rebuild`, `sync:recoil`, `verify:recoil
 The flow is one direction: taxonomy, then catalogue, then store contract, then the product page.
 
 - **Taxonomy** (`src/lib/data/taxonomy.ts`): the eight departments (interior, exterior,
-  multimedia, protection, utilities, off-roading, lighting, accessories), their groups, and their
+  multimedia, covers & guards, utilities, off-roading, lighting, accessories), their groups, and their
   URLs (`/shop/{department}`, `?group=`, `?oe=1`). Navigation, home and shop all read from it.
 - **Catalogue** (`src/lib/catalog`): every brand's products projected into one `CatalogItem` shape,
   with filters, sorting and facets. The shop reads filters from the query string (`?brand`, `?group`,
@@ -77,7 +77,7 @@ with `data-theme="dark"` plus the `.scrim`, so it stays legible in both themes.
 - [ ] Domain `riderzpro.com` pointed at the host; `SITE.url` in `src/lib/data/site.ts` matches it.
 - [ ] Verify `SITE` details (phone, email, socials, GSTIN) and the organisation address and rating
       in `src/app/layout.tsx` before launch.
-- [ ] Shopify (or other checkout): follow `docs/SHOPIFY_SETUP.md` (being written separately).
+- [ ] Shopify (or other checkout): follow `docs/SHOPIFY_SETUP.md`.
 - [ ] Real product photography replacing stock images where the catalogue still uses `MEDIA` keys.
 - [ ] Analytics and tag IDs (none are wired yet); submit `/sitemap.xml` in Search Console.
 - [ ] Logo as vector: only `public/brand/riderzpro-logo.png` exists; the social card

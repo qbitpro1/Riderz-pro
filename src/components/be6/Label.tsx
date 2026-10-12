@@ -63,7 +63,7 @@ export function ConceptNotice({ long = false, className = "" }: { long?: boolean
     <p className={`border-l-2 border-gold/50 bg-gold/[0.06] px-4 py-3 text-xs leading-relaxed text-ash ${className}`}>
       {long ? (
         <>
-          <strong className="text-gold">RIDERZPRO Limited Edition</strong> is an independent customization concept by
+          <strong className="text-gold">RIDERZPRO Limited Edition</strong> is an independent customisation concept by
           RIDERZPRO and is not a factory Mahindra variant. It carries no Mahindra endorsement, certification or
           partnership.
         </>

@@ -18,7 +18,7 @@
 import type { Stage, ValidationDomain } from "./riderzpro";
 
 export const DISCLAIMER =
-  "RIDERZPRO Limited Edition is an independent customization concept by RIDERZPRO and is not a factory Mahindra variant.";
+  "RIDERZPRO Limited Edition is an independent customisation concept by RIDERZPRO and is not a factory Mahindra variant.";
 
 export const DISCLAIMER_LONG =
   "The RIDERZPRO BE 6 Limited Edition is an independent aftermarket concept developed by RIDERZPRO. It is not a Mahindra product, not a Mahindra variant, and carries no Mahindra endorsement, certification or partnership. Mahindra and BE 6 are trademarks of Mahindra & Mahindra Ltd, used here to identify the vehicle the concept is based on. The factory vehicle, its specifications and its warranty are Mahindra's; everything described as RIDERZPRO is ours.";

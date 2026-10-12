@@ -3,7 +3,7 @@ export const SITE = {
   tagline: "CAR & BIKE ACCESSORIES",
   support: "Your Car. Your Build. Your Ride.",
   description:
-    "Riderzpro makes and sells car accessories in India — interior, exterior, multimedia, protection, lighting and off-roading parts, fitment-checked for your car and fitted at our garages.",
+    "Riderzpro makes and sells car accessories in India — interior, exterior, multimedia, covers and guards, utilities, lighting and off-roading parts, fitment-checked for your car and fitted at our garages.",
   url: "https://riderzpro.com",
   phone: "+91 98860 44488",
   phoneHref: "tel:+919886044488",

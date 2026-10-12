@@ -18,10 +18,10 @@ export type BrandSlug = "riderzpro" | "recoil" | "autoform" | "blaupunkt";
 /**
  * How we're allowed to describe our relationship with the brand. These are
  * claims about the business, so each one has to match what the brand's own
- * pages already say — "Import in progress" is the safe default for a brand
+ * pages already say — "Selected range" is the safe default for a brand
  * whose terms haven't been stated anywhere on the site yet.
  */
-export type BrandPosition = "House brand" | "Authorised reseller" | "Import in progress";
+export type BrandPosition = "House brand" | "Authorised reseller" | "Selected range";
 
 export type BrandCatalogueState =
   /** Products are live in the unified catalogue. */
@@ -91,14 +91,15 @@ export const BRANDS: Brand[] = [
     categories: ["interior"],
     state: "live",
     provenance:
-      "Built from the Autoform dealer price list and product catalogue supplied by the manufacturer. Nothing is inferred between the two.",
+      "Built from our Autoform price list and the product catalogue supplied by the manufacturer. Nothing is inferred between the two.",
   },
   {
     slug: "blaupunkt",
     name: "Blaupunkt",
-    // Still a placeholder: the catalogue is now imported, but the reseller
-    // relationship has never been stated on the site. Set it once confirmed.
-    position: "Import in progress",
+    // The catalogue is imported and live, but the reseller relationship has
+    // never been stated on the site, so use a neutral label. Switch to
+    // "Authorised reseller" once the owner confirms it.
+    position: "Selected range",
     tagline: "German car audio, head units and dash cams.",
     blurb:
       "Head units, amplifiers, speakers, subwoofers, rear-seat entertainment, dash cams and installation accessories.",
