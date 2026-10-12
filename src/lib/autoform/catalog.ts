@@ -189,8 +189,7 @@ export const DESIGNS_AWAITING_CATALOGUE: { listedAs: string; bandId: string }[] 
  * [CAT24] The feature icons printed on every design page. Reproduced as the
  * manufacturer states them — no interpretation, no added claims. The bare
  * "Warranty" icon is left out: it states no period or terms (see NOT_IN_SOURCE),
- * so on its own it reads as an empty chip. "Hi Recoil" is the manufacturer's own
- * feature name (high-recoil foam) and is kept as printed.
+ * so on its own it reads as an empty chip. "Hi Recoil" is kept as printed.
  */
 export const DESIGN_FEATURES = [
   "UV Resistant",

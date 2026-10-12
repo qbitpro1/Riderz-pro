@@ -124,11 +124,12 @@ const SPEC_PAIR = /^([^:：@]{2,40}?)\s*[:：]\s*(\S.*)$/;
  * Source rows carry an internal annotation, e.g. "Special Dimensions: -8 × -5 mm
  * (retained reference)" on the RCX65. The note is not for shoppers and negative
  * dimensions are placeholders, so strip a trailing "(retained reference)" and
- * drop any line whose value contains a negative number.
+ * drop a dimensions line that carries a negative number. Other negative values
+ * (dB, °C) are real and stay.
  */
 function cleanSourceLine(line: string): string | null {
   const cleaned = line.replace(/\s*\(retained reference\)\s*$/i, "").trim();
-  if (/[:：]\s*-\d|[×x]\s*-\d/.test(cleaned)) return null;
+  if (/dimension/i.test(cleaned) && /[:：×x]\s*-\d/.test(cleaned)) return null;
   return cleaned || null;
 }
 
