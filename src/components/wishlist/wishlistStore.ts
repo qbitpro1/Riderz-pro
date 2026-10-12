@@ -6,7 +6,7 @@ import type { ProductImage } from "@/lib/store/types";
 /**
  * Browser-only "save for later". No accounts yet, so the list lives in
  * localStorage; a small snapshot of each product is kept so the wishlist page
- * renders without a catalogue lookup (prices may go stale — the page says so).
+ * renders without a catalogue lookup. The wishlist page overlays the live catalogue on top, so a saved price is only a fallback.
  */
 export type WishlistItem = {
   slug: string;
@@ -28,6 +28,8 @@ const EMPTY: WishlistItem[] = [];
 
 let items: WishlistItem[] = EMPTY;
 let loaded = false;
+/** How many of the oldest items were pushed out by the size limit since the notice was last dismissed. */
+let trimmed = 0;
 const listeners = new Set<() => void>();
 
 function parse(raw: string | null): WishlistItem[] {
@@ -96,10 +98,15 @@ function getSnapshot() {
   return items;
 }
 
+function getTrimmed() {
+  return trimmed;
+}
+
 const noopSubscribe = () => () => {};
 
 export function useWishlist() {
   const list = useSyncExternalStore(subscribe, getSnapshot, () => EMPTY);
+  const dropped = useSyncExternalStore(subscribe, getTrimmed, () => 0);
   const ready = useSyncExternalStore(
     noopSubscribe,
     () => true,
@@ -111,21 +118,35 @@ export function useWishlist() {
       items: list,
       count: list.length,
       ready,
+      /** Items silently pushed out at the size limit — shown to the shopper rather than dropped quietly. */
+      dropped,
+      dismissDropped: () => {
+        trimmed = 0;
+        emit();
+      },
+      limit: MAX,
       has: (slug: string) => list.some((i) => i.slug === slug),
       toggle: (item: WishlistInput) => {
         load();
         if (items.some((i) => i.slug === item.slug)) {
           commit(items.filter((i) => i.slug !== item.slug));
         } else {
-          commit([{ ...item, savedAt: Date.now() }, ...items].slice(0, MAX));
+          const next = [{ ...item, savedAt: Date.now() }, ...items];
+          if (next.length > MAX) {
+            trimmed += next.length - MAX;
+          }
+          commit(next.slice(0, MAX));
         }
       },
       remove: (slug: string) => {
         load();
         commit(items.filter((i) => i.slug !== slug));
       },
-      clear: () => commit([]),
+      clear: () => {
+        trimmed = 0;
+        commit([]);
+      },
     }),
-    [list, ready],
+    [list, ready, dropped],
   );
 }

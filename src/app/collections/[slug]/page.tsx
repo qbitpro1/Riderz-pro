@@ -62,6 +62,7 @@ export default async function CollectionPage({
               { label: c.name },
             ]}
           />
+          <h2 className="sr-only">{c.name} products</h2>
           <div className="mb-6 flex flex-wrap items-center gap-2">
             <span className="text-[11px] uppercase tracking-[0.14em] text-dim">Collections</span>
             {LIVE.map((x) => (

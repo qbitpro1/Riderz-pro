@@ -5,13 +5,24 @@ import { useState } from "react";
 import { useCart } from "@/components/cart/CartContext";
 import { CartThumb } from "@/components/cart/CartThumb";
 import { rupees } from "@/lib/format";
-import { cartLineId } from "@/lib/store/types";
+import { cartLineId, type ProductImage } from "@/lib/store/types";
 import { useWishlist } from "./wishlistStore";
 
-const date = new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "short", year: "numeric" });
+/** The current catalogue facts the wishlist needs for one product — projected server-side, never the full record. */
+export type LiveProduct = {
+  title: string;
+  brandName: string;
+  href: string;
+  price: number | null;
+  mrp: number | null;
+  /** True when the product can be bought right now (priced, on sale, not held back). */
+  buyable: boolean;
+  hasOptions: boolean;
+  image?: ProductImage;
+};
 
-export function WishlistView() {
-  const { items, ready, remove, clear } = useWishlist();
+export function WishlistView({ live }: { live: Record<string, LiveProduct> }) {
+  const { items, ready, remove, clear, dropped, dismissDropped, limit } = useWishlist();
   const { add } = useCart();
   const [confirming, setConfirming] = useState(false);
 
@@ -48,8 +59,7 @@ export function WishlistView() {
     <>
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm text-ash">
-          Open a product for its current price — each price below is the one shown when you saved it. Your list is
-          stored on this device only.
+          Prices below are today&apos;s prices. Your list is stored on this device only.
         </p>
         {confirming ? (
           <div className="flex items-center gap-2">
@@ -75,9 +85,27 @@ export function WishlistView() {
         )}
       </div>
 
+      {dropped > 0 && (
+        <div role="status" className="card mt-4 flex flex-wrap items-center justify-between gap-3 p-3 text-sm">
+          <span>
+            Your wishlist holds {limit} products, so the {dropped === 1 ? "oldest one was" : `${dropped} oldest were`}{" "}
+            removed to make room. Remove items you no longer want to keep more.
+          </span>
+          <button type="button" className="btn btn-outline btn-sm min-h-10" onClick={dismissDropped}>
+            Dismiss
+          </button>
+        </div>
+      )}
+
       <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {items.map((it) => {
-          const price = it.price;
+        {items.map((saved) => {
+          const current = live[saved.slug];
+          const gone = !current;
+          // Live catalogue data wins; the saved snapshot is only used to show an item that no longer exists.
+          const it = current ? { ...saved, ...current } : { ...saved, href: "/shop" };
+          const price = gone ? null : current.price;
+          const canAdd = !gone && current.buyable && !current.hasOptions;
+          const unavailable = gone || !current.buyable;
           return (
             <li key={it.slug} className="card flex flex-col gap-3 p-3.5">
               <div className="flex gap-3">
@@ -92,10 +120,15 @@ export function WishlistView() {
                     </Link>
                   </h2>
                   <p className="mt-1.5 flex items-baseline gap-2">
-                    {price === null ? (
+                    {gone ? (
+                      <span className="text-xs text-dim">No longer available</span>
+                    ) : unavailable ? (
+                      <span className="text-xs text-dim">Currently unavailable</span>
+                    ) : price === null ? (
                       <span className="text-xs text-dim">Price on request</span>
                     ) : (
                       <>
+                        {current.hasOptions && <span className="text-[10px] uppercase tracking-[0.12em] text-dim">from</span>}
                         <span className="font-display text-base font-extrabold tnum">{rupees(price)}</span>
                         {it.mrp !== null && it.mrp > price && (
                           <span className="text-xs text-dim line-through tnum">{rupees(it.mrp)}</span>
@@ -103,13 +136,10 @@ export function WishlistView() {
                       </>
                     )}
                   </p>
-                  <p className="mt-0.5 text-[11px] text-dim">
-                    Price saved on {date.format(new Date(it.savedAt))}
-                  </p>
                 </div>
               </div>
               <div className="mt-auto flex items-center gap-2">
-                {price !== null && !it.hasOptions ? (
+                {canAdd && price !== null ? (
                   <button
                     type="button"
                     className="btn btn-primary btn-sm min-h-10 flex-1"
@@ -131,7 +161,7 @@ export function WishlistView() {
                   </button>
                 ) : (
                   <Link href={it.href} className="btn btn-outline btn-sm min-h-10 flex-1">
-                    {it.hasOptions ? "Choose options" : "View details"}
+                    {gone ? "Find similar" : it.hasOptions ? "Choose options" : "View details"}
                   </Link>
                 )}
                 <button
