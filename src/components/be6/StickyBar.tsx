@@ -14,7 +14,7 @@ import { useStickyBarOffset } from "@/components/layout/useStickyBarOffset";
  */
 
 const LINKS = [
-  { href: "#explore", label: "EXPLORE" },
+  { href: "#choose", label: "EXPLORE" },
   { href: "#build", label: "BUILD" },
   { href: "#quote", label: "GET QUOTE" },
 ];
