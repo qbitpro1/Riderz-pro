@@ -22,11 +22,15 @@ function loadIndex(): Promise<SearchIndex> {
   return indexRequest;
 }
 
+const FOCUSABLE =
+  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
 export function SearchPanel({ onClose }: { onClose: () => void }) {
   const [q, setQ] = useState("");
   const [index, setIndex] = useState<SearchIndex | null>(null);
   const [failed, setFailed] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const panel = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let live = true;
@@ -39,21 +43,61 @@ export function SearchPanel({ onClose }: { onClose: () => void }) {
     };
   }, []);
 
+  const onCloseRef = useRef(onClose);
   useEffect(() => {
+    onCloseRef.current = onClose;
+  });
+
+  /* Dialog behaviour, as in MobileDrawer: Escape closes, Tab stays inside, body
+     scroll is locked and its previous value restored, focus returns to the opener. */
+  useEffect(() => {
+    const opener = document.activeElement as HTMLElement | null;
     inputRef.current?.focus();
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
-    window.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    return () => {
-      window.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        onCloseRef.current();
+        return;
+      }
+      if (e.key !== "Tab" || !panel.current) return;
+      const els = Array.from(panel.current.querySelectorAll<HTMLElement>(FOCUSABLE));
+      if (els.length === 0) return;
+      const first = els[0];
+      const last = els[els.length - 1];
+      const cur = document.activeElement;
+      if (!panel.current.contains(cur)) {
+        e.preventDefault();
+        first.focus();
+      } else if (e.shiftKey && cur === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && cur === last) {
+        e.preventDefault();
+        first.focus();
+      }
     };
-  }, [onClose]);
+    document.addEventListener("keydown", onKey);
+
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+      opener?.focus?.();
+    };
+  }, []);
 
   const results = useMemo(() => (index ? searchAll(index.entries, q, 9) : []), [index, q]);
 
   return (
-    <div className="fixed inset-0 z-[70] flex flex-col bg-void/95 backdrop-blur-xl">
+    <div
+      ref={panel}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Search Riderzpro"
+      className="fixed inset-0 z-[70] flex flex-col bg-void/95 backdrop-blur-xl"
+    >
       <div className="shell flex items-center gap-3 py-4">
         <Icon name="search" size={20} className="text-dim" />
         <input

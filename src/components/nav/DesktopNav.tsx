@@ -62,9 +62,19 @@ export function DesktopNav() {
     const onDown = (e: PointerEvent) => {
       if (root.current && !root.current.contains(e.target as Node)) setOpen(null);
     };
+    // A menu opened by hover has no focus inside it, so Escape has to be heard at the document.
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      clear();
+      setOpen(null);
+    };
     document.addEventListener("pointerdown", onDown);
-    return () => document.removeEventListener("pointerdown", onDown);
-  }, [open]);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("pointerdown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open, clear]);
 
   return (
     <nav ref={root} className="hidden h-full items-center xl:flex" aria-label="Primary">

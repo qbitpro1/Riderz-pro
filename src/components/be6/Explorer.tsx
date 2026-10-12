@@ -101,6 +101,7 @@ export function Explorer() {
             key={h.slug}
             type="button"
             onClick={() => setActive(h.slug)}
+            aria-pressed={shown?.slug === h.slug}
             className={`chip ${shown?.slug === h.slug ? "chip-active" : ""}`}
           >
             {h.label}

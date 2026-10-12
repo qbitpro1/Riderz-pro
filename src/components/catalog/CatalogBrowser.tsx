@@ -43,6 +43,7 @@ export function CatalogBrowser({
   const [filters, setFilters] = useState<CatalogFilters>(initial);
   const [visible, setVisible] = useState(PAGE);
   const [panelOpen, setPanelOpen] = useState(false);
+  const countRef = useRef<HTMLParagraphElement>(null);
   const [garage, setGarage] = useState<{ modelSlug: string; label: string } | null>(null);
 
   /* A client-side navigation to the same route with different query params —
@@ -182,9 +183,16 @@ export function CatalogBrowser({
           </select>
         </div>
 
-        <ActiveChips filters={filters} locked={locked} onToggle={toggle} onPatch={patch} onClear={clearAll} />
+        <ActiveChips
+          filters={filters}
+          locked={locked}
+          onToggle={toggle}
+          onPatch={patch}
+          onClear={clearAll}
+          onEmpty={() => countRef.current?.focus()}
+        />
 
-        <p className="mb-4 text-xs text-ash tnum">
+        <p ref={countRef} tabIndex={-1} className="mb-4 text-xs text-ash tnum outline-none">
           {results.length} product{results.length === 1 ? "" : "s"}
           {results.length !== items.length && <span className="text-dim"> of {items.length}</span>}
         </p>
@@ -306,9 +314,16 @@ function FilterSheet({
     };
     document.addEventListener("keydown", onKey);
 
+    // The sheet is `lg:hidden`; close it if the viewport crosses that breakpoint
+    // while open so the scroll lock and focus trap don't outlive it.
+    const mq = window.matchMedia("(min-width: 64rem)");
+    const onBreakpoint = (e: MediaQueryListEvent) => e.matches && onClose();
+    mq.addEventListener("change", onBreakpoint);
+
     return () => {
       cancelAnimationFrame(raf);
       document.removeEventListener("keydown", onKey);
+      mq.removeEventListener("change", onBreakpoint);
       document.body.style.overflow = prevOverflow;
       opener?.focus?.();
     };
@@ -563,13 +578,30 @@ function ActiveChips({
   onToggle,
   onPatch,
   onClear,
+  onEmpty,
 }: {
   filters: CatalogFilters;
   locked: LockedDimension[];
   onToggle: ToggleFn;
   onPatch: (next: Partial<CatalogFilters>) => void;
   onClear: () => void;
+  /** Called when removing the last chip leaves nothing to focus. */
+  onEmpty: () => void;
 }) {
+  /* Removing a chip unmounts the button that had focus. Remember its position and,
+     after the list re-renders, focus the chip that took its place (or the previous one). */
+  const wrap = useRef<HTMLDivElement>(null);
+  const refocus = useRef<number | null>(null);
+  useEffect(() => {
+    if (refocus.current === null) return;
+    const i = refocus.current;
+    refocus.current = null;
+    const btns = wrap.current?.querySelectorAll<HTMLElement>("[data-chip]");
+    const target = btns?.[i] ?? btns?.[i - 1];
+    if (target) target.focus();
+    else onEmpty();
+  });
+
   const chips: { key: string; label: string; remove: () => void }[] = [];
 
   if (!locked.includes("brands"))
@@ -599,12 +631,16 @@ function ActiveChips({
   if (chips.length === 0) return null;
 
   return (
-    <div className="mb-4 flex flex-wrap items-center gap-2">
-      {chips.map((c) => (
+    <div ref={wrap} className="mb-4 flex flex-wrap items-center gap-2">
+      {chips.map((c, i) => (
         <button
           key={c.key}
           type="button"
-          onClick={c.remove}
+          data-chip=""
+          onClick={() => {
+            refocus.current = i;
+            c.remove();
+          }}
           className="chip chip-active hover:opacity-80"
           aria-label={`Remove filter ${c.label}`}
         >

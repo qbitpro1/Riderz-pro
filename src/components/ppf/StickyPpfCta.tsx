@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
+import { useStickyBarOffset } from "@/components/layout/useStickyBarOffset";
 import { whatsapp } from "@/lib/data/site";
 
 /**
@@ -12,6 +13,8 @@ import { whatsapp } from "@/lib/data/site";
  */
 export function StickyPpfCta({ vehicle }: { vehicle?: string }) {
   const [visible, setVisible] = useState(false);
+  const bar = useRef<HTMLDivElement>(null);
+  useStickyBarOffset(bar, visible);
 
   useEffect(() => {
     const onScroll = () => setVisible(window.scrollY > 520);
@@ -26,8 +29,10 @@ export function StickyPpfCta({ vehicle }: { vehicle?: string }) {
 
   return (
     <div
-      className={`fixed inset-x-0 bottom-[64px] z-40 border-t border-tint/10 bg-void/95 backdrop-blur-xl transition-transform duration-300 lg:hidden ${
-        visible ? "translate-y-0" : "translate-y-full"
+      ref={bar}
+      inert={!visible}
+      className={`fixed inset-x-0 bottom-[calc(64px+env(safe-area-inset-bottom))] z-40 border-t border-tint/10 bg-void/95 backdrop-blur-xl transition-transform duration-300 lg:hidden ${
+        visible ? "translate-y-0" : "invisible translate-y-full"
       }`}
     >
       <div className="grid grid-cols-3 gap-2 p-2.5">

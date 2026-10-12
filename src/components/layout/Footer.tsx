@@ -33,7 +33,8 @@ const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
 export function Footer() {
   return (
     <footer className="relative mt-px border-t border-tint/8 bg-carbon">
-      <div className="shell py-12 md:py-16">
+      {/* Below lg the bottom nav (64px) and any sticky action bar (--sticky-bar-h) overlay the page end. */}
+      <div className="shell py-12 max-lg:pb-[calc(3rem+64px+var(--sticky-bar-h,0px)+env(safe-area-inset-bottom))] md:py-16 max-lg:md:pb-[calc(4rem+64px+var(--sticky-bar-h,0px)+env(safe-area-inset-bottom))]">
         <div className="grid gap-10 lg:grid-cols-[1fr_2.6fr]">
           <div>
             <Logo className="h-28" />

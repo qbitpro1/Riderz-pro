@@ -8,7 +8,7 @@ type Props = {
   className?: string;
   priority?: boolean;
   quality?: number;
-  /** Overrides the catalogue alt text when the surrounding copy needs specifics. */
+  /** Overrides the catalogue alt text when the surrounding copy needs specifics. Pass `""` for a decorative photo. */
   alt?: string;
   position?: string;
 };

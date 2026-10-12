@@ -58,9 +58,16 @@ export function MobileDrawer({ onClose }: { onClose: () => void }) {
     };
     document.addEventListener("keydown", onKey);
 
+    // The drawer is `xl:hidden`; if the viewport crosses that breakpoint while it is
+    // open (rotation, window resize) close it so the scroll lock and trap don't linger.
+    const mq = window.matchMedia("(min-width: 80rem)");
+    const onBreakpoint = (e: MediaQueryListEvent) => e.matches && onClose();
+    mq.addEventListener("change", onBreakpoint);
+
     return () => {
       cancelAnimationFrame(raf);
       document.removeEventListener("keydown", onKey);
+      mq.removeEventListener("change", onBreakpoint);
       document.body.style.overflow = prevOverflow;
       opener?.focus?.();
     };
