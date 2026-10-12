@@ -241,6 +241,11 @@ export function placeSub(sub: string): { department: DepartmentSlug; group: stri
   return PLACEMENT.get(sub.trim().toLowerCase()) ?? { department: "accessories", group: "more" };
 }
 
+/** True when the taxonomy names this label itself (rather than `placeSub` falling back to Accessories → More). */
+export function isKnownSub(sub: string): boolean {
+  return PLACEMENT.has(sub.trim().toLowerCase());
+}
+
 /* ------------------------------------------------------------------- URLs */
 
 export function departmentHref(slug: DepartmentSlug): string {

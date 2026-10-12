@@ -26,6 +26,9 @@ export function BuyBox({ detail }: { detail: ProductDetail }) {
     }
     return init;
   });
+  // Options the shopper has picked themselves. The defaults are only a starting point, so a "From"
+  // price stays "From" until every option has been chosen on purpose.
+  const [picked, setPicked] = useState<Set<string>>(() => new Set());
   const [qty, setQty] = useState(1);
   const [withInstall, setWithInstall] = useState(false);
   const [showBar, setShowBar] = useState(false);
@@ -49,8 +52,11 @@ export function BuyBox({ detail }: { detail: ProductDetail }) {
   const savingPct = saving > 0 && unitMrp ? Math.round((saving / unitMrp) * 100) : 0;
 
   const installPrice = detail.installation && typeof detail.installation.price === "number" ? detail.installation.price : null;
-  const canBuy =
-    unitPrice !== null && !optionUnavailable && detail.availability !== "coming-soon" && detail.indexable;
+  // A held-back product (not indexable) has no sale price to show: it is enquiry-only, like price on request.
+  const forSale = detail.price !== null && detail.indexable && detail.availability !== "coming-soon";
+  const canBuy = forSale && unitPrice !== null && !optionUnavailable;
+  const allChosen = detail.options.length > 0 && detail.options.every((o) => picked.has(o.id));
+  const showFrom = detail.priceFrom && !allChosen;
 
   const variant = selected
     .map((s) => s.value?.label)
@@ -126,14 +132,14 @@ export function BuyBox({ detail }: { detail: ProductDetail }) {
 
       {/* Price */}
       <div className="mt-5">
-        {unitPrice === null ? (
+        {unitPrice === null || !forSale ? (
           <p className="font-display text-2xl font-extrabold uppercase tracking-[-0.02em] text-gold">
             {detail.availability === "coming-soon" ? "Launching soon" : "Price on request"}
           </p>
         ) : (
           <>
             <p className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-              {detail.priceFrom && <span className="text-xs uppercase tracking-[0.12em] text-dim">From</span>}
+              {showFrom && <span className="text-xs uppercase tracking-[0.12em] text-dim">From</span>}
               <span className="font-display text-3xl font-extrabold tnum">{rupees(unitPrice)}</span>
               {saving > 0 && unitMrp !== null && (
                 <>
@@ -165,7 +171,10 @@ export function BuyBox({ detail }: { detail: ProductDetail }) {
                   type="button"
                   disabled={!v.available}
                   aria-pressed={on}
-                  onClick={() => setChoices((c) => ({ ...c, [option.id]: v.id }))}
+                  onClick={() => {
+                    setChoices((c) => ({ ...c, [option.id]: v.id }));
+                    setPicked((p) => new Set(p).add(option.id));
+                  }}
                   className={`chip min-h-11 px-4 text-sm disabled:cursor-not-allowed disabled:opacity-50 ${on ? "chip-active" : ""}`}
                 >
                   {v.label}
@@ -242,14 +251,16 @@ export function BuyBox({ detail }: { detail: ProductDetail }) {
 
       <WishlistButton variant="inline" className="mt-3" item={{ slug: detail.slug, href: productHref(detail.slug), title: detail.title, brandName: detail.brandName, price: detail.price, mrp: detail.mrp, image: detail.images[0], hasOptions: detail.options.length > 0 }} />
 
-      {/* Availability */}
-      <p className="mt-4 flex flex-wrap items-center gap-x-3 text-sm">
-        <span className="flex items-center gap-1.5 font-semibold">
-          <Icon name="check" size={14} className="text-accent" />
-          {availabilityText}
-        </span>
-        {lowStock && <span className="font-semibold text-danger">{lowStock}</span>}
-      </p>
+      {/* Availability: not claimed for a product that cannot be bought */}
+      {forSale && (
+        <p className="mt-4 flex flex-wrap items-center gap-x-3 text-sm">
+          <span className="flex items-center gap-1.5 font-semibold">
+            <Icon name="check" size={14} className="text-accent" />
+            {availabilityText}
+          </span>
+          {lowStock && <span className="font-semibold text-danger">{lowStock}</span>}
+        </p>
+      )}
 
       {/* Trust row, from facts only */}
       <ul className="mt-4 grid gap-2 text-xs text-ash">
@@ -270,7 +281,7 @@ export function BuyBox({ detail }: { detail: ProductDetail }) {
           <div className="min-w-0 flex-1">
             <p className="truncate text-xs font-semibold">{detail.title}</p>
             <p className="text-sm font-bold tnum">
-              {unitPrice === null ? "Price on request" : `${detail.priceFrom ? "From " : ""}${rupees(unitPrice)}`}
+              {unitPrice === null || !forSale ? "Price on request" : `${showFrom ? "From " : ""}${rupees(unitPrice)}`}
             </p>
           </div>
           {canBuy ? (

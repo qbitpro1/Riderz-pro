@@ -98,7 +98,7 @@ function matches(item: CatalogItem, f: CatalogFilters, except?: Dimension): bool
   if (except !== "groups" && f.groups.length && !f.groups.includes(item.group)) return false;
   if (except !== "oe" && f.oe && !item.oe) return false;
   if (except !== "subs" && f.subs.length && !f.subs.includes(item.sub)) return false;
-  if (except !== "tiers" && f.tiers.length && !f.tiers.includes(item.tier)) return false;
+  if (except !== "tiers" && f.tiers.length && (item.tier === null || !f.tiers.includes(item.tier))) return false;
   if (except !== "maxPrice" && f.maxPrice !== null && (item.price === null || item.price > f.maxPrice)) return false;
   if (except !== "availability" && f.availability.length && !f.availability.includes(item.availability)) return false;
   if (except !== "fits" && f.fits && !itemFits(item, f.fits)) return false;

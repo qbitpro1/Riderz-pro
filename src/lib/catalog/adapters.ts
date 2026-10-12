@@ -29,7 +29,7 @@ import {
 import { PRODUCTS as BLAUPUNKT_PRODUCTS, type BlaupunktProduct } from "@/lib/data/blaupunkt";
 import { BRAND_BY_SLUG } from "./brands";
 import { tierFor, type CatalogItem } from "./types";
-import { placeSub } from "@/lib/data/taxonomy";
+import { isKnownSub, placeSub } from "@/lib/data/taxonomy";
 import { storeSlug } from "@/lib/store/slugs";
 import { productHref } from "@/lib/store/types";
 
@@ -107,7 +107,7 @@ function recoilItem(p: RecoilProduct): CatalogItem {
     price: comingSoon ? null : p.sellingPrice,
     mrp: p.mrp,
     priceFrom: false,
-    tier: tierFor(p.sellingPrice),
+    tier: comingSoon ? null : tierFor(p.sellingPrice),
     image: image
       ? { kind: "remote" as const, src: image.url, alt: image.alt, fit: "contain" as const, tone: "light" as const }
       : { kind: "none" as const },
@@ -213,7 +213,14 @@ const ACCESSORY_SUBS: Record<string, string> = {
 
 function autoformAccessoryItem(a: AccessoryRow): CatalogItem {
   const price = accessorySellingPrice(a);
-  const sub = (a.category && ACCESSORY_SUBS[a.category]) ?? a.category ?? "Dashboard accessories";
+  // The sheet's broad "Utility" bucket (and a missing category) hold unrelated things, so a product the
+  // taxonomy names itself is shelved by its own name first, then by the sheet's category.
+  const name = a.productName?.trim() ?? "";
+  const sub =
+    (name && isKnownSub(name) ? name : null) ??
+    (a.category && ACCESSORY_SUBS[a.category]) ??
+    a.category ??
+    "Dashboard accessories";
   return {
     id: `autoform:accessory-${a.sno}`,
     brand: "autoform",

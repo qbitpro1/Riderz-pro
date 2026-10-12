@@ -53,7 +53,8 @@ export type CatalogItem = {
   mrp: number | null;
   /** True when `price` is a starting price rather than the final one. */
   priceFrom: boolean;
-  tier: PriceTier;
+  /** Price band, or null when the item has no price (price on request / coming soon) so it sits in no band. */
+  tier: PriceTier | null;
   image: CatalogImage;
   rating: number | null;
   reviews: number | null;
@@ -74,8 +75,8 @@ export const TIER_BOUNDS: Record<PriceTier, [number, number]> = {
   premium: [25_000, Number.POSITIVE_INFINITY],
 };
 
-export function tierFor(price: number | null): PriceTier {
-  if (price === null) return "mid";
+export function tierFor(price: number | null): PriceTier | null {
+  if (price === null) return null;
   if (price <= TIER_BOUNDS.value[1]) return "value";
   if (price <= TIER_BOUNDS.mid[1]) return "mid";
   return "premium";

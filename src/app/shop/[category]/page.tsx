@@ -82,6 +82,8 @@ export default async function CategoryPage({
             ]}
           />
 
+          {/* Keeps the outline h1 → h2 → h3 (product cards) without changing the layout. */}
+          <h2 className="sr-only">{cat.name} products</h2>
           <div className="mb-6 flex flex-wrap items-center gap-2">
             <span className="text-[11px] uppercase tracking-[0.14em] text-dim">Shop by group</span>
             <Link

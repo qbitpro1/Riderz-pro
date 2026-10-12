@@ -48,6 +48,29 @@ function repair(line: CartLine): CartLine {
   return { ...line, id, href: `/products/${line.slug}` };
 }
 
+/** Reads stored lines, repairing old ones and dropping any that could corrupt the totals. */
+function parseLines(raw: string | null): CartLine[] | null {
+  if (!raw) return null;
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return null;
+    const out: CartLine[] = [];
+    for (const x of parsed as Partial<CartLine>[]) {
+      if (!x || typeof x !== "object" || typeof x.slug !== "string" || !x.slug) continue;
+      if (typeof x.price !== "number" || !Number.isFinite(x.price) || x.price < 0) continue;
+      if (typeof x.qty !== "number" || !Number.isFinite(x.qty) || x.qty < 1) continue;
+      if (x.id !== undefined && (typeof x.id !== "string" || !x.id)) continue;
+      if (x.install !== undefined && (typeof x.install !== "number" || !Number.isFinite(x.install) || x.install < 0)) continue;
+      const line = repair(x as CartLine);
+      if (typeof line.name !== "string") continue;
+      out.push({ ...line, qty: Math.min(MAX_QTY, Math.floor(x.qty)) });
+    }
+    return out;
+  } catch {
+    return null;
+  }
+}
+
 export function CartProvider({ children }: { children: ReactNode }) {
   const [lines, setLines] = useState<CartLine[]>([]);
   const [ready, setReady] = useState(false);
@@ -55,15 +78,22 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     try {
-      const raw = readStored(KEY);
-      if (raw) {
-        const parsed: unknown = JSON.parse(raw);
-        if (Array.isArray(parsed)) setLines((parsed as CartLine[]).map(repair));
-      }
+      const stored = parseLines(readStored(KEY));
+      if (stored) setLines(stored);
     } catch {
       // A corrupt or unavailable store should never block the page.
     }
     setReady(true);
+  }, []);
+
+  // Another tab changed the cart: follow it, so two open tabs never overwrite each other with stale lines.
+  useEffect(() => {
+    const onStorage = (e: StorageEvent) => {
+      if (e.key !== null && e.key !== KEY) return;
+      setLines(parseLines(e.newValue) ?? []);
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
   }, []);
 
   useEffect(() => {
