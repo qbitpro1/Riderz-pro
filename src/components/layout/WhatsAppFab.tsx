@@ -59,7 +59,7 @@ export function WhatsAppFab() {
       aria-label={`${label} on WhatsApp`}
       aria-hidden={visible ? undefined : true}
       tabIndex={visible ? undefined : -1}
-      className={`fixed bottom-[calc(76px+var(--sticky-bar-h,0px)+env(safe-area-inset-bottom))] right-4 z-50 flex h-13 items-center gap-2 rounded-full bg-[#12803c] pl-3.5 pr-4 py-3 font-display text-xs font-bold uppercase tracking-[0.12em] text-white shadow-[0_14px_40px_-12px_rgba(31,170,83,0.85)] transition-all duration-300 lg:bottom-6 lg:right-6 ${
+      className={`fixed bottom-[calc(76px+var(--sticky-bar-h,0px)+env(safe-area-inset-bottom))] right-4 z-50 flex h-13 items-center gap-2 rounded-full bg-[#0b7a43] pl-3.5 pr-4 py-3 font-display text-xs font-bold uppercase tracking-[0.12em] text-white shadow-[0_14px_40px_-12px_rgba(11,122,67,0.85)] transition-all duration-300 lg:bottom-6 lg:right-6 ${
         visible ? "translate-y-0 opacity-100" : "pointer-events-none invisible translate-y-4 opacity-0"
       }`}
     >
