@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useBe6Build } from "./BuildState";
 import { lakh } from "@/lib/format";
+import { useStickyBarOffset } from "@/components/layout/useStickyBarOffset";
 
 /**
  * Sticky mobile controls: EXPLORE · BUILD · GET QUOTE.
@@ -21,6 +22,8 @@ const LINKS = [
 export function StickyBar() {
   const [shown, setShown] = useState(false);
   const { selected } = useBe6Build();
+  const bar = useRef<HTMLDivElement>(null);
+  useStickyBarOffset(bar, shown);
 
   useEffect(() => {
     const hero = document.getElementById("be6-hero");
@@ -37,9 +40,10 @@ export function StickyBar() {
 
   return (
     <div
-      aria-hidden={!shown}
+      ref={bar}
+      inert={!shown}
       className={`glass fixed inset-x-0 z-40 border-t transition-transform duration-300 lg:hidden ${
-        shown ? "translate-y-0" : "translate-y-full"
+        shown ? "translate-y-0" : "invisible translate-y-full"
       }`}
       style={{ bottom: "calc(64px + env(safe-area-inset-bottom))" }}
     >
@@ -54,7 +58,6 @@ export function StickyBar() {
           <a
             key={l.href}
             href={l.href}
-            tabIndex={shown ? 0 : -1}
             className={`btn btn-sm shrink-0 ${i === LINKS.length - 1 ? "btn-accent" : "btn-outline"}`}
           >
             {l.label}

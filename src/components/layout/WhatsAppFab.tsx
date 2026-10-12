@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { STICKY_BAR_VAR } from "./useStickyBarOffset";
 import { Icon } from "@/components/ui/Icon";
 import { whatsapp } from "@/lib/data/site";
 
@@ -10,7 +11,7 @@ const CONTEXT: { match: RegExp; label: string; message: string }[] = [
   { match: /^\/cars\//, label: "Ask about this car", message: "Hi Riderzpro, I'm interested in this car: " },
   { match: /^\/cars/, label: "Find me a car", message: "Hi Riderzpro, I'm looking for a car. My budget is " },
   { match: /^\/sell/, label: "Sell my car", message: "Hi Riderzpro, I want to sell my car. Registration number: " },
-  { match: /^\/product\//, label: "Check fitment", message: "Hi Riderzpro, will this fit my car? Product: " },
+  { match: /^\/products\//, label: "Check fitment", message: "Hi Riderzpro, will this fit my car? Product: " },
   { match: /^\/shop/, label: "Check fitment", message: "Hi Riderzpro, I need help choosing accessories for my " },
   { match: /^\/build/, label: "Get build quote", message: "Hi Riderzpro, I want a quote for a build on my " },
   { match: /^\/audio/, label: "Get audio quote", message: "Hi Riderzpro, I want an audio system for my " },
@@ -34,8 +35,19 @@ export function WhatsAppFab() {
   }, []);
 
   const ctx = CONTEXT.find((c) => c.match.test(pathname));
-  // Product pages pin an add-to-cart bar above the bottom nav on phones; sit above it.
-  const lift = pathname.startsWith("/products/") ? "bottom-[152px]" : "bottom-[76px]";
+  // Product pages pin an add-to-cart bar (BuyBox, which does not publish its own
+  // height) above the bottom nav on phones. The PPF and BE 6 bars publish theirs
+  // through useStickyBarOffset; the button and the footer clear whichever is there.
+  const onProduct = pathname.startsWith("/products/");
+  useEffect(() => {
+    if (!onProduct) return;
+    const root = document.documentElement;
+    root.style.setProperty(STICKY_BAR_VAR, "76px");
+    return () => {
+      root.style.removeProperty(STICKY_BAR_VAR);
+    };
+  }, [onProduct]);
+
   const label = ctx?.label ?? "Chat with us";
   const message = ctx?.message ?? "Hi Riderzpro, I have a question about ";
 
@@ -45,8 +57,10 @@ export function WhatsAppFab() {
       target="_blank"
       rel="noreferrer noopener"
       aria-label={`${label} on WhatsApp`}
-      className={`fixed ${lift} right-4 z-50 flex h-13 items-center gap-2 rounded-full bg-[#1faa53] pl-3.5 pr-4 py-3 font-display text-xs font-bold uppercase tracking-[0.12em] text-white shadow-[0_14px_40px_-12px_rgba(31,170,83,0.85)] transition-all duration-300 lg:bottom-6 lg:right-6 ${
-        visible ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-4 opacity-0"
+      aria-hidden={visible ? undefined : true}
+      tabIndex={visible ? undefined : -1}
+      className={`fixed bottom-[calc(76px+var(--sticky-bar-h,0px)+env(safe-area-inset-bottom))] right-4 z-50 flex h-13 items-center gap-2 rounded-full bg-[#12803c]pl-3.5 pr-4 py-3 font-display text-xs font-bold uppercase tracking-[0.12em] text-white shadow-[0_14px_40px_-12px_rgba(31,170,83,0.85)] transition-all duration-300 lg:bottom-6 lg:right-6 ${
+        visible ? "translate-y-0 opacity-100" : "pointer-events-none invisible translate-y-4 opacity-0"
       }`}
     >
       <Icon name="whatsapp" size={19} />

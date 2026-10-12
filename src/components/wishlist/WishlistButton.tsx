@@ -18,7 +18,8 @@ export function WishlistButton({
 }) {
   const { has, toggle, ready } = useWishlist();
   const saved = ready && has(item.slug);
-  const label = saved ? "Remove from wishlist" : "Save to wishlist";
+  /* Stable name; `aria-pressed` carries the state. Flipping both would read as a double toggle. */
+  const label = "Save to wishlist";
   const heart = <Icon name="heart" size={18} filled={saved} className={saved ? "text-accent" : ""} />;
   const focus =
     "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";

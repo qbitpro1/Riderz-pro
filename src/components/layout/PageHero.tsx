@@ -77,11 +77,17 @@ export function Breadcrumbs({ items }: { items: { label: string; href?: string }
       {items.map((item, i) => (
         <span key={item.label} className="flex items-center gap-2">
           {item.href ? (
-            <Link href={item.href} className="transition-colors hover:text-accent">
+            <Link
+              href={item.href}
+              aria-current={i === items.length - 1 ? "page" : undefined}
+              className="transition-colors hover:text-accent"
+            >
               {item.label}
             </Link>
           ) : (
-            <span className="text-ash">{item.label}</span>
+            <span aria-current={i === items.length - 1 ? "page" : undefined} className="text-ash">
+              {item.label}
+            </span>
           )}
           {i < items.length - 1 && <Icon name="chevron" size={10} />}
         </span>
