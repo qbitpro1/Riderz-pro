@@ -1,8 +1,7 @@
 # V0.2 audit — findings and status
 
 Audit run by five read-only agents (store flows, links/routes, theme/accessibility,
-security/SEO/build, content). Auditors 1–4 are recorded below; **auditor 5 (content/copy)
-was re-run on 12 Oct 2026 and its findings are still to be added.**
+security/SEO/build, content). All five are recorded below.
 
 Status: `FIXED` = fixed and pushed · `OPEN` = confirmed, not yet fixed · `NOT A BUG` = checked, intended.
 
@@ -44,30 +43,55 @@ Status: `FIXED` = fixed and pushed · `OPEN` = confirmed, not yet fixed · `NOT 
 - FIXED [low] Cart syncs across tabs and validates stored lines; wishlist says when it drops an item at 50.
 - FIXED [medium] Dead `#explore` anchor on the BE 6 mobile bar (found by the links audit) now points at `#choose`.
 
+### Round 3 — 12 Oct 2026 (content audit and leftovers)
+- FIXED [high] Placeholder heading "PPF FROM ₹XX" on `/ppf`.
+- FIXED [medium] Empty menu groups are hidden from the desktop menu and the drawer until a product is shelved there (`LIVE_GROUPS`, computed from the catalogue). Empty today: Interior › Door Panels, Exterior › Foot Rests, Exterior › Grilles & Chrome, Covers & Guards › Interior Covers, Covers & Guards › Dashboard Covers, Utilities › Chargers.
+- FIXED [medium] `buyable` flag on catalogue items: non-buyable cards show "Price on request"/"Launching soon", no stock line, no quick-add; price filters and sorts treat them as price-less. (No priced item is non-buyable today; this is a safeguard.)
+- FIXED [medium] Shopper-facing "dealer pricing" wording removed from the Autoform page and brand copy.
+- FIXED [medium] Search index: PPF no longer shows "From ₹1,45,000"; its links point at anchors that exist.
+- FIXED [medium] Installation at ₹0 reads "Installation included".
+- FIXED [medium] "no returns" claim removed from the fitment picker.
+- FIXED [low] Bare "Warranty" chip removed from Autoform designs; "Authorised Autoform reseller" eyebrow; Blaupunkt badge "Selected range"; old department name "protection" replaced; README corrected; `/compare` dropped from robots; stock-photo alts no longer claim to show the Riderzpro garage; "customisation"; "Inclusive of GST"; locations appointment wording; internal "(retained reference)" note stripped from specs; JSON-LD legal name; short meta descriptions for privacy and terms; `/wishlist` canonical; `/partners` in the sitemap.
+
 ## Open
 
+### Owner decisions (from the content audit — not changed)
+- **Used-car pages.** All 16 `/cars/*` listings are sample records but show "Riderzpro Verified", "200-point inspection cleared" and a score beside "Riderzpro has not inspected this car". Meta says "Riderzpro Certified". The sample-record notice shows only on the detail page; `/cars`, the sitemap and the search index present them as live. Owner said to leave used-car claims for now.
+- **OE is on hold but promoted**: home section (`src/app/page.tsx` ~314), every department menu and the footer (`nav.ts`), the shop filter, the FAQ group and its JSON-LD, `seo.ts` ~217. Every OE view is empty.
+- **PPF claims vs installer status**: "Manufacturer warranty passed through in full" and XPEL 10-year warranties while `/ppf/films` says the XPEL installer application is in progress and Garware is a prospect.
+- **Pune PPF studio**: `/ppf/ppf-in-pune` describes a dust-controlled film room; `site.ts` lists no PPF service in Pune.
+- **Warranty terms disagree**: workmanship 12 months (policies) vs "2 years on installation" (`services.ts` ~267); DSP re-tune "for life" (`products.ts` ~500) vs 30 days; generic PPF "10 years" (`services.ts` ~155, policies) vs film-specific 5/7/10.
+- **Delivery times disagree**: policy says oversized 5–9 working days; products say 7–10, 8–12, 10–14 days.
+- **Autoform extra charges**: "Custom charges of ₹895 apply on all designs" and "Logistics and installation charges are extra" are shown on `/autoform` but are not in the cart and conflict with free shipping over ₹2,000.
+- **Phone numbers** for Hyderabad and Pune (…89, …90) look like placeholders.
+- **PPF entry price** shown as ₹2,000, ₹2,500, ₹3,000–4,000 and ₹4,000 on different pages (by vehicle class, unlabelled). Audio entry price ₹24,900 vs builder default ₹17,380.
+- **House product photos**: about 28 cards show a stock photo of something else, with that photo's alt text.
+- **"Hi Recoil"** feature chip on Autoform designs: kept as printed in the source catalogue; meaning unconfirmed.
+- **Blaupunkt**: badge is "Selected range"; change to "Authorised reseller" if true. Head-unit highlights imported from the brochure are scrambled table text on some pages (re-import or hand-correct).
+- **Tagline** "Car & Bike Accessories": only two two-wheeler sub-categories exist.
+- **Claims for a legal read**: "India's best-selling mid SUV"; "Escrowed payments"; "Free home test drive"; "Finance from eleven lenders"; "Lifetime" warranties (exhaust welds, ECU map); "Everything here carries a working load rating… Nothing untested"; RTO/CMVR compliance statements; RECOIL and Autoform "Authorised reseller"/"Genuine"; third-party programme names on `/partners`; imported RECOIL copy ("Military-spec", US spellings).
+- **"Buy now"** adds to cart and opens the cart; ordering is by WhatsApp until Shopify is live.
+- `public/*/manifest.json` exposes a local path ("E:/Blaupunkt Brochure 2026.pdf").
+
 ### Medium
-- Seven menu groups lead to an empty page because no product is shelved there: Interior › Door Panels, Exterior › Foot Rests, Grilles & Chrome, Number Plate Frames (now has one Autoform item — recheck), Covers & Guards › Interior Covers, Utilities › Chargers, Accessories › Travel Add-ons (now has one — recheck). Hide empty groups from the menus or label them "coming soon".
-- Held-back RECOIL cards in the grid still show a price and "In stock" (the product page is fixed). Needs an `indexable`/buyable field on `CatalogItem` and a card branch.
 - `/admin/*` is open in development when `ADMIN_USER`/`ADMIN_PASSWORD` are unset (production returns 404). Set the env vars wherever the site is reachable.
 
 ### Low
-- `/shop?oe=1` header says "36 products" while the list says "0 of 301". OE is on hold.
-- `/wishlist` has no canonical tag; `/partners` is not in the sitemap.
 - Dark-theme danger (#ff5c5c) is still close to the dark accent (#ff4d4d).
-- Dynamic titles on `accessories/[vehicle]` not checked for length.
+- Dynamic titles on `accessories/[vehicle]` and shop department titles ("Accessories Car Accessories…") not reworked.
 - `Photo` call sites that are decorative still pass a descriptive alt.
 - Dealer API keys would live in `data/inventory/dealers.json`; move them out of the repo before onboarding dealers.
 - Page weight: `/` HTML 480 KB.
 - `DEFAULT_SHOPIFY_API_VERSION` (2025-07) is a placeholder — set the current stable version when the store is created.
 - The repo has no ESLint config, so `npm run lint` does not run.
-- Three pages returned 500 once under a concurrent first hit on the dev server and 200 on retry (`/brands/autoform`, `/collections/under-999`, `/collections/under-2499`); the production build prerenders them without error.
+- Three pages returned 500 once under a concurrent first hit on the dev server and 200 on retry; the production build prerenders them without error.
 
 ## Not a bug
 - NOT A BUG — organisation `aggregateRating` 4.8 / 3,184 and the house products' ratings: confirmed real by the owner.
 
 ## Verified clean
 - Round 2 (12 Oct 2026): production build passes; dealer-price scan 0 hits across client chunks and 489 prerendered pages; links audit crawled 648 URLs with no broken internal links, no links to redirects, all 11 legacy redirects single-hop to a 200.
+- Round 3: production build passes; dealer-price scan 0 hits across 489 prerendered pages; no old-brand text in anything visitor-facing other than the legal name; counts, hours, GSTIN, main phone, free-shipping threshold and currency formatting consistent across pages.
 - Dealer prices: 0 leaks across 4,077 built files (client chunks + every prerendered page), the search index, the Shopify CSV and the sitemap. `server-only` guards present on every module that touches `dp`.
 - `/admin` Basic-auth proxy: correct in production (404 when unset; 401/200 when set; encoded/case variants covered; constant-time compare).
 - `/api/checkout`: strict validation, 503 until Shopify is configured, no redirect built from user input.
