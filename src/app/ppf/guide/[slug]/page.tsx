@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ldJson, pageMeta } from "@/lib/data/seo";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/layout/PageHero";
@@ -15,11 +16,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const article = getArticle(slug);
   if (!article) return {};
-  return {
+  return pageMeta({
     title: article.title,
     description: article.summary,
-    alternates: { canonical: `/ppf/guide/${article.slug}` },
-  };
+    path: `/ppf/guide/${article.slug}`,
+    type: "article",
+  });
 }
 
 export default async function PpfGuideArticlePage({ params }: { params: Promise<{ slug: string }> }) {
@@ -41,7 +43,7 @@ export default async function PpfGuideArticlePage({ params }: { params: Promise<
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: ldJson(schema) }} />
 
       <section className="section pt-24 md:pt-32">
         <div className="shell max-w-3xl">

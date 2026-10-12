@@ -7,13 +7,14 @@ import { SectionHead } from "@/components/ui/Section";
 import { Icon } from "@/components/ui/Icon";
 import { PPF_BRANDS, PPF_FILMS, isPublishable } from "@/lib/ppf/films";
 import { PRICE_DISCLAIMER } from "@/lib/ppf/coverage";
+import { pageMeta } from "@/lib/data/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "PPF Quote Calculator — Build Your Paint Protection Package",
   description:
     "Pick your car, choose the panels, select the film and see an indicative PPF price. Final price confirmed after a physical inspection at a Riderzpro studio.",
-  alternates: { canonical: "/ppf/quote" },
-};
+  path: "/ppf/quote",
+});
 
 const JOURNEY = [
   "Select your car",

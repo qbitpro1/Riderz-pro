@@ -5,13 +5,14 @@ import { Icon } from "@/components/ui/Icon";
 import { Photo } from "@/components/ui/Photo";
 import { BookingForm } from "@/components/garage/BookingForm";
 import { LOCATIONS, SITE, whatsapp } from "@/lib/data/site";
+import { pageMeta } from "@/lib/data/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Visit Riderzpro — Bengaluru, Hyderabad & Pune",
   description:
     "Riderzpro garage addresses, phone numbers, opening hours and directions. Car modification, accessories, audio, PPF and off-road builds in Bengaluru, Hyderabad and Pune.",
-  alternates: { canonical: "/locations" },
-};
+  path: "/locations",
+});
 
 const WORKSHOP_MEDIA = ["garageSpotlit", "washBay", "mechanicEngine"] as const;
 
@@ -32,7 +33,7 @@ export default function LocationsPage() {
             <article key={l.slug} className="card grid gap-0 overflow-hidden md:grid-cols-[1.1fr_1fr]">
               <div className="relative aspect-[16/10] bg-graphite md:aspect-auto md:min-h-[300px]">
                 <Photo media={WORKSHOP_MEDIA[i % WORKSHOP_MEDIA.length]} sizes="(min-width:768px) 50vw, 100vw" />
-                <div className="absolute inset-0 bg-gradient-to-t from-void/70 to-transparent" />
+                <div className="absolute inset-0 scrim-soft" />
               </div>
               <div className="p-6">
                 <p className="flex flex-wrap items-center gap-2 font-display text-2xl font-extrabold uppercase tracking-[-0.03em]">

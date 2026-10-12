@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/data/seo";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/layout/PageHero";
@@ -26,13 +27,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const film = getFilm(slug);
   if (!film) return {};
   const brand = getBrand(film.brandId);
-  return {
+  return pageMeta({
     title: `${brand?.name} ${film.name} — PPF Specifications & Warranty`,
     description: `${brand?.name} ${film.name}: ${film.finish.toLowerCase()} paint protection film${
       film.warrantyYears.value ? ` with a published ${film.warrantyYears.value}-year manufacturer warranty` : ""
     }. Installed by Riderzpro.`,
-    alternates: { canonical: `/ppf/films/${film.slug}` },
-  };
+    path: `/ppf/films/${film.slug}`,
+  });
 }
 
 export default async function PpfFilmPage({ params }: { params: Promise<{ slug: string }> }) {

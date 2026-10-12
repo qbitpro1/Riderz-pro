@@ -22,13 +22,14 @@ import {
 import { GUIDE, PREP_STEPS, QUALITY_CHECKLIST } from "@/lib/ppf/guide";
 import { rupees } from "@/lib/format";
 import { whatsapp } from "@/lib/data/site";
+import { pageMeta } from "@/lib/data/seo";
 
-export const metadata: Metadata = {
-  title: "Paint Protection Film (PPF) — Packages, Films & Installation",
+export const metadata: Metadata = pageMeta({
+  title: "Paint Protection Film (PPF) — Packages & Installation",
   description:
-    "Premium paint protection film at Riderzpro. Essential, full front and full body packages for mid-range SUVs through to luxury and exotic cars. Build your package and get an indicative price.",
-  alternates: { canonical: "/ppf" },
-};
+    "Premium paint protection film at Riderzpro. Essential, full front and full body packages for SUVs through to luxury cars. Build a package and get an indicative price.",
+  path: "/ppf",
+});
 
 const OFFROAD_MODELS = ["Thar", "Gurkha", "Fortuner", "Wrangler", "V-Cross", "Hilux", "Jimny", "Scorpio N", "XUV700"];
 
@@ -125,7 +126,7 @@ export default function PpfPage() {
           <Reveal delay={80}>
             <div className="relative aspect-[4/3] overflow-hidden bg-graphite">
               <Photo media="detailingPolish" sizes="(min-width:1024px) 50vw, 100vw" />
-              <div className="absolute inset-0 bg-gradient-to-t from-void/70 to-transparent" />
+              <div className="absolute inset-0 scrim-soft" />
             </div>
           </Reveal>
         </div>

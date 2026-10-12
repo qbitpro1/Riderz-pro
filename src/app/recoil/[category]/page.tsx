@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/data/seo";
 import { notFound } from "next/navigation";
 import { PageHero, Breadcrumbs } from "@/components/layout/PageHero";
 import { CatalogBrowser } from "@/components/catalog/CatalogBrowser";
@@ -38,14 +39,14 @@ export async function generateMetadata({
   const { category } = await params;
   const cat = getCategory(category);
   if (!cat) return {};
-  return {
+  return pageMeta({
     title: `RECOIL ${cat.name} — ${cat.count} Models`,
     description: `Buy RECOIL ${cat.name.toLowerCase()} at Riderzpro: ${cat.subcategories
       .slice(0, 6)
       .map((s) => s.name)
       .join(", ")}. Authorised reseller, genuine product, installation available across India.`,
-    alternates: { canonical: `/recoil/${cat.slug}` },
-  };
+    path: `/recoil/${cat.slug}`,
+  });
 }
 
 export default async function RecoilCategoryPage({

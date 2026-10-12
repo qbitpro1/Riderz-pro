@@ -41,31 +41,56 @@ export function itemListLd(name: string, items: LdLink[]) {
   };
 }
 
+/** Site default share image (file-convention routes in `src/app`). */
+const DEFAULT_OG = { url: "/opengraph-image", width: 1200, height: 630, alt: "Riderzpro: Car & Bike Accessories" };
+const DEFAULT_TWITTER = "/twitter-image";
+
 /**
  * Page metadata with a canonical that ignores the query string (filtered views
- * such as `?group=…&oe=1&sort=…` all point at the clean page), plus Open Graph
- * fields. A page's own `openGraph` replaces the layout's wholesale, so
- * siteName / locale / type are repeated here.
+ * such as `?group=…&oe=1&sort=…` all point at the clean page), plus complete
+ * Open Graph and Twitter fields. A page's own `openGraph` replaces the layout's
+ * wholesale, so siteName / locale / type are repeated here.
+ *
+ * `title` goes through the root `%s | Riderzpro` template; a title that already
+ * names the brand is emitted as `title.absolute` so it is not doubled. Optional:
+ * `image` (absolute or root-relative URL, falls back to the site image),
+ * `ogTitle` / `ogDescription` (share-card wording that differs from the page's),
+ * `type` (Open Graph type, default "website"), `robots`.
  */
-export function pageMeta(opts: { title: string; description: string; path: string }): Metadata {
+export function pageMeta(opts: {
+  title: string;
+  description: string;
+  path: string;
+  image?: string;
+  imageAlt?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  type?: "website" | "article";
+  robots?: Metadata["robots"];
+}): Metadata {
+  const named = /riderzpro/i.test(opts.title);
+  const shareTitle = opts.ogTitle ?? (named ? opts.title : `${opts.title} | ${SITE.name}`);
+  const shareDescription = opts.ogDescription ?? opts.description;
+  const image = opts.image ? { url: opts.image, alt: opts.imageAlt ?? shareTitle } : DEFAULT_OG;
   return {
-    title: opts.title,
+    title: named ? { absolute: opts.title } : opts.title,
     description: opts.description,
     alternates: { canonical: opts.path },
+    ...(opts.robots ? { robots: opts.robots } : {}),
     openGraph: {
-      type: "website",
+      type: opts.type ?? "website",
       locale: "en_IN",
       siteName: SITE.name,
-      title: `${opts.title} | ${SITE.name}`,
-      description: opts.description,
+      title: shareTitle,
+      description: shareDescription,
       url: opts.path,
-      images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Riderzpro: Car & Bike Accessories" }],
+      images: [image],
     },
     twitter: {
       card: "summary_large_image",
-      title: `${opts.title} | ${SITE.name}`,
-      description: opts.description,
-      images: ["/twitter-image"],
+      title: shareTitle,
+      description: shareDescription,
+      images: [opts.image ?? DEFAULT_TWITTER],
     },
   };
 }
@@ -134,9 +159,9 @@ export const SEO_LANDINGS: SeoLanding[] = [
     slug: "car-modification",
     eyebrow: "Car modification",
     h1: "CAR MODIFICATION, DONE PROPERLY.",
-    title: "Car Modification Near Me — Body Kits, Audio, Off-Road & Performance",
+    title: "Car Modification Near Me — Body Kits, Audio & Off-Road",
     description:
-      "Car modification in Bengaluru, Hyderabad and Pune. Body kits, facelift conversions, custom interiors, car audio, PPF, off-road builds and performance tuning at Riderzpro.",
+      "Car modification in Bengaluru, Hyderabad and Pune: body kits, facelifts, custom interiors, car audio, PPF, off-road builds and performance tuning at Riderzpro.",
     intro:
       "Modification goes wrong for three reasons: parts that do not fit, work that cannot be undone, and nobody taking responsibility afterwards. We fix all three by doing everything in one workshop and documenting all of it.",
     media: "garageSpotlit",
@@ -177,9 +202,9 @@ export const SEO_LANDINGS: SeoLanding[] = [
     slug: "car-accessories",
     eyebrow: "Car & bike accessories",
     h1: "CAR ACCESSORIES THAT ACTUALLY FIT.",
-    title: "Car Accessories Online India — Seat Covers, Floor Mats, Audio, Lighting & More",
+    title: "Car Accessories Online India — Seat Covers, Mats & Audio",
     description:
-      "Buy car accessories online in India: seat covers, floor mats, speakers and amplifiers, lighting, protection, utilities and off-road gear. Made and sold by Riderzpro, fitment-checked for your car and fitted at our garages.",
+      "Buy car accessories online in India: seat covers, floor mats, speakers, lighting, protection, utilities and off-road gear. Made by Riderzpro, fitted at our garages.",
     intro:
       "Riderzpro makes and sells car accessories. Pick your car once and the shop shows what fits it: seat covers cut to your seat pattern, mats cut to your floor, lighting and audio matched to your model.",
     media: "tailLightBokeh",
@@ -223,7 +248,7 @@ export const SEO_LANDINGS: SeoLanding[] = [
     h1: "SUV MODIFICATION & OFF-ROAD BUILDS.",
     title: "SUV Modification & Off-Road Accessories in India",
     description:
-      "SUV modification for Thar, Fortuner, Scorpio N, XUV700, Gurkha, Jimny, Wrangler, Hilux and Defender. Lift kits, protection, recovery, expedition gear and luxury interiors.",
+      "SUV modification for Thar, Fortuner, Scorpio N, XUV700, Gurkha, Jimny, Wrangler, Hilux and Defender. Lift kits, protection, recovery, expedition gear, interiors.",
     intro:
       "An SUV can be built three ways: for the trail, for the highway, or for the second row. We do all three, and the first question we ask is which one you actually want.",
     media: "defenderSaltFlat",

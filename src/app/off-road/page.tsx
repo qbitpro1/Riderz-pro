@@ -14,13 +14,14 @@ import { productsIn } from "@/lib/data/products";
 import { BUILDS } from "@/lib/data/community";
 import { rupees } from "@/lib/format";
 import { whatsapp } from "@/lib/data/site";
+import { pageMeta } from "@/lib/data/seo";
 
-export const metadata: Metadata = {
-  title: "Off-Road Accessories & 4x4 Builds — Lift Kits, Recovery, Expedition",
+export const metadata: Metadata = pageMeta({
+  title: "Off-Road Accessories & 4x4 Builds — Lift Kits & Recovery",
   description:
-    "Off-road builds for Thar, Gurkha, Fortuner, Jimny, Scorpio N, Wrangler, Hilux, V-Cross and Defender. Lift kits, skid plates, rock sliders, winches, roof racks and expedition gear.",
-  alternates: { canonical: "/off-road" },
-};
+    "Off-road builds for Thar, Gurkha, Fortuner, Jimny, Scorpio N, Wrangler, Hilux and Defender. Lift kits, skid plates, rock sliders, winches, roof racks and expedition gear.",
+  path: "/off-road",
+});
 
 const PLATFORMS = [
   { name: "Mahindra Thar", slug: "thar" },

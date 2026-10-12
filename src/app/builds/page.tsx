@@ -7,13 +7,14 @@ import { Icon } from "@/components/ui/Icon";
 import { Reveal } from "@/components/ui/Reveal";
 import { BUILDS, REVIEWS } from "@/lib/data/community";
 import { whatsapp } from "@/lib/data/site";
+import { pageMeta } from "@/lib/data/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Riderzpro Builds — Modified Cars, Full Spec & Real Build Costs",
   description:
     "Every Riderzpro build with the full modification list and what it actually cost. Off-road rigs, street builds, audio installs, luxury interiors and performance cars.",
-  alternates: { canonical: "/builds" },
-};
+  path: "/builds",
+});
 
 export default function BuildsPage() {
   return (

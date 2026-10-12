@@ -15,13 +15,14 @@ import {
 } from "@/lib/inventory/network";
 import { FIELD_REQUIREMENTS, UPLOAD_TEMPLATE_HEADERS } from "@/lib/inventory/pipeline";
 import { FRESHNESS_THRESHOLDS } from "@/lib/inventory/dealers";
+import { pageMeta } from "@/lib/data/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "List Your Cars on Riderzpro — Dealer & Fleet Partners",
   description:
     "Put your used-car stock in front of Riderzpro buyers. Upload CSV, Excel, XML or JSON, sync a Google Sheet, or push through our dealer API. Free to join, no lock-in.",
-  alternates: { canonical: "/partners" },
-};
+  path: "/partners",
+});
 
 const STEPS = [
   { n: "01", t: "Register", b: "Business name, GSTIN and contact. One working day to approve." },

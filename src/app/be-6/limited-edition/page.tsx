@@ -8,6 +8,7 @@ import { ConceptNotice, ProvenanceTag, StageTag, ValidationNotice } from "@/comp
 import { ComparisonTable, ConceptModuleBlock, Pipeline, PrintedPartCard } from "@/components/be6/Blocks";
 import { Waitlist } from "@/components/be6/Waitlist";
 import { rupees } from "@/lib/format";
+import { pageMeta } from "@/lib/data/seo";
 import {
   AI_MODES,
   AI_SEPARATION,
@@ -29,18 +30,15 @@ import {
   partsIn,
 } from "@/lib/data/be6";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "RIDERZPRO BE 6 Limited Edition — Independent Custom Concept",
   description:
-    "The RIDERZPRO BE 6 Limited Edition: an independent customization concept by RIDERZPRO, not a factory Mahindra variant. Exterior, interior, 3D-printed parts, audio, security and AI concepts — each shown with its real development stage.",
-  alternates: { canonical: "/be-6/limited-edition" },
+    "The RIDERZPRO BE 6 Limited Edition: an independent customization concept, not a factory Mahindra variant. Exterior, interior, printed parts, audio and security.",
+  path: "/be-6/limited-edition",
+  ogTitle: "RIDERZPRO BE 6 LIMITED EDITION — COMING SOON",
+  ogDescription: "The BE 6, rebuilt without limits. An independent RIDERZPRO concept.",
   robots: { index: true, follow: true },
-  openGraph: {
-    title: "RIDERZPRO BE 6 LIMITED EDITION — COMING SOON",
-    description: "The BE 6, rebuilt without limits. An independent RIDERZPRO concept.",
-    url: "/be-6/limited-edition",
-  },
-};
+});
 
 /**
  * The Limited Edition concept page.
@@ -60,7 +58,7 @@ export default function LimitedEditionPage() {
       <section data-theme="dark" className="relative flex min-h-[92svh] flex-col justify-end overflow-hidden bg-void">
         <div className="absolute inset-0">
           <div className="absolute inset-0 grid-lines opacity-25" />
-          <div className="absolute inset-0 bg-[radial-gradient(120%_85%_at_50%_15%,rgba(217,167,96,0.16),transparent_60%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(120%_85%_at_50%_15%,color-mix(in_oklab,var(--gold)_16%,transparent),transparent_60%)]" />
           <div className="absolute inset-x-0 top-[28%] mx-auto max-w-5xl px-4">
             <VehicleImage colour={shell} sizes="100vw" priority />
           </div>
@@ -419,7 +417,7 @@ export default function LimitedEditionPage() {
       </Section>
 
       {/* WAITLIST ------------------------------------------------------------------ */}
-      <section id="waitlist" className="section border-t border-gold/20 bg-[radial-gradient(110%_80%_at_50%_0%,rgba(217,167,96,0.1),transparent_60%)]">
+      <section id="waitlist" className="section border-t border-gold/20 bg-[radial-gradient(110%_80%_at_50%_0%,color-mix(in_oklab,var(--gold)_10%,transparent),transparent_60%)]">
         <div className="shell">
           <SectionHead
             eyebrow="Be first"

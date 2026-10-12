@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/data/seo";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PageHero, Breadcrumbs } from "@/components/layout/PageHero";
@@ -20,11 +21,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const landing = getLanding(slug);
   if (!landing) return {};
-  return {
+  return pageMeta({
     title: landing.title,
     description: landing.description,
-    alternates: { canonical: `/ppf/${landing.slug}` },
-  };
+    path: `/ppf/${landing.slug}`,
+  });
 }
 
 const OFFROAD_MEDIA: MediaKey = "defenderSaltFlat";
