@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
-import { DEPARTMENT_MENUS, MORE_SECTIONS, type NavLink, type NavSection } from "@/lib/data/nav";
+import { DEPARTMENT_MENUS, MORE_SECTIONS, liveMenuGroups, type LiveGroups, type NavLink, type NavSection } from "@/lib/data/nav";
 
 const OPEN_DELAY = 80;
 const CLOSE_DELAY = 160;
@@ -21,7 +21,7 @@ const itemCls =
  * delay, focus opens immediately, Escape closes and returns focus to the
  * trigger, and a click outside or a route change closes.
  */
-export function DesktopNav() {
+export function DesktopNav({ liveGroups }: { liveGroups?: LiveGroups }) {
   const pathname = usePathname();
   const [open, setOpen] = useState<string | null>(null);
   const root = useRef<HTMLElement>(null);
@@ -95,7 +95,7 @@ export function DesktopNav() {
               relative
             >
               <ul className="py-1">
-                {d.groups.map((g) => (
+                {liveMenuGroups(d, liveGroups).map((g) => (
                   <li key={g.href}>
                     <Link href={g.href} className={itemCls}>
                       {g.label}

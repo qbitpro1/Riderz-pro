@@ -38,6 +38,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     entry("/ppf/films", 0.8),
     entry("/ppf/guide", 0.75),
     entry("/sell", 0.8),
+    entry("/partners", 0.6, "monthly"),
     entry("/shop", 0.9),
     entry("/collections", 0.8),
     entry("/build", 0.9),

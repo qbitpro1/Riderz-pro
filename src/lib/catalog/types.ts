@@ -61,6 +61,12 @@ export type CatalogItem = {
   /** Model slugs from the vehicle catalogue, or ["universal"]. Empty when unknown. */
   fitment: string[];
   availability: Availability;
+  /**
+   * True when the product can be bought online: it has a price, is not coming soon and its product
+   * page is indexable (the same rule the wishlist and the product page use). A held-back item keeps
+   * its `price` for reference but the shop shows "Price on request" and treats it as price-less.
+   */
+  buyable: boolean;
   installation: boolean;
   bestseller: boolean;
   /** Short labels rendered on the card — "Bestseller", "Coming soon", "Made to order". */

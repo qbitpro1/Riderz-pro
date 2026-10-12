@@ -15,6 +15,9 @@ import type { IconName } from "@/components/ui/Icon";
 
 export type NavLink = { label: string; href: string };
 
+/** A department's shelf groups that hold products, by department slug (see `LIVE_GROUPS`). */
+export type LiveGroups = Record<string, string[]>;
+
 /** A titled list of links, with an optional "see all" footer link. */
 export type NavSection = { id: string; title: string; links: NavLink[]; all?: NavLink };
 
@@ -22,7 +25,7 @@ export type DepartmentMenu = {
   slug: DepartmentSlug;
   label: string;
   href: string;
-  groups: NavLink[];
+  groups: (NavLink & { slug: string })[];
   oe: NavLink;
   all: NavLink;
 };
@@ -37,10 +40,16 @@ function toMenu(d: Department): DepartmentMenu {
     href: departmentHref(d.slug),
     groups: d.groups
       .filter((g) => !HIDDEN_GROUPS.has(g.slug))
-      .map((g) => ({ label: g.name, href: groupHref(d.slug, g.slug) })),
+      .map((g) => ({ slug: g.slug, label: g.name, href: groupHref(d.slug, g.slug) })),
     oe: { label: "OE — Original Equipment", href: oeHref(d.slug) },
     all: { label: `Shop all ${d.name}`, href: departmentHref(d.slug) },
   };
+}
+
+/** A department's groups without the empty shelves; with no `live` data every group is kept. */
+export function liveMenuGroups(d: DepartmentMenu, live?: LiveGroups) {
+  const slugs = live?.[d.slug];
+  return live ? d.groups.filter((g) => slugs?.includes(g.slug)) : d.groups;
 }
 
 export const DEPARTMENT_MENUS: DepartmentMenu[] = DEPARTMENTS.map(toMenu);

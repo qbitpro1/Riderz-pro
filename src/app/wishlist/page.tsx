@@ -6,6 +6,7 @@ import { productHref } from "@/lib/store/types";
 export const metadata: Metadata = {
   title: "Your wishlist",
   description: "Products you saved on this device.",
+  alternates: { canonical: "/wishlist" },
   robots: { index: false },
 };
 
