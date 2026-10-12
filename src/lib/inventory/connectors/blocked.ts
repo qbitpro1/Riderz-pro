@@ -1,3 +1,4 @@
+import "server-only";
 import { assertImportAllowed } from "../compliance";
 import type { Connector } from "./index";
 

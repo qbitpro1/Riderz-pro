@@ -9,6 +9,7 @@ import "server-only";
  * store is created (see docs/SHOPIFY_SETUP.md).
  */
 
+// PLACEHOLDER, not necessarily current: set SHOPIFY_API_VERSION when the store is created.
 export const DEFAULT_SHOPIFY_API_VERSION = "2025-07";
 
 export type ShopifyConfig = {

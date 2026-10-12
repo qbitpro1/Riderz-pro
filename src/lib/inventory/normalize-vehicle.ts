@@ -1,3 +1,4 @@
+import "server-only";
 import { BRANDS } from "@/lib/data/vehicles";
 import type { BodyType, Drivetrain, Fuel, Transmission } from "./types";
 

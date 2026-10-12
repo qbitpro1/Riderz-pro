@@ -1,3 +1,4 @@
+import "server-only";
 import { CARS, type Car } from "@/lib/data/cars";
 import inspectionFile from "../../../../data/inventory/inspections.json";
 import { buildDescription, scoreConfidence, slugFor } from "../normalize";

@@ -1,3 +1,4 @@
+import "server-only";
 import type { Listing, ListingStatus, PricePoint } from "./types";
 
 /** Everything customer-facing is quoted in Indian Standard Time. */

@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  poweredByHeader: false,
   devIndicators: false,
   images: {
     // Automotive photography is served from Unsplash's CDN and optimised by Next
@@ -21,6 +22,21 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     optimizePackageImports: [],
+  },
+  // Baseline security headers on every route. No full CSP on purpose: the site
+  // relies on inline scripts and a CSP would break them. HSTS belongs at the host.
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(self), payment=()" },
+        ],
+      },
+    ];
   },
   // Pre-rebrand URLs (Motorbotz → Riderzpro), kept alive for bookmarks and search engines.
   redirects() {

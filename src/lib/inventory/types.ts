@@ -1,3 +1,4 @@
+import "server-only";
 import type { MediaKey } from "@/lib/media";
 
 /* ------------------------------------------------------------- sources */

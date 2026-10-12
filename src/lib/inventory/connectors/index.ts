@@ -1,3 +1,4 @@
+import "server-only";
 import { importAllowed } from "../compliance";
 import { SOURCES } from "../sources";
 import type { Listing } from "../types";

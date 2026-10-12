@@ -1,3 +1,4 @@
+import "server-only";
 import { inflateRawSync } from "node:zlib";
 import type { RawVehicle } from "./normalize-vehicle";
 import { mapHeaders } from "./normalize-vehicle";

@@ -1,3 +1,4 @@
+import "server-only";
 import { getSource } from "./sources";
 import type { Listing, Source } from "./types";
 

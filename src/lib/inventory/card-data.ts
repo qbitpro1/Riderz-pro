@@ -1,3 +1,4 @@
+import "server-only";
 import { attributionFor, displayableImages, verifiedBadgeAllowed } from "./compliance";
 import { formatIST, priceChange, relativeAge } from "./freshness";
 import type { Listing } from "./types";
