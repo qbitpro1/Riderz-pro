@@ -5,19 +5,9 @@ import { useEffect, useId, useRef, type ReactNode } from "react";
 
 /** Small shared pieces for the admin marketplace screens. */
 
-export function fmtDate(iso: string | null | undefined, withTime = true): string {
-  if (!iso) return "—";
-  return new Date(iso).toLocaleString("en-IN", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-    ...(withTime ? { hour: "2-digit", minute: "2-digit" } : {}),
-  });
-}
-
-export function fmtSize(bytes: number): string {
-  return bytes > 1024 * 1024 ? `${(bytes / 1024 / 1024).toFixed(1)} MB` : `${Math.max(1, Math.round(bytes / 1024))} KB`;
-}
+// Formatters live in ./format so server components can use them too (a "use client" module's
+// functions cannot be called from the server).
+export { fmtDate, fmtSize } from "./format";
 
 const TONES: Record<string, string> = {
   approved: "border-accent/40 bg-accent/10 text-accent",
