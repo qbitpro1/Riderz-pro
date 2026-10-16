@@ -245,7 +245,6 @@ Branches: `main` is the original V0.1 baseline; `V0.2` and `V0.3` build on it.
   - [ ] `ADMIN_USER` / `ADMIN_PASSWORD` set wherever the site is reachable.
   - [ ] A one-time-code provider (email and SMS), wired in `src/lib/server/otp.ts`.
   - [ ] Seller fees for the Offline Store, and commission defaults for any later online orders (code default 10%).
-  - [ ] What happens after the cart on the Offline Store screen (save as an order, payment).
   - [ ] Create the demo store on the live database from `/admin/vendors` if wanted.
   - [ ] Seller terms page content.
   - [ ] Whether uploads move to object storage later.

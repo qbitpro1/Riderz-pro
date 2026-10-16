@@ -131,8 +131,10 @@ Done in session 2:
   owner-only access, out-of-stock removal; checkout form in the browser (WhatsApp hand-off and 503 fallback).
 - The label "bug" on `/vendor/auth` was the browser tool preferring placeholders; labels are associated correctly.
 
-Open (owner decisions): what happens after the cart on the Offline Store screen (save as an order to
-the seller, payment), seller fees for the offline screen, and the items below.
+Decided (16 Oct 2026): the Offline Store screen is a showcase of the seller's products; it ends at
+the cart. No payment and no saved orders are planned for it.
+
+Open (owner decisions): seller fees for the offline screen, and the items below.
 
 ## Status (16 Oct 2026, end of session 1)
 
