@@ -3,6 +3,8 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  // Database drivers load native/wasm code at runtime; keep them out of the server bundle.
+  serverExternalPackages: ["pg", "@electric-sql/pglite"],
   devIndicators: false,
   images: {
     // Automotive photography is served from Unsplash's CDN and optimised by Next

@@ -115,6 +115,11 @@ export type CartLine = {
   qty: number;
   /** Optional installation add-on booked with the part, per unit. */
   install?: number;
+  /**
+   * Set for marketplace products sold by an approved vendor (`slug` is then
+   * `vendor:<product slug>`, see src/lib/vendor/types.ts). Absent for the house range.
+   */
+  seller?: { id: string; name: string; slug: string };
 };
 
 /** The cart-line id for a product with the given option choices (option id → value id). */

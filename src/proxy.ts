@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 /**
- * HTTP Basic auth for /admin/*. Credentials come from ADMIN_USER and
+ * HTTP Basic auth for /admin/* and /api/admin/* (the admin pages and the
+ * JSON routes behind them, including the vendor KYC and product queues). Credentials come from ADMIN_USER and
  * ADMIN_PASSWORD. When they are not set: production answers 404 (the admin
  * area does not exist), development lets everything through.
  * (In this Next.js version `proxy` replaces `middleware`.)
@@ -55,5 +56,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: "/admin/:path*",
+  matcher: ["/admin/:path*", "/api/admin/:path*"],
 };
