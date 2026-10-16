@@ -3,7 +3,7 @@
 import { useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Eye, EyeOff, ShieldCheck, Store, Truck, Wallet } from "lucide-react";
+import { ArrowLeft, Boxes, Eye, EyeOff, Lock, ShieldCheck, Store } from "lucide-react";
 import { BUSINESS_TYPES, type BusinessType } from "@/lib/vendor/types";
 import { ApiFailure, api } from "@/lib/vendor/client";
 import { passwordSchema, signInSchema, signUpSchema, emailSchema } from "@/lib/vendor/validators";
@@ -13,10 +13,10 @@ import { CheckField, Notice, SelectField, TextField, useFocusFirstInvalid, valid
 type Mode = "signin" | "signup" | "reset";
 
 const PERKS = [
-  { icon: Store, title: "Your own storefront", body: "A branded page on Riderzpro with your catalogue, reviews and policies." },
-  { icon: Truck, title: "We bring the buyers", body: "Shoppers who already know their car and are ready to fit parts." },
-  { icon: Wallet, title: "Clear payouts", body: "Commission and GST shown on every order. Settled to your bank after delivery." },
-  { icon: ShieldCheck, title: "Checked sellers only", body: "Every seller passes KYC, so buyers trust what they see." },
+  { icon: Store, title: "Your Offline Store screen", body: "Show your stock on a tablet or TV in your shop. Customers browse and build their order." },
+  { icon: Boxes, title: "Stock that keeps itself right", body: "Products that run out leave the screen by themselves. Update stock and prices any time." },
+  { icon: Lock, title: "Locked to your store", body: "Only your password closes the screen, so customers never reach your dashboard." },
+  { icon: ShieldCheck, title: "Checked sellers only", body: "Every seller passes KYC, and we approve each product before it goes on the screen." },
 ];
 
 function failureFields(err: unknown): FieldErrors {
@@ -41,9 +41,9 @@ export function VendorAuth({ initialMode, next }: { initialMode: "signin" | "sig
     <div className="grid gap-8 lg:grid-cols-[1fr_minmax(0,28rem)] lg:gap-14">
       <aside className="order-2 lg:order-1 lg:pt-6">
         <p className="eyebrow mb-3">Sell on Riderzpro</p>
-        <h1 className="display-3 max-w-md">Put your car and bike accessories in front of serious buyers.</h1>
+        <h1 className="display-3 max-w-md">An order screen for your accessories shop.</h1>
         <p className="mt-4 max-w-md text-sm leading-relaxed text-ash">
-          Register, complete a short KYC and start listing once we approve your store. Applications are usually reviewed within 1–2 working days.
+          Register, complete a short KYC and list your products once we approve your store. Applications are usually reviewed within 1–2 working days.
         </p>
         <ul className="mt-8 grid gap-4 sm:grid-cols-2">
           {PERKS.map(({ icon: Icon, title, body }) => (
