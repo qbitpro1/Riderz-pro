@@ -254,5 +254,6 @@ Branches: `main` is the original V0.1 baseline; `V0.2` and `V0.3` build on it.
 
 - [`docs/VENDOR_PORTAL.md`](docs/VENDOR_PORTAL.md): the vendor portal and Offline Store contract, URLs, environment
   and status.
+- [`docs/WORK_UPDATE.md`](docs/WORK_UPDATE.md): what was done in each session and what is next.
 - [`docs/AUDIT.md`](docs/AUDIT.md): the V0.2 audit, what was fixed and what is still open.
 - [`docs/SHOPIFY_SETUP.md`](docs/SHOPIFY_SETUP.md): turning on Shopify checkout, step by step.
