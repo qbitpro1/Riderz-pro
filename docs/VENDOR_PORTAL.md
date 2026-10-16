@@ -94,3 +94,39 @@ browser and had demo passwords and OTPs; none of its plumbing is used here.
 | `VENDOR_DATA_KEY` | production | 32 random bytes, base64 (`openssl rand -base64 32`). Seals bank/PAN. Losing it makes stored bank details unreadable. |
 | `ADMIN_USER`, `ADMIN_PASSWORD` | production | Already required for `/admin`; now also protect `/api/admin`. |
 | `OTP_EMAIL_PROVIDER`, `OTP_SMS_PROVIDER` | later | Turn on code delivery once a provider is wired in `src/lib/server/otp.ts`. |
+
+## Status (16 Oct 2026, end of session 1)
+
+All five parts are built and merged on `V0.3` (not pushed). Verified end to end on the
+local site against the embedded database: sign-up, email/mobile codes, uploads (fake
+image rejected), six onboarding steps (bad GSTIN and reserved slug rejected, bank number
+never returned), submit, admin start review, reveal (reason required, audited), approve
+(stale second approve refused), product create → submit → admin approve → live in
+`/shop/interior`, `/store/<slug>` and its product page; order of a seller product plus a
+house product (stock 5 → 3, over-stock refused), seller accept → pack → ship (courier and
+tracking required) → deliver, GST invoice (CGST/SGST, GSTIN, invoice number), payout held in
+the 7-day window (net ₹13,228 on ₹14,998 at 10%), early admin payout refused, suspend →
+product leaves the shop and edits blocked → reinstate. All 22 portal and admin pages return 200.
+
+### Next session — in this order
+1. **Site chrome on the seller dashboard:** hide the site Footer, BottomNav and WhatsApp button
+   on `/vendor/dashboard/*` (root layout renders them on every route; the dashboard bottom nav
+   overlaps the site's on phones).
+2. **Accessibility:** on `/vendor/auth` the sign-in field's accessible name is its placeholder,
+   not the "Email or mobile" label — associate labels with inputs (check every form in
+   `src/components/vendor/auth/fields.tsx` and the onboarding steps).
+3. **Message wording:** `requireVendor` says "available once approved" to a vendor whose
+   application is submitted/under review — give a status-specific message.
+4. **Migration 002:** partial unique index `vendor_change_requests (vendor_id) WHERE status = 'pending'`.
+5. **Not yet exercised:** request changes → vendor fixes only flagged steps → resubmit; product
+   request changes / reject / revision approve and discard; bulk approve; bank change request →
+   admin approve; support ticket → reply; password change; holiday mode; inventory/pricing bulk
+   saves; CSV exports; returns (return requested → returned, restock, payout exclusion); admin
+   payout after the window (set `delivered_at` back 8 days); house-only order confirm/complete;
+   checkout form in the browser (WhatsApp hand-off and the 503 fallback).
+6. **Visual pass** at 360 px and 1280 px in light and dark on every portal/admin page; seller
+   items sit after the house items in shop listings (consider a "Marketplace" sort/filter).
+7. `npm run build`, dealer-price scan, then push `V0.3`.
+8. **Owner decisions before launch:** Postgres provider (`DATABASE_URL`), `VENDOR_DATA_KEY`,
+   `ADMIN_USER`/`ADMIN_PASSWORD`, an OTP provider (email/SMS), commission defaults, seller terms
+   page content, and whether uploads move to object storage later.
