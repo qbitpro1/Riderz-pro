@@ -13,6 +13,7 @@ import { DEPARTMENT_BY_SLUG } from "@/lib/data/taxonomy";
 import { CATALOG, CATALOG_TOTALS, filtersFromQuery, type CatalogQuery } from "@/lib/catalog";
 import { LANDING_MODELS } from "@/lib/data/vehicles";
 import { breadcrumbLd, itemListLd, ldJson, pageMeta } from "@/lib/data/seo";
+import { liveVendorItems } from "@/lib/server/marketplace";
 
 export const metadata: Metadata = pageMeta({
   title: "Car Accessories Online India: Interior, Exterior, Audio, Lighting & Off-Road",
@@ -23,6 +24,8 @@ export const metadata: Metadata = pageMeta({
 
 export default async function ShopPage({ searchParams }: { searchParams: Promise<CatalogQuery> }) {
   const filters = filtersFromQuery(await searchParams);
+  // Approved sellers' live products follow the house range; empty when there is no database.
+  const items = [...CATALOG, ...(await liveVendorItems())];
 
   return (
     <>
@@ -101,7 +104,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
             title="THE FULL CATALOGUE."
             blurb={`${CATALOG_TOTALS.products} products across ${CATALOG_TOTALS.brands} brands. Filter by brand, category, type, price band or fitment. Prices include GST; installation is quoted separately and is often free.`}
           />
-          <CatalogBrowser items={CATALOG} initial={filters} />
+          <CatalogBrowser items={items} initial={filters} />
         </div>
       </section>
 

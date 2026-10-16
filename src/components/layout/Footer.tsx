@@ -3,7 +3,7 @@ import { Logo } from "@/components/brand/Logo";
 import { Icon } from "@/components/ui/Icon";
 import { LOCATIONS, SITE, whatsapp } from "@/lib/data/site";
 import { LANDING_MODELS } from "@/lib/data/vehicles";
-import { CARS_NAV, DEPARTMENT_MENUS, SERVICES_NAV, SHOP_BY_LINKS } from "@/lib/data/nav";
+import { CARS_NAV, DEPARTMENT_MENUS, PARTNERS_NAV, SERVICES_NAV, SHOP_BY_LINKS } from "@/lib/data/nav";
 
 const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
   {
@@ -12,7 +12,8 @@ const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
   },
   { title: "Shop by", links: SHOP_BY_LINKS },
   { title: "Services", links: SERVICES_NAV.links },
-  { title: "Cars", links: CARS_NAV.links },
+  { title: "Cars", links: CARS_NAV.links.filter((l) => l.href !== "/partners" && l.href !== "/vendor") },
+  { title: "Partners", links: PARTNERS_NAV.links },
   {
     title: "Support",
     links: [
@@ -67,7 +68,7 @@ export function Footer() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 xl:grid-cols-5">
+          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 xl:grid-cols-6">
             {COLUMNS.map((col) => (
               <div key={col.title}>
                 <p className="mb-4 font-display text-[11px] font-bold uppercase tracking-[0.18em] text-dim">

@@ -26,6 +26,15 @@ export type CatalogImage =
 
 export type Availability = "in-stock" | "made-to-order" | "coming-soon";
 
+/** `Availability` plus "out-of-stock", which only marketplace items whose seller has no units left use. */
+export type ShopAvailability = Availability | "out-of-stock";
+
+/** The store a marketplace item is sold by. Only public fields; mirrors `CartLine.seller`. */
+export type CatalogSeller = { id: string; name: string; slug: string };
+
+/** Filter key for a marketplace seller's own brand text, e.g. `mp-bosch-india`. Never collides with a house `BrandSlug`. */
+export type MarketplaceBrandKey = `mp-${string}`;
+
 export type CatalogItem = {
   /** Unique across every source. `${brand}:${slug}`. */
   id: string;
@@ -73,6 +82,18 @@ export type CatalogItem = {
   badges: string[];
   /** Lower-cased free text the shop search box matches against. */
   keywords: string;
+  /** Set only on marketplace items sold by an approved vendor. House items never carry it. */
+  seller?: CatalogSeller;
+};
+
+/**
+ * What the shop browser, filters and cards work with: a house `CatalogItem`, or a
+ * marketplace item whose `brand` is the seller's own brand text keyed `mp-…` (the
+ * house brand registry does not know it). `CatalogItem` is assignable to `ShopItem`.
+ */
+export type ShopItem = Omit<CatalogItem, "brand" | "availability"> & {
+  brand: BrandSlug | MarketplaceBrandKey;
+  availability: ShopAvailability;
 };
 
 export const TIER_BOUNDS: Record<PriceTier, [number, number]> = {
