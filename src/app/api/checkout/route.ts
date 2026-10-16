@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { assertNoUserErrors, ShopifyError, storefront, type UserError } from "@/lib/shopify/client";
 import { isShopifyConfigured } from "@/lib/shopify/config";
+import { isVendorLineSlug } from "@/lib/vendor/types";
 import { canonicalLineId, checkBuyable, resolveLines, type LineRequest } from "@/lib/shopify/variants";
 
 export const dynamic = "force-dynamic";
@@ -63,6 +64,8 @@ export async function POST(req: Request) {
     if (typeof qty !== "number" || !Number.isInteger(qty) || qty < 1 || qty > 99) {
       return bad("qty must be an integer from 1 to 99");
     }
+    // Marketplace items live in our database, not Shopify.
+    if (isVendorLineSlug(id)) return bad("Marketplace items are ordered on WhatsApp");
     // Option order must not make two copies of one line look different.
     const canonical = canonicalLineId(id);
     if (!canonical) return bad("Invalid line id");
