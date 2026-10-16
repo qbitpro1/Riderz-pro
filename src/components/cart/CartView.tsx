@@ -1,20 +1,44 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { useCart } from "./CartContext";
 import { rupees } from "@/lib/format";
-import { whatsapp } from "@/lib/data/site";
 import { FREE_SHIPPING_OVER, shippingFor } from "@/lib/store/shipping";
 import { CartThumb } from "./CartThumb";
-import { orderMessage } from "./cartMessage";
 import { CheckoutButton } from "./CheckoutButton";
+import { CheckoutForm, type PlacedOrder } from "./CheckoutForm";
 
 export function CartView() {
   const { lines, subtotal, installTotal, setQty, remove, clear, ready, count } = useCart();
+  const [placed, setPlaced] = useState<PlacedOrder | null>(null);
 
   if (!ready) {
     return <div className="card p-10 text-center text-sm text-dim">Loading your cart…</div>;
+  }
+
+  if (placed) {
+    return (
+      <div className="card mx-auto max-w-xl p-8 text-center" role="status">
+        <Icon name="check" size={32} className="mx-auto text-accent" />
+        <p className="eyebrow mt-4">Order placed</p>
+        <p className="mt-2 font-display text-3xl font-extrabold tnum">{placed.number}</p>
+        <p className="mt-2 text-sm text-ash">
+          Total {rupees(placed.total)}, inclusive of GST. We&apos;ve opened WhatsApp so you can send us the order and we&apos;ll confirm
+          fitment and payment there.
+        </p>
+        <div className="mt-6 flex flex-wrap justify-center gap-3">
+          <a href={placed.whatsappHref} target="_blank" rel="noreferrer noopener" className="btn btn-whatsapp btn-sm">
+            <Icon name="whatsapp" size={16} />
+            Open WhatsApp
+          </a>
+          <Link href="/shop" className="btn btn-outline btn-sm">
+            Continue shopping
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   if (lines.length === 0) {
@@ -40,7 +64,6 @@ export function CartView() {
 
   const shipping = shippingFor(subtotal);
   const total = subtotal + installTotal + shipping;
-  const message = orderMessage(lines, { subtotal, installTotal, shipping, total });
 
   return (
     <div className="grid gap-6 lg:grid-cols-[1.6fr_1fr] lg:items-start">
@@ -53,6 +76,7 @@ export function CartView() {
                 {l.name}
               </Link>
               {l.variant && <p className="mt-0.5 text-xs text-ash">{l.variant}</p>}
+              {l.seller && <p className="mt-0.5 text-xs text-dim">Sold by {l.seller.name}</p>}
               <p className="mt-0.5 text-xs text-dim tnum">
                 {rupees(l.price)} each
                 {l.install ? ` · installation ${rupees(l.install)}` : ""}
@@ -114,7 +138,10 @@ export function CartView() {
           </p>
         )}
 
-        <CheckoutButton lines={lines} whatsappHref={whatsapp(message)} className="mt-5" />
+        <CheckoutButton lines={lines} className="mt-5" />
+        <div className="mt-5 border-t border-tint/8 pt-5">
+          <CheckoutForm lines={lines} totals={{ subtotal, installTotal, shipping, total }} onPlaced={setPlaced} />
+        </div>
         <p className="mt-3 text-[11px] leading-relaxed text-dim">
           We confirm fitment against your variant on WhatsApp before you pay. See the{" "}
           <Link href="/support/payments" className="underline hover:text-accent">

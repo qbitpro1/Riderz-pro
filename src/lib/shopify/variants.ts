@@ -1,6 +1,7 @@
 import "server-only";
 import { getProductDetail } from "@/lib/store/products";
 import { cartLineId, type ProductDetail } from "@/lib/store/types";
+import { isVendorLineSlug } from "@/lib/vendor/types";
 import { storefront } from "./client";
 
 export type LineRequest = { id: string; qty: number };
@@ -71,6 +72,8 @@ export type Buyable =
  * `wanted` maps option name -> value label, which is how Shopify names variants.
  */
 export function checkBuyable(id: string): Buyable {
+  // Marketplace items are not in Shopify; they are ordered through /api/orders and WhatsApp.
+  if (isVendorLineSlug(id)) return { ok: false, reason: "Marketplace items are ordered on WhatsApp" };
   const parsed = parseLineId(id);
   if (!parsed) return { ok: false, reason: "Invalid cart line" };
   const detail = getProductDetail(parsed.slug);

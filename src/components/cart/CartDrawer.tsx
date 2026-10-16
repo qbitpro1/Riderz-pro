@@ -5,12 +5,9 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { rupees } from "@/lib/format";
-import { whatsapp } from "@/lib/data/site";
 import { FREE_SHIPPING_OVER, shippingFor } from "@/lib/store/shipping";
 import { useCart } from "./CartContext";
 import { CartThumb } from "./CartThumb";
-import { orderMessage } from "./cartMessage";
-import { CheckoutButton } from "./CheckoutButton";
 
 const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
@@ -75,7 +72,6 @@ export function CartDrawer() {
   }, []);
 
   const shipping = shippingFor(subtotal);
-  const total = subtotal + installTotal + shipping;
   const remaining = FREE_SHIPPING_OVER - subtotal;
   const progress = Math.min(100, Math.round((subtotal / FREE_SHIPPING_OVER) * 100));
 
@@ -214,12 +210,8 @@ export function CartDrawer() {
                 </div>
               </dl>
               <p className="mt-1 text-[11px] text-dim">Prices inclusive of GST.</p>
-              <CheckoutButton
-                lines={lines}
-                whatsappHref={whatsapp(orderMessage(lines, { subtotal, installTotal, shipping, total }))}
-              />
-              <Link href="/cart" onClick={closeCart} className="btn btn-outline btn-block mt-2">
-                View cart
+              <Link href="/cart" onClick={closeCart} className="btn btn-primary btn-block mt-4">
+                Checkout
               </Link>
             </div>
           </>
