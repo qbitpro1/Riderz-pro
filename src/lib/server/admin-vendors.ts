@@ -400,7 +400,7 @@ export async function decideVendor(vendorId: string, input: VendorDecision, acto
           {
             type: "account",
             title: "Your store is suspended",
-            body: `Your products are hidden from the shop until this is resolved. Reason: ${input.reason}. Contact seller support to discuss.`,
+            body: `Your Offline Store screen is closed and your products are hidden until this is resolved. Reason: ${input.reason}. Contact seller support to discuss.`,
             link: "/vendor/dashboard/support",
           },
           q,

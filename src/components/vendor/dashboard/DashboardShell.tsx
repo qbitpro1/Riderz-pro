@@ -175,12 +175,12 @@ export function DashboardShell({ storeName, slug, tier, status, holidayMode, unr
 
           {status === "suspended" && (
             <div role="alert" className="border-b border-danger/40 bg-danger/10 px-4 py-3 text-sm font-semibold text-danger md:px-6">
-              Your store is suspended — products are hidden from the shop and changes are disabled. Contact seller support.
+              Your store is suspended: the Offline Store screen is closed and changes are disabled. Contact seller support.
             </div>
           )}
           {holidayMode && (
             <div role="status" className="border-b border-gold/40 bg-gold/10 px-4 py-3 text-sm text-chalk md:px-6">
-              <strong className="text-gold">Holiday mode is on.</strong> Your products are hidden from the shop until you switch it off in{" "}
+              <strong className="text-gold">Holiday mode is on.</strong> Online orders are paused (your Offline Store screen is not affected) until you switch it off in{" "}
               <Link href={`${base}/settings`} className="underline underline-offset-2 hover:text-accent">
                 Settings
               </Link>

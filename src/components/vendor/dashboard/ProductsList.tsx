@@ -162,7 +162,7 @@ export function ProductsList({ initial, readOnly, initialStatus }: Props) {
       {shown.length === 0 ? (
         products.length === 0 ? (
           <EmptyState title="No products yet">
-            Add your first product. It goes live on the shop after a quick review by the Riderzpro team.
+            Add your first product. It appears on your Offline Store screen after a quick review by the Riderzpro team.
             {!readOnly && (
               <div className="mt-4">
                 <Link href={`${base}/new`} className="btn btn-primary btn-sm">

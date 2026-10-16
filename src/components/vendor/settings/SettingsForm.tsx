@@ -165,7 +165,7 @@ export default function SettingsForm({ initial }: { initial: VendorSettings }) {
     try {
       await api("/api/vendor/settings/holiday", { body: { on } });
       setHoliday(on);
-      setHolidayMsg({ tone: "ok", text: on ? "Holiday mode is on. Your products are hidden from the shop." : "Holiday mode is off. Your live products are back on the shop." });
+      setHolidayMsg({ tone: "ok", text: on ? "Holiday mode is on. Online orders are paused; your Offline Store screen is not affected." : "Holiday mode is off." });
       router.refresh();
     } catch (e) {
       setHolidayMsg({ tone: "error", text: fail(e).text });
@@ -223,7 +223,7 @@ export default function SettingsForm({ initial }: { initial: VendorSettings }) {
         </p>
       ) : null}
 
-      <Card id="holiday" title="Holiday mode" hint="Pause selling while you are away. Your products are hidden from the shop and no new orders arrive. Orders you already have still need handling.">
+      <Card id="holiday" title="Holiday mode" hint="Pause online orders while you are away. Your Offline Store screen is not affected. Orders you already have still need handling.">
         <label className="flex items-center gap-3">
           <input
             type="checkbox"

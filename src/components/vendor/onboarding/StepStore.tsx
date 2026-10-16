@@ -183,7 +183,7 @@ export function StepStore({ state, editable, onSaved, onUploaded, goBack, goNext
     avail.state === "checking" ? "Checking availability…" : avail.state === "free" ? "Available" : avail.state === "error" ? "Couldn't check availability right now." : "This is the name shoppers will see.";
 
   return (
-    <StepFrame title="Your store" intro="This is your public storefront on Riderzpro. Our team reviews it before it goes live." locked={!editable}>
+    <StepFrame title="Your store" intro="This is how your store appears on your Offline Store screen. Our team reviews it before approval." locked={!editable}>
       <form ref={form} onSubmit={submit} noValidate>
         <fieldset disabled={!editable} className="space-y-5 border-0 p-0">
           {formError && <Notice tone="error">{formError}</Notice>}
