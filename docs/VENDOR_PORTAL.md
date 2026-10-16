@@ -29,7 +29,7 @@ browser and had demo passwords and OTPs; none of its plumbing is used here.
 | Files | `src/lib/server/files.ts`, `/api/vendor/files`, `/api/files/[id]`, `/api/admin/files/[id]` | Stored in the database; type sniffed from bytes; documents never public. |
 | One-time codes | `src/lib/server/otp.ts` | Dev prints codes to the server console. Production has no provider yet (`otpDeliveryAvailable` is false) — contact details are verified by the admin team during KYC. |
 | Vendor products | `src/lib/server/vendor-products.ts` | Row mapping and the **visibility gate** `LIVE_PRODUCT_WHERE` / `isOnSale` (used by order capture). |
-| Offline Store screen | `src/app/store/[slug]/page.tsx`, `src/lib/server/store-screen.ts`, `src/components/vendor/store-screen/`, `/api/vendor/store-screen` | Owner-only order screen: `live` products with stock > 0 (holiday mode does not hide it). Cart only, nothing saved. Session lock: see rule 11. |
+| Offline Store screen | `src/app/store/[slug]/page.tsx`, `src/lib/server/store-screen.ts`, `src/components/vendor/store-screen/`, `/api/vendor/store-screen` | Owner-only order screen: `live` products with stock > 0, each opening full screen with the full description (gallery, About, Highlights, Product details, Specifications). A showcase: cart only, nothing saved or paid. Session lock: see rule 12. |
 | Demo store | `src/lib/server/demo-store.ts`, `/api/admin/demo-store`, panel on `/admin/vendors` | "Indus Enterprises": seat covers and speakers copied from the house catalogue (SKUs `DEMO-`). Renames an existing `asha-accessories` store. Safe to re-run. |
 | Browser fetch | `src/lib/vendor/client.ts` | `api()`, `uploadFile()`, `ApiFailure` (with `fields` for form errors). |
 
@@ -96,7 +96,7 @@ browser and had demo passwords and OTPs; none of its plumbing is used here.
 | Vendor | `/vendor/dashboard/inventory`, `/pricing` | Stock, price |
 | Vendor | `/vendor/dashboard/orders` (`/[id]`) | Orders, packing slip / invoice |
 | Vendor | `/vendor/dashboard/payments` | Settlements, payouts |
-| Vendor | `/vendor/dashboard/settings`, `/notifications`, `/support` | Store profile, holiday mode, bank change, alerts, tickets |
+| Vendor | `/vendor/dashboard/settings`, `/notifications`, `/support` | Store profile, bank change, alerts, tickets |
 | Admin | `/admin/vendors` (`/[id]`) | KYC queue and decisions; demo store panel |
 | Admin | `/admin/vendor-products` | Product approval queue |
 | Admin | `/admin/orders`, `/admin/payouts`, `/admin/support` | Orders, payouts, seller tickets |
@@ -133,6 +133,14 @@ Done in session 2:
 
 Decided (16 Oct 2026): the Offline Store screen is a showcase of the seller's products; it ends at
 the cart. No payment and no saved orders are planned for it.
+
+Session 2, later changes:
+- Holiday mode removed (settings card, banner, API route, and the condition in `LIVE_PRODUCT_WHERE`).
+  The `vendors.holiday_mode` column stays (shipped migration) but nothing reads or writes it.
+- The site header (shopper menus, cart) is off `/vendor/dashboard/*`; the dashboard shows its own logo.
+- The store screen opens a product full screen with the full description, like the main site product page.
+- Demo store copy tidies imported highlights: heading lines dropped, "Label: value" lines moved to specs,
+  long lines moved to the description, repeats removed.
 
 Open (owner decisions): seller fees for the offline screen, and the items below.
 

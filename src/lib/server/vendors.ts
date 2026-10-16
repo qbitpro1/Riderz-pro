@@ -63,7 +63,6 @@ export function toVendorSelf(r: VendorRow): VendorSelf {
     completedSteps: r.completed_steps ?? [],
     commissionRate: r.commission_rate === null ? null : Number(r.commission_rate),
     tier: r.tier,
-    holidayMode: r.holiday_mode,
     changesRequested: r.changes_requested,
     rejectionReason: r.rejection_reason,
     submittedAt: iso(r.submitted_at),
@@ -75,7 +74,7 @@ export async function vendorById(id: string, q: Query = sql): Promise<VendorRow 
   return (await q<VendorRow>("SELECT * FROM vendors WHERE id = $1", [id]))[0] ?? null;
 }
 
-/** A store a shopper may see: approved, not on holiday. */
+/** An approved store by its slug. */
 export async function publicVendorBySlug(slug: string): Promise<VendorRow | null> {
   return (
     (await sql<VendorRow>("SELECT * FROM vendors WHERE slug = $1 AND status = 'approved'", [slug]))[0] ?? null

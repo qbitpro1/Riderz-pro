@@ -125,7 +125,6 @@ export type VendorSelf = {
   completedSteps: number[];
   commissionRate: number | null;
   tier: VendorTier | null;
-  holidayMode: boolean;
   changesRequested: ChangesRequested | null;
   rejectionReason: string | null;
   submittedAt: string | null;

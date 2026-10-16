@@ -19,6 +19,7 @@ import {
   X,
   type LucideIcon,
 } from "lucide-react";
+import { Logo } from "@/components/brand/Logo";
 import { api } from "@/lib/vendor/client";
 import { storeHref } from "@/lib/vendor/types";
 
@@ -27,7 +28,6 @@ type Props = {
   slug: string | null;
   tier: string | null;
   status: "approved" | "suspended";
-  holidayMode: boolean;
   unreadNotifications: number;
   newOrders: number;
   children: ReactNode;
@@ -35,7 +35,7 @@ type Props = {
 
 type Item = { href: string; label: string; icon: LucideIcon; badge?: number };
 
-export function DashboardShell({ storeName, slug, tier, status, holidayMode, unreadNotifications, newOrders, children }: Props) {
+export function DashboardShell({ storeName, slug, tier, status, unreadNotifications, newOrders, children }: Props) {
   const pathname = usePathname();
   const [more, setMore] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
@@ -103,11 +103,15 @@ export function DashboardShell({ storeName, slug, tier, status, holidayMode, unr
     }`;
 
   return (
-    <div className="pt-14 md:pt-[68px]">
+    // The site's shopper header is off here (SiteChrome); the dashboard carries its own brand mark.
+    <div>
       <div className="mx-auto flex w-full max-w-[1500px]">
         {/* Sidebar (desktop) */}
-        <aside className="sticky top-[68px] hidden h-[calc(100vh-68px)] w-60 shrink-0 flex-col border-r border-tint/10 bg-carbon lg:flex">
+        <aside className="sticky top-0 hidden h-dvh w-60 shrink-0 flex-col border-r border-tint/10 bg-carbon lg:flex">
           <div className="border-b border-tint/10 p-4">
+            <Link href="/vendor/dashboard" aria-label="Riderzpro seller portal, overview" className="mb-3 inline-block">
+              <Logo className="h-9" />
+            </Link>
             <p className="eyebrow">Seller portal</p>
             <p className="mt-1 truncate font-display text-base font-extrabold text-chalk" title={storeName}>
               {storeName}
@@ -137,8 +141,11 @@ export function DashboardShell({ storeName, slug, tier, status, holidayMode, unr
 
         <div className="min-w-0 flex-1">
           {/* Sticky header */}
-          <header className="sticky top-14 z-30 flex h-14 items-center justify-between gap-3 border-b border-tint/10 bg-void/95 px-4 backdrop-blur md:top-[68px] md:px-6">
-            <div className="min-w-0">
+          <header className="sticky top-0 z-30 flex h-14 items-center justify-between gap-3 border-b border-tint/10 bg-void/95 px-4 backdrop-blur md:px-6">
+            <div className="flex min-w-0 items-center gap-3">
+              <Link href="/vendor/dashboard" aria-label="Riderzpro seller portal, overview" className="shrink-0 lg:hidden">
+                <Logo className="h-8" />
+              </Link>
               <p className="truncate text-sm font-bold text-chalk lg:hidden">{storeName}</p>
               <p className="hidden truncate font-display text-lg font-extrabold text-chalk lg:block">{current?.label ?? "Dashboard"}</p>
             </div>
@@ -176,15 +183,6 @@ export function DashboardShell({ storeName, slug, tier, status, holidayMode, unr
           {status === "suspended" && (
             <div role="alert" className="border-b border-danger/40 bg-danger/10 px-4 py-3 text-sm font-semibold text-danger md:px-6">
               Your store is suspended: the Offline Store screen is closed and changes are disabled. Contact seller support.
-            </div>
-          )}
-          {holidayMode && (
-            <div role="status" className="border-b border-gold/40 bg-gold/10 px-4 py-3 text-sm text-chalk md:px-6">
-              <strong className="text-gold">Holiday mode is on.</strong> Online orders are paused (your Offline Store screen is not affected) until you switch it off in{" "}
-              <Link href={`${base}/settings`} className="underline underline-offset-2 hover:text-accent">
-                Settings
-              </Link>
-              .
             </div>
           )}
 

@@ -2,10 +2,13 @@
 
 import Image from "next/image";
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from "react";
-import { Lock, Maximize, Minimize, Minus, Plus, Search, ShoppingBag, Trash2, X } from "lucide-react";
+import { ArrowLeft, Lock, Maximize, Minimize, Minus, Plus, Search, ShoppingBag, Trash2, X } from "lucide-react";
 import { api, ApiFailure } from "@/lib/vendor/client";
 import { fileHref } from "@/lib/vendor/types";
 import { rupees } from "@/lib/format";
+import { ProductGallery } from "@/components/product/ProductGallery";
+import { findModelBySlug } from "@/lib/data/vehicles";
+import type { ProductImage } from "@/lib/store/types";
 import type { ScreenProduct, ScreenStore } from "./types";
 
 /**
@@ -267,9 +270,15 @@ export function StoreScreen({ store, products, locked }: { store: ScreenStore; p
       )}
 
       {open && (
-        <ProductDialog
+        <ProductView
           product={open}
           inOrder={order[open.id] ?? 0}
+          orderCount={count}
+          orderTotal={total}
+          onViewOrder={() => {
+            setOpen(null);
+            setReview(true);
+          }}
           onClose={() => setOpen(null)}
           onAdd={(qty) => {
             setQty(open.id, (order[open.id] ?? 0) + qty);
@@ -472,8 +481,10 @@ function OrderPanel({
   );
 }
 
-/** A modal layer: focus moves in, Escape closes, focus returns on close. */
-function Layer({ label, onClose, children, wide = false }: { label: string; onClose?: () => void; children: ReactNode; wide?: boolean }) {
+/** A modal layer: focus moves in, Escape closes, focus returns on close. `full` covers the whole screen. */
+function Layer({
+  label, onClose, children, wide = false, full = false,
+}: { label: string; onClose?: () => void; children: ReactNode; wide?: boolean; full?: boolean }) {
   const box = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const before = document.activeElement as HTMLElement | null;
@@ -498,6 +509,13 @@ function Layer({ label, onClose, children, wide = false }: { label: string; onCl
       before?.focus?.();
     };
   }, [onClose]);
+  if (full) {
+    return (
+      <div ref={box} className="fixed inset-0 z-50 overflow-y-auto bg-void" role="dialog" aria-modal="true" aria-label={label}>
+        {children}
+      </div>
+    );
+  }
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-6" role="dialog" aria-modal="true" aria-label={label}>
       <div className="absolute inset-0 bg-ink/70" onClick={onClose} aria-hidden />
@@ -519,80 +537,170 @@ function CloseButton({ onClick, label = "Close" }: { onClick: () => void; label?
   );
 }
 
-function ProductDialog({ product: p, inOrder, onClose, onAdd }: { product: ScreenProduct; inOrder: number; onClose: () => void; onAdd: (qty: number) => void }) {
+/** Which vehicles a product fits, in words. */
+function fitsText(fitment: string[]): string | null {
+  if (fitment.length === 0) return null;
+  if (fitment.includes("universal")) return "Universal fit";
+  return fitment
+    .map((s) => {
+      const m = findModelBySlug(s);
+      return m ? `${m.brand} ${m.name}` : s;
+    })
+    .join(", ");
+}
+
+function DetailRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex justify-between gap-6 py-3">
+      <dt className="shrink-0 text-sm text-dim">{label}</dt>
+      <dd className="min-w-0 break-words text-right text-sm text-chalk">{value}</dd>
+    </div>
+  );
+}
+
+const sectionTitle = "font-display text-lg font-bold uppercase tracking-[0.04em] text-chalk";
+
+/**
+ * One product, full screen: the same layout as a product page on the main site
+ * (gallery, price, highlights, then About / Highlights / Product details / Specifications),
+ * with "Add to order" in place of checkout.
+ */
+function ProductView({
+  product: p, inOrder, orderCount, orderTotal, onClose, onAdd, onViewOrder,
+}: {
+  product: ScreenProduct;
+  inOrder: number;
+  orderCount: number;
+  orderTotal: number;
+  onClose: () => void;
+  onAdd: (qty: number) => void;
+  onViewOrder: () => void;
+}) {
   const room = maxFor(p) - inOrder;
   const [qty, setQty] = useState(room > 0 ? 1 : 0);
-  const [img, setImg] = useState(0);
-  return (
-    <Layer label={p.title} onClose={onClose} wide>
-      <div className="flex items-start justify-between gap-3 p-4 pb-0 md:p-6 md:pb-0">
-        <div className="min-w-0">
-          <p className="text-xs font-bold uppercase tracking-[0.1em] text-dim">{p.brand} · {p.groupName}</p>
-          <h2 className="mt-1 font-display text-xl font-extrabold leading-tight text-chalk md:text-2xl">{p.title}</h2>
-        </div>
-        <CloseButton onClick={onClose} />
+  const images: ProductImage[] = p.images.map((id, i) => ({
+    kind: "remote",
+    src: fileHref(id),
+    alt: i === 0 ? p.title : `${p.title}, photo ${i + 1}`,
+    fit: "contain",
+    tone: "light",
+  }));
+  const fits = fitsText(p.fitment);
+  const facts = [
+    { label: "Brand", value: p.brand },
+    { label: "Category", value: p.groupName },
+    { label: "Part type", value: p.partType },
+    ...(p.warrantyMonths ? [{ label: "Warranty", value: `${p.warrantyMonths} months` }] : []),
+    ...(fits ? [{ label: "Fits", value: fits }] : []),
+  ];
+
+  const addBlock =
+    room > 0 ? (
+      <div className="flex items-center gap-3">
+        <Stepper value={qty} max={room} onChange={(n) => setQty(Math.max(1, n))} label={p.title} />
+        <button type="button" data-autofocus onClick={() => onAdd(qty)} className="btn btn-primary min-h-14 flex-1 text-base">
+          <Plus size={18} aria-hidden /> Add to order · <span className="tnum">{rupees(p.price * qty)}</span>
+        </button>
       </div>
-      <div className="grid gap-5 p-4 md:grid-cols-2 md:gap-8 md:p-6">
-        <div>
-          <Thumb id={p.images[img]} alt={p.title} sizes="(min-width:768px) 420px, 92vw" className="aspect-square w-full rounded-[2px]" />
-          {p.images.length > 1 && (
-            <div className="mt-2 flex gap-2 overflow-x-auto">
-              {p.images.map((id, i) => (
-                <button
-                  key={id}
-                  type="button"
-                  onClick={() => setImg(i)}
-                  aria-label={`Photo ${i + 1}`}
-                  aria-pressed={i === img}
-                  className={`shrink-0 rounded-[2px] border-2 ${i === img ? "border-accent" : "border-transparent"}`}
-                >
-                  <Thumb id={id} alt="" sizes="64px" className="h-16 w-16" />
-                </button>
-              ))}
+    ) : (
+      <p className="text-sm text-ash">All available units are already in your order.</p>
+    );
+
+  return (
+    <Layer label={p.title} onClose={onClose} full>
+      {/* Top bar */}
+      <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-tint/10 bg-void px-4 py-3 md:px-6">
+        <button type="button" onClick={onClose} className="btn btn-outline min-h-12 gap-2">
+          <ArrowLeft size={18} aria-hidden /> Back to products
+        </button>
+        {orderCount > 0 && (
+          <button type="button" onClick={onViewOrder} className="btn btn-primary min-h-12 gap-2">
+            <ShoppingBag size={18} aria-hidden />
+            <span className="hidden sm:inline">Your order ·</span> {orderCount} · <span className="tnum">{rupees(orderTotal)}</span>
+          </button>
+        )}
+      </div>
+
+      <div className={`mx-auto max-w-[1400px] px-4 py-6 md:px-8 md:py-10 ${room > 0 ? "pb-32 lg:pb-10" : ""}`}>
+        <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
+          <div className="min-w-0">
+            <ProductGallery images={images} brandName={p.brand} />
+          </div>
+          <div className="min-w-0 space-y-5">
+            <p className="eyebrow">
+              {p.brand} · {p.groupName}
+            </p>
+            <h2 className="display-3 text-balance">{p.title}</h2>
+            <div>
+              <Price p={p} large />
+              <p className="mt-1 text-xs text-dim">Inclusive of GST</p>
+            </div>
+            <ul className="flex flex-wrap gap-2 text-sm">
+              <li className="chip">{p.stock <= LOW_STOCK ? `Only ${p.stock} left` : "In stock"}</li>
+              <li className="chip">{p.partType}</li>
+              {p.warrantyMonths ? <li className="chip">{p.warrantyMonths}-month warranty</li> : null}
+              {fits === "Universal fit" && <li className="chip">Universal fit</li>}
+            </ul>
+            {p.highlights.length > 0 && (
+              <ul className="space-y-2 text-sm text-ash md:text-base">
+                {p.highlights.slice(0, 4).map((h) => (
+                  <li key={h} className="flex gap-3">
+                    <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 bg-accent" />
+                    <span>{h}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+            <div className="hidden border-t border-tint/10 pt-5 lg:block">{addBlock}</div>
+          </div>
+        </div>
+
+        {/* Full description, as on the main site product page */}
+        <div className="mt-10 grid gap-8 border-t border-tint/10 pt-10 md:gap-10 lg:grid-cols-2">
+          <div className="min-w-0 space-y-8">
+            {p.summary && (
+              <div>
+                <h3 className={sectionTitle}>About this product</h3>
+                <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-ash md:text-base">{p.summary}</p>
+              </div>
+            )}
+            {p.highlights.length > 0 && (
+              <div>
+                <h3 className={sectionTitle}>Highlights</h3>
+                <ul className="mt-3 space-y-2 text-sm text-ash md:text-base">
+                  {p.highlights.map((h) => (
+                    <li key={h} className="flex gap-3">
+                      <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 bg-accent" />
+                      <span>{h}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            <div>
+              <h3 className={sectionTitle}>Product details</h3>
+              <dl className="mt-3 divide-y divide-tint/8 border-y border-tint/8">
+                {facts.map((f) => (
+                  <DetailRow key={f.label} label={f.label} value={f.value} />
+                ))}
+              </dl>
+            </div>
+          </div>
+          {p.specs.length > 0 && (
+            <div className="min-w-0">
+              <h3 className={sectionTitle}>Specifications</h3>
+              <dl className="mt-3 divide-y divide-tint/8 border-y border-tint/8">
+                {p.specs.map((s) => (
+                  <DetailRow key={s.label} label={s.label} value={s.value} />
+                ))}
+              </dl>
             </div>
           )}
         </div>
-        <div className="flex flex-col gap-4">
-          <Price p={p} large />
-          <p className="text-sm text-ash">
-            {p.stock <= LOW_STOCK ? `Only ${p.stock} left` : "In stock"}
-            {p.warrantyMonths ? ` · ${p.warrantyMonths}-month warranty` : ""}
-          </p>
-          {p.summary && <p className="text-sm leading-relaxed text-ash">{p.summary}</p>}
-          {p.highlights.length > 0 && (
-            <ul className="space-y-1.5 text-sm text-chalk">
-              {p.highlights.map((h) => (
-                <li key={h} className="flex gap-2">
-                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" aria-hidden />
-                  {h}
-                </li>
-              ))}
-            </ul>
-          )}
-          {p.specs.length > 0 && (
-            <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 border-t border-tint/10 pt-3 text-sm">
-              {p.specs.map((s) => (
-                <div key={s.label} className="contents">
-                  <dt className="text-dim">{s.label}</dt>
-                  <dd className="text-chalk">{s.value}</dd>
-                </div>
-              ))}
-            </dl>
-          )}
-          <div className="mt-auto flex items-center gap-3 border-t border-tint/10 pt-4">
-            {room > 0 ? (
-              <>
-                <Stepper value={qty} max={room} onChange={(n) => setQty(Math.max(1, n))} label={p.title} />
-                <button type="button" data-autofocus onClick={() => onAdd(qty)} className="btn btn-primary min-h-12 flex-1 text-base">
-                  Add to order · <span className="tnum">{rupees(p.price * qty)}</span>
-                </button>
-              </>
-            ) : (
-              <p className="text-sm text-ash">All available units are already in your order.</p>
-            )}
-          </div>
-        </div>
       </div>
+
+      {/* Add bar (phones and tablets) */}
+      {room > 0 && <div className="safe-b fixed inset-x-0 bottom-0 z-10 border-t border-tint/10 bg-void p-3 lg:hidden">{addBlock}</div>}
     </Layer>
   );
 }

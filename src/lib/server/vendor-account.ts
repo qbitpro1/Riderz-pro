@@ -11,7 +11,7 @@ import { addressSchema, bankStepSchema, maskTail, mobileSchema, passwordSchema }
 import type { VendorSelf } from "@/lib/vendor/types";
 
 /**
- * Vendor-side account logic: settings, holiday mode, bank change requests,
+ * Vendor-side account logic: settings, bank change requests,
  * password change, notifications and support tickets. Every function takes the
  * signed-in `VendorSelf` from the session — never an id from the request.
  */
@@ -37,7 +37,6 @@ export const settingsPatchSchema = z
 
 export type SettingsPatch = z.infer<typeof settingsPatchSchema>;
 
-export const holidaySchema = z.object({ on: z.boolean() });
 export const passwordChangeSchema = z.object({
   current: z.string().min(1, "Enter your current password").max(128),
   next: passwordSchema,
@@ -56,7 +55,6 @@ export type PendingBankChange = { id: string; summary: string; createdAt: string
 export type VendorSettings = {
   status: VendorSelf["status"];
   canEdit: boolean;
-  holidayMode: boolean;
   readOnly: {
     storeName: string | null;
     slug: string | null;
@@ -93,7 +91,6 @@ export async function getSettings(vendor: VendorSelf): Promise<VendorSettings> {
   return {
     status: vendor.status,
     canEdit: vendor.status === "approved",
-    holidayMode: vendor.holidayMode,
     readOnly: {
       storeName: vendor.storeName,
       slug: vendor.slug,
@@ -168,15 +165,6 @@ export async function updateSettings(vendor: VendorSelf, patch: SettingsPatch, i
       );
     }
   });
-}
-
-export async function setHoliday(vendor: VendorSelf, on: boolean, ip: string): Promise<void> {
-  const rows = await sql<{ id: string }>(
-    "UPDATE vendors SET holiday_mode = $2, updated_at = now() WHERE id = $1 AND status = 'approved' RETURNING id",
-    [vendor.id, on],
-  );
-  if (rows.length === 0) throw new ApiError(403, "not_allowed", "Holiday mode is available while your store is approved.");
-  await audit({ type: "vendor", id: vendor.id }, on ? "settings.holiday_on" : "settings.holiday_off", { vendorId: vendor.id, ip });
 }
 
 /* ------------------------------------------------------------ bank change */

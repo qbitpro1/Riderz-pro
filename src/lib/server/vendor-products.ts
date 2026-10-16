@@ -9,7 +9,6 @@ import type { VendorProduct, VendorProductContent } from "@/lib/vendor/types";
  * VISIBILITY GATE — a vendor product is on sale only when ALL hold:
  *   the product is `live`
  *   its vendor is `approved` (not suspended, rejected, or back under review)
- *   its vendor is not in holiday mode
  * Use `LIVE_PRODUCT_WHERE` (with the table aliases `p` and `v`) in every
  * customer-facing query, and `isOnSale` when you already have both rows.
  * Out-of-stock products stay visible but cannot be added to the cart.
@@ -85,12 +84,10 @@ export function toVendorProduct(r: VendorProductRow): VendorProduct {
 }
 
 /** SQL condition for "on sale to shoppers". Requires aliases p (vendor_products) and v (vendors). */
-export const LIVE_PRODUCT_WHERE = "p.status = 'live' AND v.status = 'approved' AND v.holiday_mode = false";
+export const LIVE_PRODUCT_WHERE = "p.status = 'live' AND v.status = 'approved'";
 
-export function isOnSale(product: { status: string }, vendor: { status: string; holiday_mode?: boolean; holidayMode?: boolean }) {
-  return (
-    product.status === "live" && vendor.status === "approved" && !(vendor.holiday_mode ?? vendor.holidayMode ?? false)
-  );
+export function isOnSale(product: { status: string }, vendor: { status: string }) {
+  return product.status === "live" && vendor.status === "approved";
 }
 
 /** A vendor's own product (any status), or null if it is not theirs. */

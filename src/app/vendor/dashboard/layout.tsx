@@ -25,7 +25,6 @@ export default async function DashboardLayout({ children }: { children: ReactNod
       slug={vendor.slug}
       tier={vendor.tier}
       status={vendor.status === "suspended" ? "suspended" : "approved"}
-      holidayMode={vendor.holidayMode}
       unreadNotifications={Number(unread?.n ?? 0)}
       newOrders={Number(fresh?.n ?? 0)}
     >

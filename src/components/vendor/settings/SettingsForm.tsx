@@ -125,10 +125,6 @@ export default function SettingsForm({ initial }: { initial: VendorSettings }) {
   const [pickupMsg, setPickupMsg] = useState<Msg>(null);
   const [pickupErr, setPickupErr] = useState<Record<string, string>>({});
 
-  /* holiday */
-  const [holiday, setHoliday] = useState(initial.holidayMode);
-  const [holidayMsg, setHolidayMsg] = useState<Msg>(null);
-
   /* bank */
   const [bankOpen, setBankOpen] = useState(false);
   const [bank, setBank] = useState({ holderName: "", accountNumber: "", confirmAccountNumber: "", ifsc: "" });
@@ -154,21 +150,6 @@ export default function SettingsForm({ initial }: { initial: VendorSettings }) {
       const f = fail(e);
       set({ tone: "error", text: f.text });
       setE(f.fields);
-    } finally {
-      setBusy(null);
-    }
-  }
-
-  async function toggleHoliday(on: boolean) {
-    setBusy("holiday");
-    setHolidayMsg(null);
-    try {
-      await api("/api/vendor/settings/holiday", { body: { on } });
-      setHoliday(on);
-      setHolidayMsg({ tone: "ok", text: on ? "Holiday mode is on. Online orders are paused; your Offline Store screen is not affected." : "Holiday mode is off." });
-      router.refresh();
-    } catch (e) {
-      setHolidayMsg({ tone: "error", text: fail(e).text });
     } finally {
       setBusy(null);
     }
@@ -222,21 +203,6 @@ export default function SettingsForm({ initial }: { initial: VendorSettings }) {
           Your store is suspended, so settings are read-only. <Link href="/vendor/dashboard/support" className="underline">Contact support</Link> to resolve this.
         </p>
       ) : null}
-
-      <Card id="holiday" title="Holiday mode" hint="Pause online orders while you are away. Your Offline Store screen is not affected. Orders you already have still need handling.">
-        <label className="flex items-center gap-3">
-          <input
-            type="checkbox"
-            role="switch"
-            className="h-5 w-5 accent-[var(--accent)]"
-            checked={holiday}
-            disabled={lock || busy === "holiday"}
-            onChange={(e) => toggleHoliday(e.target.checked)}
-          />
-          <span className="text-sm">{holiday ? "On: store paused" : "Off: store open"}</span>
-        </label>
-        <Banner msg={holidayMsg} />
-      </Card>
 
       <Card id="profile" title="Store profile" hint="Changes here go live straight away. No review needed.">
         <div className="space-y-5">

@@ -18,6 +18,10 @@ export type ScreenProduct = {
   mrp: number;
   price: number;
   stock: number;
+  /** "OEM (Original Equipment)", "Genuine brand part" or "Aftermarket". */
+  partType: string;
+  /** Vehicle model slugs, or ["universal"]. */
+  fitment: string[];
   warrantyMonths: number | null;
   summary: string | null;
   highlights: string[];

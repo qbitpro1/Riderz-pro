@@ -112,6 +112,31 @@ const ONBOARDING: VendorOnboarding = {
   },
 };
 
+/**
+ * Tidy imported highlights for the demo: some catalogue rows mix headings ("SPECIFICATIONS")
+ * and "Label: value" lines into the highlights. Headings go, label lines become specs,
+ * lines too long for a highlight join the description, and repeats are dropped.
+ */
+function tidy(d: ProductDetail): { highlights: string[]; specs: { label: string; value: string }[]; summary: string | null } {
+  const key = (s: string) => s.toLowerCase().replace(/[\s:]+/g, "");
+  const specs = d.specs.map((s) => ({ label: s.label.trim(), value: s.value.trim() }));
+  const seen = new Set(specs.map((s) => key(`${s.label}${s.value}`)));
+  const highlights: string[] = [];
+  const long: string[] = [];
+  for (const raw of d.highlights) {
+    const line = raw.trim();
+    if (!line || (/^[A-Z\s&/-]+$/.test(line) && line.length < 30)) continue; // a heading
+    const m = line.match(/^([^:]{2,40}?)\s*:\s*(.+)$/);
+    const k = key(line);
+    if (seen.has(k)) continue;
+    seen.add(k);
+    if (m && !specs.some((s) => s.label.toLowerCase() === m[1].trim().toLowerCase())) specs.push({ label: m[1].trim(), value: m[2].trim() });
+    else if (!m) (line.length <= 140 ? highlights : long).push(line); // long lines read as description
+  }
+  const summary = [d.summary?.trim(), ...long].filter(Boolean).join("\n\n").slice(0, 1500) || null;
+  return { highlights, specs, summary };
+}
+
 export type DemoStoreResult = { vendorId: string; slug: string; action: "created" | "renamed" | "refreshed"; products: number; photos: number };
 
 export async function seedDemoStore(input: z.infer<typeof demoStoreSchema>, by: Actor, ip: string): Promise<DemoStoreResult> {
@@ -181,6 +206,7 @@ export async function seedDemoStore(input: z.infer<typeof demoStoreSchema>, by: 
     const mrp = Math.max(d.mrp ?? price, price);
     const fitment = d.fitment.length && !d.fitment.includes("universal") ? d.fitment.slice(0, 60) : ["universal"];
     // Model codes tell similar products apart (the shop shows "SAM65 — L-1 Series …").
+    const { highlights, specs, summary } = tidy(d);
     const title = d.code && !d.title.toLowerCase().includes(d.code.toLowerCase()) ? `${d.code} — ${d.title}` : d.title;
     await sql(
       `INSERT INTO vendor_products (id, vendor_id, slug, status, title, brand, department, group_slug, sku, gst_rate, mrp, price,
@@ -191,9 +217,9 @@ export async function seedDemoStore(input: z.infer<typeof demoStoreSchema>, by: 
       [
         newId("vp"), vendor.id, await newSlug(sql, d.brandName, title), title.slice(0, 120), d.brandName.slice(0, 60),
         department, group, `${SKU_PREFIX}${String(i + 1).padStart(2, "0")}`, mrp, price, DEMO_STOCK,
-        d.summary?.slice(0, 1500) ?? null,
-        JSON.stringify(d.highlights.map((h) => h.slice(0, 140)).slice(0, 8)),
-        JSON.stringify(d.specs.slice(0, 20).map((s) => ({ label: s.label.slice(0, 40), value: s.value.slice(0, 120) }))),
+        summary,
+        JSON.stringify(highlights.map((h) => h.slice(0, 140)).slice(0, 8)),
+        JSON.stringify(specs.slice(0, 20).map((s) => ({ label: s.label.slice(0, 40), value: s.value.slice(0, 120) }))),
         JSON.stringify(fitment), JSON.stringify(images), by.id,
       ],
     );
