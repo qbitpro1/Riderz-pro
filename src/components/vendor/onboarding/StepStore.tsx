@@ -233,7 +233,7 @@ export function StepStore({ state, editable, onSaved, onUploaded, goBack, goNext
             <FieldMessage
               id="slug"
               error={errors.slug || (slugCheck && !slugCheck.success ? slugCheck.error.issues[0].message : undefined)}
-              hint={slug ? `riderzpro.com/store/${slug}` : "Letters, numbers and hyphens."}
+              hint={slug ? `Your Offline Store screen: riderzpro.com/store/${slug} (opens only when you are signed in)` : "Letters, numbers and hyphens."}
             />
           </div>
 

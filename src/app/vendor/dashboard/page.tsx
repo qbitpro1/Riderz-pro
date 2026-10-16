@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { AlertTriangle, ArrowRight, Boxes, ClipboardList, IndianRupee, PackageCheck, Truck, Warehouse } from "lucide-react";
+import { AlertTriangle, ArrowRight, Boxes, ClipboardList, IndianRupee, MonitorSmartphone, PackageCheck, Truck, Warehouse } from "lucide-react";
 import { vendorPage } from "@/lib/server/session";
 import { vendorOverview } from "@/lib/server/vendor-catalogue";
+import { screenProducts } from "@/lib/server/store-screen";
 import { rupees } from "@/lib/format";
 import { VENDOR_ORDER_LABELS, type VendorOrderStatus } from "@/lib/vendor/types";
 
@@ -11,7 +12,10 @@ const dateFmt = new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "short
 
 export default async function OverviewPage() {
   const vendor = await vendorPage(["approved", "suspended"], "/vendor/dashboard");
-  const { kpis, recentOrders, attention } = await vendorOverview(vendor.id, vendor.commissionRate);
+  const [{ kpis, recentOrders, attention }, onScreen] = await Promise.all([
+    vendorOverview(vendor.id, vendor.commissionRate),
+    screenProducts(vendor.id),
+  ]);
   const base = "/vendor/dashboard";
 
   const tiles = [
@@ -39,6 +43,36 @@ export default async function OverviewPage() {
         <p className="eyebrow">Overview</p>
         <h1 className="display-3 mt-1">Welcome back, {vendor.storeName ?? "seller"}</h1>
       </div>
+
+      {/* The offline store screen: a separate tool from online selling. */}
+      <section aria-labelledby="offline-store" className="rounded-[4px] border-2 border-accent/60 bg-accent/10 p-5 md:p-6">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div className="flex gap-4">
+            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-[2px] bg-accent text-on-accent">
+              <MonitorSmartphone size={24} aria-hidden />
+            </span>
+            <div>
+              <h2 id="offline-store" className="font-display text-xl font-extrabold uppercase text-chalk">Offline Store</h2>
+              <p className="mt-1 max-w-2xl text-sm leading-relaxed text-ash">
+                Show your available stock to customers who walk into your shop. Open it on a tablet or TV: customers browse,
+                add products to an order and show it at your counter. Closing the screen needs your password.
+              </p>
+              <p className="mt-2 text-sm font-semibold text-chalk">
+                {onScreen.length === 0
+                  ? "No products on the screen yet: approved products with stock appear here."
+                  : `${onScreen.length} product${onScreen.length === 1 ? "" : "s"} on the screen`}
+              </p>
+            </div>
+          </div>
+          {vendor.status === "approved" && vendor.slug ? (
+            <Link href={`/store/${vendor.slug}`} className="btn btn-primary shrink-0">
+              Open Offline Store <ArrowRight size={16} aria-hidden />
+            </Link>
+          ) : (
+            <p className="text-sm text-danger">Available again once your store is reinstated.</p>
+          )}
+        </div>
+      </section>
 
       <section aria-label="Key numbers" className="grid grid-cols-2 gap-3 md:grid-cols-4">
         {tiles.map((t) => {

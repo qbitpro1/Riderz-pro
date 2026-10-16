@@ -37,7 +37,6 @@ export function orderMessage(
     `Shipping: ${t.shipping === 0 ? "Free" : rupees(t.shipping)}`,
     `Total: ${rupees(t.total)}`,
     "",
-    ...(extra.orderNumber ? [`Order ${extra.orderNumber}`, ""] : []),
     "My car is: ",
     ...(c
       ? [

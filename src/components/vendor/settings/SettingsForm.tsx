@@ -341,7 +341,7 @@ export default function SettingsForm({ initial }: { initial: VendorSettings }) {
         <dl className="grid gap-x-6 gap-y-3 text-sm sm:grid-cols-2">
           {([
             ["Store name", ro.storeName],
-            ["Store URL", ro.slug ? `/store/${ro.slug}` : null],
+            ["Offline Store screen", ro.slug ? `/store/${ro.slug}` : null],
             ["Legal name", ro.legalName],
             ["Trade name", ro.tradeName],
             ["GSTIN", ro.gstExempt ? "GST exempt" : ro.gstin],

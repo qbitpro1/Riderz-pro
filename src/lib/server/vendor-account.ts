@@ -199,14 +199,18 @@ export async function requestBankChange(
   const last4 = input.accountNumber.slice(-4);
   const summary = `Change payout account to ${maskTail(last4, 12)} (${input.ifsc}), holder ${input.holderName}`;
   const id = newId("chg");
-  // One pending request at a time, enforced in the statement itself.
+  // One pending request at a time: checked in the statement, and the unique index
+  // vendor_change_requests_one_pending (migration 002) refuses a simultaneous second one.
   const rows = await sql<{ id: string; created_at: Date }>(
     `INSERT INTO vendor_change_requests (id, vendor_id, kind, payload_sealed, summary)
      SELECT $1, $2, 'bank', $3, $4
      WHERE NOT EXISTS (SELECT 1 FROM vendor_change_requests WHERE vendor_id = $2 AND kind = 'bank' AND status = 'pending')
      RETURNING id, created_at`,
     [id, vendor.id, seal(JSON.stringify(payload)), summary],
-  );
+  ).catch((err: unknown) => {
+    if ((err as { code?: string }).code === "23505") return [];
+    throw err;
+  });
   if (rows.length === 0) {
     throw new ApiError(409, "pending_exists", "You already have a bank change waiting for review. We will notify you once it is decided.");
   }

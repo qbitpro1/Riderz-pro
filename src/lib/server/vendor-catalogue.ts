@@ -181,7 +181,7 @@ function randomSuffix(): string {
   return Array.from(crypto.getRandomValues(new Uint8Array(6)), (b) => (b % 36).toString(36)).join("");
 }
 
-async function newSlug(q: Query, brand: string, title: string): Promise<string> {
+export async function newSlug(q: Query, brand: string, title: string): Promise<string> {
   const base = slugify(`${brand} ${title}`) || "product";
   for (let i = 0; i < 5; i++) {
     const slug = `${base}-${randomSuffix()}`;

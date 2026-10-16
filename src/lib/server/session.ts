@@ -18,6 +18,12 @@ import { vendorHome, type VendorSelf, type VendorStatus } from "@/lib/vendor/typ
  *
  * Use `currentVendor()` in server components (returns null when signed out) and
  * `requireVendor()` in API routes (throws 401/403).
+ *
+ * STORE SCREEN LOCK — a session showing the seller's offline store screen
+ * (/store/[slug]) is locked to it (`vendor_sessions.kiosk_locked_at`): vendor
+ * pages redirect back to the screen and vendor APIs answer 423, so a customer
+ * using the shop's tablet cannot reach the dashboard. The seller unlocks with
+ * their password (/api/vendor/store-screen). A new sign-in starts unlocked.
  */
 
 export const SESSION_COOKIE = "rzp_vendor";
@@ -51,11 +57,16 @@ export async function endAllSessions(vendorId: string): Promise<void> {
   await sql("DELETE FROM vendor_sessions WHERE vendor_id = $1", [vendorId]);
 }
 
-async function sessionVendorRow(): Promise<VendorRow | null> {
+async function sessionToken(): Promise<string | null> {
   const token = (await cookies()).get(SESSION_COOKIE)?.value;
-  if (!token || token.length > 100) return null;
-  const row = await sqlOne<VendorRow & { last_seen_at: Date }>(
-    `SELECT v.*, s.last_seen_at FROM vendor_sessions s JOIN vendors v ON v.id = s.vendor_id
+  return token && token.length <= 100 ? token : null;
+}
+
+async function sessionVendorRow(): Promise<{ row: VendorRow; locked: boolean } | null> {
+  const token = await sessionToken();
+  if (!token) return null;
+  const row = await sqlOne<VendorRow & { last_seen_at: Date; kiosk_locked_at: Date | null }>(
+    `SELECT v.*, s.last_seen_at, s.kiosk_locked_at FROM vendor_sessions s JOIN vendors v ON v.id = s.vendor_id
      WHERE s.token_hash = $1 AND s.expires_at > now()`,
     [sha256(token)],
   );
@@ -64,32 +75,78 @@ async function sessionVendorRow(): Promise<VendorRow | null> {
   if (Date.now() - new Date(row.last_seen_at).getTime() > 10 * 60 * 1000) {
     await sql("UPDATE vendor_sessions SET last_seen_at = now() WHERE token_hash = $1", [sha256(token)]);
   }
-  return row;
+  return { row, locked: row.kiosk_locked_at !== null };
 }
 
 /** The signed-in vendor, or null. Safe for server components. */
 export async function currentVendor(): Promise<VendorSelf | null> {
-  const row = await sessionVendorRow();
-  return row ? toVendorSelf(row) : null;
+  const s = await sessionVendorRow();
+  return s ? toVendorSelf(s.row) : null;
 }
+
+/** The signed-in vendor and whether this session is locked to the store screen. */
+export async function currentSession(): Promise<{ vendor: VendorSelf; locked: boolean } | null> {
+  const s = await sessionVendorRow();
+  return s ? { vendor: toVendorSelf(s.row), locked: s.locked } : null;
+}
+
+/** Lock (or unlock) this session to the store screen. */
+export async function setStoreScreenLock(locked: boolean): Promise<void> {
+  const token = await sessionToken();
+  if (!token) return;
+  await sql(
+    `UPDATE vendor_sessions SET kiosk_locked_at = ${locked ? "now()" : "NULL"} WHERE token_hash = $1`,
+    [sha256(token)],
+  );
+}
+
+/** Where a locked session belongs. */
+const storeScreenHref = (vendor: VendorSelf) => (vendor.slug ? `/store/${vendor.slug}` : "/vendor/dashboard");
 
 /**
  * The signed-in vendor for an API route.
  *   allow: which statuses may use this route (default: any signed-in vendor)
  */
-export async function requireVendor(allow?: readonly VendorStatus[]): Promise<VendorSelf> {
-  const vendor = await currentVendor();
-  if (!vendor) throw new ApiError(401, "signed_out", "Please sign in to your seller account.");
+export async function requireVendor(
+  allow?: readonly VendorStatus[],
+  opts: { whileLocked?: boolean } = {},
+): Promise<VendorSelf> {
+  const session = await currentSession();
+  if (!session) throw new ApiError(401, "signed_out", "Please sign in to your seller account.");
+  const { vendor } = session;
+  // Only an approved store has a screen; any other status falls through to the usual checks.
+  if (session.locked && vendor.status === "approved" && !opts.whileLocked) {
+    throw new ApiError(423, "store_screen_locked", "This device is showing your store screen. Unlock it with your password first.");
+  }
   if (allow && !allow.includes(vendor.status)) {
-    throw new ApiError(
-      403,
-      "not_allowed",
-      vendor.status === "suspended"
-        ? "Your store is suspended. Contact seller support."
-        : "This is available once your seller account is approved.",
-    );
+    throw new ApiError(403, "not_allowed", notAllowedMessage(vendor.status, allow));
   }
   return vendor;
+}
+
+/** Why a vendor in `status` cannot use a route that allows `allow`, in words that fit where they are. */
+function notAllowedMessage(status: VendorStatus, allow: readonly VendorStatus[]): string {
+  // Onboarding routes allow drafts; every other restricted route is for approved stores.
+  const onboardingRoute = allow.includes("draft");
+  switch (status) {
+    case "suspended":
+      return "Your store is suspended. Contact seller support.";
+    case "rejected":
+      return "Your seller application was not approved. Contact seller support if you have questions.";
+    case "submitted":
+    case "under_review":
+      return onboardingRoute
+        ? "Your application is with our team for review and can't be changed now."
+        : "Your application is being reviewed. This opens once your store is approved.";
+    case "draft":
+      return "Finish and submit your seller application first.";
+    case "changes_requested":
+      return "Update the sections our team flagged and resubmit your application first.";
+    case "approved":
+      return onboardingRoute
+        ? "Your store is already approved. Update your details from Settings."
+        : "This isn't available for your store.";
+  }
 }
 
 /** Statuses that may edit onboarding answers. */
@@ -103,8 +160,10 @@ export const CAN_SELL: readonly VendorStatus[] = ["approved"];
  * does not allow this page.
  */
 export async function vendorPage(allow?: readonly VendorStatus[], here = "/vendor/dashboard"): Promise<VendorSelf> {
-  const vendor = await currentVendor();
-  if (!vendor) redirect(`/vendor/auth?next=${encodeURIComponent(here)}`);
+  const session = await currentSession();
+  if (!session) redirect(`/vendor/auth?next=${encodeURIComponent(here)}`);
+  const { vendor } = session;
+  if (session.locked && vendor.status === "approved") redirect(storeScreenHref(vendor));
   if (allow && !allow.includes(vendor.status)) redirect(vendorHome(vendor.status));
   return vendor;
 }

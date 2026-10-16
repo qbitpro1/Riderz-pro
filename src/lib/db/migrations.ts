@@ -266,4 +266,20 @@ CREATE TABLE audit_log (
 CREATE INDEX audit_log_vendor_idx ON audit_log (vendor_id, at DESC);
 `,
   },
+  {
+    // One pending change request per vendor and kind. The insert's NOT EXISTS check alone
+    // lets two simultaneous requests both through; this makes the database refuse the second.
+    id: "002_one_pending_change_request",
+    sql: `
+CREATE UNIQUE INDEX vendor_change_requests_one_pending ON vendor_change_requests (vendor_id, kind) WHERE status = 'pending';
+`,
+  },
+  {
+    // A session showing the seller's offline store screen is locked to it: the dashboard and
+    // seller APIs refuse it until the seller unlocks with their password (src/lib/server/session.ts).
+    id: "003_store_screen_lock",
+    sql: `
+ALTER TABLE vendor_sessions ADD COLUMN kiosk_locked_at timestamptz;
+`,
+  },
 ];

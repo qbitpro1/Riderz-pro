@@ -3,6 +3,9 @@ import Link from "next/link";
 import { CheckCircle2, CircleAlert } from "lucide-react";
 import { listVendors, parseVendorFilter, type VendorFilter } from "@/lib/server/admin-vendors";
 import { fmtDate, StatusBadge } from "@/components/admin/vendors/ui";
+import { DemoStorePanel } from "@/components/admin/vendors/DemoStorePanel";
+import { sqlOne } from "@/lib/db/client";
+import { DEMO_SLUG } from "@/lib/server/demo-store";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -26,7 +29,10 @@ export default async function VendorsAdminPage({ searchParams }: { searchParams:
   const sp = await searchParams;
   const filter = parseVendorFilter(sp.status);
   const q = (sp.q ?? "").slice(0, 80);
-  const { items, counts } = await listVendors(filter, q);
+  const [{ items, counts }, demo] = await Promise.all([
+    listVendors(filter, q),
+    sqlOne("SELECT 1 FROM vendors WHERE slug = ANY($1)", [[DEMO_SLUG, "asha-accessories"]]),
+  ]);
   const href = (status: string) => `/admin/vendors?status=${status}${q ? `&q=${encodeURIComponent(q)}` : ""}`;
 
   return (
@@ -50,6 +56,8 @@ export default async function VendorsAdminPage({ searchParams }: { searchParams:
             </Link>
           ))}
         </nav>
+
+        <DemoStorePanel exists={Boolean(demo)} />
 
         <form action="/admin/vendors" className="mt-4 flex max-w-lg gap-2" role="search">
           <input type="hidden" name="status" value={filter} />

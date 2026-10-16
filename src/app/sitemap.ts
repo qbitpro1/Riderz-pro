@@ -15,12 +15,9 @@ import { CATEGORIES as RECOIL_CATEGORIES } from "@/lib/data/recoil";
 import { BRANDS } from "@/lib/catalog/brands";
 import { CATALOG } from "@/lib/catalog";
 import { COLLECTIONS } from "@/lib/data/collections";
-import { marketplaceUrls } from "@/lib/server/marketplace";
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
-  // Approved storefronts and live seller products; empty (never an error) when there is no database.
-  const market = await marketplaceUrls();
   const url = (path: string) => `${SITE.url}${path}`;
 
   const entry = (
@@ -77,12 +74,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...LANDING_MODELS.map((m) => entry(`/accessories/${m.slug}`, 0.8)),
     ...CARS.map((c) => entry(`/cars/${c.slug}`, 0.7, "daily")),
     ...BUILDS.map((b) => entry(`/builds/${b.slug}`, 0.6)),
-    ...market.map((m) => ({
-      url: url(m.path),
-      lastModified: m.lastModified ?? now,
-      changeFrequency: "weekly" as const,
-      priority: m.path.split("/").length > 3 ? 0.6 : 0.7,
-    })),
     entry("/faq", 0.5, "monthly"),
     entry("/track-order", 0.3, "yearly"),
     ...SUPPORT_POLICIES.map((p) => entry(`/support/${p.slug}`, 0.4, "monthly")),

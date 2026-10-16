@@ -7,32 +7,32 @@ import { SectionHead } from "@/components/ui/Section";
 import { pageMeta } from "@/lib/data/seo";
 
 export const metadata: Metadata = pageMeta({
-  title: "Sell on Riderzpro: Become a Vendor for Car & Bike Accessories",
+  title: "Sell on Riderzpro: An Order Screen for Your Accessories Shop",
   description:
-    "List your car and bike accessories on Riderzpro. Reach owners across India, get a KYC-verified seller badge, manage catalogue, orders and payouts from one dashboard, and be paid to your bank after delivery.",
+    "Get verified on Riderzpro, list your car and bike accessories, and show your stock to customers in your shop on a tablet or TV: they browse, build an order and show it at your counter.",
   path: "/vendor",
 });
 
 const BENEFITS: { icon: IconName; title: string; body: string }[] = [
   {
     icon: "car",
-    title: "Reach car and bike owners across India",
-    body: "Your products sit beside the Riderzpro range in the shop, with fitment search by vehicle, so buyers find the part that fits their car.",
+    title: "An order screen for your shop",
+    body: "Show your available stock on a tablet or TV in your store. Customers browse by category, add products to an order and show it at your counter.",
   },
   {
     icon: "shield",
-    title: "A KYC-verified marketplace",
-    body: "Every seller passes a six-step KYC check before listing. Shoppers see a verified seller badge on your store and your products.",
+    title: "A KYC-verified seller account",
+    body: "Every seller passes a six-step KYC check, and our team approves each product before it appears on your screen.",
   },
   {
     icon: "build",
     title: "A seller dashboard of your own",
-    body: "Manage your catalogue, stock, prices and orders in one place, with packing slips, invoices and payout statements.",
+    body: "Manage your catalogue, photos, stock and prices in one place. A product that runs out of stock leaves the screen by itself.",
   },
   {
     icon: "bag",
-    title: "Payouts after delivery",
-    body: "Once an order is delivered and the return window has passed, your earnings are paid to your bank account, with the commission and GST shown line by line.",
+    title: "Locked to your store",
+    body: "The screen runs full screen and only your password closes it, so customers never reach your dashboard. An unattended order clears itself.",
   },
 ];
 
@@ -40,16 +40,16 @@ const STEPS = [
   { n: "01", t: "Sign up", b: "Create your seller account with an email and mobile number." },
   { n: "02", t: "Complete KYC", b: "Six short steps: tax details, store, pickup address, bank account and documents." },
   { n: "03", t: "Get approved", b: "Our team reviews applications in 1 to 2 working days and tells you if anything needs fixing." },
-  { n: "04", t: "List products", b: "Add your products with photos, price, stock and the cars they fit. We review each before it goes live." },
-  { n: "05", t: "Ship orders", b: "Accept new orders, pack them and hand them to your courier within your dispatch time." },
-  { n: "06", t: "Get paid", b: "Delivered orders settle to your bank account after the return window." },
+  { n: "04", t: "List products", b: "Add your products with photos, price, stock and the cars they fit. We review each before it goes on your screen." },
+  { n: "05", t: "Open your Offline Store", b: "Sign in on your shop's tablet or TV and tap Open Offline Store." },
+  { n: "06", t: "Serve customers", b: "Customers build their order on the screen and show it at your counter." },
 ];
 
 const NEEDS = [
   "A GSTIN, or a PAN if you are not GST-registered",
   "A bank account in the name of your business (or yours)",
   "A cancelled cheque or bank statement for that account",
-  "A pickup address where couriers can collect orders",
+  "Your shop or pickup address",
 ];
 
 export default function VendorLandingPage() {
@@ -57,8 +57,8 @@ export default function VendorLandingPage() {
     <>
       <PageHero
         eyebrow="Sell on Riderzpro"
-        title="SELL YOUR ACCESSORIES TO INDIA'S CAR AND BIKE OWNERS."
-        blurb="Open a verified store on Riderzpro. We bring the buyers and the checkout; you bring the products and ship the orders."
+        title="AN ORDER SCREEN FOR YOUR ACCESSORIES SHOP."
+        blurb="Get verified on Riderzpro, list your stock, and let customers in your store browse and build their order on a tablet or TV."
         media="heroWorkshopNight"
         size="md"
         actions={[
@@ -69,7 +69,7 @@ export default function VendorLandingPage() {
 
       <section className="section">
         <div className="shell">
-          <SectionHead eyebrow="Why sell here" title="BUILT FOR SELLERS WHO SHIP." />
+          <SectionHead eyebrow="Why sell here" title="BUILT FOR SELLERS WITH A SHOP." />
           <ul className="grid gap-3 sm:grid-cols-2">
             {BENEFITS.map((b, i) => (
               <li key={b.title}>
@@ -90,7 +90,7 @@ export default function VendorLandingPage() {
 
       <section className="section border-y border-tint/8 bg-carbon">
         <div className="shell">
-          <SectionHead eyebrow="How it works" title="FROM SIGN-UP TO FIRST PAYOUT." />
+          <SectionHead eyebrow="How it works" title="FROM SIGN-UP TO YOUR STORE SCREEN." />
           <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {STEPS.map((s, i) => (
               <li key={s.n}>
@@ -123,8 +123,8 @@ export default function VendorLandingPage() {
           <div className="card self-start p-5 md:p-6">
             <p className="eyebrow mb-2">Commission</p>
             <p className="text-sm leading-relaxed text-ash md:text-base">
-              There is no fee to open a store. Riderzpro takes a commission on each delivered order, and the rate is agreed with you
-              at approval. GST at 18% applies to the commission. Your payout statement shows both.
+              There is no fee to open a store. If online orders are switched on for your store later, Riderzpro takes a commission on
+              each delivered order at a rate agreed with you at approval, plus 18% GST on the commission.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link href="/vendor/auth?mode=signup" className="btn btn-primary">

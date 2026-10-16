@@ -6,16 +6,10 @@ import { Download, Search } from "lucide-react";
 import { api, ApiFailure } from "@/lib/vendor/client";
 import { DEFAULT_COMMISSION_RATE, settlementFor, type VendorProduct } from "@/lib/vendor/types";
 import { rupees } from "@/lib/format";
+import { csvCell } from "@/components/vendor/orders/format";
 import { EmptyState, PRODUCT_STATUS_META, ReadOnlyNotice, Thumb, failureMessage, toInt, useFlash } from "./ui";
 
 type Row = { p: VendorProduct; mrp: string; price: string };
-
-/** Stop spreadsheet apps from running a cell that starts with = + - @ as a formula. */
-const csvCell = (v: string | number) => {
-  let s = String(v);
-  if (/^[=+\-@\t\r]/.test(s)) s = `'${s}`;
-  return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
-};
 
 export function PricingTable({ initial, readOnly, commissionRate }: { initial: VendorProduct[]; readOnly: boolean; commissionRate: number | null }) {
   const [rows, setRows] = useState<Row[]>(() => initial.map((p) => ({ p, mrp: String(p.mrp), price: String(p.price) })));

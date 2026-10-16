@@ -8,7 +8,8 @@ export default function robots(): MetadataRoute.Robots {
         userAgent: "*",
         allow: "/",
         // Filtered / sorted catalogue views duplicate the clean pages (which carry canonicals).
-        disallow: ["/admin", "/api", "/cart", "/*?*sort=", "/*?*max=", "/*?*q="],
+        // /store is a seller's in-shop screen (signed-in only), not a public page.
+        disallow: ["/admin", "/api", "/cart", "/store","/*?*sort=", "/*?*max=", "/*?*q="],
       },
     ],
     sitemap: `${SITE.url}/sitemap.xml`,

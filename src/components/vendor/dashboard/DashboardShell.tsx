@@ -6,10 +6,10 @@ import { useEffect, useState, type ReactNode } from "react";
 import {
   Bell,
   Boxes,
-  ExternalLink,
   LayoutDashboard,
   LifeBuoy,
   LogOut,
+  MonitorSmartphone,
   MoreHorizontal,
   Package,
   Settings,
@@ -85,6 +85,18 @@ export function DashboardShell({ storeName, slug, tier, status, holidayMode, unr
       </span>
     ) : null;
 
+  // The offline store screen: separate from online selling, so it sits apart and highlighted.
+  const offlineStore =
+    status === "approved" && slug ? (
+      <Link
+        href={storeHref(slug)}
+        className="flex min-h-11 items-center gap-3 rounded-[2px] border border-accent/60 bg-accent/10 px-3 text-sm font-bold text-chalk transition-colors hover:bg-accent/20"
+      >
+        <MonitorSmartphone size={18} className="text-accent" aria-hidden />
+        Offline Store
+      </Link>
+    ) : null;
+
   const linkCls = (active: boolean) =>
     `relative flex min-h-11 items-center gap-3 rounded-[2px] px-3 text-sm font-semibold transition-colors ${
       active ? "bg-accent/10 text-accent" : "text-ash hover:bg-tint/5 hover:text-chalk"
@@ -100,6 +112,7 @@ export function DashboardShell({ storeName, slug, tier, status, holidayMode, unr
             <p className="mt-1 truncate font-display text-base font-extrabold text-chalk" title={storeName}>
               {storeName}
             </p>
+            {offlineStore && <div className="mt-3">{offlineStore}</div>}
           </div>
           <nav aria-label="Seller dashboard" className="flex-1 space-y-1 overflow-y-auto p-3">
             {items.map((i) => {
@@ -115,12 +128,6 @@ export function DashboardShell({ storeName, slug, tier, status, holidayMode, unr
             })}
           </nav>
           <div className="space-y-1 border-t border-tint/10 p-3">
-            {slug && (
-              <Link href={storeHref(slug)} className={linkCls(false)}>
-                <ExternalLink size={18} aria-hidden />
-                View my store
-              </Link>
-            )}
             <button type="button" onClick={signOut} disabled={signingOut} className={`${linkCls(false)} w-full disabled:opacity-60`}>
               <LogOut size={18} aria-hidden />
               {signingOut ? "Signing out…" : "Sign out"}
@@ -185,7 +192,7 @@ export function DashboardShell({ storeName, slug, tier, status, holidayMode, unr
         </div>
       </div>
 
-      {/* Mobile bottom navigation (sits over the site's own bottom bar) */}
+      {/* Mobile bottom navigation (the site's own bottom bar is off on these routes, see SiteChrome) */}
       <nav
         aria-label="Seller dashboard"
         className="safe-b fixed inset-x-0 bottom-0 z-[60] border-t border-tint/10 bg-void lg:hidden"
@@ -247,6 +254,7 @@ export function DashboardShell({ storeName, slug, tier, status, holidayMode, unr
               </button>
             </div>
             <div className="space-y-1">
+              {offlineStore && <div className="mb-2">{offlineStore}</div>}
               {rest.map((i) => {
                 const active = isActive(i.href);
                 return (
@@ -257,12 +265,6 @@ export function DashboardShell({ storeName, slug, tier, status, holidayMode, unr
                   </Link>
                 );
               })}
-              {slug && (
-                <Link href={storeHref(slug)} className={linkCls(false)}>
-                  <ExternalLink size={18} aria-hidden />
-                  View my store
-                </Link>
-              )}
               <button type="button" onClick={signOut} disabled={signingOut} className={`${linkCls(false)} w-full disabled:opacity-60`}>
                 <LogOut size={18} aria-hidden />
                 {signingOut ? "Signing out…" : "Sign out"}

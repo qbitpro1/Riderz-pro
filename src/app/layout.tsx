@@ -5,6 +5,7 @@ import { Header } from "@/components/layout/Header";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { WhatsAppFab } from "@/components/layout/WhatsAppFab";
 import { Footer } from "@/components/layout/Footer";
+import { SiteChrome } from "@/components/layout/SiteChrome";
 import { CartProvider } from "@/components/cart/CartContext";
 import { LIVE_GROUPS } from "@/lib/catalog";
 import { SITE } from "@/lib/data/site";
@@ -128,11 +129,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to content
         </a>
         <CartProvider>
-          <Header liveGroups={LIVE_GROUPS} />
+          <SiteChrome part="header">
+            <Header liveGroups={LIVE_GROUPS} />
+          </SiteChrome>
           <main id="main">{children}</main>
-          <Footer />
-          <BottomNav />
-          <WhatsAppFab />
+          <SiteChrome part="footer">
+            <Footer />
+            <BottomNav />
+            <WhatsAppFab />
+          </SiteChrome>
         </CartProvider>
       </body>
     </html>
