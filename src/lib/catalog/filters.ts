@@ -1,7 +1,7 @@
 /**
  * THE CATALOGUE FILTER ENGINE
  *
- * Filtering, sorting, facets and URL mapping over a list of `CatalogItem`s.
+ * Filtering, sorting, facets and URL mapping over a list of `ShopItem`s.
  * Kept free of any catalogue data so client components can import it without
  * pulling the brand catalogues — and their dealer pricing — into the browser.
  */
@@ -9,7 +9,9 @@
 import type { CategorySlug, PriceTier } from "@/lib/data/products";
 import { DEPARTMENTS, DEPARTMENT_BY_SLUG } from "@/lib/data/taxonomy";
 import { BRANDS, type BrandSlug } from "./brands";
-import { TIER_BOUNDS, type Availability, type CatalogItem } from "./types";
+import { TIER_BOUNDS, type ShopAvailability, type MarketplaceBrandKey, type ShopItem } from "./types";
+
+export type BrandKey = BrandSlug | MarketplaceBrandKey;
 
 /* ----------------------------------------------------------------- filters */
 
@@ -23,14 +25,15 @@ export const SORTS: { key: SortKey; label: string }[] = [
   { key: "discount", label: "Biggest saving" },
 ];
 
-export const AVAILABILITY_LABELS: Record<Availability, string> = {
+export const AVAILABILITY_LABELS: Record<ShopAvailability, string> = {
   "in-stock": "In stock",
   "made-to-order": "Made to order",
   "coming-soon": "Coming soon",
+  "out-of-stock": "Out of stock",
 };
 
 export type CatalogFilters = {
-  brands: BrandSlug[];
+  brands: BrandKey[];
   categories: CategorySlug[];
   /** Group slugs within the department. */
   groups: string[];
@@ -38,7 +41,7 @@ export type CatalogFilters = {
   tiers: PriceTier[];
   /** Price ceiling in rupees: items with a price at or under it. */
   maxPrice: number | null;
-  availability: Availability[];
+  availability: ShopAvailability[];
   /** Original Equipment parts only. */
   oe: boolean;
   /** Vehicle model slug from the garage picker. */
@@ -85,14 +88,14 @@ export function activeFilterCount(f: CatalogFilters): number {
  * — a made-to-order seat cover, a RECOIL amplifier — is *not* claimed to fit:
  * it drops out of a fitment-filtered view rather than being asserted.
  */
-export function itemFits(item: CatalogItem, modelSlug: string): boolean {
+export function itemFits(item: ShopItem, modelSlug: string): boolean {
   return item.fitment.includes("universal") || item.fitment.includes(modelSlug);
 }
 
 type Dimension = keyof CatalogFilters;
 
 /** Applies every filter except the named dimension — the basis of facet counts. */
-function matches(item: CatalogItem, f: CatalogFilters, except?: Dimension): boolean {
+function matches(item: ShopItem, f: CatalogFilters, except?: Dimension): boolean {
   if (except !== "brands" && f.brands.length && !f.brands.includes(item.brand)) return false;
   if (except !== "categories" && f.categories.length && !f.categories.includes(item.category)) return false;
   if (except !== "groups" && f.groups.length && !f.groups.includes(item.group)) return false;
@@ -113,21 +116,21 @@ function matches(item: CatalogItem, f: CatalogFilters, except?: Dimension): bool
   return true;
 }
 
-function discountPct(i: CatalogItem): number {
+function discountPct(i: ShopItem): number {
   if (!i.buyable || !i.price || !i.mrp || i.mrp <= i.price) return 0;
   return (i.mrp - i.price) / i.mrp;
 }
 
 /** Sorts nulls last regardless of direction, so "no price" never leads the grid. */
 function byPrice(dir: 1 | -1) {
-  return (a: CatalogItem, b: CatalogItem) => {
+  return (a: ShopItem, b: ShopItem) => {
     if (a.price === null || !a.buyable) return 1;
     if (b.price === null || !b.buyable) return -1;
     return (a.price - b.price) * dir;
   };
 }
 
-export function sortItems(items: CatalogItem[], sort: SortKey): CatalogItem[] {
+export function sortItems<T extends ShopItem>(items: T[], sort: SortKey): T[] {
   const out = [...items];
   switch (sort) {
     case "price-asc":
@@ -150,7 +153,7 @@ export function sortItems(items: CatalogItem[], sort: SortKey): CatalogItem[] {
   }
 }
 
-export function filterCatalog(items: CatalogItem[], f: CatalogFilters): CatalogItem[] {
+export function filterCatalog<T extends ShopItem>(items: T[], f: CatalogFilters): T[] {
   return sortItems(
     items.filter((i) => matches(i, f)),
     f.sort,
@@ -162,13 +165,13 @@ export function filterCatalog(items: CatalogItem[], f: CatalogFilters): CatalogI
 export type Facet<T extends string> = { value: T; label: string; count: number };
 
 export type CatalogFacets = {
-  brands: Facet<BrandSlug>[];
+  brands: Facet<BrandKey>[];
   categories: Facet<CategorySlug>[];
   /** Groups of the one department in view; empty when the view spans departments. */
   groups: Facet<string>[];
   subs: Facet<string>[];
   tiers: Facet<PriceTier>[];
-  availability: Facet<Availability>[];
+  availability: Facet<ShopAvailability>[];
   installation: number;
   /** Original Equipment items in the current view. */
   oe: number;
@@ -182,10 +185,10 @@ export const TIER_LABELS: Record<PriceTier, string> = {
 };
 
 function count<T extends string>(
-  items: CatalogItem[],
+  items: ShopItem[],
   f: CatalogFilters,
   dimension: Dimension,
-  pick: (i: CatalogItem) => T | null,
+  pick: (i: ShopItem) => T | null,
   label: (v: T) => string,
   order?: T[],
 ): Facet<T>[] {
@@ -207,11 +210,11 @@ function count<T extends string>(
  * you can still see how many Autoform products you'd get by adding it.
  */
 /** Brands and categories are shown by their own name, never by their slug. */
-export const brandName = (slug: BrandSlug): string => BRANDS.find((b) => b.slug === slug)?.name ?? slug;
+export const brandName = (slug: BrandKey): string => BRANDS.find((b) => b.slug === slug)?.name ?? slug;
 export const categoryName = (slug: CategorySlug): string => DEPARTMENT_BY_SLUG[slug]?.name ?? slug;
 
 /** Group names are only unique within a department, so groups are faceted for one department at a time. */
-function groupFacets(items: CatalogItem[], f: CatalogFilters): Facet<string>[] {
+function groupFacets(items: ShopItem[], f: CatalogFilters): Facet<string>[] {
   if (f.categories.length !== 1) return [];
   const dept = DEPARTMENT_BY_SLUG[f.categories[0]];
   if (!dept) return [];
@@ -219,9 +222,16 @@ function groupFacets(items: CatalogItem[], f: CatalogFilters): Facet<string>[] {
   return count<string>(items, f, "groups", (i) => i.group, (v) => names.get(v) ?? v, dept.groups.map((g) => g.slug));
 }
 
-export function facetsFor(items: CatalogItem[], f: CatalogFilters): CatalogFacets {
+/** Label for a brand key: the registry name for house brands, the seller's own brand text for marketplace ones. */
+export function brandLabel(items: ShopItem[]): (key: BrandKey) => string {
+  const own = new Map<string, string>();
+  for (const i of items) if (i.brand.startsWith("mp-")) own.set(i.brand, i.brandName);
+  return (key) => own.get(key) ?? brandName(key);
+}
+
+export function facetsFor(items: ShopItem[], f: CatalogFilters): CatalogFacets {
   return {
-    brands: count<BrandSlug>(items, f, "brands", (i) => i.brand, brandName),
+    brands: count<BrandKey>(items, f, "brands", (i) => i.brand, brandLabel(items)),
     categories: count<CategorySlug>(
       items,
       f,
@@ -233,13 +243,13 @@ export function facetsFor(items: CatalogItem[], f: CatalogFilters): CatalogFacet
     groups: groupFacets(items, f),
     subs: count<string>(items, f, "subs", (i) => i.sub, (v) => v),
     tiers: count<PriceTier>(items, f, "tiers", (i) => i.tier, (v) => TIER_LABELS[v], ["value", "mid", "premium"]),
-    availability: count<Availability>(
+    availability: count<ShopAvailability>(
       items,
       f,
       "availability",
       (i) => i.availability,
       (v) => AVAILABILITY_LABELS[v],
-      ["in-stock", "made-to-order", "coming-soon"],
+      ["in-stock", "made-to-order", "coming-soon", "out-of-stock"],
     ),
     installation: items.filter((i) => i.installation && matches(i, f, "installation")).length,
     oe: items.filter((i) => i.oe && matches(i, f, "oe")).length,
@@ -272,14 +282,14 @@ export function filtersFromQuery(query: CatalogQuery): CatalogFilters {
   const sort = typeof query.sort === "string" ? query.sort : "";
 
   return {
-    brands: list(query.brand).filter((b) => brandSlugs.has(b)) as BrandSlug[],
+    brands: list(query.brand).filter((b) => brandSlugs.has(b) || /^mp-[a-z0-9-]{1,60}$/.test(b)) as BrandKey[],
     categories: list(query.category).filter((c) => categorySlugs.has(c)) as CategorySlug[],
     groups: list(query.group),
     subs: list(query.sub),
     tiers: list(query.tier).filter((t): t is PriceTier => t === "value" || t === "mid" || t === "premium"),
     maxPrice: parseMax(query.max),
     availability: list(query.stock).filter(
-      (a): a is Availability => a === "in-stock" || a === "made-to-order" || a === "coming-soon",
+      (a): a is ShopAvailability => a === "in-stock" || a === "made-to-order" || a === "coming-soon" || a === "out-of-stock",
     ),
     oe: query.oe === "1",
     fits: typeof query.fits === "string" && query.fits ? query.fits : null,

@@ -10,6 +10,7 @@ import { CATEGORIES, getCategory, type CategorySlug } from "@/lib/data/products"
 import { DEPARTMENT_BY_SLUG, groupHref, oeHref } from "@/lib/data/taxonomy";
 import { BRANDS, CATALOG, filtersFromQuery, sortItems, type CatalogQuery } from "@/lib/catalog";
 import { breadcrumbLd, itemListLd, ldJson, pageMeta } from "@/lib/data/seo";
+import { liveVendorItems } from "@/lib/server/marketplace";
 
 export function generateStaticParams() {
   return CATEGORIES.map((c) => ({ category: c.slug }));
@@ -44,7 +45,7 @@ export default async function CategoryPage({
 
   const slug = cat.slug as CategorySlug;
   const dept = DEPARTMENT_BY_SLUG[slug];
-  const items = CATALOG.filter((i) => i.category === slug);
+  const items = [...CATALOG.filter((i) => i.category === slug), ...(await liveVendorItems({ department: slug }))];
   // The category is the page; everything else stays a filter the visitor owns.
   const filters = { ...filtersFromQuery(await searchParams), categories: [slug] };
   const groupCounts = new Map<string, number>();

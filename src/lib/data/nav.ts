@@ -95,6 +95,18 @@ export const CARS_NAV: NavSection = {
     { label: "BE 6", href: "/be-6" },
     { label: "BE 6 Limited Edition", href: "/be-6/limited-edition" },
     { label: "List Your Cars", href: "/partners" },
+    { label: "Sell on Riderzpro", href: "/vendor" },
+  ],
+};
+
+/** Partner programmes: for businesses that want to sell with Riderzpro. */
+export const PARTNERS_NAV: NavSection = {
+  id: "partners",
+  title: "Partners",
+  links: [
+    { label: "Sell on Riderzpro", href: "/vendor" },
+    { label: "Vendor Sign In", href: "/vendor/auth" },
+    { label: "List Your Cars", href: "/partners" },
   ],
 };
 

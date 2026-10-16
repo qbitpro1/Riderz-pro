@@ -10,7 +10,7 @@ import { readGarage } from "@/components/fitment/FitmentPicker";
 import {
   activeFilterCount,
   AVAILABILITY_LABELS,
-  brandName,
+  brandLabel,
   categoryName,
   facetsFor,
   filterCatalog,
@@ -22,7 +22,7 @@ import {
   type Facet,
   type SortKey,
 } from "@/lib/catalog/filters";
-import type { CatalogItem } from "@/lib/catalog/types";
+import type { ShopItem } from "@/lib/catalog/types";
 
 const PAGE = 24;
 
@@ -35,7 +35,7 @@ export function CatalogBrowser({
   locked = [],
   showBrandOnCards = true,
 }: {
-  items: CatalogItem[];
+  items: ShopItem[];
   initial: CatalogFilters;
   locked?: LockedDimension[];
   showBrandOnCards?: boolean;
@@ -72,6 +72,7 @@ export function CatalogBrowser({
     window.history.replaceState(null, "", url);
   }, [filters]);
 
+  const labelOf = useMemo(() => brandLabel(items), [items]);
   const results = useMemo(() => filterCatalog(items, filters), [items, filters]);
   const facets = useMemo(() => facetsFor(items, filters), [items, filters]);
 
@@ -188,6 +189,7 @@ export function CatalogBrowser({
           locked={locked}
           onToggle={toggle}
           onPatch={patch}
+          brandOf={labelOf}
           onClear={clearAll}
           onEmpty={() => countRef.current?.focus()}
         />
@@ -577,6 +579,7 @@ function ActiveChips({
   locked,
   onToggle,
   onPatch,
+  brandOf,
   onClear,
   onEmpty,
 }: {
@@ -584,6 +587,7 @@ function ActiveChips({
   locked: LockedDimension[];
   onToggle: ToggleFn;
   onPatch: (next: Partial<CatalogFilters>) => void;
+  brandOf: ReturnType<typeof brandLabel>;
   onClear: () => void;
   /** Called when removing the last chip leaves nothing to focus. */
   onEmpty: () => void;
@@ -606,7 +610,7 @@ function ActiveChips({
 
   if (!locked.includes("brands"))
     for (const b of filters.brands)
-      chips.push({ key: `b-${b}`, label: brandName(b), remove: () => onToggle("brands", b) });
+      chips.push({ key: `b-${b}`, label: brandOf(b), remove: () => onToggle("brands", b) });
   if (!locked.includes("categories"))
     for (const c of filters.categories)
       chips.push({ key: `c-${c}`, label: categoryName(c), remove: () => onToggle("categories", c) });

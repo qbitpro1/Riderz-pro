@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useCart } from "@/components/cart/CartContext";
 import { cartLineId, type ProductImage } from "@/lib/store/types";
-import type { CatalogItem } from "@/lib/catalog/types";
+import { vendorLineSlug } from "@/lib/vendor/types";
+import type { ShopItem } from "@/lib/catalog/types";
 
 /**
  * The one action row at the foot of a catalogue card. It is the only client
@@ -13,9 +14,35 @@ import type { CatalogItem } from "@/lib/catalog/types";
  *   a choice is needed first      → Choose options  (opens the product page)
  *   no price / coming soon / held back → View details
  */
-export function CatalogQuickAction({ item }: { item: CatalogItem }) {
+export function CatalogQuickAction({ item }: { item: ShopItem }) {
   const { add } = useCart();
   const cls = "btn btn-outline btn-sm btn-block min-h-10";
+
+  /* Marketplace item: sold by an approved vendor. Added under a prefixed line slug so it never
+     collides with a house product; out of stock cannot be added. */
+  if (item.seller) {
+    const seller = item.seller;
+    const price = item.price;
+    if (price === null || !item.buyable) {
+      return (
+        <button type="button" className={cls} disabled>
+          Out of stock
+        </button>
+      );
+    }
+    const line = vendorLineSlug(item.slug);
+    return (
+      <button
+        type="button"
+        className={cls}
+        onClick={() =>
+          add({ id: line, slug: line, href: item.href, name: item.title, image: toImage(item), price, seller }, 1)
+        }
+      >
+        Add to cart
+      </button>
+    );
+  }
 
   if (!item.buyable) {
     return (
@@ -65,7 +92,7 @@ export function CatalogQuickAction({ item }: { item: CatalogItem }) {
   );
 }
 
-function toImage(item: CatalogItem): ProductImage | undefined {
+function toImage(item: ShopItem): ProductImage | undefined {
   const img = item.image;
   if (img.kind === "media") return { kind: "media", key: img.key, alt: img.alt ?? item.title };
   if (img.kind === "remote") {

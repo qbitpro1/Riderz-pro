@@ -4,7 +4,8 @@ import { Icon } from "@/components/ui/Icon";
 import { Photo } from "@/components/ui/Photo";
 import { Stars } from "@/components/ui/Section";
 import { rupees } from "@/lib/format";
-import type { CatalogItem } from "@/lib/catalog/types";
+import { storeHref } from "@/lib/vendor/types";
+import type { ShopItem } from "@/lib/catalog/types";
 import { CatalogQuickAction } from "./CatalogQuickAction";
 import { WishlistButton } from "@/components/wishlist/WishlistButton";
 import type { WishlistInput } from "@/components/wishlist/wishlistStore";
@@ -19,7 +20,7 @@ export function CatalogCard({
   sizes = "(min-width:1280px) 22vw, (min-width:768px) 30vw, 46vw",
   showBrand = true,
 }: {
-  item: CatalogItem;
+  item: ShopItem;
   sizes?: string;
   showBrand?: boolean;
 }) {
@@ -44,6 +45,11 @@ export function CatalogCard({
             Coming soon
           </span>
         )}
+        {item.seller && (
+          <span className="chip absolute bottom-2.5 left-2.5 border-accent/40 bg-void/80 text-[10px] text-accent">
+            Verified seller
+          </span>
+        )}
         {item.bestseller && (
           <span className="chip absolute bottom-2.5 left-2.5 border-gold/40 bg-void/70 text-gold">Bestseller</span>
         )}
@@ -63,6 +69,15 @@ export function CatalogCard({
           </Link>
         </h3>
 
+        {item.seller && (
+          <p className="mt-1 truncate text-[11px] text-dim">
+            Sold by{" "}
+            <Link href={storeHref(item.seller.slug)} className="font-semibold text-ash underline-offset-2 hover:text-accent hover:underline">
+              {item.seller.name}
+            </Link>
+          </p>
+        )}
+
         {item.rating !== null ? (
           <div className="mt-2 flex items-center gap-2">
             <Stars rating={item.rating} size={11} />
@@ -73,7 +88,7 @@ export function CatalogCard({
         )}
 
         <div className="mt-auto pt-3">
-          {item.price === null || !item.buyable ? (
+          {item.price === null || (!item.buyable && !item.seller) ? (
             <p className="font-display text-sm font-bold uppercase tracking-[0.1em] text-gold">
               {item.availability === "coming-soon" ? "Launching soon" : "Price on request"}
             </p>
@@ -86,9 +101,14 @@ export function CatalogCard({
               )}
             </p>
           )}
-          {item.buyable && (
+          {(item.buyable || item.seller) && (
             <p className="mt-1 flex items-center gap-1 text-[11px] text-dim">
-              {item.installation ? (
+              {item.seller ? (
+                <>
+                  <Icon name="check" size={11} className="text-accent" />
+                  {item.buyable ? "In stock" : "Out of stock"}
+                </>
+              ) : item.installation ? (
                 <>
                   <Icon name="wrench" size={11} className="text-accent" />
                   Installation available
@@ -111,7 +131,7 @@ export function CatalogCard({
   );
 }
 
-function wishlistItem(item: CatalogItem): WishlistInput {
+function wishlistItem(item: ShopItem): WishlistInput {
   const img = item.image;
   return {
     slug: item.slug,
@@ -130,7 +150,7 @@ function wishlistItem(item: CatalogItem): WishlistInput {
   };
 }
 
-function CardImage({ item, sizes }: { item: CatalogItem; sizes: string }) {
+function CardImage({ item, sizes }: { item: ShopItem; sizes: string }) {
   if (item.image.kind === "media") {
     return <Photo media={item.image.key} sizes={sizes} alt={item.image.alt} className="zoom opacity-90" />;
   }
