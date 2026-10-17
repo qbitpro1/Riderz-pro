@@ -4,11 +4,13 @@ import { useMemo, useState } from "react";
 import { Plus, X } from "lucide-react";
 import { rupees } from "@/lib/format";
 import { CloseButton, Layer } from "./Layer";
-import { maxFor, offPct, ui } from "./lib";
-import { Photo, Price } from "./parts";
+import { LOW_STOCK, maxFor, offPct, ui } from "./lib";
+import { Photo, Price, Stepper } from "./parts";
 import type { ScreenProduct } from "./types";
 
-type Row = { label: string; values: string[] };
+type Row = { label: string; values: string[]; lists?: string[][] };
+
+const NONE = "—";
 
 function fitsText(p: ScreenProduct): string {
   if (p.universal && p.fitLabels.length === 0) return "Universal";
@@ -39,19 +41,28 @@ export function CompareSheet({
 
   const rows = useMemo<Row[]>(() => {
     const base: Row[] = [
-      { label: "Brand", values: products.map((p) => p.brand) },
-      { label: "Saving", values: products.map((p) => (offPct(p) > 0 ? `${offPct(p)}% off, you save ${rupees(p.mrp - p.price)}` : "No discount")) },
-      { label: "Fits", values: products.map(fitsText) },
-      { label: "Part type", values: products.map((p) => p.partType) },
+      { label: "Price", values: products.map((p) => rupees(p.price)) },
+      { label: "MRP", values: products.map((p) => rupees(p.mrp)) },
+      { label: "You save", values: products.map((p) => (p.mrp > p.price ? `${rupees(p.mrp - p.price)} (${offPct(p)}% off)` : "No discount")) },
+      { label: "Brand", values: products.map((p) => p.brand || NONE) },
+      { label: "Category", values: products.map((p) => p.groupName || p.department || NONE) },
+      { label: "Part type", values: products.map((p) => p.partType || NONE) },
       { label: "Warranty", values: products.map((p) => (p.warrantyMonths ? `${p.warrantyMonths} months` : "Not stated")) },
+      { label: "Fits", values: products.map(fitsText) },
+      { label: "Stock", values: products.map((p) => (p.stock <= 0 ? "Out of stock" : p.stock <= LOW_STOCK ? `Only ${p.stock} left` : "In stock")) },
     ];
     const labels: string[] = [];
     for (const p of products) for (const s of p.specs) if (!labels.includes(s.label)) labels.push(s.label);
-    const specs = labels.slice(0, 16).map((label) => ({
+    const specs = labels.map((label) => ({
       label,
-      values: products.map((p) => p.specs.find((s) => s.label === label)?.value ?? "-"),
+      values: products.map((p) => p.specs.find((s) => s.label === label)?.value ?? NONE),
     }));
-    const all = [...base, ...specs];
+    const highlights: Row = {
+      label: "Highlights",
+      values: products.map((p) => p.highlights.join("\n")),
+      lists: products.map((p) => p.highlights),
+    };
+    const all = [...base, ...specs, highlights];
     return diffOnly ? all.filter((r) => new Set(r.values).size > 1) : all;
   }, [products, diffOnly]);
 
@@ -87,44 +98,50 @@ export function CompareSheet({
             </button>
           </div>
         ) : (
-          <table className="w-full min-w-[640px] table-fixed border-separate border-spacing-0">
+          <table className="w-full min-w-[720px] table-fixed border-separate border-spacing-0">
             <caption className="sr-only">Side by side comparison of {products.length} products</caption>
             <colgroup>
-              <col className="w-28 md:w-44" />
+              <col className="w-32 md:w-48" />
               {products.map((p) => (
                 <col key={p.id} />
               ))}
             </colgroup>
             <thead>
               <tr>
-                <th scope="col" className="sticky left-0 top-0 z-20 bg-void" />
+                <th scope="col" className="sticky left-0 top-0 z-20 border-b border-tint/10 bg-void px-3 text-left align-bottom text-sm font-semibold text-dim md:px-5 md:text-base">
+                  <span className="sr-only">Detail</span>
+                </th>
                 {products.map((p) => {
                   const qty = qtys[p.id] ?? 0;
+                  const max = maxFor(p);
                   return (
-                    <th key={p.id} scope="col" className="sticky top-0 z-10 border-l border-tint/10 bg-void p-3 text-left align-top font-normal md:p-5">
+                    <th key={p.id} scope="col" className="sticky top-0 z-10 border-b border-l border-tint/10 bg-void p-3 text-left align-top font-normal md:p-4">
                       <div className="relative">
                         <button type="button" onClick={() => onOpen(p)} className="block w-full text-left" aria-label={`${p.title}. View details`}>
-                          <Photo id={p.images[0]} alt="" sizes="(min-width:1024px) 28vw, 45vw" className="aspect-[4/3] w-full rounded-2xl" pad="p-3" />
-                          <p className="mt-3 line-clamp-2 min-h-[2.75rem] text-base font-semibold leading-snug text-chalk md:text-lg">{p.title}</p>
+                          <Photo id={p.images[0]} alt="" sizes="(min-width:1024px) 20vw, 40vw" className="h-36 w-full rounded-xl md:h-44" pad="p-2" />
+                          {p.brand && <p className="mt-2 truncate text-sm font-semibold uppercase tracking-wide text-dim">{p.brand}</p>}
+                          <p className="line-clamp-2 min-h-[2.75rem] text-base font-semibold leading-snug text-chalk md:text-lg">{p.title}</p>
                         </button>
                         <button
                           type="button"
                           onClick={() => onRemove(p.id)}
                           aria-label={`Remove ${p.title} from compare`}
-                          className="absolute right-2 top-2 grid h-12 w-12 place-items-center rounded-full bg-void text-ash shadow-md active:scale-90"
+                          className="absolute right-1 top-1 grid h-12 w-12 place-items-center rounded-full bg-void text-ash shadow-md active:scale-90"
                         >
                           <X size={20} aria-hidden />
                         </button>
                       </div>
-                      <Price p={p} className="mt-2" />
-                      <button
-                        type="button"
-                        onClick={() => onSetQty(p.id, Math.min(qty + 1, maxFor(p)))}
-                        disabled={qty >= maxFor(p)}
-                        className={`${ui.primary} mt-3 min-h-12 w-full`}
-                      >
-                        <Plus size={18} aria-hidden /> {qty > 0 ? `Add another (${qty} in order)` : "Add to order"}
-                      </button>
+                      <Price p={p} className="mt-1.5" />
+                      {qty > 0 ? (
+                        <div className="mt-2 flex items-center gap-2">
+                          <Stepper value={qty} max={max} onChange={(n) => onSetQty(p.id, Math.max(0, Math.min(n, max)))} label={p.title} compact />
+                          <span className="text-sm text-dim">in order</span>
+                        </div>
+                      ) : (
+                        <button type="button" onClick={() => onSetQty(p.id, 1)} disabled={max < 1} className={`${ui.primary} mt-2 min-h-12 w-full`}>
+                          <Plus size={18} aria-hidden /> Add to order
+                        </button>
+                      )}
                     </th>
                   );
                 })}
@@ -133,12 +150,24 @@ export function CompareSheet({
             <tbody>
               {rows.map((r, i) => (
                 <tr key={r.label} className={i % 2 === 0 ? "bg-carbon" : ""}>
-                  <th scope="row" className={`sticky left-0 z-[5] px-3 py-4 text-left align-top text-sm font-semibold text-dim md:px-5 md:text-base ${i % 2 === 0 ? "bg-carbon" : "bg-void"}`}>
+                  <th scope="row" className={`sticky left-0 z-[5] px-3 py-3.5 text-left align-top text-base font-semibold text-dim md:px-5 md:text-lg ${i % 2 === 0 ? "bg-carbon" : "bg-void"}`}>
                     {r.label}
                   </th>
                   {r.values.map((v, j) => (
-                    <td key={j} className="break-words border-l border-tint/10 px-3 py-4 align-top text-base text-chalk md:px-5">
-                      {v}
+                    <td key={j} className="break-words border-l border-tint/10 px-3 py-3.5 align-top text-base text-chalk md:px-5 md:text-lg">
+                      {r.lists ? (
+                        r.lists[j].length > 0 ? (
+                          <ul className="list-disc space-y-1 pl-5">
+                            {r.lists[j].map((h, k) => (
+                              <li key={k}>{h}</li>
+                            ))}
+                          </ul>
+                        ) : (
+                          NONE
+                        )
+                      ) : (
+                        v
+                      )}
                     </td>
                   ))}
                 </tr>
