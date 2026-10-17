@@ -11,7 +11,8 @@ import { newId, newOtpCode, sameHash, sha256 } from "./security";
  * Six random digits, stored hashed, valid 10 minutes, 5 tries, one resend per
  * 30 seconds. Delivery goes through `deliver`:
  *
- *   development   the code is printed in the server console
+ *   development   the code is printed in the server console; with OTP_SEND_IN_DEV=true, channels whose
+ *                 provider keys are set send for real (to test them locally), the rest still print
  *   production    a provider with its keys:
  *                   email  resend   RESEND_API_KEY and OTP_EMAIL_FROM (or RESEND_FROM, the old site's
  *                                   name), e.g. "Riderzpro <codes@your-domain>"
@@ -65,8 +66,13 @@ const WHAT: Record<OtpPurpose, string> = {
   rider_login: "rider sign-in",
 };
 
+/** In development: send for real only when asked to, and only on a channel with a provider. */
+const printInsteadOfSending = (channel: OtpChannel) =>
+  process.env.NODE_ENV !== "production" &&
+  (env("OTP_SEND_IN_DEV") !== "true" || (channel === "email" ? emailProvider() === null : smsProvider() === null));
+
 async function deliver(channel: OtpChannel, target: string, code: string, purpose: OtpPurpose): Promise<void> {
-  if (process.env.NODE_ENV !== "production") {
+  if (printInsteadOfSending(channel)) {
     console.info(`[otp:dev] ${purpose} code for ${channel} ${target}: ${code}`);
     return;
   }
