@@ -36,6 +36,9 @@
   /* Text on accent- and gold-filled surfaces. */
   --color-on-accent: var(--on-accent);
   --color-on-gold: var(--on-gold);
+  /* Blue "verified" badge and the check on it. */
+  --color-verified: var(--verified);
+  --color-on-verified: var(--on-verified);
 }
 
 @theme {
@@ -67,6 +70,8 @@
     --tint: #ffffff;
     --on-accent: #1c0606;
     --on-gold: #1a1204;
+    --verified: #4db5ff;
+    --on-verified: #ffffff;
     --shadow-lift: 0 26px 60px -30px rgba(0, 0, 0, 0.9);
   }
 
@@ -89,6 +94,8 @@
     --tint: #0f1216;
     --on-accent: #ffffff;
     --on-gold: #ffffff;
+    --verified: #1d9bf0;
+    --on-verified: #ffffff;
     --shadow-lift: 0 22px 50px -28px rgba(15, 18, 22, 0.28);
   }
 

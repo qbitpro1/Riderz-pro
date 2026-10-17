@@ -115,7 +115,7 @@ export function AttractScreen({
                 <p className="truncate font-display text-xl font-extrabold tracking-tight text-chalk lg:text-2xl">{store.name}</p>
                 <p className="flex min-w-0 items-center gap-1.5 text-sm font-medium leading-snug text-ash lg:text-base">
                   <span className="min-w-0">{store.city ? `${store.city} · ` : ""}Riderzpro verified seller</span>
-                  <BadgeCheck size={20} aria-label="Verified" className="shrink-0 fill-accent text-on-accent" />
+                  <BadgeCheck size={20} aria-label="Verified" className="shrink-0 fill-verified text-on-verified" />
                 </p>
               </div>
             </div>

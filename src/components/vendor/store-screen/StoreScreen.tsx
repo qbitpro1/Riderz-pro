@@ -214,7 +214,7 @@ export function StoreScreen({
               <span className="hidden min-w-0 lg:block">
                 <span className="flex min-w-0 items-center gap-1.5">
                   <h1 className="truncate font-display text-lg font-extrabold leading-tight tracking-tight text-chalk">{store.name}</h1>
-                  <BadgeCheck size={18} aria-label="Riderzpro verified seller" className="shrink-0 fill-accent text-on-accent" />
+                  <BadgeCheck size={18} aria-label="Riderzpro verified seller" className="shrink-0 fill-verified text-on-verified" />
                 </span>
                 <span className="block text-sm text-dim tnum">{products.length} in stock</span>
               </span>
