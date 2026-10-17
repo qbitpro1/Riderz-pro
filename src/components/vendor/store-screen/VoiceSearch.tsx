@@ -114,8 +114,10 @@ export function VoiceSearch({ onText, onListening }: { onText: (text: string) =>
         {listening ? "Listening. Say a product, brand or car." : ""}
       </p>
       {(listening || note) && (
-        <div className="ss-pop pointer-events-none absolute left-0 right-0 top-full z-20 mt-2 rounded-2xl bg-chalk px-5 py-3 text-base font-semibold text-void shadow-lg">
-          {listening ? "Listening… say a product, brand or car" : note}
+        // Sized to its text (not the narrow mic slot it sits in) and right-aligned under the mic.
+        <div className="ss-pop pointer-events-none absolute right-0 top-full z-20 mt-3 flex w-max max-w-[min(24rem,calc(100vw-2rem))] items-center gap-2.5 rounded-2xl bg-chalk px-5 py-3 text-base font-semibold leading-snug text-void shadow-lg">
+          {listening && <span aria-hidden className="h-2.5 w-2.5 shrink-0 animate-pulse rounded-full bg-accent" />}
+          <span>{listening ? "Listening… say a product, brand or car" : note}</span>
         </div>
       )}
     </>
