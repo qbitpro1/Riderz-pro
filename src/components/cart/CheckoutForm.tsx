@@ -12,8 +12,28 @@ import { orderMessage } from "./cartMessage";
 import { customerSchema } from "./orderSchema";
 import { useAccount } from "@/components/account/AccountContext";
 import { ADDRESS_MAX, type AddressView } from "@/lib/account/types";
+import { rupees } from "@/lib/format";
+import { openCheckout, type RazorpaySuccess } from "@/lib/payments/checkout";
+import { UNPAID_HOLD_MINUTES, type OnlinePaymentStart } from "@/lib/payments/types";
+import type { CustomerDetails } from "./orderSchema";
 
-export type PlacedOrder = { number: string; total: number; whatsappHref: string };
+/**
+ * payment: "whatsapp"   ordered on WhatsApp; payment is arranged there
+ *          "paid"       paid online and confirmed
+ *          "confirming" Razorpay reported success but our confirmation didn't answer (the webhook will settle it)
+ *          "refund_due" the money arrived after the order had expired; it will be refunded
+ */
+export type PlacedOrder = {
+  number: string;
+  total: number;
+  whatsappHref: string | null;
+  payment: "whatsapp" | "paid" | "confirming" | "refund_due";
+};
+
+type Method = "online" | "whatsapp";
+type PayPhase = "idle" | "creating" | "open" | "verifying" | "dismissed";
+type PendingPayment = { key: string; number: string; total: number; payment: OnlinePaymentStart };
+const DEV = process.env.NODE_ENV !== "production";
 
 type Totals = { subtotal: number; installTotal: number; shipping: number; total: number };
 type Values = {
@@ -29,9 +49,15 @@ type Values = {
 const EMPTY: Values = { name: "", mobile: "", email: "", address: "", city: "", state: "", pincode: "", notes: "" };
 
 /**
- * Delivery details, then POST /api/orders. On success WhatsApp opens with the
- * order number and the cart is cleared. If the order service is down (503) or
- * unreachable, it falls back to the WhatsApp-only order so the store keeps
+ * Delivery details and a payment choice, then POST /api/orders.
+ *
+ * Pay online: the server prices the order and creates a Razorpay order; Razorpay Checkout
+ * (loaded only now) takes the payment; /api/payments/razorpay/verify confirms it; then the cart
+ * is cleared. A closed payment window keeps the order (and its stock) for UNPAID_HOLD_MINUTES so
+ * "Try payment again" reuses it. Without Razorpay keys the option shows as unavailable.
+ *
+ * WhatsApp: on success WhatsApp opens with the order number and the cart is cleared. If the order
+ * service is down (503) or unreachable, it falls back to the WhatsApp-only order so the store keeps
  * taking orders; the cart is kept in that case.
  */
 export function CheckoutForm({
@@ -101,6 +127,108 @@ export function CheckoutForm({
   const [fallbackHref, setFallbackHref] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
+  /* ---- payment choice ---- */
+  const [onlineEnabled, setOnlineEnabled] = useState<boolean | null>(null);
+  const [method, setMethod] = useState<Method>("whatsapp");
+  const methodChosen = useRef(false);
+  const [phase, setPhase] = useState<PayPhase>("idle");
+  const [pending, setPending] = useState<PendingPayment | null>(null);
+  const [payError, setPayError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let alive = true;
+    api<{ enabled: boolean }>("/api/payments/razorpay/config")
+      .then(({ enabled }) => {
+        if (!alive) return;
+        setOnlineEnabled(enabled);
+        if (enabled && !methodChosen.current) setMethod("online");
+      })
+      .catch(() => alive && setOnlineEnabled(false));
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  function choose(m: Method) {
+    methodChosen.current = true;
+    setMethod(m);
+    setFormError(null);
+    setPayError(null);
+  }
+
+  async function payOnline(details: CustomerDetails) {
+    const cartLines = lines.map((l) => ({ id: l.id, qty: l.qty, install: Boolean(l.install) }));
+    const key = JSON.stringify({ details, cartLines });
+    setPayError(null);
+    let p = pending && pending.key === key ? pending : null;
+    if (!p) {
+      setPhase("creating");
+      try {
+        const res = await api<{ order: { number: string; total: number }; payment: OnlinePaymentStart }>("/api/orders", {
+          body: { customer: values, lines: cartLines, paymentMethod: "online" },
+        });
+        p = { key, number: res.order.number, total: res.order.total, payment: res.payment };
+        setPending(p);
+      } catch (err) {
+        setPhase("idle");
+        if (err instanceof ApiFailure && err.code === "payments_unavailable") {
+          setOnlineEnabled(false);
+          setMethod("whatsapp");
+          setFormError(err.message);
+        } else if (err instanceof ApiFailure && err.status !== 503) {
+          const next: Record<string, string> = {};
+          for (const [k, v] of Object.entries(err.fields)) next[k.replace(/^customer\./, "")] = v;
+          setErrors(next);
+          setFormError(err.message);
+        } else {
+          setFormError("We couldn't start the payment just now. Please try again, or order on WhatsApp.");
+        }
+        return;
+      }
+    }
+
+    const current = p;
+    setPhase("open");
+    try {
+      await openCheckout({
+        ...current.payment,
+        orderNumber: current.number,
+        prefill: { name: details.name, email: details.email, mobile: details.mobile },
+        onSuccess: (res) => void confirmPayment(current, res, details),
+        onFailure: (message) => setPayError(`${message} You can try again in the payment window.`),
+        onDismiss: () => setPhase("dismissed"),
+      });
+    } catch {
+      setPhase("dismissed");
+      setPayError("The payment window couldn't load. Check your connection and try again.");
+    }
+  }
+
+  async function confirmPayment(p: PendingPayment, res: RazorpaySuccess, details: CustomerDetails) {
+    setPhase("verifying");
+    setPayError(null);
+    let outcome: PlacedOrder["payment"] = "paid";
+    let total = p.total;
+    try {
+      const v = await api<{ order: { number: string; total: number; paidAfterCancel: boolean } }>("/api/payments/razorpay/verify", { body: res });
+      total = v.order.total;
+      if (v.order.paidAfterCancel) outcome = "refund_due";
+    } catch (err) {
+      // The money moved on Razorpay's side; a bad signature is the only answer that means it didn't count.
+      if (err instanceof ApiFailure && (err.code === "bad_signature" || err.code === "payment_mismatch")) {
+        setPhase("dismissed");
+        setPayError(err.message);
+        return;
+      }
+      outcome = "confirming";
+    }
+    clear();
+    rememberAddress(details);
+    setPending(null);
+    setPhase("idle");
+    onPlaced({ number: p.number, total, whatsappHref: null, payment: outcome });
+  }
+
   const ADDRESS_FIELDS: (keyof Values)[] = ["address", "city", "state", "pincode"];
   const set = (k: keyof Values) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     if (ADDRESS_FIELDS.includes(k)) {
@@ -111,9 +239,11 @@ export function CheckoutForm({
     setValues((v) => ({ ...v, [k]: e.target.value }));
   };
 
+  const payBusy = phase === "creating" || phase === "open" || phase === "verifying";
+
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (busy) return;
+    if (busy || payBusy) return;
     setFormError(null);
     setFallbackHref(null);
 
@@ -129,6 +259,10 @@ export function CheckoutForm({
     }
     setErrors({});
     const details = parsed.data;
+    if (method === "online") {
+      await payOnline(details);
+      return;
+    }
 
     setBusy(true);
     try {
@@ -142,7 +276,7 @@ export function CheckoutForm({
       clear();
       rememberAddress(details);
       window.open(href, "_blank", "noopener,noreferrer");
-      onPlaced({ number: res.order.number, total: res.order.total, whatsappHref: href });
+      onPlaced({ number: res.order.number, total: res.order.total, whatsappHref: href, payment: "whatsapp" });
     } catch (err) {
       if (err instanceof ApiFailure && err.status !== 503) {
         const next: Record<string, string> = {};
@@ -268,9 +402,75 @@ export function CheckoutForm({
         </label>
       )}
 
+      <fieldset className="space-y-2 pt-1">
+        <legend className="label">Payment</legend>
+        <label
+          className={`flex items-start gap-3 rounded-sm border p-3 text-xs ${
+            onlineEnabled === false ? "cursor-not-allowed border-tint/10 opacity-60" : `cursor-pointer ${method === "online" ? "border-accent" : "border-tint/15"}`
+          }`}
+        >
+          <input
+            type="radio"
+            name={`${uid}-pay`}
+            checked={method === "online"}
+            disabled={onlineEnabled !== true || payBusy}
+            onChange={() => choose("online")}
+            className="mt-0.5 accent-[var(--accent)]"
+          />
+          <span className="min-w-0">
+            <span className="flex items-center gap-1.5 font-semibold text-chalk">
+              <Icon name="shield" size={14} />
+              Pay online now
+            </span>
+            <span className="mt-0.5 block text-ash">
+              {onlineEnabled === null
+                ? "Checking…"
+                : onlineEnabled
+                  ? "UPI, cards, netbanking and wallets, secured by Razorpay."
+                  : DEV
+                    ? "Online payment not configured (set RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET)."
+                    : "Online payment isn't available yet. Please order on WhatsApp."}
+            </span>
+          </span>
+        </label>
+        <label className={`flex cursor-pointer items-start gap-3 rounded-sm border p-3 text-xs ${method === "whatsapp" ? "border-accent" : "border-tint/15"}`}>
+          <input
+            type="radio"
+            name={`${uid}-pay`}
+            checked={method === "whatsapp"}
+            disabled={payBusy}
+            onChange={() => choose("whatsapp")}
+            className="mt-0.5 accent-[var(--accent)]"
+          />
+          <span className="min-w-0">
+            <span className="flex items-center gap-1.5 font-semibold text-chalk">
+              <Icon name="whatsapp" size={14} />
+              Order on WhatsApp
+            </span>
+            <span className="mt-0.5 block text-ash">We confirm fitment and arrange payment with you on WhatsApp.</span>
+          </span>
+        </label>
+      </fieldset>
+
       {formError && (
         <p role="alert" className="text-xs text-danger">
           {formError}
+        </p>
+      )}
+      {method === "online" && pending && phase === "dismissed" && (
+        <div role="status" className="card border-gold/30 p-3 text-xs leading-relaxed text-chalk">
+          Payment not completed. Order <span className="font-semibold tnum">{pending.number}</span> is held for {UNPAID_HOLD_MINUTES} minutes:
+          pay below to finish it, or choose WhatsApp instead. Nothing has been charged unless Razorpay told you so.
+        </div>
+      )}
+      {method === "online" && payError && (
+        <p role="alert" className="text-xs text-danger">
+          {payError}
+        </p>
+      )}
+      {phase === "verifying" && (
+        <p role="status" className="text-xs text-ash">
+          Payment received by Razorpay. Confirming your order…
         </p>
       )}
       {fallbackHref && (
@@ -284,10 +484,25 @@ export function CheckoutForm({
         </div>
       )}
 
-      <button type="submit" disabled={busy} aria-busy={busy} className="btn btn-whatsapp btn-block">
-        <Icon name="whatsapp" size={16} />
-        {busy ? "Placing your order…" : "Place order & confirm on WhatsApp"}
-      </button>
+      {method === "online" ? (
+        <button type="submit" disabled={payBusy || onlineEnabled !== true} aria-busy={payBusy} className="btn btn-primary btn-block">
+          <Icon name="shield" size={16} />
+          {phase === "creating"
+            ? "Starting secure payment…"
+            : phase === "open"
+              ? "Waiting for payment…"
+              : phase === "verifying"
+                ? "Confirming payment…"
+                : pending && phase === "dismissed"
+                  ? `Try payment again · ${rupees(pending.total)}`
+                  : `Pay ${rupees(pending?.total ?? totals.total)} securely`}
+        </button>
+      ) : (
+        <button type="submit" disabled={busy || payBusy} aria-busy={busy} className="btn btn-whatsapp btn-block">
+          <Icon name="whatsapp" size={16} />
+          {busy ? "Placing your order…" : "Place order & confirm on WhatsApp"}
+        </button>
+      )}
     </form>
   );
 }

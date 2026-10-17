@@ -6,6 +6,7 @@ import { Icon } from "@/components/ui/Icon";
 import { useCart } from "./CartContext";
 import { useAccount } from "@/components/account/AccountContext";
 import { rupees } from "@/lib/format";
+import { whatsapp } from "@/lib/data/site";
 import { FREE_SHIPPING_OVER, shippingFor } from "@/lib/store/shipping";
 import { CartThumb } from "./CartThumb";
 import { CheckoutButton } from "./CheckoutButton";
@@ -21,20 +22,60 @@ export function CartView() {
   }
 
   if (placed) {
+    const heading =
+      placed.payment === "paid"
+        ? "Payment received · order confirmed"
+        : placed.payment === "confirming"
+          ? "Payment received · confirming"
+          : placed.payment === "refund_due"
+            ? "Payment received after the order expired"
+            : "Order placed";
     return (
       <div className="card mx-auto max-w-xl p-8 text-center" role="status">
-        <Icon name="check" size={32} className="mx-auto text-accent" />
-        <p className="eyebrow mt-4">Order placed</p>
+        <Icon name={placed.payment === "refund_due" ? "shield" : "check"} size={32} className="mx-auto text-accent" />
+        <p className="eyebrow mt-4">{heading}</p>
         <p className="mt-2 font-display text-3xl font-extrabold tnum">{placed.number}</p>
         <p className="mt-2 text-sm text-ash">
-          Total {rupees(placed.total)}, inclusive of GST. We&apos;ve opened WhatsApp so you can send us the order and we&apos;ll confirm
-          fitment and payment there.
+          {placed.payment === "paid" && (
+            <>Paid {rupees(placed.total)}, inclusive of GST. Thank you! We&apos;ll keep you posted as your order is packed and shipped.</>
+          )}
+          {placed.payment === "confirming" && (
+            <>
+              Razorpay has your payment of {rupees(placed.total)}. We&apos;re confirming it with them; this usually takes a minute.
+              Please don&apos;t pay again.
+            </>
+          )}
+          {placed.payment === "refund_due" && (
+            <>
+              Your payment of {rupees(placed.total)} arrived after this order had expired, so its items may no longer be held for you.
+              We&apos;ll refund it in full, or contact us on WhatsApp to place the order again.
+            </>
+          )}
+          {placed.payment === "whatsapp" && (
+            <>
+              Total {rupees(placed.total)}, inclusive of GST. We&apos;ve opened WhatsApp so you can send us the order and we&apos;ll confirm
+              fitment and payment there.
+            </>
+          )}
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
-          <a href={placed.whatsappHref} target="_blank" rel="noreferrer noopener" className="btn btn-whatsapp btn-sm">
-            <Icon name="whatsapp" size={16} />
-            Open WhatsApp
-          </a>
+          {placed.whatsappHref && (
+            <a href={placed.whatsappHref} target="_blank" rel="noreferrer noopener" className="btn btn-whatsapp btn-sm">
+              <Icon name="whatsapp" size={16} />
+              Open WhatsApp
+            </a>
+          )}
+          {(placed.payment === "refund_due" || placed.payment === "confirming") && (
+            <a
+              href={whatsapp(`Hi Riderzpro, about my online payment for order ${placed.number}.`)}
+              target="_blank"
+              rel="noreferrer noopener"
+              className="btn btn-whatsapp btn-sm"
+            >
+              <Icon name="whatsapp" size={16} />
+              Ask us on WhatsApp
+            </a>
+          )}
           {customer && (
             <Link href={`/account/orders/${placed.number}`} className="btn btn-outline btn-sm">
               View in your account
@@ -150,7 +191,7 @@ export function CartView() {
           <CheckoutForm lines={lines} totals={{ subtotal, installTotal, shipping, total }} onPlaced={setPlaced} />
         </div>
         <p className="mt-3 text-[11px] leading-relaxed text-dim">
-          We confirm fitment against your variant on WhatsApp before you pay. See the{" "}
+          Pay online now, or order on WhatsApp and we confirm fitment against your variant before you pay. See the{" "}
           <Link href="/support/payments" className="underline hover:text-accent">
             payments page
           </Link>{" "}

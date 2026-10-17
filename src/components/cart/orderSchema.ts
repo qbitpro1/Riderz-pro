@@ -42,6 +42,8 @@ export const placeOrderSchema = z.object({
     )
     .min(1)
     .max(50),
+  /** "online": pay now with Razorpay. "whatsapp": the order is confirmed and paid over WhatsApp. */
+  paymentMethod: z.enum(["whatsapp", "online"]).default("whatsapp"),
 });
 
 export type PlaceOrderInput = z.output<typeof placeOrderSchema>;
