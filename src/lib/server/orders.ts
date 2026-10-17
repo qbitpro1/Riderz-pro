@@ -52,7 +52,8 @@ type VendorProductLookup = {
   commission_rate: string | null;
 };
 
-export async function placeOrder(input: PlaceOrderInput): Promise<{ number: string; total: number }> {
+/** `customerId` comes from the session (never the request body); null for guest checkout. */
+export async function placeOrder(input: PlaceOrderInput, customerId: string | null = null): Promise<{ number: string; total: number }> {
   const { customer } = input;
 
   /* ---- 1. price every line from the server's own data ---- */
@@ -148,12 +149,12 @@ export async function placeOrder(input: PlaceOrderInput): Promise<{ number: stri
     for (let attempt = 0; attempt < 8 && !number; attempt++) {
       const candidate = newOrderNumber();
       const rows = await q<{ number: string }>(
-        `INSERT INTO orders (id, number, customer_name, customer_phone, customer_email, address, city, state, pincode, notes, subtotal, shipping, total)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)
+        `INSERT INTO orders (id, number, customer_name, customer_phone, customer_email, address, city, state, pincode, notes, subtotal, shipping, total, customer_id)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
          ON CONFLICT (number) DO NOTHING RETURNING number`,
         [
           orderId, candidate, customer.name, customer.mobile, customer.email, customer.address, customer.city,
-          customer.state, customer.pincode, customer.notes, subtotal, shipping, total,
+          customer.state, customer.pincode, customer.notes, subtotal, shipping, total, customerId,
         ],
       );
       if (rows[0]) number = rows[0].number;

@@ -282,4 +282,97 @@ CREATE UNIQUE INDEX vendor_change_requests_one_pending ON vendor_change_requests
 ALTER TABLE vendor_sessions ADD COLUMN kiosk_locked_at timestamptz;
 `,
   },
+  {
+    // Customer accounts (src/lib/server/customers.ts): sign-in with a one-time code to a mobile or
+    // an email, no password. Orders link to the account that placed them; guest checkout stays.
+    id: "004_customer_accounts",
+    sql: `
+CREATE TABLE customers (
+  id                 text PRIMARY KEY,
+  name               text,
+  mobile             text,
+  email              text,
+  mobile_verified_at timestamptz,
+  email_verified_at  timestamptz,
+  car                jsonb,
+  last_login_at      timestamptz,
+  created_at         timestamptz NOT NULL DEFAULT now(),
+  updated_at         timestamptz NOT NULL DEFAULT now(),
+  CHECK (mobile IS NOT NULL OR email IS NOT NULL)
+);
+CREATE UNIQUE INDEX customers_mobile_key ON customers (mobile) WHERE mobile IS NOT NULL;
+CREATE UNIQUE INDEX customers_email_key ON customers (lower(email)) WHERE email IS NOT NULL;
+
+CREATE TABLE customer_sessions (
+  token_hash   text PRIMARY KEY,
+  customer_id  text NOT NULL REFERENCES customers(id) ON DELETE CASCADE,
+  created_at   timestamptz NOT NULL DEFAULT now(),
+  expires_at   timestamptz NOT NULL,
+  last_seen_at timestamptz NOT NULL DEFAULT now(),
+  user_agent   text
+);
+CREATE INDEX customer_sessions_customer_idx ON customer_sessions (customer_id);
+
+CREATE TABLE customer_addresses (
+  id          text PRIMARY KEY,
+  customer_id text NOT NULL REFERENCES customers(id) ON DELETE CASCADE,
+  label       text NOT NULL,
+  name        text NOT NULL,
+  mobile      text NOT NULL,
+  address     text NOT NULL,
+  city        text NOT NULL,
+  state       text NOT NULL,
+  pincode     text NOT NULL,
+  is_default  boolean NOT NULL DEFAULT false,
+  created_at  timestamptz NOT NULL DEFAULT now(),
+  updated_at  timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX customer_addresses_customer_idx ON customer_addresses (customer_id);
+CREATE UNIQUE INDEX customer_addresses_one_default ON customer_addresses (customer_id) WHERE is_default;
+
+CREATE TABLE customer_wishlist (
+  customer_id text NOT NULL REFERENCES customers(id) ON DELETE CASCADE,
+  slug        text NOT NULL,
+  item        jsonb NOT NULL,
+  saved_at    timestamptz NOT NULL,
+  PRIMARY KEY (customer_id, slug)
+);
+
+-- Help-desk messages from shoppers (signed in or not). Seller tickets stay in support_tickets.
+CREATE TABLE customer_tickets (
+  id           text PRIMARY KEY,
+  customer_id  text REFERENCES customers(id) ON DELETE SET NULL,
+  name         text NOT NULL,
+  mobile       text NOT NULL,
+  email        text,
+  order_number text,
+  topic        text NOT NULL CHECK (topic IN ('order','product','fitment','installation','returns','other')),
+  body         text NOT NULL,
+  status       text NOT NULL DEFAULT 'open' CHECK (status IN ('open','answered','closed')),
+  admin_reply  text,
+  replied_by   text,
+  replied_at   timestamptz,
+  created_at   timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX customer_tickets_status_idx ON customer_tickets (status, created_at);
+CREATE INDEX customer_tickets_customer_idx ON customer_tickets (customer_id, created_at DESC);
+
+ALTER TABLE orders ADD COLUMN customer_id text REFERENCES customers(id) ON DELETE SET NULL;
+CREATE INDEX orders_customer_idx ON orders (customer_id, created_at DESC);
+CREATE INDEX orders_customer_phone_idx ON orders (customer_phone) WHERE customer_id IS NULL;
+
+-- Customer codes get their own purposes, so a seller's code can never sign a customer in.
+DO $$
+DECLARE c text;
+BEGIN
+  FOR c IN SELECT conname FROM pg_constraint
+            WHERE conrelid = 'vendor_otps'::regclass AND contype = 'c' AND pg_get_constraintdef(oid) LIKE '%purpose%'
+  LOOP
+    EXECUTE 'ALTER TABLE vendor_otps DROP CONSTRAINT ' || quote_ident(c);
+  END LOOP;
+END $$;
+ALTER TABLE vendor_otps ADD CONSTRAINT vendor_otps_purpose_check
+  CHECK (purpose IN ('verify','login','reset','customer_login','customer_contact'));
+`,
+  },
 ];
