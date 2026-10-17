@@ -7,7 +7,7 @@ import { sql, sqlOne } from "@/lib/db/client";
 import { PRODUCT_DETAILS } from "@/lib/store/products";
 import type { ProductDetail } from "@/lib/store/types";
 import { DEFAULT_COMMISSION_RATE, type VendorOnboarding } from "@/lib/vendor/types";
-import { emailSchema, mobileSchema, passwordSchema } from "@/lib/vendor/validators";
+import { emailSchema, mobileSchema } from "@/lib/vendor/validators";
 import { saveFile } from "./files";
 import { ApiError } from "./http";
 import { hashPassword, newId } from "./security";
@@ -41,7 +41,11 @@ export const demoStoreSchema = z.object({
   /** Needed only when the demo seller does not exist yet. */
   email: emailSchema.optional(),
   mobile: mobileSchema.optional(),
-  password: passwordSchema.optional(),
+  /**
+   * The demo seller's password. Shorter than real sellers' (passwordSchema) on purpose, so a
+   * demo login is easy to type at a stand; only an admin can set it, from /admin/vendors.
+   */
+  password: z.string().min(5, "Use at least 5 characters").max(128).optional(),
 });
 
 type Pick = { detail: ProductDetail; department: "interior" | "multimedia"; group: string };
@@ -161,6 +165,16 @@ export async function seedDemoStore(input: z.infer<typeof demoStoreSchema>, by: 
         WHERE id = $1`,
       [vendor.id, DEMO_NAME, DEMO_SLUG, JSON.stringify(onboarding), DEFAULT_COMMISSION_RATE, by.id],
     );
+    if (input.email) {
+      const clash = await sqlOne("SELECT 1 FROM vendors WHERE lower(email) = $1 AND id <> $2", [input.email, vendor.id]);
+      if (clash) throw new ApiError(409, "exists", "Another seller already uses this email.", { email: "Another seller already uses this email" });
+      await sql("UPDATE vendors SET email = $2, email_verified_at = now(), updated_at = now() WHERE id = $1", [vendor.id, input.email]);
+    }
+    if (input.mobile) {
+      const clash = await sqlOne("SELECT 1 FROM vendors WHERE mobile = $1 AND id <> $2", [input.mobile, vendor.id]);
+      if (clash) throw new ApiError(409, "exists", "Another seller already uses this mobile.", { mobile: "Another seller already uses this mobile" });
+      await sql("UPDATE vendors SET mobile = $2, mobile_verified_at = now(), updated_at = now() WHERE id = $1", [vendor.id, input.mobile]);
+    }
     if (input.password) {
       await sql("UPDATE vendors SET password_hash = $2, updated_at = now() WHERE id = $1", [vendor.id, await hashPassword(input.password)]);
     }

@@ -21,8 +21,27 @@ online marketplace made on 16 Oct (commit `449a110`) and keeps the Offline Store
   state, suspension messages ("hidden from the website and the Offline Store") and the README and
   `docs/VENDOR_PORTAL.md` updated. Dashboard has a "View my online store" link beside the Offline Store box.
 - **Footer and nav:** "Sell on Riderzpro" stays under Partners and in the Cars menu, pointing to `/vendor`.
-- **Still open:** seller fees for the Offline Store; run `npm run build` and the dealer-price check
-  after this change; browser pass at 360 px in light and dark on `/sellers/...`.
+- **Offline Store screen redesigned** (`src/components/vendor/store-screen/`), with the welcome screen
+  and tile look taken from an owner-approved Lovable prototype: welcome screen with a slow product-photo
+  slideshow, store name and city with a red verified tick, category cards and "Touch to explore";
+  photo-first tiles with discount and low-stock badges, Add and Compare; category rail, sort, "Find for
+  my car" (brand → model); full-screen product view with gallery and zoom; compare up to 3; order
+  drawer with savings; show-at-counter screen with an order token (A-1, A-2 …) and print; idle reset;
+  press-and-hold lock for the seller.
+- **Voice search** on the Offline Store: a mic in the search box (browser speech recognition, Indian
+  English; hidden where the browser has none; needs HTTPS). Search ignores filler words ("show me …
+  please"), matches plurals and spoken numbers ("six point five inch"). `Permissions-Policy` now allows
+  the microphone for this site only (`microphone=(self)`).
+- **Demo store:** Indus Enterprises is in Delhi. The `/admin/vendors` demo panel can now change the demo
+  seller's login email and mobile as well as its password, and accepts a short (5+ character) demo
+  password; real sellers still need 10+ characters with letters and numbers. On a new database: open
+  `/admin/vendors` → Demo store → enter login email `indus@riderzpro.com`, a mobile and the demo
+  password → Create. The demo password is not stored in the repository.
+- **Verified:** production build clean (533 pages), no dealer prices in any built file; `/shop`,
+  department pages, `/sellers/indus-enterprises` and its product pages, sitemap and robots checked on
+  the local site; Offline Store welcome, browse and spoken-phrase search checked in the browser.
+- **Still open:** seller fees for the Offline Store; a browser pass at 360 px in light and dark on
+  `/sellers/...`; trying the mic on a real smart TV.
 
 ## 16 Oct 2026: V0.3 seller portal and Offline Store
 

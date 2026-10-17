@@ -49,19 +49,15 @@ export function DemoStorePanel({ exists }: { exists: boolean }) {
       <p className="mt-3 max-w-2xl text-sm text-ash">
         An approved demo seller with seat covers and speakers copied from the main catalogue, for showing the offline store
         screen. Running it again refreshes the demo products. An existing Asha Accessories demo store is renamed.
-        {exists ? " Leave the fields blank to keep the current login, or enter a password to reset it." : " Give a login for the demo seller."}
+        {exists ? " Leave a field blank to keep it; fill it to change the demo login." : " Give a login for the demo seller."}
       </p>
       <form onSubmit={submit} noValidate className="mt-4 grid max-w-3xl gap-3 sm:grid-cols-3">
-        {!exists && (
-          <>
-            <Field label="Login email" error={errors.email}>
-              <input name="email" type="email" autoComplete="off" className="field" />
-            </Field>
-            <Field label="Mobile" error={errors.mobile}>
-              <input name="mobile" type="tel" inputMode="numeric" autoComplete="off" className="field" />
-            </Field>
-          </>
-        )}
+        <Field label={exists ? "New login email (optional)" : "Login email"} error={errors.email}>
+          <input name="email" type="email" autoComplete="off" className="field" />
+        </Field>
+        <Field label={exists ? "New mobile (optional)" : "Mobile"} error={errors.mobile}>
+          <input name="mobile" type="tel" inputMode="numeric" autoComplete="off" className="field" />
+        </Field>
         <Field label={exists ? "New password (optional)" : "Password"} error={errors.password}>
           <input name="password" type="password" autoComplete="new-password" className="field" />
         </Field>
