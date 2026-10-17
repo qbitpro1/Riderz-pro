@@ -431,6 +431,19 @@ export async function vendorChangeStatus(
     if (!VENDOR_ORDER_MOVES[row.status]?.includes(to)) {
       throw new ApiError(409, "bad_transition", `This order is ${row.status.replace("_", " ")}; it can't move to ${to}.`);
     }
+    // A Riderzpro rider delivering this shipment moves it to shipped and delivered; the seller doesn't.
+    if (to === "shipped" || to === "delivered" || to === "cancelled") {
+      const job = (await q("SELECT 1 FROM rider_jobs WHERE vendor_order_id = $1 AND status IN ('offered','accepted','picked_up')", [id]))[0];
+      if (job) {
+        throw new ApiError(
+          409,
+          "rider_assigned",
+          to === "cancelled"
+            ? "A Riderzpro rider is assigned to this order. Contact seller support to cancel it."
+            : "A Riderzpro rider is collecting this order. Keep it packed; the rider marks it shipped and delivered.",
+        );
+      }
+    }
 
     switch (to) {
       case "accepted":
@@ -462,6 +475,51 @@ export async function vendorChangeStatus(
     await audit(actor, `order.${to}`, { vendorId, detail: { vendorOrderId: id, number: row.number, from: row.status, courier, tracking, reason } }, q);
     return to;
   });
+}
+
+/**
+ * A Riderzpro rider moves a seller's shipment: collected (packed → shipped) or handed over
+ * (shipped → delivered). Runs inside the rider job's transaction; the seller is told.
+ */
+export async function riderMovePart(q: Query, vendorOrderId: string, to: "shipped" | "delivered", ref: string): Promise<void> {
+  const row = (
+    await q<{ status: VendorOrderStatus; order_id: string; vendor_id: string; number: string }>(
+      `SELECT vo.status, vo.order_id, vo.vendor_id, o.number FROM vendor_orders vo JOIN orders o ON o.id = vo.order_id
+        WHERE vo.id = $1 FOR UPDATE OF vo`,
+      [vendorOrderId],
+    )
+  )[0];
+  if (!row) throw new ApiError(404, "not_found", "Order not found.");
+  const from: VendorOrderStatus = to === "shipped" ? "packed" : "shipped";
+  if (row.status !== from) {
+    throw new ApiError(
+      409,
+      "not_ready",
+      to === "shipped" && (row.status === "accepted" || row.status === "new")
+        ? "The seller hasn't packed this order yet. Ask them to mark it packed."
+        : `This order is ${row.status.replace("_", " ")}, so it can't be marked ${to}.`,
+    );
+  }
+  if (to === "shipped") {
+    await q(
+      "UPDATE vendor_orders SET status='shipped', shipped_at=now(), courier='Riderzpro rider', tracking_number=$2, updated_at=now() WHERE id=$1",
+      [vendorOrderId, ref],
+    );
+  } else {
+    await q("UPDATE vendor_orders SET status='delivered', delivered_at=now(), updated_at=now() WHERE id=$1", [vendorOrderId]);
+  }
+  await settleOrderStatus(q, row.order_id);
+  await audit({ type: "system", id: "rider" }, `order.${to}`, { vendorId: row.vendor_id, detail: { vendorOrderId, number: row.number, from, ref } }, q);
+  await notifyVendor(
+    row.vendor_id,
+    {
+      type: "order",
+      title: to === "shipped" ? `Order ${row.number} collected by our rider` : `Order ${row.number} delivered`,
+      body: to === "shipped" ? "A Riderzpro rider picked up the parcel." : "Our rider handed the parcel to the customer.",
+      link: `/vendor/dashboard/orders/${vendorOrderId}`,
+    },
+    q,
+  );
 }
 
 /* -------------------------------------------------------------- admin side */
@@ -605,6 +663,14 @@ export async function adminChangePartStatus(
       throw new ApiError(409, "bad_transition", `This part is ${row.status.replace("_", " ")}; it can't move to ${to.replace("_", " ")}.`);
     }
     if (to === "cancelled") {
+      // A rider job not yet picked up ends with the order; one on the road must be finished first.
+      const onRoad = (await q("SELECT 1 FROM rider_jobs WHERE vendor_order_id = $1 AND status = 'picked_up'", [vendorOrderId]))[0];
+      if (onRoad) throw new ApiError(409, "rider_on_road", "A rider has already picked this up. Finish or return the delivery first.");
+      await q(
+        `UPDATE rider_jobs SET status='cancelled', cancel_reason=$2, closed_at=now(), updated_at=now()
+          WHERE vendor_order_id = $1 AND status IN ('offered','accepted')`,
+        [vendorOrderId, `Order cancelled: ${reason}`],
+      );
       await q("UPDATE vendor_orders SET status='cancelled', cancelled_at=now(), cancel_reason=$2, updated_at=now() WHERE id=$1", [vendorOrderId, reason]);
       await restoreStock(q, vendorOrderId);
     } else if (to === "returned") {

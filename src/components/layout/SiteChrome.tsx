@@ -9,9 +9,10 @@ import type { ReactNode } from "react";
  *                      the shopper chrome (menus, cart, footer, bottom bar, WhatsApp) shows there
  *   /store             a seller's offline store screen runs full screen in their shop: no site
  *                      header either, nothing that leads a customer away from it
+ *   /rider             the rider app (a phone on the road) has its own small header
  */
-const NO_FOOTER = ["/vendor/dashboard", "/store"];
-const NO_HEADER = ["/vendor/dashboard", "/store"];
+const NO_FOOTER = ["/vendor/dashboard", "/store", "/rider"];
+const NO_HEADER = ["/vendor/dashboard", "/store", "/rider"];
 
 const under = (pathname: string, roots: string[]) => roots.some((p) => pathname === p || pathname.startsWith(`${p}/`));
 

@@ -55,6 +55,8 @@ export type AccountOrderPart = {
   shippedAt: string | null;
   deliveredAt: string | null;
   items: AccountOrderItem[];
+  /** A Riderzpro rider delivering this shipment (Delhi NCR). `code` is shown while it is on its way. */
+  rider: { firstName: string; vehicle: string; status: "offered" | "accepted" | "picked_up" | "delivered" | "declined" | "cancelled"; code: string | null } | null;
 };
 
 export type AccountOrderSummary = {

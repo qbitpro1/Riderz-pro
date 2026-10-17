@@ -99,13 +99,14 @@ export const CARS_NAV: NavSection = {
   ],
 };
 
-/** Partner programmes: for businesses that want to sell with Riderzpro. */
+/** Partner programmes: sellers, car dealers and delivery riders who work with Riderzpro. */
 export const PARTNERS_NAV: NavSection = {
   id: "partners",
   title: "Partners",
   links: [
     { label: "Sell on Riderzpro", href: "/vendor" },
     { label: "Vendor Sign In", href: "/vendor/auth" },
+    { label: "Ride with Riderzpro", href: "/rider" },
     { label: "List Your Cars", href: "/partners" },
   ],
 };

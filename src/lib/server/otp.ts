@@ -11,17 +11,21 @@ import { newId, newOtpCode, sameHash, sha256 } from "./security";
  * 30 seconds. Delivery goes through `deliver`:
  *
  *   development   the code is printed in the server console
- *   production    the provider named in OTP_EMAIL_PROVIDER / OTP_SMS_PROVIDER, with its keys:
- *                   email  resend   RESEND_API_KEY, OTP_EMAIL_FROM ("Riderzpro <codes@your-domain>")
+ *   production    a provider with its keys:
+ *                   email  resend   RESEND_API_KEY and OTP_EMAIL_FROM (or RESEND_FROM, the old site's
+ *                                   name), e.g. "Riderzpro <codes@your-domain>"
  *                   sms    msg91    MSG91_AUTH_KEY, MSG91_OTP_TEMPLATE_ID (a DLT-approved template
  *                                   with an ##OTP## variable)
  *                          twilio   TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM
+ *                 A provider whose keys are all set is used without further setup (the names match
+ *                 the old riderzpro.com site). OTP_EMAIL_PROVIDER / OTP_SMS_PROVIDER choose one
+ *                 when keys for several are set.
  *                 Without a configured provider, sending answers "unavailable" (sellers' contact
  *                 details are then checked by the admin team during KYC review).
  */
 
 export type OtpChannel = "email" | "mobile";
-export type OtpPurpose = "verify" | "login" | "reset" | "customer_login" | "customer_contact";
+export type OtpPurpose = "verify" | "login" | "reset" | "customer_login" | "customer_contact" | "rider_login";
 
 const TTL_MINUTES = 10;
 const MAX_ATTEMPTS = 5;
@@ -29,15 +33,21 @@ const RESEND_SECONDS = 30;
 
 const env = (k: string) => process.env[k]?.trim() || "";
 
+const emailFrom = () => env("OTP_EMAIL_FROM") || env("RESEND_FROM");
+
 function emailProvider(): "resend" | null {
-  return env("OTP_EMAIL_PROVIDER") === "resend" && env("RESEND_API_KEY") && env("OTP_EMAIL_FROM") ? "resend" : null;
+  const p = env("OTP_EMAIL_PROVIDER");
+  if (p && p !== "resend") return null;
+  return env("RESEND_API_KEY") && emailFrom() ? "resend" : null;
 }
 
 function smsProvider(): "msg91" | "twilio" | null {
+  const msg91 = Boolean(env("MSG91_AUTH_KEY") && env("MSG91_OTP_TEMPLATE_ID"));
+  const twilio = Boolean(env("TWILIO_ACCOUNT_SID") && env("TWILIO_AUTH_TOKEN") && env("TWILIO_FROM"));
   const p = env("OTP_SMS_PROVIDER");
-  if (p === "msg91" && env("MSG91_AUTH_KEY") && env("MSG91_OTP_TEMPLATE_ID")) return "msg91";
-  if (p === "twilio" && env("TWILIO_ACCOUNT_SID") && env("TWILIO_AUTH_TOKEN") && env("TWILIO_FROM")) return "twilio";
-  return null;
+  if (p === "msg91") return msg91 ? "msg91" : null;
+  if (p === "twilio") return twilio ? "twilio" : null;
+  return msg91 ? "msg91" : twilio ? "twilio" : null;
 }
 
 export function otpDeliveryAvailable(channel: OtpChannel): boolean {
@@ -51,6 +61,7 @@ const WHAT: Record<OtpPurpose, string> = {
   reset: "password reset",
   customer_login: "sign-in",
   customer_contact: "verification",
+  rider_login: "rider sign-in",
 };
 
 async function deliver(channel: OtpChannel, target: string, code: string, purpose: OtpPurpose): Promise<void> {
@@ -66,7 +77,7 @@ async function deliver(channel: OtpChannel, target: string, code: string, purpos
     res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: { Authorization: `Bearer ${env("RESEND_API_KEY")}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ from: env("OTP_EMAIL_FROM"), to: [target], subject: `Your Riderzpro code: ${code}`, text }),
+      body: JSON.stringify({ from: emailFrom(), to: [target], subject: `Your Riderzpro code: ${code}`, text }),
       signal,
     });
   } else if (channel === "mobile" && smsProvider() === "msg91") {

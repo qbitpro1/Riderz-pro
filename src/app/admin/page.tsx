@@ -10,6 +10,9 @@ import {
   Landmark,
   LifeBuoy,
   MessagesSquare,
+  Bike,
+  Route,
+  Wallet,
   PackageCheck,
   Rocket,
   ShoppingBag,
@@ -19,6 +22,7 @@ import {
 } from "lucide-react";
 import { adminCounts } from "@/lib/server/admin-vendors";
 import { openCustomerTickets } from "@/lib/server/admin-customers";
+import { riderCounts } from "@/lib/server/riders";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -30,7 +34,7 @@ export const metadata: Metadata = {
 type Tile = { href: string; title: string; text: string; icon: LucideIcon; count?: number | null };
 
 export default async function AdminHub() {
-  const [counts, customerMessages] = await Promise.all([adminCounts(), openCustomerTickets()]);
+  const [counts, customerMessages, riders] = await Promise.all([adminCounts(), openCustomerTickets(), riderCounts()]);
   const marketplace: Tile[] = [
     { href: "/admin/vendors", title: "Seller KYC", text: "Applications, documents, approve or reject.", icon: Users, count: counts?.kyc },
     { href: "/admin/vendor-products", title: "Seller products", text: "Approve new products and edits to live ones.", icon: PackageCheck, count: counts?.products },
@@ -39,6 +43,11 @@ export default async function AdminHub() {
     { href: "/admin/payouts", title: "Payouts", text: "Settlements due and payments made to sellers.", icon: Banknote },
     { href: "/admin/support", title: "Seller support", text: "Tickets raised from the seller portal.", icon: LifeBuoy, count: counts?.tickets },
     { href: "/admin/customer-support", title: "Customer messages", text: "Help-desk messages from shoppers.", icon: MessagesSquare, count: customerMessages },
+  ];
+  const delivery: Tile[] = [
+    { href: "/admin/riders", title: "Riders", text: "Rider applications, approvals and suspensions.", icon: Bike, count: riders?.applied },
+    { href: "/admin/dispatch", title: "Dispatch", text: "Give Delhi NCR seller orders to riders.", icon: Route, count: riders?.ready },
+    { href: "/admin/rider-payouts", title: "Rider payouts", text: "Earnings due and payments made to riders.", icon: Wallet },
   ];
   const site: Tile[] = [
     { href: "/admin/catalog", title: "Catalogue report", text: "House catalogue import and data quality.", icon: ClipboardList },
@@ -81,6 +90,11 @@ export default async function AdminHub() {
           <Store size={16} aria-hidden /> Marketplace
         </h2>
         {grid(marketplace)}
+
+        <h2 className="mt-10 flex items-center gap-2 font-display text-sm font-extrabold uppercase tracking-[0.08em] text-ash">
+          <Bike size={16} aria-hidden /> Riders (Delhi NCR)
+        </h2>
+        {grid(delivery)}
 
         <h2 className="mt-10 font-display text-sm font-extrabold uppercase tracking-[0.08em] text-ash">Site</h2>
         {grid(site)}

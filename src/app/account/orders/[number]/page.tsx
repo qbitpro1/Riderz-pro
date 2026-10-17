@@ -115,6 +115,25 @@ function Part({ part, orderStatus }: { part: AccountOrderPart; orderStatus: stri
         </ol>
       )}
 
+      {part.rider && part.rider.status !== "delivered" && (
+        <div className="mt-4 rounded-sm border border-accent/30 bg-accent/5 p-3 text-sm">
+          <p className="font-semibold text-chalk">
+            {part.rider.status === "picked_up"
+              ? `${part.rider.firstName} is on the way with your order`
+              : part.rider.status === "accepted"
+                ? `${part.rider.firstName} will collect your order from the seller`
+                : "A Riderzpro rider is being booked"}
+          </p>
+          <p className="mt-0.5 text-xs text-ash">Riderzpro rider · {part.rider.vehicle}</p>
+          {part.rider.code && (
+            <p className="mt-2 text-ash">
+              Give this code to the rider when you receive the parcel:{" "}
+              <span className="font-display text-xl font-extrabold tracking-[0.3em] text-chalk tnum">{part.rider.code}</span>
+            </p>
+          )}
+        </div>
+      )}
+
       {(part.courier || part.trackingNumber) && (
         <p className="mt-4 rounded-sm bg-tint/5 px-3 py-2 text-sm text-ash">
           {part.courier && <span className="font-semibold text-chalk">{part.courier}</span>}

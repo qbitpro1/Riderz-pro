@@ -375,4 +375,111 @@ ALTER TABLE vendor_otps ADD CONSTRAINT vendor_otps_purpose_check
   CHECK (purpose IN ('verify','login','reset','customer_login','customer_contact'));
 `,
   },
+  {
+    // Riderzpro's own delivery riders (src/lib/server/riders.ts): apply with a mobile code, admin
+    // review, then deliveries assigned by the admin, proof of delivery with the customer's code,
+    // earnings and payouts. No identity documents are stored: the team checks the licence, RC and
+    // insurance in person before approval.
+    id: "005_riders",
+    sql: `
+CREATE TABLE riders (
+  id               text PRIMARY KEY,
+  mobile           text NOT NULL,
+  name             text NOT NULL,
+  city             text NOT NULL,
+  vehicle_type     text NOT NULL CHECK (vehicle_type IN ('bicycle','ev_scooter','scooter','motorcycle')),
+  vehicle_number   text,
+  status           text NOT NULL DEFAULT 'applied'
+                   CHECK (status IN ('applied','approved','changes_requested','rejected','suspended')),
+  review_note      text,
+  reviewed_by      text,
+  reviewed_at      timestamptz,
+  consent_version  text NOT NULL,
+  consented_at     timestamptz NOT NULL,
+  online           boolean NOT NULL DEFAULT false,
+  online_at        timestamptz,
+  created_at       timestamptz NOT NULL DEFAULT now(),
+  updated_at       timestamptz NOT NULL DEFAULT now(),
+  -- Bicycles and low-speed e-scooters need no registration; everything else does.
+  CHECK (vehicle_type IN ('bicycle','ev_scooter') OR vehicle_number IS NOT NULL)
+);
+CREATE UNIQUE INDEX riders_mobile_key ON riders (mobile);
+CREATE INDEX riders_status_idx ON riders (status);
+
+CREATE TABLE rider_sessions (
+  token_hash   text PRIMARY KEY,
+  mobile       text NOT NULL,
+  created_at   timestamptz NOT NULL DEFAULT now(),
+  expires_at   timestamptz NOT NULL,
+  last_seen_at timestamptz NOT NULL DEFAULT now(),
+  user_agent   text
+);
+CREATE INDEX rider_sessions_mobile_idx ON rider_sessions (mobile);
+
+CREATE TABLE rider_payouts (
+  id          text PRIMARY KEY,
+  rider_id    text NOT NULL REFERENCES riders(id),
+  amount      integer NOT NULL CHECK (amount > 0),
+  jobs        integer NOT NULL,
+  reference   text NOT NULL,
+  created_by  text NOT NULL,
+  created_at  timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX rider_payouts_rider_idx ON rider_payouts (rider_id, created_at DESC);
+
+-- One delivery: a seller's part of an order (vendor_order_id), or the items Riderzpro sells itself.
+CREATE TABLE rider_jobs (
+  id                 text PRIMARY KEY,
+  order_id           text NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+  vendor_order_id    text REFERENCES vendor_orders(id) ON DELETE CASCADE,
+  rider_id           text NOT NULL REFERENCES riders(id),
+  status             text NOT NULL DEFAULT 'offered'
+                     CHECK (status IN ('offered','accepted','picked_up','delivered','declined','cancelled')),
+  pickup_name        text NOT NULL,
+  pickup_address     text NOT NULL,
+  pickup_phone       text,
+  drop_name          text NOT NULL,
+  drop_address       text NOT NULL,
+  drop_phone         text NOT NULL,
+  city               text NOT NULL,
+  earning            integer NOT NULL CHECK (earning >= 0),
+  -- Shown to the customer on their order page; the rider enters it to finish the delivery.
+  delivery_code      text NOT NULL,
+  code_attempts      integer NOT NULL DEFAULT 0,
+  note               text,
+  cancel_reason      text,
+  created_by         text NOT NULL,
+  offered_at         timestamptz NOT NULL DEFAULT now(),
+  accepted_at        timestamptz,
+  picked_up_at       timestamptz,
+  delivered_at       timestamptz,
+  closed_at          timestamptz,
+  payout_id          text REFERENCES rider_payouts(id),
+  created_at         timestamptz NOT NULL DEFAULT now(),
+  updated_at         timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX rider_jobs_rider_idx ON rider_jobs (rider_id, status, created_at DESC);
+CREATE INDEX rider_jobs_order_idx ON rider_jobs (order_id);
+-- At most one live job per shipment (a declined or cancelled one can be re-offered).
+CREATE UNIQUE INDEX rider_jobs_one_live_part ON rider_jobs (vendor_order_id)
+  WHERE vendor_order_id IS NOT NULL AND status IN ('offered','accepted','picked_up','delivered');
+CREATE UNIQUE INDEX rider_jobs_one_live_house ON rider_jobs (order_id)
+  WHERE vendor_order_id IS NULL AND status IN ('offered','accepted','picked_up','delivered');
+
+CREATE TABLE rider_job_events (
+  id         bigserial PRIMARY KEY,
+  job_id     text NOT NULL REFERENCES rider_jobs(id) ON DELETE CASCADE,
+  actor      text NOT NULL,
+  from_status text,
+  to_status  text NOT NULL,
+  note       text,
+  at         timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX rider_job_events_job_idx ON rider_job_events (job_id, at);
+
+ALTER TABLE vendor_otps DROP CONSTRAINT vendor_otps_purpose_check;
+ALTER TABLE vendor_otps ADD CONSTRAINT vendor_otps_purpose_check
+  CHECK (purpose IN ('verify','login','reset','customer_login','customer_contact','rider_login'));
+`,
+  },
 ];

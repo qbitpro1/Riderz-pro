@@ -1,5 +1,42 @@
 # Work update
 
+## 17 Oct 2026 (evening): Phase 2 riders done
+
+Riderzpro's own delivery riders in Delhi NCR (Delhi, Gurugram, Noida, Greater Noida, Ghaziabad,
+Faridabad). Orders outside the area still go by courier.
+
+- **Rider app** (`/rider`, phone-first, own header, linked from the footer as "Ride with Riderzpro"):
+  sign in with a mobile code → apply (name, city, vehicle, registration number for motor vehicles,
+  three declarations) → status page → once approved, the deliveries screen: online/offline switch,
+  new offers (pay shown up front; the customer's phone and full address only after accepting),
+  accept / decline / give back, "picked it up", finish with the customer's 4-digit code, today / to be
+  paid / paid, recent deliveries and payouts. The screen refreshes every 15 seconds.
+- **No identity documents are uploaded or stored.** Approval needs the admin to confirm they checked
+  the licence, RC and insurance in person.
+- **Admin**: `/admin/riders` (approve, ask for changes, reject, suspend, reinstate; audited),
+  `/admin/dispatch` (accepted/packed seller shipments with both ends in Delhi NCR; choose a rider,
+  pay (default ₹60) and a note; live jobs with cancel and "reset code tries"), `/admin/rider-payouts`
+  (record a bank/UPI payment for all delivered, unpaid jobs). Hub tiles with counts.
+- **Order flow**: a rider can only collect a packed shipment; pick-up marks it shipped (courier
+  "Riderzpro rider", reference RZR-…), the customer's code marks it delivered and completes the order.
+  While a rider is booked the seller can't ship, deliver or cancel it themselves; an admin cancel
+  also cancels a rider job not yet picked up. 5 wrong codes lock the job until the admin resets it.
+- **Customer**: the order page shows the rider's first name and vehicle, and the 4-digit handover
+  code while the parcel is on its way.
+- **Codes and keys**: `otp.ts` now uses the old site's names without extra setup (RESEND_API_KEY +
+  RESEND_FROM or OTP_EMAIL_FROM; TWILIO_*; MSG91_*). RAZORPAY_KEY_ID / RAZORPAY_KEY_SECRET are listed
+  in `.env.example` for the payments phase.
+- **Database**: migration 005 (riders, rider_sessions, rider_jobs, rider_job_events, rider_payouts;
+  rider_login code purpose).
+- **Verified** with the local database: application rules, approval check, no double booking, seller
+  blocked while a rider is booked, other riders can't see or move a job, accept → pick up → wrong codes
+  → right code → order completed, earnings and payout (a second payout refused); rider app in the
+  browser at phone size. Production build clean (533 pages), no dealer prices in built files.
+- **Test data on this computer only**: riders Saroj (9811111111) and Raju Singh (9822222222), and
+  test orders for Ravi Kumar (9123456780).
+
+**Next**: Phase 3, live tracking (rider location during a delivery, map on the customer's order page).
+
 ## 17 Oct 2026 (later): V0.4 started, Phase 1 customer accounts done
 
 Branch `V0.4`, from `main`. Plan: `docs/MIGRATION_PLAN_V0.4.md` (what to bring over from the old

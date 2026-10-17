@@ -27,6 +27,8 @@ import { ApiError } from "./http";
 import { checkOtp } from "./otp";
 import { newId, newToken, sha256 } from "./security";
 import { audit } from "./vendors";
+import { riderInfoForOrder } from "./riders";
+import { vehicleLabel } from "@/lib/rider/types";
 
 /**
  * CUSTOMER ACCOUNTS
@@ -459,10 +461,16 @@ export async function customerOrderDetail(customerId: string, number: string): P
     };
   };
 
+  const riders = await riderInfoForOrder(o.id);
+  const riderFor = (key: string): AccountOrderPart["rider"] => {
+    const r = riders.get(key);
+    return r ? { firstName: r.riderFirstName, vehicle: vehicleLabel(r.vehicle), status: r.status, code: r.code } : null;
+  };
+
   const out: AccountOrderPart[] = [];
   const house = items.filter((i) => !i.vendor_order_id);
   if (house.length) {
-    out.push({ key: "house", seller: "Riderzpro", status: null, courier: null, trackingNumber: null, shippedAt: null, deliveredAt: null, items: house.map(toItem) });
+    out.push({ key: "house", seller: "Riderzpro", status: null, courier: null, trackingNumber: null, shippedAt: null, deliveredAt: null, items: house.map(toItem), rider: riderFor("house") });
   }
   for (const p of parts) {
     out.push({
@@ -474,6 +482,7 @@ export async function customerOrderDetail(customerId: string, number: string): P
       shippedAt: iso(p.shipped_at),
       deliveredAt: iso(p.delivered_at),
       items: items.filter((i) => i.vendor_order_id === p.id).map(toItem),
+      rider: riderFor(p.id),
     });
   }
 
