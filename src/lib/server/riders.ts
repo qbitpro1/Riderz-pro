@@ -20,6 +20,7 @@ import {
 } from "@/lib/rider/types";
 import type { VendorOnboarding, VendorOrderStatus } from "@/lib/vendor/types";
 import { ApiError } from "./http";
+import { smsRiderOffer } from "./messaging";
 import { checkOtp } from "./otp";
 import { riderMovePart } from "./orders";
 import { newId, newToken, sha256 } from "./security";
@@ -544,6 +545,8 @@ export async function createJob(input: z.infer<typeof createJobSchema>, actor: s
       q,
     );
   });
+  // "New delivery near <area>" to the rider, once per job (messaging.ts never throws).
+  await smsRiderOffer(id).catch(() => undefined);
   return { id };
 }
 

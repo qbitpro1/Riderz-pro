@@ -1,5 +1,61 @@
 # Work update
 
+## 17 Oct 2026 (late night): Phase 3 live tracking and Phase 4 payments, invoices and messages (on V0.4)
+
+Built by three agents in parallel, each with its own files, then reviewed, merged and connected.
+Missing keys and decisions are listed per person in `docs/team/`.
+
+- **Live tracking (Phase 3)**:
+  - **Rider app**: after a one-time consent, the phone sends its location every ~10 s, only while a
+    job is accepted or picked up (`/api/rider/location`).
+  - **Customer order page**: while the parcel is on its way, it shows a map (Leaflet + OpenStreetMap)
+    with the moving rider, road route and ETA (OSRM; straight line at 20 km/h if that fails) and the
+    steps.
+  - **Alerts**: "Arriving" (500 m) and "arrived" (50 m) are recorded once per job and send the
+    customer an SMS. Dispatch gets an off-route alert after 3 minutes off course.
+  - **Admin dispatch**: shows live riders.
+  - **Delivery point**: "Detect my location" at checkout fills the address and stores the GPS point
+    on the order. Otherwise the address is geocoded (Nominatim) when a rider accepts.
+  - **Retention**: the trail is deleted when a job closes; a delivered job keeps its last point for
+    30 days.
+- **Payments (Phase 4, Razorpay)**:
+  - **Paying**: "Pay online" at checkout. The server prices the order and creates the Razorpay order,
+    Checkout opens, and the payment is confirmed by the signature check and the webhook
+    (`/api/payments/razorpay/webhook`, duplicates ignored, amount must match).
+  - **Stock**: held for 30 minutes; unpaid orders are released automatically (Razorpay is asked
+    first).
+  - **Refunds**: full or partial from the admin order page.
+  - **Sellers**: see, hear about and count online orders only once paid.
+  - **Without keys**: "Pay online" is shown as unavailable and WhatsApp ordering works as before.
+- **Invoices and messages (Phase 4)**:
+  - **GST tax invoice**: for Riderzpro's own items, installation and delivery, numbered
+    `RZP/2026-27/00001` per financial year with no gaps, and frozen once issued. Printable at
+    `/account/orders/<number>/invoice` (link on the order page) and `/admin/orders/<id>/invoice`.
+    Seller items are listed as invoiced by the seller.
+  - **Confirmation email and SMS**: sent once per order, when an online payment is confirmed or an
+    admin confirms a WhatsApp order. Also SMS for a rider's new job offer.
+  - **Shared helper**: one email/SMS module (`messaging.ts`) used by sign-in codes (no change in
+    behaviour) and order messages. Each send is logged without its text.
+- **Other**:
+  - Permissions-Policy now allows Razorpay's payment window.
+  - Payment help and FAQ text updated.
+  - New settings listed in `.env.example`.
+- **Database**: migrations 006 (tracking), 007 (payments), 008 (invoices, message log).
+- **Verified**:
+  - type check; production build; no dealer prices or secrets in built files
+  - all 460 pages load
+  - the agents' tests on the merged code: 18 signature checks, 22 invoice/message checks and 29
+    payment checks (against a mock Razorpay)
+  - on the local site:
+    - an order with a GPS point stores it
+    - an out-of-range point is refused
+    - an admin confirm sends the SMS once and issues the invoice
+    - "Detect my location" fills the checkout form
+    - checkout has no sideways scroll at 375 px
+  - Tracking was tested end to end by agent A: pings, arriving/arrived, ETA, delivery, trail deleted.
+- **Not yet tried for real**: Razorpay with real test keys, real SMS/email, tracking on two real
+  phones over https. These need the team's inputs (`docs/team/`).
+
 ## 17 Oct 2026 (night): audit and fixes, merged to main
 
 `docs/AUDIT_V0.4.md`: full check of the merged site, nine findings and one found while testing, all

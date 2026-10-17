@@ -1,5 +1,7 @@
 import "server-only";
 
+import { onOrderConfirmedMessages } from "./order-emails";
+
 /**
  * ORDER LIFECYCLE HOOKS
  *
@@ -10,12 +12,12 @@ import "server-only";
  *   "online_paid"     the online payment was confirmed (checkout verify, webhook or reconcile)
  *   "whatsapp_placed" a WhatsApp order was placed (payment is settled over WhatsApp)
  *
- * Intended for the confirmation email and the GST invoice (Phase 4, invoices/email work).
- * It is a no-op until that work fills it in.
+ * A paid online order gets its GST invoice, confirmation email and SMS here (order-emails.ts).
+ * A WhatsApp order is only placed at this point, not confirmed: its messages go out when an admin
+ * confirms it (orders.ts adminChangeOrderStatus).
  */
 export type OrderConfirmedReason = "online_paid" | "whatsapp_placed";
 
 export async function onOrderConfirmed(orderId: string, reason: OrderConfirmedReason): Promise<void> {
-  void orderId;
-  void reason;
+  if (reason === "online_paid") await onOrderConfirmedMessages(orderId);
 }

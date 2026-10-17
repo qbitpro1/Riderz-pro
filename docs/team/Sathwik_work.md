@@ -18,9 +18,8 @@ or by typing them into `.env.local` on the dev machine.
 
 ## 2. Webhook (set up once the site has its final address)
 
-- URL: `https://riderzpro.com/api/payments/razorpay/webhook` (the path the developer will build;
-  confirm it before saving).
-- Events: `payment.captured`, `payment.failed`, `order.paid`, `refund.processed`, `refund.failed`.
+- URL: `https://riderzpro.com/api/payments/razorpay/webhook` (built and tested, 17 Oct 2026).
+- Events: `payment.captured`, `payment.failed`, `order.paid`, `refund.created`, `refund.processed`, `refund.failed`.
 - Use the same secret as `RAZORPAY_WEBHOOK_SECRET`.
 
 ## 3. Account settings to confirm
@@ -63,6 +62,26 @@ Sent through Resend. It needs the sending domain verified (see `Amrutha_work.md`
 
 - [ ] Sender name and address, e.g. `Riderzpro Orders <orders@riderzpro.com>`.
 - [ ] Support email and phone to print in the email.
+
+## 7. Placeholders now in the code (built 17 Oct 2026, please confirm or correct)
+
+Online payment, refunds and the customer tax invoice are built. These values are placeholders until
+you confirm them (`src/lib/invoice/gst.ts`, `src/lib/data/site.ts`):
+
+- [ ] Registered office address on the invoice: the Bengaluru address is used for now.
+- [ ] HSN and GST rate per product department: every item uses HSN 8708 at 18% for now.
+- [ ] Installation: SAC 998714 at 18%. Delivery charge: SAC 996812 at 18%. Or should delivery take
+      the goods' rate?
+- [ ] Unpaid online orders hold stock for **30 minutes**, then are cancelled. Right length?
+- [ ] Refunds: today any admin can refund up to the amount paid, in whole rupees; the delivery charge
+      isn't included in the suggested amount. Who should approve, and is there a limit?
+- [ ] A payment that arrives after its order was released is kept and flagged for a refund; there is
+      no automatic refund. OK?
+- [ ] Cancelling a paid order does not refund by itself (the admin page then offers the refund). OK?
+- [ ] Credit notes for refunds after an invoice is issued are not built yet. Needed now?
+- [ ] Buyers are treated as consumers (no field for a buyer's GSTIN). Needed for business buyers?
+- [ ] The wording on the Payments help page (`/support/payments`): "Pay online with Razorpay, or
+      confirm on WhatsApp; unpaid online orders are cancelled after 30 minutes."
 
 ## When done
 

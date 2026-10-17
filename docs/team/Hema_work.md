@@ -20,11 +20,12 @@ environment settings.
 | --- | --- |
 | `DATABASE_URL`, `DATABASE_POOL_MAX`, `VENDOR_DATA_KEY` | Vamsi (`Vamsi_work.md`) |
 | `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET` | Sathwik (`Sathwik_work.md`) |
-| `RESEND_API_KEY`, `OTP_EMAIL_FROM`, `MSG91_*` or `TWILIO_*`, `OTP_SMS_PROVIDER` | Amrutha (`Amrutha_work.md`) |
+| `RESEND_API_KEY`, `OTP_EMAIL_FROM`, `ORDERS_EMAIL_FROM`, `MSG91_*` (incl. `MSG91_TEMPLATE_*`) or `TWILIO_*`, `OTP_SMS_PROVIDER` | Amrutha (`Amrutha_work.md`) |
+| `NEXT_PUBLIC_SITE_URL` (`https://riderzpro.com`; staging uses its own address) | Hema |
 | `ADMIN_USER`, `ADMIN_PASSWORD` (login for `/admin`; a long random password) | Hema |
-| Map settings | Viswanath (`Viswanath_work.md`) |
+| `NEXT_PUBLIC_MAP_TILES_URL`, `ROUTING_BASE_URL` | Viswanath (`Viswanath_work.md`) |
 
-Do **not** set `OTP_SEND_IN_DEV` on the hosting (development only).
+Do **not** set `OTP_SEND_IN_DEV` or `RAZORPAY_API_BASE` on the hosting (development and tests only).
 
 ## 3. Domain switch: replace the current site on riderzpro.com (go-live day only)
 

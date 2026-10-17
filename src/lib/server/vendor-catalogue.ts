@@ -7,6 +7,7 @@ import { ApiError } from "./http";
 import { assertOwnFiles } from "./files";
 import { newId } from "./security";
 import { audit } from "./vendors";
+import { AWAITING_PAYMENT_SQL } from "./orders";
 import {
   ownProduct,
   toVendorProduct,
@@ -502,10 +503,11 @@ export type VendorOverview = {
 export async function vendorOverview(vendorId: string, commissionRate: number | null): Promise<VendorOverview> {
   const [orders] = await sql<Record<string, string | null>>(
     `SELECT
-       count(*) FILTER (WHERE status = 'new') AS new_orders,
-       count(*) FILTER (WHERE status IN ('accepted','packed','shipped')) AS in_progress,
-       COALESCE(sum(subtotal) FILTER (WHERE status = 'delivered' AND delivered_at >= now() - interval '30 days'), 0) AS sales
-     FROM vendor_orders WHERE vendor_id = $1`,
+       count(*) FILTER (WHERE vo.status = 'new') AS new_orders,
+       count(*) FILTER (WHERE vo.status IN ('accepted','packed','shipped')) AS in_progress,
+       COALESCE(sum(vo.subtotal) FILTER (WHERE vo.status = 'delivered' AND vo.delivered_at >= now() - interval '30 days'), 0) AS sales
+     FROM vendor_orders vo JOIN orders o ON o.id = vo.order_id
+     WHERE vo.vendor_id = $1 AND NOT ${AWAITING_PAYMENT_SQL}`,
     [vendorId],
   );
   const [products] = await sql<Record<string, string | null>>(
@@ -521,7 +523,7 @@ export async function vendorOverview(vendorId: string, commissionRate: number | 
   const recent = await sql<{ id: string; number: string; status: string; subtotal: number; created_at: Date }>(
     `SELECT vo.id, o.number, vo.status, vo.subtotal, vo.created_at
      FROM vendor_orders vo JOIN orders o ON o.id = vo.order_id
-     WHERE vo.vendor_id = $1 ORDER BY vo.created_at DESC LIMIT 5`,
+     WHERE vo.vendor_id = $1 AND NOT ${AWAITING_PAYMENT_SQL} ORDER BY vo.created_at DESC LIMIT 5`,
     [vendorId],
   );
   const attention = await sql<{ id: string; title: string; sku: string; status: string; stock: number }>(

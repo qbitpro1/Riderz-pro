@@ -16,6 +16,8 @@ import { rupees } from "@/lib/format";
 import { openCheckout, type RazorpaySuccess } from "@/lib/payments/checkout";
 import { UNPAID_HOLD_MINUTES, type OnlinePaymentStart } from "@/lib/payments/types";
 import type { CustomerDetails } from "./orderSchema";
+import { DetectLocation, type DetectedLocation } from "@/components/location/DetectLocation";
+import type { LatLng } from "@/lib/tracking/geo";
 
 /**
  * payment: "whatsapp"   ordered on WhatsApp; payment is arranged there
@@ -78,6 +80,8 @@ export function CheckoutForm({
   const [saveNew, setSaveNew] = useState(true);
   /** Set once the shopper types an address, so saved addresses arriving late never overwrite it. */
   const typedAddress = useRef(false);
+  /** GPS point from "Detect my location"; dropped when the city, state or pincode is changed by hand. */
+  const [point, setPoint] = useState<LatLng | null>(null);
 
   // Signed in: fill in the account's details and offer its saved addresses (default first).
   useEffect(() => {
@@ -105,7 +109,24 @@ export function CheckoutForm({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [customer]);
 
+  function detected(loc: DetectedLocation) {
+    typedAddress.current = true;
+    if (chosen !== "new") setChosen("new");
+    setPoint({ lat: loc.lat, lng: loc.lng });
+    const a = loc.address;
+    if (!a) return;
+    const state = (INDIAN_STATES as readonly string[]).find((s) => s.toLowerCase() === a.state.trim().toLowerCase()) ?? "";
+    setValues((v) => ({
+      ...v,
+      address: [a.line, a.area].filter(Boolean).join(", ").slice(0, 240) || v.address,
+      city: a.city || v.city,
+      state: state || v.state,
+      pincode: /^\d{6}$/.test(a.pincode) ? a.pincode : v.pincode,
+    }));
+  }
+
   function pick(a: AddressView | "new") {
+    setPoint(null);
     if (a === "new") {
       setChosen("new");
       setValues((v) => ({ ...v, address: "", city: "", state: "", pincode: "" }));
@@ -165,7 +186,7 @@ export function CheckoutForm({
       setPhase("creating");
       try {
         const res = await api<{ order: { number: string; total: number }; payment: OnlinePaymentStart }>("/api/orders", {
-          body: { customer: values, lines: cartLines, paymentMethod: "online" },
+          body: { customer: values, lines: cartLines, paymentMethod: "online", deliveryPoint: point ?? undefined },
         });
         p = { key, number: res.order.number, total: res.order.total, payment: res.payment };
         setPending(p);
@@ -235,6 +256,7 @@ export function CheckoutForm({
       typedAddress.current = true;
       // Editing a picked saved address makes it a new one (offered for saving), not a silent edit.
       if (chosen !== "new") setChosen("new");
+      if (k !== "address") setPoint(null);
     }
     setValues((v) => ({ ...v, [k]: e.target.value }));
   };
@@ -270,6 +292,7 @@ export function CheckoutForm({
         body: {
           customer: values,
           lines: lines.map((l) => ({ id: l.id, qty: l.qty, install: Boolean(l.install) })),
+          deliveryPoint: point ?? undefined,
         },
       });
       const href = whatsapp(orderMessage(lines, { ...totals, total: res.order.total }, { orderNumber: res.order.number, customer: details }));
@@ -348,6 +371,10 @@ export function CheckoutForm({
       {field("name", "Full name", { autoComplete: "name", maxLength: 80 })}
       {field("mobile", "Mobile", { type: "tel", inputMode: "tel", autoComplete: "tel-national", maxLength: 16, placeholder: "10-digit number" })}
       {field("email", "Email (optional)", { type: "email", autoComplete: "email", maxLength: 254 })}
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <DetectLocation onDetect={detected} disabled={busy || payBusy} />
+        {point && <span className="text-xs text-ash">Location added for live rider tracking</span>}
+      </div>
       {field("address", "Address", { autoComplete: "street-address", maxLength: 240, placeholder: "House, street, area" })}
       <div className="grid grid-cols-2 gap-3">
         {field("city", "City", { autoComplete: "address-level2", maxLength: 60 })}

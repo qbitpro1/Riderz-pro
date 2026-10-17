@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { AccountShell } from "@/components/account/AccountShell";
 import { LiveTracking } from "@/components/tracking/LiveTracking";
 import { customerOrderDetail, customerPage } from "@/lib/server/customers";
+import { customerOrderPayment } from "@/lib/server/payments";
 import { rupees } from "@/lib/format";
 import { whatsapp } from "@/lib/data/site";
 import { ORDER_STATUS_TEXT, PART_STATUS_LABELS, PART_STEPS, fmtDay, type AccountOrderPart } from "@/lib/account/types";
@@ -18,6 +19,7 @@ export default async function OrderPage({ params }: Params) {
   const me = await customerPage(`/account/orders/${encodeURIComponent(number)}`);
   const order = /^RZP-[A-Z0-9]{6}$/.test(number) ? await customerOrderDetail(me.id, number) : null;
   if (!order) notFound();
+  const payment = await customerOrderPayment(me.id, order.number);
   // Live map while a Riderzpro rider has the delivery (it polls, and stops once delivered).
   const riding = order.parts.some((p) => p.rider?.status === "accepted" || p.rider?.status === "picked_up");
 
@@ -51,7 +53,13 @@ export default async function OrderPage({ params }: Params) {
                 <Row label="Total" value={rupees(order.total)} strong />
               </div>
             </dl>
+            {payment && <p className="mt-2 text-xs text-ash">{payment.label}</p>}
             <p className="mt-3 text-xs text-dim">Prices include GST.</p>
+            {(order.status === "confirmed" || order.status === "completed") && (
+              <Link href={`/account/orders/${order.number}/invoice`} className="mt-3 inline-block text-xs font-semibold text-accent underline underline-offset-4">
+                Tax invoice
+              </Link>
+            )}
           </div>
           <div className="card p-4 text-sm">
             <p className="text-xs font-bold uppercase tracking-[0.12em] text-dim">Delivering to</p>

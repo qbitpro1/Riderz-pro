@@ -4,6 +4,7 @@
  */
 import { z } from "zod";
 import { INDIAN_STATES, mobileSchema, PINCODE_RE } from "@/lib/vendor/validators";
+import { pointSchema } from "@/lib/tracking/geo";
 
 const text = (min: number, max: number, label: string) =>
   z.string().trim().min(min, `${label} is required`).max(max, `${label} must be ${max} characters or fewer`);
@@ -44,6 +45,8 @@ export const placeOrderSchema = z.object({
     .max(50),
   /** "online": pay now with Razorpay. "whatsapp": the order is confirmed and paid over WhatsApp. */
   paymentMethod: z.enum(["whatsapp", "online"]).default("whatsapp"),
+  /** The customer's GPS point from "Detect my location", for the rider map and arrival alerts. */
+  deliveryPoint: pointSchema.optional(),
 });
 
 export type PlaceOrderInput = z.output<typeof placeOrderSchema>;

@@ -23,6 +23,7 @@ import {
 } from "@/lib/tracking/geo";
 import { ApiError } from "./http";
 import { geocodeAddress, roadRoute } from "./tracking-geo";
+import { smsRiderArrived, smsRiderArriving } from "./messaging";
 
 /**
  * LIVE TRACKING — the rider's position while they deliver, shown to the customer and to dispatch.
@@ -104,6 +105,13 @@ export async function notifyTracking(
   if (!row) return false;
   // No phone numbers or coordinates in the log.
   console.info(`[tracking] ${kind} · order ${e.orderNumber} · job ${e.jobId}${e.distanceM !== null ? ` · ${e.distanceM} m` : ""}${e.detail ? ` · ${e.detail}` : ""}`);
+  // The customer's SMS, once per job (messaging.ts). Off-route alerts are for dispatch only.
+  try {
+    if (kind === "arriving") await smsRiderArriving(e.jobId, { minutes: (e.distanceM ?? 500) / ((FALLBACK_KMH * 1000) / 60) });
+    if (kind === "arrived") await smsRiderArrived(e.jobId);
+  } catch (err) {
+    console.error("[tracking] sms:", err instanceof Error ? err.message : err);
+  }
   return true;
 }
 

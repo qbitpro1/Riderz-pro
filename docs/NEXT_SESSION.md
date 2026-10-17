@@ -2,7 +2,8 @@
 
 ## State
 
-- Repo `qbitpro1/Riderz-pro`. Work branch `V0.4`; `main` = `V0.4` at `fe54e72` (merged 17 Oct 2026).
+- Repo `qbitpro1/Riderz-pro`. Work branch `V0.4`. `main` is at `fe54e72`; Phases 3 and 4 are on `V0.4`
+  only (late 17 Oct 2026), waiting for the owner to say merge.
 - This repo becomes the live riderzpro.com (car accessories only). The old site (repo
   `Viswanath5177/Riderzpro`, TanStack + Python) is being replaced; it has no real customers.
 - Done and on `main`:
@@ -11,6 +12,8 @@
   - Phase 1: customer accounts.
   - Phase 2: riders (Delhi NCR).
   - Audit fixes (`docs/AUDIT_V0.4.md`).
+- Done on `V0.4` (not yet on `main`): Phase 3 live tracking; Phase 4 Razorpay payments, refunds,
+  customer GST invoice, confirmation email/SMS (see `docs/WORK_UPDATE.md`, 17 Oct late night).
 - Plan of phases: `docs/MIGRATION_PLAN_V0.4.md`. Running log: `docs/WORK_UPDATE.md`.
 
 ## Owner's instructions for the next session (17 Oct 2026)
@@ -42,21 +45,13 @@
 
 ## Next to build (order set by the owner)
 
-1. **Phase 3: live tracking.**
-   - Rider location only while on a delivery, with consent; short trail, deleted after delivery.
-   - Customer order page: map (Leaflet + OpenStreetMap), moving rider, route and ETA (OSRM with a
-     straight-line fallback).
-   - Alerts: "arriving" at 500 m and "arrived" at 50 m; off-route alert for dispatch.
-   - "Detect my location" at checkout.
-   - Polling, not WebSockets (serverless hosting).
-2. **Phase 4: online payments (Razorpay).**
-   - Server-priced Razorpay order, Checkout on the cart page, signature check, webhook, refunds.
-   - Customer GST tax invoice (printable) and order confirmation email.
-   - WhatsApp ordering stays as an option.
-3. **Phase 5: admin.**
+1. **Phases 3 and 4: done in code.** Still to test for real once the team sends inputs (`docs/team/`):
+   Razorpay test keys + webhook, real SMS/email to named recipients, tracking on two phones over https
+   (staging), invoice-numbering test on real Postgres.
+2. **Phase 5: admin.**
    - Team logins with roles and invites (replacing Basic auth), audit log viewer, coupons.
    - Chosen extra screens: customers, reviews, warranty, reports.
-4. **Later.** Installation bookings, AI assistant (Claude API), mobile app shell (rider app first).
+3. **Later.** Installation bookings, AI assistant (Claude API), mobile app shell (rider app first).
 
 ## Choices made without the owner (change if asked)
 
@@ -64,6 +59,12 @@
 - Rider pay: a fixed amount per delivery, set per job by the admin (default ₹60).
 - Only seller parts go to riders (Riderzpro's own items need a Delhi pickup address first).
 - Guest orders join an account only by the verified mobile (never email).
+- Customers see the rider on the map only after pickup.
+- WhatsApp orders get the invoice, confirmation email and SMS when an admin confirms them; online
+  orders when the payment is confirmed.
+- Riderzpro invoices only its own goods, installation and delivery; an order of only seller items
+  with free delivery has no Riderzpro invoice.
+- Unpaid online orders hold stock for 30 minutes; no simulated payments anywhere.
 
 ## Local setup on this computer
 

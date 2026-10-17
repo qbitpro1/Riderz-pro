@@ -13,6 +13,7 @@ import { newId, sha256 } from "./security";
 import { LIVE_PRODUCT_WHERE } from "./vendor-products";
 import { audit, notifyVendor, type Actor } from "./vendors";
 import { onOrderConfirmed } from "./payments-hooks";
+import { onOrderConfirmedMessages } from "./order-emails";
 import type { PaymentMethod, PaymentStatus } from "@/lib/payments/types";
 
 /**
@@ -165,13 +166,15 @@ export async function placeOrder(
       const candidate = newOrderNumber();
       const rows = await q<{ number: string }>(
         `INSERT INTO orders (id, number, customer_name, customer_phone, customer_email, address, city, state, pincode, notes, subtotal, shipping, total, customer_id,
-                             payment_method, channel)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)
+                             payment_method, channel, delivery_lat, delivery_lng, delivery_geo, delivery_geo_at)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,CASE WHEN $17::float8 IS NULL THEN NULL ELSE now() END)
          ON CONFLICT (number) DO NOTHING RETURNING number`,
         [
           orderId, candidate, customer.name, customer.mobile, customer.email, customer.address, customer.city,
           customer.state, customer.pincode, customer.notes, subtotal, shipping, total, customerId,
           method, method === "online" ? "online" : "whatsapp",
+          // "Detect my location" at checkout; without it the address is geocoded when a rider accepts.
+          input.deliveryPoint?.lat ?? null, input.deliveryPoint?.lng ?? null, input.deliveryPoint ? "device" : null,
         ],
       );
       if (rows[0]) number = rows[0].number;
@@ -305,7 +308,7 @@ export async function cancelUnpaidOnlineOrder(q: Query, orderId: string, reason:
 }
 
 /** SQL condition: an online order still waiting for its money. Sellers never see or act on these. */
-const AWAITING_PAYMENT_SQL = "(o.payment_method = 'online' AND o.payment_status IN ('pending','failed'))";
+export const AWAITING_PAYMENT_SQL = "(o.payment_method = 'online' AND o.payment_status IN ('pending','failed'))";
 
 /* ----------------------------------------------------------- shared bits */
 
@@ -824,4 +827,6 @@ export async function adminChangeOrderStatus(actor: string, orderId: string, to:
     const refundDue = to === "cancelled" && row.payment_method === "online" && (row.payment_status === "paid" || row.payment_status === "partially_refunded");
     await audit({ type: "admin", id: actor }, `order.status_${to}`, { detail: { orderId, number: row.number, from: row.status, ...(refundDue ? { refundDue: true } : {}) } }, q);
   });
+  // GST invoice, confirmation email and SMS, once per order (a paid online order already had them).
+  if (to === "confirmed") await onOrderConfirmedMessages(orderId);
 }

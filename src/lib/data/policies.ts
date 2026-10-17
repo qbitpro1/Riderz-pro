@@ -209,14 +209,15 @@ export const SUPPORT_POLICIES: Policy[] = [
     slug: "payments",
     title: "PAYMENTS",
     eyebrow: "Customer support",
-    intro: "How you pay for an order today, and what is changing.",
+    intro: "How you pay for an order, prices and GST, and refunds.",
     sections: [
       {
         id: "how-to-pay",
-        heading: "How payment works today",
+        heading: "How to pay",
         body: [
-          "Orders are currently confirmed over WhatsApp. We check fitment against your variant, confirm the total, and tell you how to pay in that conversation before anything is dispatched.",
-          "Online payment on the website is coming. Until it is switched on, payment details are shared only on WhatsApp.",
+          "Pay online at checkout: choose Pay online and complete the payment securely with Razorpay. Your order is confirmed as soon as the payment goes through, and your tax invoice is in My orders.",
+          "Or choose Confirm order on WhatsApp. We check fitment against your variant, confirm the total, and tell you how to pay in that conversation before anything is dispatched.",
+          "If an online payment isn't completed within 30 minutes, the order is cancelled and nothing is charged. If money left your account anyway, it is refunded.",
         ],
       },
       {
@@ -229,7 +230,9 @@ export const SUPPORT_POLICIES: Policy[] = [
       {
         id: "refund-method",
         heading: "Refunds",
-        body: ["Refunds go back to the original payment method within 5 working days of the item reaching us."],
+        body: [
+          "Refunds go back to the original payment method within 5 working days of the item reaching us. For online payments, your bank may take a few more working days to show the refund.",
+        ],
       },
     ],
   },
@@ -271,7 +274,7 @@ export const LEGAL_POLICIES: Policy[] = [
         id: "sharing",
         heading: "Who we share it with",
         body: [
-          "Logistics partners, for delivery. Payment processors, once online payment is switched on.",
+          "Logistics partners, for delivery. Our payment processor (Razorpay), for online payments.",
           "We never sell personal data, and we do not share your vehicle details with third-party marketers.",
         ],
       },

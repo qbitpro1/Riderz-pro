@@ -40,9 +40,13 @@ SSL is switched on automatically for Neon and Supabase hosts, or when the URL ha
 
 ## 3. Data rules to agree (for Phase 3, live tracking)
 
-- [ ] Rider location is saved only during an active delivery. How long should the trail be kept after
-      delivery? (Plan: delete the trail as soon as the order is delivered or cancelled, keep only the
-      delivered time and place, for disputes for 30 days.) Confirm or change.
+- [ ] Rider location is saved only during an active delivery. Built (17 Oct 2026): the trail keeps the
+      last 30 minutes and is deleted when the job is delivered or cancelled; a delivered job keeps its
+      last point for 30 days (for disputes), then it is deleted. Confirm or change.
+- [ ] Order and delivery messages are logged (kind, status, no text, no recipient) in `message_log`.
+      How long to keep them? Nothing deletes them yet.
+- [ ] Once the staging database exists, the developer will re-run the invoice-numbering test on it
+      (the local database can't test two transactions at once).
 - [ ] Who in the team may read customer and rider personal data in the admin area.
 
 ## When done

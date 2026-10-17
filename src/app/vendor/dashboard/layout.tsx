@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { sqlOne } from "@/lib/db/client";
 import { vendorPage } from "@/lib/server/session";
+import { AWAITING_PAYMENT_SQL } from "@/lib/server/orders";
 import { DashboardShell } from "@/components/vendor/dashboard/DashboardShell";
 
 export const dynamic = "force-dynamic";
@@ -16,7 +17,11 @@ export default async function DashboardLayout({ children }: { children: ReactNod
 
   const [unread, fresh] = await Promise.all([
     sqlOne<{ n: string }>("SELECT count(*) AS n FROM notifications WHERE vendor_id = $1 AND read_at IS NULL", [vendor.id]),
-    sqlOne<{ n: string }>("SELECT count(*) AS n FROM vendor_orders WHERE vendor_id = $1 AND status = 'new'", [vendor.id]),
+    sqlOne<{ n: string }>(
+      `SELECT count(*) AS n FROM vendor_orders vo JOIN orders o ON o.id = vo.order_id
+        WHERE vo.vendor_id = $1 AND vo.status = 'new' AND NOT ${AWAITING_PAYMENT_SQL}`,
+      [vendor.id],
+    ),
   ]);
 
   return (

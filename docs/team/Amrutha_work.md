@@ -53,6 +53,21 @@ Wording can change; send back the approved template IDs.
       send real emails or SMS to anyone without a named recipient).
 - [ ] Give one Indian mobile number for the real SMS test, once SMS works.
 
+## 4. Settings now in the code (built 17 Oct 2026)
+
+| Setting | What |
+| --- | --- |
+| `MSG91_TEMPLATE_ORDER_CONFIRMED` | Template id for "order confirmed" (variables: order number, amount, link) |
+| `MSG91_TEMPLATE_RIDER_ARRIVING` | "Rider arriving" (order number, minutes, delivery code) |
+| `MSG91_TEMPLATE_RIDER_ARRIVED` | "Rider arrived" (order number, delivery code) |
+| `MSG91_TEMPLATE_RIDER_OFFER` | "New delivery near …" to the rider (area) |
+| `ORDERS_EMAIL_FROM` | Sender for order emails, e.g. `Riderzpro Orders <orders@riderzpro.com>` |
+
+- In MSG91 Flow, name the variables `var1`, `var2`, … in the order listed above.
+- Without a template id, that SMS is skipped and noted in the console (Twilio needs none).
+- [ ] Confirm the support contact printed in emails and invoices: `hello@riderzpro.com` and
+      `+91 98860 44488` are used now.
+
 ## When done
 
 Tell the owner which parts are ready. The developer then sends one real code by email and one by SMS

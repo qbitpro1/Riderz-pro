@@ -24,9 +24,9 @@ export const FAQ_GROUPS: FaqGroup[] = [
     items: [
       {
         q: "How do I place an order?",
-        a: "Add products to your cart and choose Confirm order on WhatsApp. We check fitment against your variant, confirm the total and tell you how to pay before anything is dispatched.",
+        a: "Add products to your cart, fill in your delivery details, then choose Pay online, or Confirm order on WhatsApp, where we check fitment against your variant and confirm the total before anything is dispatched.",
         href: "/support/payments#how-to-pay",
-        hrefLabel: "How payment works today",
+        hrefLabel: "How to pay",
       },
       {
         q: "Can I cancel an order?",
@@ -150,9 +150,9 @@ export const FAQ_GROUPS: FaqGroup[] = [
     items: [
       {
         q: "How do I pay?",
-        a: "Orders are currently confirmed over WhatsApp, where we tell you how to pay. Online payment on the website is coming.",
+        a: "Pay online at checkout with Razorpay, or confirm your order on WhatsApp and we tell you how to pay there.",
         href: "/support/payments#how-to-pay",
-        hrefLabel: "How payment works today",
+        hrefLabel: "How to pay",
       },
       {
         q: "Do prices include GST?",

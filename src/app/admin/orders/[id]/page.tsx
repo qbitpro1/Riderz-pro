@@ -54,6 +54,11 @@ export default async function AdminOrderPage({ params }: { params: Promise<{ id:
           {ORDER_STATUS_LABELS[order.status]} · placed {fmtDateTime(order.createdAt)} via {order.channel}
           {order.paymentMethod === "online" ? ` · ${PAYMENT_STATUS_LABELS[order.paymentStatus]}` : ""}
         </p>
+        {(order.status === "confirmed" || order.status === "completed") && (
+          <Link href={`/admin/orders/${order.id}/invoice`} className="mt-2 inline-block text-xs font-semibold text-accent underline underline-offset-4">
+            Customer tax invoice
+          </Link>
+        )}
 
         <div className="mt-6 grid gap-6 lg:grid-cols-[1.6fr_1fr] lg:items-start">
           <div className="space-y-6">
