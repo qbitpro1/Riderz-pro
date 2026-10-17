@@ -7,6 +7,7 @@ import { listAdminOrders } from "@/lib/server/orders";
 import { VENDOR_ORDER_LABELS } from "@/lib/vendor/types";
 import { PAYMENT_STATUS_LABELS } from "@/lib/payments/types";
 import { PAYMENT_TONE } from "@/components/admin/orders/PaymentCard";
+import { adminPage } from "@/lib/server/admin-auth";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -23,6 +24,7 @@ const ORDER_TONE: Record<OrderStatus, string> = {
 };
 
 export default async function AdminOrdersPage({ searchParams }: { searchParams: Promise<{ status?: string; q?: string }> }) {
+  await adminPage("orders.view", "/admin/orders");
   const sp = await searchParams;
   const status = ORDER_STATUSES.find((s) => s === sp.status);
   const q = (sp.q ?? "").slice(0, 80);

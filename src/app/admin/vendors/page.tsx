@@ -7,6 +7,7 @@ import { StatusBadge } from "@/components/admin/vendors/ui";
 import { DemoStorePanel } from "@/components/admin/vendors/DemoStorePanel";
 import { sqlOne } from "@/lib/db/client";
 import { DEMO_SLUG } from "@/lib/server/demo-store";
+import { adminPage } from "@/lib/server/admin-auth";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -27,6 +28,7 @@ const TABS: { id: VendorFilter; label: string }[] = [
 ];
 
 export default async function VendorsAdminPage({ searchParams }: { searchParams: Promise<{ status?: string; q?: string }> }) {
+  await adminPage("sellers", "/admin/vendors");
   const sp = await searchParams;
   const filter = parseVendorFilter(sp.status);
   const q = (sp.q ?? "").slice(0, 80);

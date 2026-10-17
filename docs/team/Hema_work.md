@@ -22,10 +22,19 @@ environment settings.
 | `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET` | Sathwik (`Sathwik_work.md`) |
 | `RESEND_API_KEY`, `OTP_EMAIL_FROM`, `ORDERS_EMAIL_FROM`, `MSG91_*` (incl. `MSG91_TEMPLATE_*`) or `TWILIO_*`, `OTP_SMS_PROVIDER` | Amrutha (`Amrutha_work.md`) |
 | `NEXT_PUBLIC_SITE_URL` (`https://riderzpro.com`; staging uses its own address) | Hema |
-| `ADMIN_USER`, `ADMIN_PASSWORD` (login for `/admin`; a long random password) | Hema |
+| `ADMIN_USER` (the owner's email), `ADMIN_PASSWORD` (a long random password): the owner's first login at `/admin/sign-in`, then kept as the way back in | Hema |
 | `NEXT_PUBLIC_MAP_TILES_URL`, `ROUTING_BASE_URL` | Viswanath (`Viswanath_work.md`) |
 
 Do **not** set `OTP_SEND_IN_DEV` or `RAZORPAY_API_BASE` on the hosting (development and tests only).
+
+## 2b. Admin team logins (built 17 Oct 2026)
+
+- [ ] After the first deploy, the owner signs in at `/admin/sign-in` with `ADMIN_USER` /
+      `ADMIN_PASSWORD` and invites the team from `/admin/team` (each person gets a one-time link and
+      their own password and role).
+- [ ] The hosting must set the visitor's real IP in `X-Forwarded-For` (Vercel does). The sign-in
+      rate limit and the audit log use it.
+- [ ] Store the `ADMIN_PASSWORD` in the company password manager; change it if anyone who knew it leaves.
 
 ## 3. Domain switch: replace the current site on riderzpro.com (go-live day only)
 

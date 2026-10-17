@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import RiderPayouts from "@/components/admin/riders/RiderPayouts";
 import { listRidersAdmin } from "@/lib/server/riders";
+import { adminPage } from "@/lib/server/admin-auth";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Rider payouts", robots: { index: false, follow: false, nocache: true } };
 
 export default async function RiderPayoutsPage() {
+  await adminPage("payouts", "/admin/rider-payouts");
   const { items } = await listRidersAdmin("all");
   return (
     <section className="section pt-24 md:pt-32">

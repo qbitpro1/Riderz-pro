@@ -11,6 +11,7 @@ import { rupees } from "@/lib/format";
 import { adminOrderDetail } from "@/lib/server/orders";
 import { adminPaymentSummary } from "@/lib/server/payments";
 import { PaymentCard } from "@/components/admin/orders/PaymentCard";
+import { adminPage } from "@/lib/server/admin-auth";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -39,6 +40,7 @@ function Items({ items }: { items: OrderItemView[] }) {
 }
 
 export default async function AdminOrderPage({ params }: { params: Promise<{ id: string }> }) {
+  await adminPage("orders.view", "/admin/orders");
   const order = await adminOrderDetail((await params).id);
   if (!order) notFound();
   const payment = await adminPaymentSummary(order.id);

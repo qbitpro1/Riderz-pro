@@ -9,6 +9,7 @@ import { FUTURE_PARTNERS, INVENTORY_TYPES, SUPPLY_CHANNELS } from "@/lib/invento
 import { ENRICHMENT_POLICY, ENRICHMENT_PROVIDERS } from "@/lib/inventory/providers";
 import { lakh } from "@/lib/format";
 import type { Listing } from "@/lib/inventory/types";
+import { adminPage } from "@/lib/server/admin-auth";
 
 export const metadata: Metadata = {
   title: "Inventory Dashboard",
@@ -16,7 +17,8 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false, nocache: true },
 };
 
-export default function InventoryAdminPage() {
+export default async function InventoryAdminPage() {
+  await adminPage("catalog", "/admin/inventory");
   const { totals, listings, importLog } = SNAPSHOT;
   const now = Date.now();
 

@@ -3,6 +3,7 @@ import { RecordPayoutForm } from "@/components/admin/payouts/RecordPayoutForm";
 import { rupees } from "@/lib/format";
 import { dueVendors } from "@/lib/server/payouts";
 import { SETTLEMENT_DELAY_DAYS } from "@/lib/vendor/types";
+import { adminPage } from "@/lib/server/admin-auth";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default async function AdminPayoutsPage() {
+  await adminPage("payouts", "/admin/payouts");
   const vendors = await dueVendors();
   const total = vendors.reduce((n, v) => n + v.net, 0);
 

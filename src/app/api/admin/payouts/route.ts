@@ -1,11 +1,15 @@
 import { z } from "zod";
-import { adminActor, guardMutation, ok, readJson, route } from "@/lib/server/http";
+import { guardMutation, ok, readJson, route } from "@/lib/server/http";
+import { requireAdmin } from "@/lib/server/admin-auth";
 import { dueVendors, recordPayout } from "@/lib/server/payouts";
 
 export const dynamic = "force-dynamic";
 
-/** Vendors with money due. Bank number is masked. Behind admin Basic auth. */
-export const GET = route(async () => ok({ vendors: await dueVendors() }));
+/** Vendors with money due. Bank number is masked. */
+export const GET = route(async () => {
+  await requireAdmin("payouts");
+  return ok({ vendors: await dueVendors() });
+});
 
 const schema = z.object({
   vendorId: z.string().min(1).max(80),
@@ -16,7 +20,8 @@ const schema = z.object({
 /** Record a transfer. Amounts are recomputed from the orders; nothing money-related is read from the body. */
 export const POST = route(async (req: Request) => {
   guardMutation(req);
+  const me = await requireAdmin("payouts");
   const body = await readJson(req, schema);
-  const payout = await recordPayout(adminActor(req), body);
+  const payout = await recordPayout(me.email, body);
   return ok({ payout }, 201);
 });

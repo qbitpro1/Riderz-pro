@@ -17,6 +17,7 @@ import {
   source,
   type Stage,
 } from "@/lib/data/be6";
+import { adminPage } from "@/lib/server/admin-auth";
 
 export const metadata: Metadata = {
   title: "BE 6 Programme — Admin",
@@ -32,7 +33,8 @@ export const metadata: Metadata = {
  * it does is put the open factual questions at the top, where they cannot be
  * ignored, instead of leaving them buried in a source file.
  */
-export default function Be6AdminPage() {
+export default async function Be6AdminPage() {
+  await adminPage("catalog", "/admin/be-6");
   const stageCounts = STAGE_ORDER.map((s) => ({
     stage: s,
     upgrades: UPGRADES.filter((u) => u.stage === s).length,

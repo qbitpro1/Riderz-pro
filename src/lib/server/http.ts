@@ -118,21 +118,3 @@ export async function rateLimit(key: string, max: number, windowSeconds: number)
   }
 }
 
-/**
- * The admin's name for the audit log. /admin and /api/admin are behind HTTP
- * Basic auth in src/proxy.ts, so by the time a handler runs the header is valid
- * (or the site is in development with no admin password set).
- */
-export function adminActor(req: Request): string {
-  const header = req.headers.get("authorization");
-  if (header?.toLowerCase().startsWith("basic ")) {
-    try {
-      const text = Buffer.from(header.slice(6).trim(), "base64").toString("utf8");
-      const user = text.slice(0, text.indexOf(":"));
-      if (user) return user;
-    } catch {
-      /* fall through */
-    }
-  }
-  return process.env.NODE_ENV === "production" ? "admin" : "dev-admin";
-}

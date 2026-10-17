@@ -8,6 +8,7 @@ import {
   type VerificationStatus,
 } from "@/lib/data/recoil";
 import { rupees } from "@/lib/format";
+import { adminPage } from "@/lib/server/admin-auth";
 
 export const metadata: Metadata = {
   title: "Catalogue Import Report",
@@ -24,7 +25,8 @@ const STATUS: Record<VerificationStatus, { dot: string; label: string; tone: str
 
 const ORDER: VerificationStatus[] = ["NEEDS_REVIEW", "MISSING_DATA", "COMING_SOON", "READY"];
 
-export default function CatalogAdminPage() {
+export default async function CatalogAdminPage() {
+  await adminPage("catalog", "/admin/catalog");
   const groups = ORDER.map((status) => ({
     status,
     items: ALL_PRODUCTS.filter((p) => p.verification === status),

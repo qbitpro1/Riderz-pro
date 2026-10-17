@@ -28,7 +28,7 @@ import { gstinProblem, panFromGstin, productContentSchema, requiredDocuments } f
  * Admin-side logic for the seller marketplace: the KYC queue and decisions,
  * the secret reveal, the product approval queue, bank change requests and
  * support tickets. Called from /api/admin/* routes and /admin/* pages, both
- * behind HTTP Basic auth (src/proxy.ts). The route layer supplies the actor.
+ * behind the admin team login (src/lib/server/admin-auth.ts). The route layer supplies the actor (the admin's email).
  */
 
 const iso = (d: Date | string | null) => (d ? new Date(d).toISOString() : null);

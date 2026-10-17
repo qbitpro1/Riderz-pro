@@ -1,5 +1,40 @@
 # Work update
 
+## 17 Oct 2026 (night, later): Phase 5 part 1, admin team logins and roles (on V0.4)
+
+- **Own login for each person**:
+  - Everyone signs in at `/admin/sign-in` with their own email and password.
+  - This replaces the single shared admin username and password.
+  - Sessions last 12 hours: a random token in an HttpOnly, SameSite=Strict cookie, stored hashed.
+  - Wrong logins are rate limited and recorded.
+- **First login, and the way back in**: the owner types `ADMIN_USER` / `ADMIN_PASSWORD` from the
+  hosting settings into the same form, then invites the team from `/admin/team`.
+- **Roles**: Owner, Manager, Operations, Catalogue, Finance, Support (`src/lib/admin/roles.ts`).
+  - The admin home page shows each role only its own tools.
+  - Every admin page and API route checks the role itself. `src/proxy.ts` only checks for the
+    session cookie (no database there).
+- **Team page** (owner):
+  - Invite by name, email and role. The one-time link (72 h) is shown to copy, and also emailed
+    once email is set up.
+  - Change role, disable or enable, password reset link, sign out everywhere, cancel open links.
+  - Owners can't lock themselves out; there is always an active owner.
+- **Audit log page**: every sign-in, invite, decision and change, newest first, with search and a
+  filter by who.
+- **Database**: migration 009 (admin_users, admin_sessions, admin_invites). The audit log now
+  records the person's email instead of "admin".
+- **Development**: with `ADMIN_USER` unset, `/admin` stays open on this computer as before.
+- **Verified**:
+  - 54 scripted checks:
+    - redirect and 401 without a session; Origin check; wrong password; cookie flags
+    - invite (replace, cancel, reuse refused, short or mismatched password refused)
+    - role limits on pages and APIs; a role change and disabling apply at once
+    - a reset ends other sessions and the old password stops working
+    - no passwords in the audit log; sign-out; rate limit
+  - Every admin page and API opens for the owner.
+  - Sign-in returns to the page asked for.
+  - Team and Audit log pages fit a 375 px phone screen.
+  - Build clean; no dealer prices or secrets in built files.
+
 ## 17 Oct 2026 (late night): Phase 3 live tracking and Phase 4 payments, invoices and messages (on V0.4)
 
 Built by three agents in parallel, each with its own files, then reviewed, merged and connected.

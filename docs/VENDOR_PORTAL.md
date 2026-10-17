@@ -57,7 +57,9 @@ browser and had demo passwords and OTPs; none of its plumbing is used here.
    (`requireVendor(CAN_SELL)`). A suspended vendor can sign in but not change anything,
    and their products leave the shop at once (the visibility gate checks the vendor).
 6. **Admin routes** live under `/api/admin/*` and admin pages under `/admin/*`; both are
-   behind HTTP Basic auth in `src/proxy.ts`. Record the admin with `adminActor(req)`.
+   behind the admin team login (`src/lib/server/admin-auth.ts`): pages call `adminPage(perm, here)`,
+   routes call `requireAdmin(perm)` and record the admin with `me.email`. `src/proxy.ts` only checks
+   for the session cookie.
    Every admin decision writes `audit()` and, where the vendor is affected, `notifyVendor()`.
 7. **Secrets:** bank account number and PAN are stored only sealed (`seal()`) with the
    last four in clear. They are never sent to the browser except: the full bank number

@@ -49,8 +49,9 @@
    Razorpay test keys + webhook, real SMS/email to named recipients, tracking on two phones over https
    (staging), invoice-numbering test on real Postgres.
 2. **Phase 5: admin.**
-   - Team logins with roles and invites (replacing Basic auth), audit log viewer, coupons.
-   - Chosen extra screens: customers, reviews, warranty, reports.
+   - Done on V0.4: team logins with roles and invites, audit log page (`docs/WORK_UPDATE.md`).
+   - Next: coupons + `/offers` page; header delivery-location picker (Phase 3 leftover);
+     extra screens: customers, reviews, warranty, reports.
 3. **Later.** Installation bookings, AI assistant (Claude API), mobile app shell (rider app first).
 
 ## Choices made without the owner (change if asked)

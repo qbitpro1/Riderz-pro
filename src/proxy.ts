@@ -2,57 +2,36 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 /**
- * HTTP Basic auth for /admin/* and /api/admin/* (the admin pages and the
- * JSON routes behind them, including the vendor KYC and product queues). Credentials come from ADMIN_USER and
- * ADMIN_PASSWORD. When they are not set: production answers 404 (the admin
- * area does not exist), development lets everything through.
+ * First gate for /admin/* and /api/admin/*: without an admin session cookie, pages go to
+ * /admin/sign-in and API routes answer 401. It does not open the database, so it only checks that
+ * the cookie is there; every admin page and route then checks the session and the person's role
+ * itself (adminPage / requireAdmin in src/lib/server/admin-auth.ts), which is what counts.
+ *
+ * Open without a session: the sign-in page, invite / reset links, and their API routes.
+ * In development with no ADMIN_USER set, everything is let through (the browser is the owner).
  * (In this Next.js version `proxy` replaces `middleware`.)
  */
-
-/** Length-independent, constant-time string comparison. */
-function safeEqual(a: string, b: string): boolean {
-  const ea = new TextEncoder().encode(a);
-  const eb = new TextEncoder().encode(b);
-  const len = Math.max(ea.length, eb.length);
-  let diff = ea.length ^ eb.length;
-  for (let i = 0; i < len; i++) diff |= (ea[i] ?? 0) ^ (eb[i] ?? 0);
-  return diff === 0;
-}
-
-function decodeBasic(header: string | null): { user: string; pass: string } | null {
-  if (!header || !header.toLowerCase().startsWith("basic ")) return null;
-  try {
-    const bytes = Uint8Array.from(atob(header.slice(6).trim()), (c) => c.charCodeAt(0));
-    const text = new TextDecoder().decode(bytes);
-    const i = text.indexOf(":");
-    if (i === -1) return null;
-    return { user: text.slice(0, i), pass: text.slice(i + 1) };
-  } catch {
-    return null;
-  }
-}
+const ADMIN_COOKIE = "rzp_admin";
+const OPEN = [/^\/admin\/sign-in\/?$/, /^\/admin\/invite\/?$/, /^\/api\/admin\/auth(\/|$)/];
 
 export function proxy(request: NextRequest) {
-  const user = process.env.ADMIN_USER;
-  const password = process.env.ADMIN_PASSWORD;
+  const { pathname, search } = request.nextUrl;
+  if (OPEN.some((re) => re.test(pathname))) return NextResponse.next();
 
-  if (!user || !password) {
-    if (process.env.NODE_ENV === "production") {
-      return new NextResponse("Not found", { status: 404 });
-    }
-    return NextResponse.next();
+  const devOpen = process.env.NODE_ENV !== "production" && !process.env.ADMIN_USER?.trim();
+  const token = request.cookies.get(ADMIN_COOKIE)?.value;
+  if (devOpen || (token && token.length <= 100)) return NextResponse.next();
+
+  if (pathname.startsWith("/api/")) {
+    return NextResponse.json(
+      { ok: false, error: "signed_out", message: "Please sign in to the admin area." },
+      { status: 401, headers: { "Cache-Control": "no-store" } },
+    );
   }
-
-  const given = decodeBasic(request.headers.get("authorization"));
-  // Evaluate both comparisons regardless of the first result.
-  const okUser = safeEqual(given?.user ?? "", user);
-  const okPass = safeEqual(given?.pass ?? "", password);
-  if (given && okUser && okPass) return NextResponse.next();
-
-  return new NextResponse("Authentication required", {
-    status: 401,
-    headers: { "WWW-Authenticate": 'Basic realm="Riderzpro admin", charset="UTF-8"' },
-  });
+  const url = request.nextUrl.clone();
+  url.pathname = "/admin/sign-in";
+  url.search = `?next=${encodeURIComponent(pathname + search)}`;
+  return NextResponse.redirect(url);
 }
 
 export const config = {

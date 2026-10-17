@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import ChangeRequests from "@/components/admin/vendors/ChangeRequests";
 import { listChangeRequests } from "@/lib/server/admin-vendors";
+import { adminPage } from "@/lib/server/admin-auth";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -9,6 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ChangeRequestsPage() {
+  await adminPage("sellers", "/admin/change-requests");
   const items = await listChangeRequests();
   const pending = items.filter((i) => i.status === "pending").length;
   return (

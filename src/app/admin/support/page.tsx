@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import SupportInbox from "@/components/admin/support/SupportInbox";
 import { listTickets } from "@/lib/server/admin-vendors";
+import { adminPage } from "@/lib/server/admin-auth";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
 const TABS = ["open", "answered", "closed", "all"] as const;
 
 export default async function SupportAdminPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
+  await adminPage("support", "/admin/support");
   const sp = await searchParams;
   const filter = (TABS as readonly string[]).includes(sp.status ?? "") ? (sp.status as (typeof TABS)[number]) : "open";
   const { items, counts } = await listTickets(filter);

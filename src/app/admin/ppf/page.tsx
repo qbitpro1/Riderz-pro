@@ -6,6 +6,7 @@ import { PPF_PACKAGES, TIER_RATES, VEHICLE_CLASSES, quote } from "@/lib/ppf/cove
 import { PPF_LANDINGS } from "@/lib/ppf/landings";
 import { GUIDE } from "@/lib/ppf/guide";
 import { rupees } from "@/lib/format";
+import { adminPage } from "@/lib/server/admin-auth";
 
 export const metadata: Metadata = {
   title: "PPF Division — Internal Dashboard",
@@ -29,7 +30,8 @@ const LEAD_FIELDS = [
   "Appointment", "Status", "Assigned salesperson", "Installation date", "Payment", "Completion",
 ];
 
-export default function PpfAdminPage() {
+export default async function PpfAdminPage() {
+  await adminPage("catalog", "/admin/ppf");
   const publishable = PPF_FILMS.filter(isPublishable);
   const totalFields = PPF_FILMS.reduce((n, f) => n + verifiedFieldCount(f).total, 0);
   const verifiedFields = PPF_FILMS.reduce((n, f) => n + verifiedFieldCount(f).verified, 0);

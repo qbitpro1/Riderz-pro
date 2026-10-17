@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getShopifyConfig, isShopifyCheckoutFlagOn } from "@/lib/shopify/config";
 import { buildShopifyCsv, SKIP_LABELS, type SkipReason } from "@/lib/shopify/productCsv";
+import { adminPage } from "@/lib/server/admin-auth";
 
 export const dynamic = "force-dynamic";
 
@@ -18,7 +19,8 @@ const CHECKLIST = [
   "Set NEXT_PUBLIC_SHOPIFY_CHECKOUT=1 and redeploy to show the Checkout securely button.",
 ];
 
-export default function ShopifyAdminPage() {
+export default async function ShopifyAdminPage() {
+  await adminPage("catalog", "/admin/shopify");
   const cfg = getShopifyConfig();
   const flag = isShopifyCheckoutFlagOn();
   const build = buildShopifyCsv();

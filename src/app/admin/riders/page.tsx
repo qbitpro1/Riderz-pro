@@ -3,6 +3,7 @@ import Link from "next/link";
 import RidersBoard from "@/components/admin/riders/RidersBoard";
 import { listRidersAdmin } from "@/lib/server/riders";
 import { RIDER_STATUS_LABELS, type RiderStatus } from "@/lib/rider/types";
+import { adminPage } from "@/lib/server/admin-auth";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Riders", robots: { index: false, follow: false, nocache: true } };
@@ -10,6 +11,7 @@ export const metadata: Metadata = { title: "Riders", robots: { index: false, fol
 const TABS: (RiderStatus | "all")[] = ["applied", "approved", "changes_requested", "suspended", "rejected", "all"];
 
 export default async function RidersAdminPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
+  await adminPage("riders", "/admin/riders");
   const sp = await searchParams;
   const filter = (TABS as string[]).includes(sp.status ?? "") ? (sp.status as RiderStatus | "all") : "applied";
   const { items, counts } = await listRidersAdmin(filter);

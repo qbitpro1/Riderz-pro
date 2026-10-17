@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import DispatchBoard from "@/components/admin/riders/DispatchBoard";
 import { dispatchCandidates, listJobsAdmin, listRidersAdmin } from "@/lib/server/riders";
+import { adminPage } from "@/lib/server/admin-auth";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Rider dispatch", robots: { index: false, follow: false, nocache: true } };
 
 export default async function DispatchPage() {
+  await adminPage("dispatch", "/admin/dispatch");
   const [candidates, { items: riders }, live, recent] = await Promise.all([
     dispatchCandidates(),
     listRidersAdmin("approved"),

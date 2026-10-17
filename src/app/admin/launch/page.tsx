@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
 import { BLOCKERS, READINESS, type Blocker } from "@/lib/catalog/readiness";
 import { SOURCES } from "@/lib/inventory/sources";
+import { adminPage } from "@/lib/server/admin-auth";
 
 export const metadata: Metadata = {
   title: "Launch Readiness",
@@ -16,7 +17,8 @@ const OWNER_TONE: Record<Blocker["owner"], string> = {
   "Internal decision": "text-ash",
 };
 
-export default function LaunchReadinessPage() {
+export default async function LaunchReadinessPage() {
+  await adminPage("catalog", "/admin/launch");
   return (
     <section className="section pt-24 md:pt-32">
       <div className="shell">

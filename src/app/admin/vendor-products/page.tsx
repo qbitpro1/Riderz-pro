@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import ProductQueue from "@/components/admin/vendor-products/ProductQueue";
 import { listVendorProducts, parseProductState, type ProductState } from "@/lib/server/admin-vendors";
+import { adminPage } from "@/lib/server/admin-auth";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -18,6 +19,7 @@ const TABS: { id: ProductState; label: string; count?: "pending" | "revisions" |
 ];
 
 export default async function VendorProductsAdminPage({ searchParams }: { searchParams: Promise<{ state?: string; q?: string }> }) {
+  await adminPage("sellers", "/admin/vendor-products");
   const sp = await searchParams;
   const state = parseProductState(sp.state);
   const q = (sp.q ?? "").slice(0, 80);

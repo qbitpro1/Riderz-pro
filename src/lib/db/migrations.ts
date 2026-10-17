@@ -678,4 +678,55 @@ CREATE TABLE message_log (
 CREATE INDEX message_log_order_idx ON message_log (order_id);
 `,
   },
+  {
+    // Admin team accounts (src/lib/server/admin-auth.ts), replacing the single Basic-auth login.
+    //   admin_users     one row per team member; role decides what they can open. source 'env' is the
+    //                   owner signing in with ADMIN_USER / ADMIN_PASSWORD (no stored password)
+    //   admin_sessions  signed-in browsers (token hash only), 12 hours
+    //   admin_invites   one-time links to join the team or set a new password (token hash only)
+    id: "009_admin_team",
+    sql: `
+CREATE TABLE admin_users (
+  id              text PRIMARY KEY,
+  email           text NOT NULL UNIQUE CHECK (email = lower(email)),
+  name            text NOT NULL,
+  role            text NOT NULL CHECK (role IN ('owner','manager','operations','catalog','finance','support')),
+  status          text NOT NULL DEFAULT 'active' CHECK (status IN ('active','disabled')),
+  source          text NOT NULL DEFAULT 'team' CHECK (source IN ('team','env')),
+  password_hash   text,
+  created_by      text,
+  created_at      timestamptz NOT NULL DEFAULT now(),
+  updated_at      timestamptz NOT NULL DEFAULT now(),
+  last_sign_in_at timestamptz
+);
+
+CREATE TABLE admin_sessions (
+  token_hash   text PRIMARY KEY,
+  admin_id     text NOT NULL REFERENCES admin_users(id) ON DELETE CASCADE,
+  created_at   timestamptz NOT NULL DEFAULT now(),
+  expires_at   timestamptz NOT NULL,
+  last_seen_at timestamptz NOT NULL DEFAULT now(),
+  user_agent   text,
+  ip           text
+);
+CREATE INDEX admin_sessions_admin_idx ON admin_sessions (admin_id);
+
+CREATE TABLE admin_invites (
+  id         text PRIMARY KEY,
+  kind       text NOT NULL CHECK (kind IN ('invite','reset')),
+  email      text NOT NULL CHECK (email = lower(email)),
+  name       text NOT NULL,
+  role       text NOT NULL CHECK (role IN ('owner','manager','operations','catalog','finance','support')),
+  token_hash text NOT NULL UNIQUE,
+  created_by text NOT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  expires_at timestamptz NOT NULL,
+  used_at    timestamptz,
+  revoked_at timestamptz
+);
+-- One open link per email at a time.
+CREATE UNIQUE INDEX admin_invites_one_open ON admin_invites (email) WHERE used_at IS NULL AND revoked_at IS NULL;
+CREATE INDEX audit_log_at_idx ON audit_log (at DESC);
+`,
+  },
 ];
