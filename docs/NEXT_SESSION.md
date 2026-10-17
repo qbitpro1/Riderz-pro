@@ -2,8 +2,7 @@
 
 ## State
 
-- Repo `qbitpro1/Riderz-pro`. Work branch `V0.4`; `main` = `V0.4` up to `ca7f52b`. One newer commit
-  on `V0.4` only: `87970ac` (OTP_SEND_IN_DEV). Merge it into `main` when convenient.
+- Repo `qbitpro1/Riderz-pro`. Work branch `V0.4`; `main` = `V0.4` at `fe54e72` (merged 17 Oct 2026).
 - This repo becomes the live riderzpro.com (car accessories only). The old site (repo
   `Viswanath5177/Riderzpro`, TanStack + Python) is being replaced; it has no real customers.
 - Done and on `main`:
@@ -14,7 +13,21 @@
   - Audit fixes (`docs/AUDIT_V0.4.md`).
 - Plan of phases: `docs/MIGRATION_PLAN_V0.4.md`. Running log: `docs/WORK_UPDATE.md`.
 
-## Waiting on the owner
+## Owner's instructions for the next session (17 Oct 2026)
+
+- Read this file, then build **Phase 3 (live tracking) in full first, then Phase 4 (payments)**.
+- The team is on leave until Monday 19 Oct 2026; the migration work is done today (17 Oct) without them. Don't stop for missing keys or IDs: build with test settings and
+  placeholders, and write each missing item into that person's file in `docs/team/`:
+  - billing, Razorpay, GST invoice: `Sathwil_work.md`
+  - database: `Vamsi_work.md`
+  - Twilio, OTP, SMS, email: `Amrutha_work.md`
+  - hosting and domain: `Hosting_work.md`; maps keys: `Maps_work.md` (people not yet assigned)
+  - any other area: a new `<Name>_work.md` (or `<Area>_work.md` if no person is known), listed in
+    `docs/team/README.md`.
+- Phase 3 has not been started (no location code or tables yet). Note: `/track/:id` currently
+  permanently redirects to `/account/orders`, so put the tracking map on `/account/orders/[number]`.
+
+## Waiting on the owner (details in `docs/team/`)
 
 1. Email test: which address to send a real sign-in code to (Resend key works, send-only;
    sender `entangle@silicofeller-quantum.com` must be verified in Resend).
@@ -26,19 +39,19 @@
 5. Hosting settings for go-live: `DATABASE_URL`, `VENDOR_DATA_KEY`, `ADMIN_USER` / `ADMIN_PASSWORD`,
    email/SMS keys. Then switch the domain and refresh the demo store from `/admin/vendors`.
 
-## Next to build (recommended order)
+## Next to build (order set by the owner)
 
-1. **Phase 4: online payments (Razorpay).**
-   - Server-priced Razorpay order, Checkout on the cart page, signature check, webhook, refunds.
-   - Customer GST tax invoice (printable) and order confirmation email.
-   - WhatsApp ordering stays as an option.
-2. **Phase 3: live tracking.**
+1. **Phase 3: live tracking.**
    - Rider location only while on a delivery, with consent; short trail, deleted after delivery.
    - Customer order page: map (Leaflet + OpenStreetMap), moving rider, route and ETA (OSRM with a
      straight-line fallback).
-   - Alerts: "arriving" at 500 m and "arrived" at 50 m.
+   - Alerts: "arriving" at 500 m and "arrived" at 50 m; off-route alert for dispatch.
    - "Detect my location" at checkout.
    - Polling, not WebSockets (serverless hosting).
+2. **Phase 4: online payments (Razorpay).**
+   - Server-priced Razorpay order, Checkout on the cart page, signature check, webhook, refunds.
+   - Customer GST tax invoice (printable) and order confirmation email.
+   - WhatsApp ordering stays as an option.
 3. **Phase 5: admin.**
    - Team logins with roles and invites (replacing Basic auth), audit log viewer, coupons.
    - Chosen extra screens: customers, reviews, warranty, reports.
