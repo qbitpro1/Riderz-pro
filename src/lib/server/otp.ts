@@ -3,13 +3,14 @@ import "server-only";
 import { sql, sqlOne } from "@/lib/db/client";
 import { ApiError } from "./http";
 import { housekeeping } from "./housekeeping";
+import { emailProvider, env, msg91Otp, printInsteadOfSending, resendEmail, smsProvider, twilioSms, type ProviderAnswer } from "./messaging";
 import { newId, newOtpCode, sameHash, sha256 } from "./security";
 
 /**
  * ONE-TIME CODES (email / mobile verification, password reset, customer sign-in)
  *
  * Six random digits, stored hashed, valid 10 minutes, 5 tries, one resend per
- * 30 seconds. Delivery goes through `deliver`:
+ * 30 seconds. Delivery goes through `deliver`, with the providers in messaging.ts:
  *
  *   development   the code is printed in the server console; with OTP_SEND_IN_DEV=true, channels whose
  *                 provider keys are set send for real (to test them locally), the rest still print
@@ -33,28 +34,13 @@ const TTL_MINUTES = 10;
 const MAX_ATTEMPTS = 5;
 const RESEND_SECONDS = 30;
 
-const env = (k: string) => process.env[k]?.trim() || "";
-
 const emailFrom = () => env("OTP_EMAIL_FROM") || env("RESEND_FROM");
-
-function emailProvider(): "resend" | null {
-  const p = env("OTP_EMAIL_PROVIDER");
-  if (p && p !== "resend") return null;
-  return env("RESEND_API_KEY") && emailFrom() ? "resend" : null;
-}
-
-function smsProvider(): "msg91" | "twilio" | null {
-  const msg91 = Boolean(env("MSG91_AUTH_KEY") && env("MSG91_OTP_TEMPLATE_ID"));
-  const twilio = Boolean(env("TWILIO_ACCOUNT_SID") && env("TWILIO_AUTH_TOKEN") && env("TWILIO_FROM"));
-  const p = env("OTP_SMS_PROVIDER");
-  if (p === "msg91") return msg91 ? "msg91" : null;
-  if (p === "twilio") return twilio ? "twilio" : null;
-  return msg91 ? "msg91" : twilio ? "twilio" : null;
-}
+const otpEmailProvider = () => emailProvider(emailFrom());
+const otpSmsProvider = () => smsProvider(Boolean(env("MSG91_OTP_TEMPLATE_ID")));
 
 export function otpDeliveryAvailable(channel: OtpChannel): boolean {
   if (process.env.NODE_ENV !== "production") return true;
-  return channel === "email" ? emailProvider() !== null : smsProvider() !== null;
+  return channel === "email" ? otpEmailProvider() !== null : otpSmsProvider() !== null;
 }
 
 const WHAT: Record<OtpPurpose, string> = {
@@ -67,44 +53,23 @@ const WHAT: Record<OtpPurpose, string> = {
 };
 
 /** In development: send for real only when asked to, and only on a channel with a provider. */
-const printInsteadOfSending = (channel: OtpChannel) =>
-  process.env.NODE_ENV !== "production" &&
-  (env("OTP_SEND_IN_DEV") !== "true" || (channel === "email" ? emailProvider() === null : smsProvider() === null));
+const printInstead = (channel: OtpChannel) =>
+  printInsteadOfSending(channel === "email" ? otpEmailProvider() !== null : otpSmsProvider() !== null);
 
 async function deliver(channel: OtpChannel, target: string, code: string, purpose: OtpPurpose): Promise<void> {
-  if (printInsteadOfSending(channel)) {
+  if (printInstead(channel)) {
     console.info(`[otp:dev] ${purpose} code for ${channel} ${target}: ${code}`);
     return;
   }
   const text = `${code} is your Riderzpro ${WHAT[purpose]} code. It expires in ${TTL_MINUTES} minutes. Do not share it with anyone.`;
-  const signal = AbortSignal.timeout(10_000);
-  let res: Response;
+  let res: ProviderAnswer;
 
-  if (channel === "email" && emailProvider() === "resend") {
-    res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${env("RESEND_API_KEY")}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ from: emailFrom(), to: [target], subject: `Your Riderzpro code: ${code}`, text }),
-      signal,
-    });
-  } else if (channel === "mobile" && smsProvider() === "msg91") {
-    res = await fetch("https://control.msg91.com/api/v5/otp?" + new URLSearchParams({
-      template_id: env("MSG91_OTP_TEMPLATE_ID"),
-      mobile: `91${target}`,
-      otp: code,
-      otp_expiry: String(TTL_MINUTES),
-    }), { method: "POST", headers: { authkey: env("MSG91_AUTH_KEY"), "Content-Type": "application/json" }, signal });
-  } else if (channel === "mobile" && smsProvider() === "twilio") {
-    const sid = env("TWILIO_ACCOUNT_SID");
-    res = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${encodeURIComponent(sid)}/Messages.json`, {
-      method: "POST",
-      headers: {
-        Authorization: "Basic " + Buffer.from(`${sid}:${env("TWILIO_AUTH_TOKEN")}`).toString("base64"),
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({ To: `+91${target}`, From: env("TWILIO_FROM"), Body: text }),
-      signal,
-    });
+  if (channel === "email" && otpEmailProvider() === "resend") {
+    res = await resendEmail({ from: emailFrom(), to: target, subject: `Your Riderzpro code: ${code}`, text });
+  } else if (channel === "mobile" && otpSmsProvider() === "msg91") {
+    res = await msg91Otp({ templateId: env("MSG91_OTP_TEMPLATE_ID"), mobile: target, otp: code, expiryMinutes: TTL_MINUTES });
+  } else if (channel === "mobile" && otpSmsProvider() === "twilio") {
+    res = await twilioSms({ mobile: target, text });
   } else {
     // `otpDeliveryAvailable` keeps callers from getting here.
     throw new ApiError(503, "otp_unavailable", "Verification codes are not switched on yet.");

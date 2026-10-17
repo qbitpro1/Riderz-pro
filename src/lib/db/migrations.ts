@@ -634,4 +634,48 @@ CREATE TABLE payment_webhook_events (
 CREATE INDEX payment_webhook_events_received_idx ON payment_webhook_events (received_at);
 `,
   },
+  {
+    // Riderzpro's own GST tax invoices to customers (src/lib/server/customer-invoice.ts) and a log of
+    // order and delivery messages, so each goes out once (src/lib/server/messaging.ts).
+    //   invoice_series     one row per financial year; the next number is taken inside the transaction
+    //                      that writes the invoice, so numbers are gap-free and never shared
+    //   customer_invoices  one per order, with everything printed frozen in "snapshot"
+    //   message_log        what was sent, never the message text
+    id: "008_customer_invoices",
+    sql: `
+CREATE TABLE invoice_series (
+  fy       text PRIMARY KEY CHECK (fy ~ '^[0-9]{4}-[0-9]{2}$'),
+  last_no  integer NOT NULL CHECK (last_no > 0)
+);
+
+CREATE TABLE customer_invoices (
+  id         text PRIMARY KEY,
+  order_id   text NOT NULL UNIQUE REFERENCES orders(id) ON DELETE RESTRICT,
+  number     text NOT NULL UNIQUE,
+  fy         text NOT NULL,
+  seq        integer NOT NULL,
+  issued_at  timestamptz NOT NULL,
+  total      integer NOT NULL,
+  snapshot   jsonb NOT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  UNIQUE (fy, seq)
+);
+
+CREATE TABLE message_log (
+  id          text PRIMARY KEY,
+  dedupe_key  text NOT NULL UNIQUE,
+  kind        text NOT NULL,
+  order_id    text REFERENCES orders(id) ON DELETE SET NULL,
+  channel     text NOT NULL CHECK (channel IN ('email','sms')),
+  ref         text NOT NULL DEFAULT '',
+  status      text NOT NULL CHECK (status IN ('pending','sent','dev','skipped','failed')),
+  provider_id text,
+  reason      text,
+  attempts    integer NOT NULL DEFAULT 1,
+  created_at  timestamptz NOT NULL DEFAULT now(),
+  updated_at  timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX message_log_order_idx ON message_log (order_id);
+`,
+  },
 ];
