@@ -1,70 +1,26 @@
 "use client";
 
-import { useEffect, useRef, useState, type FormEvent } from "react";
-import { Lock, Maximize, Minimize, RotateCcw } from "lucide-react";
+import { useEffect, useState, type FormEvent } from "react";
+import { LogOut, Maximize, Minimize, RotateCcw } from "lucide-react";
 import { api, ApiFailure } from "@/lib/vendor/client";
 import { CloseButton, Layer } from "./Layer";
 import { COUNTDOWN_S, ui } from "./lib";
 
-const HOLD_MS = 900;
-
 /**
- * The seller's way out, kept quiet: a small, faint lock that opens only on a press-and-hold (a customer
- * poking at it just sees "Seller only"). Keyboard users open it with Enter or Space.
+ * The seller's way out: a plain "Exit" button. One tap opens the seller options; leaving the screen
+ * still needs the seller's password, so a customer who taps it only sees the password box.
  */
 export function SellerAccess({ onOpen, className = "" }: { onOpen: () => void; className?: string }) {
-  const timer = useRef<number | null>(null);
-  const [hint, setHint] = useState(false);
-  const [holding, setHolding] = useState(false);
-
-  const stop = () => {
-    if (timer.current) window.clearTimeout(timer.current);
-    timer.current = null;
-    setHolding(false);
-  };
-  useEffect(() => stop, []);
-
   return (
-    <span className={`relative inline-flex ${className}`}>
-      <button
-        type="button"
-        aria-label="Seller options. Press and hold to open"
-        onPointerDown={() => {
-          setHolding(true);
-          setHint(false);
-          timer.current = window.setTimeout(() => {
-            stop();
-            onOpen();
-          }, HOLD_MS);
-        }}
-        onPointerUp={() => {
-          if (timer.current) {
-            stop();
-            setHint(true);
-            window.setTimeout(() => setHint(false), 1800);
-          }
-        }}
-        onPointerLeave={stop}
-        onPointerCancel={stop}
-        onContextMenu={(e) => e.preventDefault()}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            onOpen();
-          }
-        }}
-        className={`grid h-12 w-12 place-items-center rounded-full text-dim transition-[opacity,transform] duration-[900ms] ease-linear ${
-          holding ? "scale-125 opacity-100" : "opacity-40 hover:opacity-70"
-        }`}
-      >
-        <Lock size={18} aria-hidden />
-      </button>
-      {hint && (
-        <span role="status" className="ss-pop absolute bottom-full right-0 mb-1 whitespace-nowrap rounded-lg bg-chalk px-3 py-1.5 text-sm font-semibold text-void shadow-md">
-          Seller only
-        </span>
-      )}
-    </span>
+    <button
+      type="button"
+      onClick={onOpen}
+      aria-label="Exit the store screen (seller only)"
+      className={`inline-flex h-12 shrink-0 items-center gap-2 rounded-full border border-tint/15 bg-void px-4 text-sm font-semibold text-ash transition-[transform,background-color] duration-200 active:scale-95 hover:bg-carbon ${className}`}
+    >
+      <LogOut size={18} aria-hidden />
+      <span>Exit</span>
+    </button>
   );
 }
 
@@ -154,7 +110,7 @@ export function SellerDialog({ onClose, onWelcome }: { onClose: () => void; onWe
             Cancel
           </button>
           <button type="submit" disabled={busy} className={ui.primary}>
-            {busy ? "Checking…" : "Close screen"}
+            {busy ? "Checking…" : "Exit to dashboard"}
           </button>
         </div>
       </form>

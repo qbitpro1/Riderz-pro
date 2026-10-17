@@ -27,7 +27,11 @@ online marketplace made on 16 Oct (commit `449a110`) and keeps the Offline Store
   photo-first tiles with discount and low-stock badges, Add and Compare; category rail, sort, "Find for
   my car" (brand → model); full-screen product view with gallery and zoom; compare up to 3; order
   drawer with savings; show-at-counter screen with an order token (A-1, A-2 …) and print; idle reset;
-  press-and-hold lock for the seller.
+  an "Exit" button for the seller (top right on the welcome screen and the product screen; one tap opens
+  the seller options, and leaving needs the seller's password, then returns to the dashboard).
+- **Welcome screen fits every screen:** spacing, the headline, category cards and "Touch to explore"
+  scale with the screen height, so the button stays on screen on short TVs and laptops (checked at
+  1920×1080, 1422×661, 1280×720, a portrait tablet and a phone).
 - **Voice search** on the Offline Store: a mic in the search box (browser speech recognition, Indian
   English; hidden where the browser has none; needs HTTPS). Search ignores filler words ("show me …
   please"), matches plurals and spoken numbers ("six point five inch"). `Permissions-Policy` now allows
