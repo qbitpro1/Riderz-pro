@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { VoiceSearch } from "./VoiceSearch";
-import { CarFront, Columns2, Search, ShoppingBag, SearchX, X } from "lucide-react";
+import { BadgeCheck, CarFront, Columns2, Search, ShoppingBag, SearchX, X } from "lucide-react";
 import { rupees } from "@/lib/format";
 import { api } from "@/lib/vendor/client";
 import { AttractScreen } from "./AttractScreen";
@@ -208,11 +208,14 @@ export function StoreScreen({
                 scroller.current?.scrollTo({ top: 0 });
               }}
               aria-label={`${store.name}. Show all products`}
-              className="hidden min-w-0 shrink-0 items-center gap-3 rounded-2xl text-left transition-transform duration-200 active:scale-[0.97] sm:flex lg:w-52 xl:w-56"
+              className="hidden min-w-0 shrink-0 items-center gap-3 rounded-2xl text-left transition-transform duration-200 active:scale-[0.97] sm:flex lg:w-60 xl:w-64"
             >
               <StoreMark store={store} className="h-12 w-12 md:h-14 md:w-14" text="text-xl" />
               <span className="hidden min-w-0 lg:block">
-                <h1 className="truncate font-display text-lg font-extrabold leading-tight tracking-tight text-chalk">{store.name}</h1>
+                <span className="flex min-w-0 items-center gap-1.5">
+                  <h1 className="truncate font-display text-lg font-extrabold leading-tight tracking-tight text-chalk">{store.name}</h1>
+                  <BadgeCheck size={18} aria-label="Riderzpro verified seller" className="shrink-0 fill-accent text-on-accent" />
+                </span>
                 <span className="block text-sm text-dim tnum">{products.length} in stock</span>
               </span>
             </button>
