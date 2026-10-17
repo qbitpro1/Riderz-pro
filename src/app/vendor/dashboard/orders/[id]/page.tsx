@@ -50,12 +50,22 @@ export default async function VendorOrderPage({ params }: { params: Promise<{ id
       {vendor.status === "approved" && (
         <section className="card p-5" aria-labelledby="next-step">
           <h2 id="next-step" className="eyebrow mb-3">Next step</h2>
-          {order.status === "shipped" && (
+          {order.status === "shipped" && !order.rider && (
             <p className="mb-3 text-sm text-ash">
               With {order.courier} · tracking {order.trackingNumber}. Mark it delivered once the customer has it.
             </p>
           )}
-          {["delivered", "cancelled", "return_requested", "returned"].includes(order.status) ? (
+          {order.rider && (
+            <p className="mb-3 rounded-sm border border-accent/30 bg-accent/5 px-3 py-2 text-sm text-chalk">
+              {order.rider.status === "picked_up"
+                ? `Riderzpro rider ${order.rider.firstName} has collected this order and is delivering it.`
+                : order.rider.status === "accepted"
+                  ? `Riderzpro rider ${order.rider.firstName} is coming to collect this order. Keep it packed and ready at your pickup address.`
+                  : "A Riderzpro rider is being booked to collect this order. Pack it and keep it ready."}{" "}
+              The rider marks it shipped and delivered.
+            </p>
+          )}
+          {order.rider && (order.status === "packed" || order.status === "shipped") ? null : ["delivered", "cancelled", "return_requested", "returned"].includes(order.status) ? (
             <p className="text-sm text-ash">
               {order.status === "delivered"
                 ? "Delivered. This order is settled to you after the return window."

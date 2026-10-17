@@ -2,6 +2,7 @@ import "server-only";
 
 import { sql, sqlOne } from "@/lib/db/client";
 import { ApiError } from "./http";
+import { housekeeping } from "./housekeeping";
 import { newId, newOtpCode, sameHash, sha256 } from "./security";
 
 /**
@@ -117,6 +118,7 @@ export async function sendOtp(opts: { vendorId: string | null; channel: OtpChann
   if (!otpDeliveryAvailable(opts.channel)) {
     throw new ApiError(503, "otp_unavailable", "Verification codes are not switched on yet.");
   }
+  housekeeping();
   const recent = await sqlOne<{ n: string }>(
     `SELECT count(*) AS n FROM vendor_otps
      WHERE target = $1 AND purpose = $2 AND created_at > now() - make_interval(secs => $3)`,

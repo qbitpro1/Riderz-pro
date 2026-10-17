@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
 import { api, ApiFailure } from "@/lib/vendor/client";
 import { INDIAN_STATES } from "@/lib/vendor/validators";
@@ -50,6 +50,8 @@ export function CheckoutForm({
   const [saved, setSaved] = useState<AddressView[]>([]);
   const [chosen, setChosen] = useState<string | "new">("new");
   const [saveNew, setSaveNew] = useState(true);
+  /** Set once the shopper types an address, so saved addresses arriving late never overwrite it. */
+  const typedAddress = useRef(false);
 
   // Signed in: fill in the account's details and offer its saved addresses (default first).
   useEffect(() => {
@@ -65,6 +67,7 @@ export function CheckoutForm({
       .then(({ addresses }) => {
         if (!alive || addresses.length === 0) return;
         setSaved(addresses);
+        if (typedAddress.current) return;
         const a = addresses.find((x) => x.isDefault) ?? addresses[0];
         pick(a);
       })
@@ -98,8 +101,15 @@ export function CheckoutForm({
   const [fallbackHref, setFallbackHref] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
-  const set = (k: keyof Values) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
+  const ADDRESS_FIELDS: (keyof Values)[] = ["address", "city", "state", "pincode"];
+  const set = (k: keyof Values) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    if (ADDRESS_FIELDS.includes(k)) {
+      typedAddress.current = true;
+      // Editing a picked saved address makes it a new one (offered for saving), not a silent edit.
+      if (chosen !== "new") setChosen("new");
+    }
     setValues((v) => ({ ...v, [k]: e.target.value }));
+  };
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();

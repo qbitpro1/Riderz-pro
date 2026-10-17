@@ -259,7 +259,8 @@ async function event(q: Query, jobId: string, actor: string, from: JobStatus | n
   await q("INSERT INTO rider_job_events (job_id, actor, from_status, to_status, note) VALUES ($1,$2,$3,$4,$5)", [jobId, actor, from, to, note]);
 }
 
-const shortRef = (jobId: string) => `RZR-${jobId.slice(-6).toUpperCase()}`;
+/** "RZR-QSFS4A": the job's last six letters and digits (ids also contain - and _). */
+const shortRef = (jobId: string) => `RZR-${jobId.replace(/[^A-Za-z0-9]/g, "").slice(-6).toUpperCase()}`;
 
 export const riderActionSchema = z.discriminatedUnion("action", [
   z.object({ action: z.literal("accept") }),
@@ -291,7 +292,7 @@ export async function riderAct(rider: RiderSelf, jobId: string, input: z.infer<t
         return "declined" as const;
       case "pickup":
         if (j.status !== "accepted") throw bad();
-        if (j.vendor_order_id) await riderMovePart(q, j.vendor_order_id, "shipped", shortRef(j.id));
+        if (j.vendor_order_id) await riderMovePart(q, j.vendor_order_id, "shipped", shortRef(j.id), rider.id);
         await q("UPDATE rider_jobs SET status='picked_up', picked_up_at=now(), updated_at=now() WHERE id=$1", [j.id]);
         await event(q, j.id, who, j.status, "picked_up");
         return "picked_up" as const;
@@ -304,7 +305,7 @@ export async function riderAct(rider: RiderSelf, jobId: string, input: z.infer<t
           wrongCode = true;
           return null;
         }
-        if (j.vendor_order_id) await riderMovePart(q, j.vendor_order_id, "delivered", shortRef(j.id));
+        if (j.vendor_order_id) await riderMovePart(q, j.vendor_order_id, "delivered", shortRef(j.id), rider.id);
         await q("UPDATE rider_jobs SET status='delivered', delivered_at=now(), closed_at=now(), updated_at=now() WHERE id=$1", [j.id]);
         await event(q, j.id, who, j.status, "delivered");
         return "delivered" as const;

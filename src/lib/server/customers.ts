@@ -38,9 +38,9 @@ import { vehicleLabel } from "@/lib/rider/types";
  * SameSite=Lax cookie `rzp_customer`; the database stores only its SHA-256. Sessions last 60 days
  * and end on sign-out, "sign out everywhere" and account deletion.
  *
- * Orders: checkout links an order to the signed-in account (server side, from the session). On
- * sign-in with a verified mobile, earlier guest orders placed with that same mobile join the
- * account. Email is not used for this: it is optional and unverified at checkout.
+ * Orders: checkout links an order to the signed-in account (server side, from the session). Guest
+ * orders placed with the account's verified mobile join the account at sign-in and whenever its
+ * order list loads. Email is not used for this: it is optional and unverified at checkout.
  *
  * Use `currentCustomer()` in server components and route handlers that also serve guests,
  * `requireCustomer()` in account API routes (throws 401), `customerPage()` in account pages
@@ -329,23 +329,37 @@ export async function getWishlist(customerId: string): Promise<WishlistItem[]> {
   return rows.map((r) => cleanItem(r.item));
 }
 
-/** Replaces the saved list with `items` (the browser merges before it sends). */
-export async function setWishlist(customerId: string, items: WishlistItem[]): Promise<WishlistItem[]> {
+/**
+ * Adds items to the saved list (a newer copy of an item wins), keeping the 50 most recently saved.
+ * Never removes anything: removal is one item at a time (`removeWishlistItem`), so a device holding
+ * an older list can't wipe what another device saved.
+ */
+export async function mergeWishlist(customerId: string, items: WishlistItem[]): Promise<WishlistItem[]> {
   const unique = new Map<string, WishlistItem>();
-  for (const i of items) if (!unique.has(i.slug)) unique.set(i.slug, cleanItem(i));
-  const list = [...unique.values()].slice(0, 50);
+  for (const i of items) {
+    const had = unique.get(i.slug);
+    if (!had || i.savedAt > had.savedAt) unique.set(i.slug, cleanItem(i));
+  }
   await transaction(async (q) => {
-    await q("DELETE FROM customer_wishlist WHERE customer_id = $1", [customerId]);
-    for (const i of list) {
-      await q("INSERT INTO customer_wishlist (customer_id, slug, item, saved_at) VALUES ($1, $2, $3, to_timestamp($4 / 1000.0))", [
-        customerId,
-        i.slug,
-        JSON.stringify(i),
-        Math.min(i.savedAt, Date.now()),
-      ]);
+    for (const i of unique.values()) {
+      await q(
+        `INSERT INTO customer_wishlist (customer_id, slug, item, saved_at) VALUES ($1, $2, $3, to_timestamp($4 / 1000.0))
+         ON CONFLICT (customer_id, slug) DO UPDATE SET item = EXCLUDED.item, saved_at = EXCLUDED.saved_at
+          WHERE EXCLUDED.saved_at > customer_wishlist.saved_at`,
+        [customerId, i.slug, JSON.stringify(i), Math.min(i.savedAt, Date.now())],
+      );
     }
+    await q(
+      `DELETE FROM customer_wishlist WHERE customer_id = $1 AND slug NOT IN
+         (SELECT slug FROM customer_wishlist WHERE customer_id = $1 ORDER BY saved_at DESC LIMIT 50)`,
+      [customerId],
+    );
   });
-  return list;
+  return getWishlist(customerId);
+}
+
+export async function removeWishlistItem(customerId: string, slug: string): Promise<void> {
+  await sql("DELETE FROM customer_wishlist WHERE customer_id = $1 AND slug = $2", [customerId, slug]);
 }
 
 export async function setCar(customerId: string, car: SavedCar | null): Promise<void> {
@@ -373,6 +387,13 @@ type OrderRow = {
 };
 
 export async function listCustomerOrders(customerId: string): Promise<AccountOrderSummary[]> {
+  // Guest orders placed since the last sign-in with the account's verified mobile join it now.
+  await sql(
+    `UPDATE orders SET customer_id = $1
+      WHERE customer_id IS NULL
+        AND customer_phone = (SELECT mobile FROM customers WHERE id = $1 AND mobile_verified_at IS NOT NULL)`,
+    [customerId],
+  );
   const rows = await sql<{ number: string; status: OrderStatus; created_at: Date; total: number; item_count: string; first_item: string | null }>(
     `SELECT o.number, o.status, o.created_at, o.total,
             (SELECT coalesce(sum(qty), 0) FROM order_items i WHERE i.order_id = o.id) AS item_count,

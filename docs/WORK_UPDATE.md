@@ -1,5 +1,14 @@
 # Work update
 
+## 17 Oct 2026 (night): audit and fixes, merged to main
+
+`docs/AUDIT_V0.4.md`: full check of the merged site, nine findings and one found while testing, all
+fixed: old riderzpro.com links redirect; wishlist syncs one change at a time (no lost or returning
+items across devices); guest orders appear in the account straight away; checkout address prefill;
+demo store refresh keeps product addresses; seller sees the rider booking; rider id in the order
+audit; expired rows cleaned up hourly; no account check on seller/rider/store screens; tidy rider
+references. All 470 pages load, build clean, no dealer prices in built files.
+
 ## 17 Oct 2026 (evening): Phase 2 riders done
 
 Riderzpro's own delivery riders in Delhi NCR (Delhi, Gurugram, Noida, Greater Noida, Ghaziabad,

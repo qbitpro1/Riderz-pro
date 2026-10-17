@@ -395,6 +395,11 @@ export async function vendorOrderDetail(vendorId: string, id: string): Promise<V
     deliveredAt: iso(r.delivered_at),
     cancelledAt: iso(r.cancelled_at),
     returnedAt: iso(r.returned_at),
+    rider: await sql<{ name: string; status: "offered" | "accepted" | "picked_up" }>(
+      `SELECT r.name, j.status FROM rider_jobs j JOIN riders r ON r.id = j.rider_id
+        WHERE j.vendor_order_id = $1 AND j.status IN ('offered','accepted','picked_up') LIMIT 1`,
+      [id],
+    ).then((rows) => (rows[0] ? { firstName: rows[0].name.trim().split(/\s+/)[0], status: rows[0].status } : null)),
   };
 }
 
@@ -481,7 +486,7 @@ export async function vendorChangeStatus(
  * A Riderzpro rider moves a seller's shipment: collected (packed → shipped) or handed over
  * (shipped → delivered). Runs inside the rider job's transaction; the seller is told.
  */
-export async function riderMovePart(q: Query, vendorOrderId: string, to: "shipped" | "delivered", ref: string): Promise<void> {
+export async function riderMovePart(q: Query, vendorOrderId: string, to: "shipped" | "delivered", ref: string, riderId: string): Promise<void> {
   const row = (
     await q<{ status: VendorOrderStatus; order_id: string; vendor_id: string; number: string }>(
       `SELECT vo.status, vo.order_id, vo.vendor_id, o.number FROM vendor_orders vo JOIN orders o ON o.id = vo.order_id
@@ -509,7 +514,7 @@ export async function riderMovePart(q: Query, vendorOrderId: string, to: "shippe
     await q("UPDATE vendor_orders SET status='delivered', delivered_at=now(), updated_at=now() WHERE id=$1", [vendorOrderId]);
   }
   await settleOrderStatus(q, row.order_id);
-  await audit({ type: "system", id: "rider" }, `order.${to}`, { vendorId: row.vendor_id, detail: { vendorOrderId, number: row.number, from, ref } }, q);
+  await audit({ type: "system", id: `rider:${riderId}` }, `order.${to}`, { vendorId: row.vendor_id, detail: { vendorOrderId, number: row.number, from, ref, riderId } }, q);
   await notifyVendor(
     row.vendor_id,
     {

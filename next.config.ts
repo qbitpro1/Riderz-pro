@@ -62,6 +62,37 @@ const nextConfig: NextConfig = {
       { source: "/shop/audio", destination: "/shop/multimedia", permanent: true },
       { source: "/shop/off-road", destination: "/shop/off-roading", permanent: true },
       { source: "/shop/performance", destination: "/shop/accessories?group=performance", permanent: true },
+
+      // The previous riderzpro.com site (a different app, replaced by this one): its page addresses
+      // land on the matching page here instead of a 404.
+      { source: "/login", destination: "/account/sign-in", permanent: true },
+      { source: "/signup", destination: "/account/sign-in", permanent: true },
+      { source: "/auth", destination: "/account/sign-in", permanent: true },
+      { source: "/orders", destination: "/account/orders", permanent: true },
+      { source: "/order/:id", destination: "/account/orders", permanent: true },
+      { source: "/order-confirmation/:id", destination: "/account/orders", permanent: true },
+      { source: "/track/:id", destination: "/account/orders", permanent: true },
+      { source: "/dashboards", destination: "/account", permanent: true },
+      { source: "/dashboard/customer", destination: "/account", permanent: true },
+      { source: "/dashboard/vendor", destination: "/vendor/dashboard", permanent: true },
+      { source: "/dashboard/rider", destination: "/rider/dashboard", permanent: true },
+      { source: "/dashboard/admin", destination: "/admin", permanent: true },
+      { source: "/dashboard/workshop", destination: "/garage", permanent: true },
+      { source: "/offers", destination: "/shop", permanent: true },
+      { source: "/assistant", destination: "/shop", permanent: true },
+      { source: "/app", destination: "/", permanent: true },
+      { source: "/support", destination: "/contact", permanent: true },
+      { source: "/privacy", destination: "/legal/privacy", permanent: true },
+      { source: "/terms", destination: "/legal/terms", permanent: true },
+      { source: "/vendor/login", destination: "/vendor/auth", permanent: true },
+      { source: "/vendor/signup", destination: "/vendor/auth?mode=signup", permanent: true },
+      { source: "/vendor/sign-up", destination: "/vendor/auth?mode=signup", permanent: true },
+      // The old seller dashboard lived at /vendor/{id}; this site's own /vendor/* pages are excluded.
+      { source: "/vendor/:id((?!auth$|dashboard$|onboarding$|pending$)[^/]+)", destination: "/vendor/dashboard", permanent: true },
+      { source: "/admin/login", destination: "/admin", permanent: true },
+      { source: "/super-admin", destination: "/admin", permanent: true },
+      { source: "/super-admin/:path*", destination: "/admin", permanent: true },
+      { source: "/superadmin", destination: "/admin", permanent: true },
     ];
   },
 };

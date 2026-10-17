@@ -50,6 +50,8 @@ export type VendorOrderDetail = VendorOrderListItem & {
   deliveredAt: string | null;
   cancelledAt: string | null;
   returnedAt: string | null;
+  /** A Riderzpro rider booked to collect and deliver this order (Delhi NCR), while the job is live. */
+  rider: { firstName: string; status: "offered" | "accepted" | "picked_up" } | null;
 };
 
 /** Tabs on the vendor orders page. */

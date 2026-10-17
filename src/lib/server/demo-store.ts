@@ -21,8 +21,8 @@ import { audit, type Actor } from "./vendors";
  * An approved seller with seat covers and speakers copied from the house catalogue, plus
  * Qubo dashcams (details and photos from quboworld.com, see demo-dashcams.ts), so the
  * offline store screen can be shown without a real seller. Run from
- * /admin/vendors (admin only). Safe to run again: it refreshes the demo products
- * (SKUs starting DEMO-) and leaves anything else the seller added alone.
+ * /admin/vendors (admin only). Safe to run again: it refreshes the demo products in place
+ * (SKUs starting DEMO-, same ids and web addresses) and leaves anything else the seller added alone.
  *
  * An existing "Asha Accessories" demo store (slug asha-accessories) is renamed to
  * Indus Enterprises rather than duplicated.
@@ -206,13 +206,17 @@ export async function seedDemoStore(input: z.infer<typeof demoStoreSchema>, by: 
     action = "created";
   }
 
-  // Refresh the demo products; the seller's own products stay.
-  const old = await sql<{ images: string[] }>("DELETE FROM vendor_products WHERE vendor_id = $1 AND sku LIKE $2 RETURNING images", [
-    vendor.id,
-    `${SKU_PREFIX}%`,
-  ]);
-  const oldFiles = old.flatMap((r) => r.images ?? []);
-  if (oldFiles.length) await sql("DELETE FROM files WHERE vendor_id = $1 AND id = ANY($2)", [vendor.id, oldFiles]);
+  // Refresh the demo products in place, by SKU, so their ids and web addresses stay the same (orders
+  // and links keep working). The seller's own products are never touched.
+  const existing = new Map(
+    (
+      await sql<{ id: string; sku: string; images: string[] }>("SELECT id, sku, images FROM vendor_products WHERE vendor_id = $1 AND sku LIKE $2", [
+        vendor.id,
+        `${SKU_PREFIX}%`,
+      ])
+    ).map((r) => [r.sku, r]),
+  );
+  const kept = new Set<string>();
 
   let products = 0;
   let photos = 0;
@@ -223,24 +227,38 @@ export async function seedDemoStore(input: z.infer<typeof demoStoreSchema>, by: 
       summary: string | null; highlights: string[]; specs: { label: string; value: string }[]; fitment: string[]; imageSources: string[];
     },
   ) => {
+    const sku = `${SKU_PREFIX}${String(n).padStart(2, "0")}`;
     const images = await copyImages(vendor.id, p.imageSources);
-    if (images.length === 0) return;
+    if (images.length === 0) return; // no photo could be copied: an existing product keeps its old one
     photos += images.length;
-    await sql(
-      `INSERT INTO vendor_products (id, vendor_id, slug, status, title, brand, department, group_slug, sku, gst_rate, mrp, price,
-                                    stock, low_stock_at, part_type, summary, highlights, specs, fitment, images,
-                                    submitted_at, approved_at, approved_by)
-       VALUES ($1, $2, $3, 'live', $4, $5, $6, $7, $8, 18, $9, $10, $11, 3, 'genuine', $12, $13::jsonb, $14::jsonb, $15::jsonb, $16::jsonb,
-               now(), now(), $17)`,
-      [
-        newId("vp"), vendor.id, await newSlug(sql, p.brand, p.title), p.title.slice(0, 120), p.brand.slice(0, 60),
-        p.department, p.group, `${SKU_PREFIX}${String(n).padStart(2, "0")}`, p.mrp, p.price, DEMO_STOCK,
-        p.summary,
-        JSON.stringify(p.highlights.map((h) => h.slice(0, 140)).slice(0, 8)),
-        JSON.stringify(p.specs.slice(0, 20).map((s) => ({ label: s.label.slice(0, 40), value: s.value.slice(0, 120) }))),
-        JSON.stringify(p.fitment), JSON.stringify(images), by.id,
-      ],
-    );
+    const fields = [
+      p.title.slice(0, 120), p.brand.slice(0, 60), p.department, p.group, p.mrp, p.price, DEMO_STOCK, p.summary,
+      JSON.stringify(p.highlights.map((h) => h.slice(0, 140)).slice(0, 8)),
+      JSON.stringify(p.specs.slice(0, 20).map((s) => ({ label: s.label.slice(0, 40), value: s.value.slice(0, 120) }))),
+      JSON.stringify(p.fitment), JSON.stringify(images),
+    ];
+    const had = existing.get(sku);
+    if (had) {
+      await sql(
+        `UPDATE vendor_products SET title=$2, brand=$3, department=$4, group_slug=$5, mrp=$6, price=$7, stock=$8, summary=$9,
+                highlights=$10::jsonb, specs=$11::jsonb, fitment=$12::jsonb, images=$13::jsonb, status='live', pending_revision=NULL,
+                updated_at=now()
+          WHERE id=$1`,
+        [had.id, ...fields],
+      );
+      // The new photos are in place; the old copies can go.
+      if (had.images?.length) await sql("DELETE FROM files WHERE vendor_id = $1 AND id = ANY($2)", [vendor.id, had.images]);
+    } else {
+      await sql(
+        `INSERT INTO vendor_products (id, vendor_id, slug, status, title, brand, department, group_slug, sku, gst_rate, mrp, price,
+                                      stock, low_stock_at, part_type, summary, highlights, specs, fitment, images,
+                                      submitted_at, approved_at, approved_by)
+         VALUES ($1, $2, $3, 'live', $4, $5, $6, $7, $8, 18, $9, $10, $11, 3, 'genuine', $12, $13::jsonb, $14::jsonb, $15::jsonb, $16::jsonb,
+                 now(), now(), $17)`,
+        [newId("vp"), vendor.id, await newSlug(sql, p.brand, p.title), fields[0], fields[1], fields[2], fields[3], sku, ...fields.slice(4), by.id],
+      );
+    }
+    kept.add(sku);
     products++;
   };
 
@@ -265,6 +283,13 @@ export async function seedDemoStore(input: z.infer<typeof demoStoreSchema>, by: 
       mrp: Math.max(c.mrp, c.price), price: c.price, summary: c.summary, highlights: c.highlights, specs: c.specs,
       fitment: ["universal"], imageSources: c.images,
     });
+  }
+
+  // Demo products that are no longer part of the demo set go, with their photos.
+  for (const [sku, row] of existing) {
+    if (kept.has(sku)) continue;
+    await sql("DELETE FROM vendor_products WHERE id = $1", [row.id]);
+    if (row.images?.length) await sql("DELETE FROM files WHERE vendor_id = $1 AND id = ANY($2)", [vendor.id, row.images]);
   }
 
   await audit(by, "demo_store.seed", { vendorId: vendor.id, ip, detail: { action, products, photos } });
