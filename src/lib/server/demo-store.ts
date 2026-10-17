@@ -103,7 +103,7 @@ const ONBOARDING: VendorOnboarding = {
     bannerFileId: null,
   },
   shipping: {
-    pickup: { line1: "Demo address", line2: null, city: "Bengaluru", state: "Karnataka", pincode: "560068" },
+    pickup: { line1: "Demo address", line2: null, city: "Delhi", state: "Delhi", pincode: "110001" },
     contactPhone: "9000000000",
     handlingDays: 2,
     shipsTo: "pan_india",
