@@ -1,5 +1,6 @@
 "use client";
 
+import { storeHref } from "@/lib/vendor/types";
 import { AlertTriangle, ArrowLeft, Check, Eye, EyeOff, FileText, ShieldCheck, ZoomIn } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -352,7 +353,7 @@ export default function VendorReview({ review }: { review: Review }) {
                 </li>
               ))}
             </ul>
-            <p className="mt-3 text-xs text-dim">Store URL: <span className="font-mono">{checks.slug ? `/store/${checks.slug}` : "not set"}</span></p>
+            <p className="mt-3 text-xs text-dim">Store URL: <span className="font-mono">{checks.slug ? storeHref(checks.slug) : "not set"}</span></p>
           </section>
 
           <section aria-labelledby="decision" className="card p-4">

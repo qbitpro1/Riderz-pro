@@ -1,5 +1,6 @@
 "use client";
 
+import { storeHref } from "@/lib/vendor/types";
 import { useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -245,7 +246,7 @@ export function StepDocuments({ state, editable, onSaved, onUploaded, goBack, go
               store
                 ? [
                     ["Store", store.storeName],
-                    ["Address", `/store/${store.slug}`],
+                    ["Address", storeHref(store.slug)],
                     ["Seller type", store.sellerType],
                     ["Departments", store.departments.map((d) => DEPARTMENT_BY_SLUG[d]?.name ?? d).join(", ")],
                     ["Brands", store.brands.map((b) => b.name).join(", ")],
