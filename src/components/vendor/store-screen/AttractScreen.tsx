@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { Armchair, Hand, Lightbulb, Package, Speaker } from "lucide-react";
+import { Armchair, BadgeCheck, Hand, Lightbulb, Package, Speaker } from "lucide-react";
 import { fileHref } from "@/lib/vendor/types";
 import { StoreMark } from "./parts";
 import type { ScreenProduct, ScreenStore } from "./types";
@@ -113,8 +113,9 @@ export function AttractScreen({
               <StoreMark store={store} className="h-14 w-14 lg:h-16 lg:w-16" text="text-2xl" />
               <div className="min-w-0">
                 <p className="truncate font-display text-xl font-extrabold tracking-tight text-chalk lg:text-2xl">{store.name}</p>
-                <p className="truncate text-sm font-medium text-ash lg:text-base">
-                  {store.city ? `${store.city} · ` : ""}Riderzpro verified seller
+                <p className="flex min-w-0 items-center gap-1.5 text-sm font-medium text-ash lg:text-base">
+                  <span className="truncate">{store.city ? `${store.city} · ` : ""}Riderzpro verified seller</span>
+                  <BadgeCheck size={20} aria-label="Verified" className="shrink-0 fill-accent text-on-accent" />
                 </p>
               </div>
             </div>
