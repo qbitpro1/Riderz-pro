@@ -3,7 +3,7 @@
 import { useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Boxes, Eye, EyeOff, Lock, ShieldCheck, Store } from "lucide-react";
+import { ArrowLeft, Boxes, Eye, EyeOff, Globe, Lock, ShieldCheck, Store } from "lucide-react";
 import { BUSINESS_TYPES, type BusinessType } from "@/lib/vendor/types";
 import { ApiFailure, api } from "@/lib/vendor/client";
 import { passwordSchema, signInSchema, signUpSchema, emailSchema } from "@/lib/vendor/validators";
@@ -13,10 +13,11 @@ import { CheckField, Notice, SelectField, TextField, useFocusFirstInvalid, valid
 type Mode = "signin" | "signup" | "reset";
 
 const PERKS = [
-  { icon: Store, title: "Your Offline Store screen", body: "Show your stock on a tablet or TV in your shop. Customers browse and build their order." },
-  { icon: Boxes, title: "Stock that keeps itself right", body: "Products that run out leave the screen by themselves. Update stock and prices any time." },
-  { icon: Lock, title: "Locked to your store", body: "Only your password closes the screen, so customers never reach your dashboard." },
-  { icon: ShieldCheck, title: "Checked sellers only", body: "Every seller passes KYC, and we approve each product before it goes on the screen." },
+  { icon: Globe, title: "Sell online across India", body: "Your approved products are listed on the Riderzpro website with your store name, and customers order from anywhere in India." },
+  { icon: Store, title: "Your Offline Store screen", body: "Show your stock on a tablet or TV in your own shop. Customers browse and build their order." },
+  { icon: Boxes, title: "Stock that keeps itself right", body: "Products that run out leave the website and the screen by themselves. Update stock and prices any time." },
+  { icon: Lock, title: "Locked to your store", body: "Only your password closes the Offline Store screen, so customers never reach your dashboard." },
+  { icon: ShieldCheck, title: "Checked sellers only", body: "Every seller passes KYC, and we approve each product before it goes on the website or the screen." },
 ];
 
 function failureFields(err: unknown): FieldErrors {

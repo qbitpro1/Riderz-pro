@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useRef, useState, type ReactNode } from "react";
 import type { VendorSettings } from "@/lib/server/vendor-account";
 import { api, ApiFailure, uploadFile } from "@/lib/vendor/client";
-import { fileHref } from "@/lib/vendor/types";
+import { fileHref, offlineStoreHref, storeHref } from "@/lib/vendor/types";
 import { INDIAN_STATES } from "@/lib/vendor/validators";
 
 type Msg = { tone: "ok" | "error"; text: string } | null;
@@ -200,11 +200,11 @@ export default function SettingsForm({ initial }: { initial: VendorSettings }) {
     <div className="mt-6 space-y-5">
       {lock ? (
         <p role="status" className="rounded-[2px] border border-gold/40 bg-gold/10 px-3 py-2 text-sm text-gold">
-          Your store is suspended, so settings are read-only. <Link href="/vendor/dashboard/support" className="underline">Contact support</Link> to resolve this.
+          Your store is suspended: your products are hidden from the website and the Offline Store, and settings are read-only. <Link href="/vendor/dashboard/support" className="underline">Contact support</Link> to resolve this.
         </p>
       ) : null}
 
-      <Card id="profile" title="Store profile" hint="Changes here go live straight away. No review needed.">
+      <Card id="profile" title="Store profile" hint="Changes here go live straight away on your online store and Offline Store screen. No review needed.">
         <div className="space-y-5">
           <div className="grid gap-5 sm:grid-cols-2">
             <ImagePicker label="Logo" kind="logo" fileId={logo} onChange={setLogo} disabled={lock} />
@@ -222,7 +222,7 @@ export default function SettingsForm({ initial }: { initial: VendorSettings }) {
         </div>
       </Card>
 
-      <Card id="shipping" title="Shipping & returns" hint="Shown to shoppers on your products.">
+      <Card id="shipping" title="Shipping & returns" hint="Shown to shoppers on your products on the Riderzpro website.">
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="block">
             <span className="label">Contact phone</span>
@@ -307,7 +307,8 @@ export default function SettingsForm({ initial }: { initial: VendorSettings }) {
         <dl className="grid gap-x-6 gap-y-3 text-sm sm:grid-cols-2">
           {([
             ["Store name", ro.storeName],
-            ["Offline Store screen", ro.slug ? `/store/${ro.slug}` : null],
+            ["Online store", ro.slug ? storeHref(ro.slug) : null],
+            ["Offline Store screen", ro.slug ? offlineStoreHref(ro.slug) : null],
             ["Legal name", ro.legalName],
             ["Trade name", ro.tradeName],
             ["GSTIN", ro.gstExempt ? "GST exempt" : ro.gstin],

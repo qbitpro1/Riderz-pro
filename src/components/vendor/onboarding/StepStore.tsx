@@ -183,7 +183,7 @@ export function StepStore({ state, editable, onSaved, onUploaded, goBack, goNext
     avail.state === "checking" ? "Checking availability…" : avail.state === "free" ? "Available" : avail.state === "error" ? "Couldn't check availability right now." : "This is the name shoppers will see.";
 
   return (
-    <StepFrame title="Your store" intro="This is how your store appears on your Offline Store screen. Our team reviews it before approval." locked={!editable}>
+    <StepFrame title="Your store" intro="This is how your store appears on the Riderzpro website and on your Offline Store screen. Our team reviews it before approval." locked={!editable}>
       <form ref={form} onSubmit={submit} noValidate>
         <fieldset disabled={!editable} className="space-y-5 border-0 p-0">
           {formError && <Notice tone="error">{formError}</Notice>}
@@ -212,7 +212,7 @@ export function StepStore({ state, editable, onSaved, onUploaded, goBack, goNext
             </label>
             <div className="flex">
               <span className="flex min-h-12 items-center rounded-l-sm border border-r-0 border-tint/10 bg-tint/5 px-3 text-sm text-ash" aria-hidden="true">
-                /store/
+                /sellers/
               </span>
               <input
                 id="slug"
@@ -233,7 +233,7 @@ export function StepStore({ state, editable, onSaved, onUploaded, goBack, goNext
             <FieldMessage
               id="slug"
               error={errors.slug || (slugCheck && !slugCheck.success ? slugCheck.error.issues[0].message : undefined)}
-              hint={slug ? `Your Offline Store screen: riderzpro.com/store/${slug} (opens only when you are signed in)` : "Letters, numbers and hyphens."}
+              hint={slug ? `Your online store: riderzpro.com/sellers/${slug}. Your Offline Store screen: riderzpro.com/store/${slug} (opens only when you are signed in).` : "Letters, numbers and hyphens."}
             />
           </div>
 
