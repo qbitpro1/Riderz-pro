@@ -18,10 +18,11 @@
 - Read this file, then build **Phase 3 (live tracking) in full first, then Phase 4 (payments)**.
 - The team is on leave until Monday 19 Oct 2026; the migration work is done today (17 Oct) without them. Don't stop for missing keys or IDs: build with test settings and
   placeholders, and write each missing item into that person's file in `docs/team/`:
-  - billing, Razorpay, GST invoice: `Sathwil_work.md`
+  - billing, Razorpay, GST invoice: `Sathwik_work.md`
   - database: `Vamsi_work.md`
   - Twilio, OTP, SMS, email: `Amrutha_work.md`
-  - hosting and domain: `Hosting_work.md`; maps keys: `Maps_work.md` (people not yet assigned)
+  - maps, routing, geocoding: `Viswanath_work.md`
+  - hosting and domain: `Hosting_work.md` (person not yet assigned)
   - any other area: a new `<Name>_work.md` (or `<Area>_work.md` if no person is known), listed in
     `docs/team/README.md`.
 - Phase 3 has not been started (no location code or tables yet). Note: `/track/:id` currently

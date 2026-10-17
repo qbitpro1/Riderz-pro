@@ -1,4 +1,4 @@
-# Sathwil: billing, payments and invoices (Phase 4)
+# Sathwik: billing, payments and invoices (Phase 4)
 
 Written 17 Oct 2026. Development carries on without these, using Razorpay **test mode** and
 placeholders. Nothing here blocks building; these items block **testing real payments** and **go-live**.

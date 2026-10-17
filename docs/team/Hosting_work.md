@@ -18,10 +18,10 @@ environment settings.
 | Env name | Who provides it |
 | --- | --- |
 | `DATABASE_URL`, `DATABASE_POOL_MAX`, `VENDOR_DATA_KEY` | Vamsi (`Vamsi_work.md`) |
-| `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET` | Sathwil (`Sathwil_work.md`) |
+| `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET` | Sathwik (`Sathwik_work.md`) |
 | `RESEND_API_KEY`, `OTP_EMAIL_FROM`, `MSG91_*` or `TWILIO_*`, `OTP_SMS_PROVIDER` | Amrutha (`Amrutha_work.md`) |
 | `ADMIN_USER`, `ADMIN_PASSWORD` (login for `/admin`; a long random password) | This person |
-| Map settings (`Maps_work.md`) | To be assigned |
+| Map settings | Viswanath (`Viswanath_work.md`) |
 
 Do **not** set `OTP_SEND_IN_DEV` on the hosting (development only).
 
@@ -32,7 +32,7 @@ Do **not** set `OTP_SEND_IN_DEV` on the hosting (development only).
       week in case of rollback.
 - [ ] The old site's addresses (`/login`, `/orders`, `/track/…`, `/vendor/…` and others) already
       redirect to the new pages.
-- [ ] After the switch: open `/admin/vendors` and refresh the demo store; tell Sathwil to save the
+- [ ] After the switch: open `/admin/vendors` and refresh the demo store; tell Sathwik to save the
       Razorpay webhook URL.
 
 ## When done

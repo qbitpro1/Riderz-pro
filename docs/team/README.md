@@ -6,13 +6,13 @@ setting name, and why.
 
 | File | Person | Area | Blocks |
 | --- | --- | --- | --- |
-| [Sathwil_work.md](Sathwil_work.md) | Sathwil | Razorpay, refunds, GST invoice | Real test payments (Phase 4), go-live |
+| [Sathwik_work.md](Sathwik_work.md) | Sathwik | Razorpay, refunds, GST invoice | Real test payments (Phase 4), go-live |
 | [Vamsi_work.md](Vamsi_work.md) | Vamsi | New PostgreSQL database, encryption key, data rules | Staging, go-live |
 | [Amrutha_work.md](Amrutha_work.md) | Amrutha | OTP, SMS (MSG91/Twilio, DLT), email (Resend) | Real SMS codes, rider alerts, order emails |
 | [Hosting_work.md](Hosting_work.md) | To be assigned | Hosting, env settings, domain switch | Real-phone tracking test, go-live |
-| [Maps_work.md](Maps_work.md) | To be assigned | Map tiles, routing, geocoding keys | Production use of tracking maps |
+| [Viswanath_work.md](Viswanath_work.md) | Viswanath | Map tiles, routing, geocoding keys | Production use of tracking maps |
 
-Start first, because these take days: Amrutha's DLT template approvals, and Sathwil's Razorpay KYC.
+Start first, because these take days: Amrutha's DLT template approvals, and Sathwik's Razorpay KYC.
 
 Rule for everyone: secret values go only into the hosting dashboard or a password manager, never into
 chat, email or git.
