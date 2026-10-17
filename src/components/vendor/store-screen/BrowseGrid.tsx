@@ -38,7 +38,7 @@ export function ProductTile({
   const compareFull = !inCompare && compare.length >= COMPARE_MAX;
 
   return (
-    <article className="group relative flex h-full flex-col overflow-hidden rounded-3xl border border-tint/10 bg-void shadow-sm transition-shadow duration-300 hover:shadow-lg">
+    <article className="group relative flex h-full flex-col overflow-hidden rounded-3xl bg-void shadow-sm ring-1 ring-tint/5 transition-shadow duration-300 hover:shadow-lg">
       <button
         type="button"
         onClick={() => onOpen(p)}
@@ -54,10 +54,10 @@ export function ProductTile({
             pad="p-4"
           />
           {off > 0 && (
-            <span className="absolute right-3 top-3 rounded-full bg-accent px-2.5 py-1 text-xs font-bold text-on-accent tnum">{off}% off</span>
+            <span className="absolute left-3 top-3 rounded-full bg-accent px-3 py-1 text-sm font-bold text-on-accent tnum">{off}% off</span>
           )}
           {low && (
-            <span className="absolute bottom-3 right-3 rounded-full bg-void px-2.5 py-1 text-xs font-bold text-accent shadow-sm">
+            <span className="absolute right-3 top-3 rounded-full bg-gold/15 px-3 py-1 text-sm font-bold text-gold">
               Only {p.stock} left
             </span>
           )}
@@ -72,36 +72,21 @@ export function ProductTile({
           )}
         </div>
         <div className={`flex flex-1 flex-col gap-1 ${compact ? "p-3" : "px-4 pb-3 pt-3.5"}`}>
-          <p className="truncate text-[13px] font-semibold text-dim">{p.brand}</p>
-          <p className={`line-clamp-2 font-semibold leading-snug text-chalk ${compact ? "text-[15px]" : "text-base md:text-[17px]"}`}>{p.title}</p>
+          <p className="truncate text-xs font-bold uppercase tracking-[0.14em] text-dim">{p.brand}</p>
+          <p className={`line-clamp-2 font-bold leading-snug text-chalk ${compact ? "text-[15px]" : "text-lg xl:text-xl"}`}>{p.title}</p>
           <Price p={p} size={compact ? "sm" : "md"} className="mt-auto pt-1.5" />
         </div>
       </button>
-
-      {!compact && (
-        <button
-          type="button"
-          onClick={() => onToggleCompare(p.id)}
-          disabled={compareFull}
-          aria-pressed={inCompare}
-          aria-label={inCompare ? `Remove ${p.title} from compare` : compareFull ? `Compare is full, ${COMPARE_MAX} products` : `Compare ${p.title}`}
-          className={`absolute left-3 top-3 grid h-12 w-12 place-items-center rounded-full border shadow-sm transition-[transform,background-color] duration-200 active:scale-90 disabled:opacity-40 ${
-            inCompare ? "border-chalk bg-chalk text-void" : "border-tint/15 bg-void text-ash hover:text-chalk"
-          }`}
-        >
-          {inCompare ? <Check size={20} aria-hidden /> : <Columns2 size={20} aria-hidden />}
-        </button>
-      )}
 
       <div className={compact ? "px-3 pb-3" : "px-4 pb-4"}>
         {qty === 0 ? (
           <button
             type="button"
             onClick={() => onSetQty(p.id, 1)}
-            className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-chalk text-[15px] font-bold text-void transition-[transform,background-color] duration-200 active:scale-[0.97] hover:bg-accent hover:text-on-accent"
+            className="inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-accent text-base font-bold text-on-accent shadow-md transition-transform duration-200 active:scale-[0.97]"
             aria-label={`Add ${p.title} to order`}
           >
-            <Plus size={18} aria-hidden /> Add to order
+            <Plus size={20} aria-hidden /> Add to order
           </button>
         ) : (
           <div className="flex items-center justify-between gap-2">
@@ -110,6 +95,21 @@ export function ProductTile({
             </span>
             <Stepper value={qty} max={max} onChange={(n) => onSetQty(p.id, n)} label={p.title} compact />
           </div>
+        )}
+        {!compact && (
+          <button
+            type="button"
+            onClick={() => onToggleCompare(p.id)}
+            disabled={compareFull}
+            aria-pressed={inCompare}
+            aria-label={inCompare ? `Remove ${p.title} from compare` : compareFull ? `Compare is full, ${COMPARE_MAX} products` : `Compare ${p.title}`}
+            className={`mt-2 flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl border-2 text-sm font-bold transition-[transform,background-color] duration-200 active:scale-[0.98] disabled:opacity-40 ${
+              inCompare ? "border-chalk bg-chalk text-void" : "border-tint/10 text-ash"
+            }`}
+          >
+            {inCompare ? <Check size={18} aria-hidden /> : <Columns2 size={18} aria-hidden />}
+            {inCompare ? "Added to compare" : "Compare"}
+          </button>
         )}
       </div>
     </article>

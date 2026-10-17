@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { VoiceSearch } from "./VoiceSearch";
 import { CarFront, Columns2, Search, ShoppingBag, SearchX, X } from "lucide-react";
 import { rupees } from "@/lib/format";
 import { api } from "@/lib/vendor/client";
@@ -223,21 +224,24 @@ export function StoreScreen({
                 type="search"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search seat covers, speakers, brands…"
+                placeholder="Search or tap the mic: seat covers for Creta…"
                 autoComplete="off"
                 enterKeyHint="search"
-                className="h-14 w-full rounded-xl border border-tint/15 bg-carbon pl-12 pr-14 text-base text-chalk outline-none transition-colors placeholder:text-dim focus:border-accent [&::-webkit-search-cancel-button]:hidden"
+                className="h-14 w-full rounded-xl border border-tint/15 bg-carbon pl-12 pr-28 text-base text-chalk outline-none transition-colors placeholder:text-dim focus:border-accent [&::-webkit-search-cancel-button]:hidden"
               />
-              {query && (
-                <button
-                  type="button"
-                  onClick={() => setQuery("")}
-                  aria-label="Clear search"
-                  className="absolute right-1 top-1/2 grid h-12 w-12 -translate-y-1/2 place-items-center rounded-full text-ash active:bg-steel"
-                >
-                  <X size={20} aria-hidden />
-                </button>
-              )}
+              <span className="absolute right-1 top-1/2 flex -translate-y-1/2 items-center">
+                {query && (
+                  <button
+                    type="button"
+                    onClick={() => setQuery("")}
+                    aria-label="Clear search"
+                    className="grid h-12 w-12 place-items-center rounded-full text-ash active:bg-steel"
+                  >
+                    <X size={20} aria-hidden />
+                  </button>
+                )}
+                <VoiceSearch onText={setQuery} />
+              </span>
             </label>
 
             {hasCars && (

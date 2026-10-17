@@ -25,9 +25,11 @@ const CSS = `
 .ss-kb{animation:ss-kb 16s ease-out both;transform-origin:50% 50%;will-change:transform}
 .ss-bump{animation:ss-bump .42s cubic-bezier(.2,.8,.2,1)}
 .ss-ring{animation:ss-ring 2.4s ease-out infinite}
+@keyframes ss-breathe{0%,100%{transform:scale(1);opacity:.35}50%{transform:scale(1.04,1.12);opacity:0}}
+.ss-breathe{animation:ss-breathe 2.6s ease-in-out infinite}
 .ss-pop{animation:ss-pop .25s cubic-bezier(.2,.8,.2,1) both}
 @media (prefers-reduced-motion: reduce){
-  .ss-kb,.ss-ring,.ss-bump,.ss-rise,.ss-sheet,.ss-pop,.ss-drawer{animation:none!important}
+  .ss-kb,.ss-ring,.ss-breathe,.ss-bump,.ss-rise,.ss-sheet,.ss-pop,.ss-drawer{animation:none!important}
 }
 @media print{
   html,body{background:var(--void)!important;height:auto!important;overflow:visible!important}

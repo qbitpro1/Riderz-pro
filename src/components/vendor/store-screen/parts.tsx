@@ -40,7 +40,7 @@ export function Photo({
   return (
     <div className={`relative overflow-hidden bg-[#f3f4f5] ${className}`}>
       {id ? (
-        <Image src={fileHref(id)} alt={alt} fill sizes={sizes} priority={priority} className={`object-contain ${pad}`} />
+        <Image src={fileHref(id)} alt={alt} fill sizes={sizes} priority={priority} className={`object-contain mix-blend-multiply ${pad}`} />
       ) : (
         <div className="grid h-full w-full place-items-center text-dim">
           <ImageOff size={28} aria-hidden />

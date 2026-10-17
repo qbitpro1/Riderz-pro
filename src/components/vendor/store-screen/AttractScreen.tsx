@@ -2,10 +2,8 @@
 
 import Image from "next/image";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { ArrowRight, Hand } from "lucide-react";
-import { rupees } from "@/lib/format";
+import { Armchair, Hand, Lightbulb, Package, Speaker } from "lucide-react";
 import { fileHref } from "@/lib/vendor/types";
-import { offPct } from "./lib";
 import { StoreMark } from "./parts";
 import type { ScreenProduct, ScreenStore } from "./types";
 
@@ -59,80 +57,20 @@ export function AttractScreen({
     return () => document.removeEventListener("visibilitychange", onVis);
   }, []);
 
-  const current = featured[slide];
-  const shortcuts = groups.slice(0, 6);
+  const shortcuts = groups.slice(0, 4);
 
   return (
     <div
-      className={`fixed inset-0 z-40 overflow-hidden bg-void transition-[opacity,transform] duration-500 ease-out ${
+      className={`fixed inset-0 z-40 overflow-hidden bg-carbon transition-[opacity,transform] duration-500 ease-out ${
         leaving ? "pointer-events-none scale-[1.02] opacity-0" : "opacity-100"
       }`}
       onClick={() => onStart()}
       role="region"
       aria-label={`${store.name}, welcome`}
     >
-      {/* soft showroom light */}
-      <div aria-hidden className="absolute inset-0 bg-[radial-gradient(120%_90%_at_85%_20%,var(--carbon),var(--void)_60%)]" />
-      <div aria-hidden className="absolute -left-40 bottom-[-30%] h-[70vmax] w-[70vmax] rounded-full bg-accent/5 blur-3xl" />
-
-      <div className="relative flex h-full flex-col landscape:md:flex-row">
-        {/* Words */}
-        <div className="flex min-h-0 flex-1 flex-col justify-between px-6 pb-6 pt-8 landscape:md:basis-[46%] landscape:md:flex-none landscape:md:px-14 landscape:md:py-12 xl:px-20">
-          <div className="ss-rise flex items-center gap-4">
-            <StoreMark store={store} className="h-16 w-16 md:h-20 md:w-20" text="text-3xl" />
-            {store.city && <p className="text-base font-medium text-ash md:text-lg">{store.city}</p>}
-          </div>
-
-          <div className="ss-rise [animation-delay:120ms]">
-            <h2 className="text-balance font-display text-[clamp(2.6rem,7.2vw,6.5rem)] font-extrabold leading-[0.92] tracking-[-0.045em] text-chalk">
-              {store.name}
-            </h2>
-            <p className="mt-5 max-w-md text-lg leading-snug text-ash md:text-xl">
-              {products.length > 0
-                ? `Browse all ${products.length} ${products.length === 1 ? "product" : "products"} in stock today. Pick what you like and show your order at the counter.`
-                : "Our products will appear here soon."}
-            </p>
-
-            {shortcuts.length > 1 && (
-              <div className="mt-7 flex flex-wrap gap-2.5" onClick={(e) => e.stopPropagation()}>
-                {shortcuts.map((g) => (
-                  <button
-                    key={g.slug}
-                    type="button"
-                    onClick={() => onStart(g.slug)}
-                    className="inline-flex min-h-12 items-center gap-2 rounded-full border border-tint/15 bg-void px-5 text-[15px] font-semibold text-chalk shadow-sm transition-[transform,border-color] duration-200 active:scale-95 hover:border-accent"
-                  >
-                    {g.name}
-                    <span className="tnum text-sm font-medium text-dim">{g.count}</span>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <div className="ss-rise flex items-center justify-between gap-4 [animation-delay:240ms]">
-            <button
-              type="button"
-              data-autofocus
-              onClick={(e) => {
-                e.stopPropagation();
-                onStart();
-              }}
-              className="group relative inline-flex min-h-[4.5rem] items-center gap-4 rounded-full bg-accent pl-8 pr-4 font-display text-xl font-extrabold tracking-tight text-on-accent transition-transform duration-200 active:scale-[0.97] md:text-2xl"
-            >
-              <span aria-hidden className="ss-ring absolute inset-0 rounded-full bg-accent" />
-              <span className="relative">Touch to explore</span>
-              <span className="relative grid h-12 w-12 place-items-center rounded-full bg-void text-accent">
-                <Hand size={22} aria-hidden className="group-active:hidden" />
-                <ArrowRight size={22} aria-hidden className="hidden group-active:block" />
-              </span>
-            </button>
-            <div onClick={(e) => e.stopPropagation()}>{seller}</div>
-          </div>
-        </div>
-
-        {/* Stage */}
-        <div className="relative m-4 min-h-[34dvh] flex-1 overflow-hidden rounded-[2rem] bg-[#f3f4f5] shadow-sm ring-1 ring-tint/10 landscape:md:m-6 landscape:md:ml-0 landscape:md:rounded-[2.5rem]">
+      <div className="relative flex h-full flex-col landscape:lg:flex-row">
+        {/* Photo stage: the product photos are shot on white, so they blend into the backdrop. */}
+        <div className="relative order-2 min-h-[38dvh] flex-1 overflow-hidden bg-[#f3f4f5] landscape:lg:order-1">
           {featured.length === 0 ? (
             <div className="grid h-full place-items-center">
               <StoreMark store={store} className="h-40 w-40" text="text-7xl" />
@@ -142,44 +80,104 @@ export function AttractScreen({
               <div
                 key={p.id}
                 aria-hidden={i !== slide}
-                className={`absolute inset-0 transition-opacity duration-[1400ms] ease-in-out ${i === slide ? "opacity-100" : "opacity-0"}`}
+                className={`absolute inset-0 transition-opacity duration-[1600ms] ease-in-out ${i === slide ? "opacity-100" : "opacity-0"}`}
               >
                 {/* The drift restarts when a slide returns as the current one, and keeps going while it fades out. */}
-                <div className={i === slide || i === pos.prev ? "ss-kb absolute inset-0" : "absolute inset-0"}>
+                {/* The backdrop sits on this layer too: the drift's transform isolates blending from the stage behind it. */}
+                <div className={`absolute inset-0 bg-[#f3f4f5] ${i === slide || i === pos.prev ? "ss-kb" : ""}`}>
                   <Image
                     src={fileHref(p.images[0])}
                     alt=""
                     fill
-                    sizes="(min-width:768px) 56vw, 100vw"
+                    sizes="(min-width:1024px) 58vw, 100vw"
                     priority={i < 2}
-                    className="object-contain p-8 md:p-14"
+                    className="object-contain p-[8%] mix-blend-multiply"
                   />
                 </div>
               </div>
             ))
           )}
-
-          {current && (
-            <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 bg-gradient-to-t from-void/90 via-void/60 to-transparent p-6 pt-20 md:p-8 md:pt-24">
-              <div key={current.id} className="ss-fade min-w-0">
-                <p className="truncate text-sm font-semibold text-dim">{current.brand}</p>
-                <p className="line-clamp-1 font-display text-xl font-extrabold tracking-tight text-chalk md:text-2xl">{current.title}</p>
-                <p className="tnum mt-0.5 text-lg font-bold text-chalk">
-                  {rupees(current.price)}
-                  {offPct(current) > 0 && <span className="ml-2 text-sm font-bold text-accent">{offPct(current)}% off</span>}
-                </p>
-              </div>
-              {featured.length > 1 && (
-                <div className="flex shrink-0 gap-1.5 pb-2" aria-hidden>
-                  {featured.map((p, i) => (
-                    <span key={p.id} className={`h-1.5 rounded-full transition-all duration-500 ${i === slide ? "w-7 bg-accent" : "w-1.5 bg-tint/25"}`} />
-                  ))}
-                </div>
-              )}
+          {featured.length > 1 && (
+            <div className="absolute bottom-6 left-1/2 flex -translate-x-1/2 gap-2" aria-hidden>
+              {featured.map((p, i) => (
+                <span key={p.id} className={`h-1.5 rounded-full transition-all duration-700 ${i === slide ? "w-10 bg-chalk" : "w-3 bg-tint/20"}`} />
+              ))}
             </div>
           )}
+        </div>
+
+        {/* Words */}
+        <div className="order-1 flex flex-col justify-between gap-8 p-6 sm:p-10 landscape:lg:order-2 landscape:lg:w-[42%] landscape:lg:p-16 xl:p-20">
+          <div className="ss-rise flex items-center justify-between gap-4">
+            <div className="flex min-w-0 items-center gap-4">
+              <StoreMark store={store} className="h-14 w-14 lg:h-16 lg:w-16" text="text-2xl" />
+              <div className="min-w-0">
+                <p className="truncate font-display text-xl font-extrabold tracking-tight text-chalk lg:text-2xl">{store.name}</p>
+                <p className="truncate text-sm font-medium text-ash lg:text-base">
+                  {store.city ? `${store.city} · ` : ""}Riderzpro verified seller
+                </p>
+              </div>
+            </div>
+            <div onClick={(e) => e.stopPropagation()}>{seller}</div>
+          </div>
+
+          <div className="ss-rise [animation-delay:120ms]">
+            <p className="mb-4 text-sm font-bold uppercase tracking-[0.2em] text-accent lg:text-base">Offline Store</p>
+            <h2 className="text-balance font-display text-[clamp(2.4rem,5.4vw,5.25rem)] font-extrabold leading-[1.02] tracking-[-0.035em] text-chalk">
+              {products.length > 0 ? "Everything in stock." : "Coming soon."}
+              <br />
+              <span className="text-dim">{products.length > 0 ? "Right at your fingertips." : "Our products will appear here."}</span>
+            </h2>
+          </div>
+
+          <div className="ss-rise space-y-5 [animation-delay:240ms]">
+            {shortcuts.length > 0 && (
+              <div className="grid grid-cols-2 gap-3 lg:gap-4" onClick={(e) => e.stopPropagation()}>
+                {shortcuts.map((g) => {
+                  const Icon = groupIcon(g.slug);
+                  return (
+                    <button
+                      key={g.slug}
+                      type="button"
+                      onClick={() => onStart(g.slug)}
+                      className="flex min-h-20 items-center gap-3 rounded-2xl bg-void p-4 text-left shadow-sm transition-transform duration-200 active:scale-[0.97] lg:min-h-24 lg:p-5"
+                    >
+                      <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-accent/10 text-accent">
+                        <Icon size={24} aria-hidden />
+                      </span>
+                      <span className="min-w-0">
+                        <span className="block truncate text-lg font-bold text-chalk">{g.name}</span>
+                        <span className="tnum text-sm text-ash">{g.count} in store</span>
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+            <button
+              type="button"
+              data-autofocus
+              onClick={(e) => {
+                e.stopPropagation();
+                onStart();
+              }}
+              className="relative flex h-20 w-full items-center justify-center gap-3 rounded-full bg-accent font-display text-xl font-extrabold tracking-tight text-on-accent shadow-lg transition-transform duration-200 active:scale-[0.98] lg:h-24 lg:text-2xl"
+            >
+              <span aria-hidden className="ss-breathe absolute inset-0 rounded-full bg-accent" />
+              <Hand size={28} aria-hidden className="relative" />
+              <span className="relative">Touch to explore</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
   );
+}
+
+/** An icon for a category shortcut, by its group slug. */
+function groupIcon(slug: string) {
+  if (/seat|cushion|mat|steering/.test(slug)) return Armchair;
+  if (/speaker|sub|amp|processor|display|camera|installation/.test(slug)) return Speaker;
+  if (/light|lamp|led|fog/.test(slug)) return Lightbulb;
+  return Package;
 }
