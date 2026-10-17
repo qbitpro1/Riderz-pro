@@ -1,5 +1,30 @@
 # Work update
 
+## 17 Oct 2026 (night, later): Phase 5 part 3, admin Customers and Reports (on V0.4)
+
+- **`/admin/customers`**:
+  - Shopper accounts with search (name, mobile, email), orders, money spent and last order.
+  - Each customer's page: verified contacts, car, sign-in, wishlist count, saved addresses,
+    orders (linked to the admin order) and messages.
+  - Read only. New "customers" permission: Owner, Manager, Operations, Support.
+- **`/admin/reports`**: a date range (India dates; presets for today, 7, 30 and 90 days):
+  - Sales, average order, Riderzpro's own items vs marketplace items, delivery charged, coupon
+    discounts.
+  - Online money in and refunds; order counts by payment method and status.
+  - Marketplace commission and its GST on parts delivered in the range (the same maths as payouts).
+  - Rider deliveries and pay; new accounts, accounts that ordered, guest orders.
+  - Sales by day and the top 10 products.
+- **"Orders CSV"**: every order in the range with items, delivery, discount, coupon, total, payment
+  and Riderzpro invoice number (Excel-safe, audited). New "reports" permission: Owner, Manager,
+  Finance.
+- **Verified**:
+  - Figures cross-checked on the local data: own + marketplace = sales; average = sales ÷ orders;
+    commission = 10% of delivered seller sales.
+  - CSV columns and download; a reversed range refused; an unknown customer gives 404.
+  - Both pages fit a 375 px phone screen.
+  - All 468 pages and admin pages answer 200; build clean; no dealer prices or secrets in built
+    files.
+
 ## 17 Oct 2026 (night, later): Phase 5 part 2, coupons and the Offers page (on V0.4)
 
 - **What a coupon lowers**: Riderzpro's own products and installation (% off with an optional cap,

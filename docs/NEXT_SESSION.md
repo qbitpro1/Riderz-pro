@@ -50,9 +50,13 @@
    (staging), invoice-numbering test on real Postgres.
 2. **Phase 5: admin.**
    - Done on V0.4: team logins with roles and invites, audit log page (`docs/WORK_UPDATE.md`).
-   - Done on V0.4: coupons + `/offers` page.
-   - Next: header delivery-location picker (Phase 3 leftover); extra screens: customers, reviews,
-     warranty, reports.
+   - Done on V0.4: coupons + `/offers` page; admin Customers and Reports (with orders CSV).
+   - Waiting for the owner's decision (not built):
+     - Header "Deliver to" picker. Riders carry only marketplace sellers' parcels today, so for
+       Riderzpro's own products it would promise something we don't do. Build it only once own
+       stock has a Delhi pickup, or limit it to seller product pages.
+     - Reviews and warranty screens: they need new shopper features first (writing reviews,
+       registering a warranty). Say if wanted.
 3. **Later.** Installation bookings, AI assistant (Claude API), mobile app shell (rider app first).
 
 ## Choices made without the owner (change if asked)
