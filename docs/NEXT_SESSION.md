@@ -22,7 +22,7 @@
   - database: `Vamsi_work.md`
   - Twilio, OTP, SMS, email: `Amrutha_work.md`
   - maps, routing, geocoding: `Viswanath_work.md`
-  - hosting and domain: `Hosting_work.md` (person not yet assigned)
+  - hosting and replacing the current site on riderzpro.com: `Hema_work.md`
   - any other area: a new `<Name>_work.md` (or `<Area>_work.md` if no person is known), listed in
     `docs/team/README.md`.
 - Phase 3 has not been started (no location code or tables yet). Note: `/track/:id` currently

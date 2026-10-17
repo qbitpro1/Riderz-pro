@@ -9,7 +9,7 @@ setting name, and why.
 | [Sathwik_work.md](Sathwik_work.md) | Sathwik | Razorpay, refunds, GST invoice | Real test payments (Phase 4), go-live |
 | [Vamsi_work.md](Vamsi_work.md) | Vamsi | New PostgreSQL database, encryption key, data rules | Staging, go-live |
 | [Amrutha_work.md](Amrutha_work.md) | Amrutha | OTP, SMS (MSG91/Twilio, DLT), email (Resend) | Real SMS codes, rider alerts, order emails |
-| [Hosting_work.md](Hosting_work.md) | To be assigned | Hosting, env settings, domain switch | Real-phone tracking test, go-live |
+| [Hema_work.md](Hema_work.md) | Hema | Hosting, env settings, replacing the current site on riderzpro.com | Real-phone tracking test, go-live |
 | [Viswanath_work.md](Viswanath_work.md) | Viswanath | Map tiles, routing, geocoding keys | Production use of tracking maps |
 
 Start first, because these take days: Amrutha's DLT template approvals, and Sathwik's Razorpay KYC.
