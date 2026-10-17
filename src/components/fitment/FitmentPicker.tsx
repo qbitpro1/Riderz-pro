@@ -26,6 +26,20 @@ export function readGarage(): Garage | null {
   }
 }
 
+/** Fired on window when the chosen car changes on this page (AccountSync saves it to the account). */
+export const GARAGE_EVENT = "riderzpro:garage";
+
+/** Saves (or clears) the chosen car in this browser and tells listeners. */
+export function writeGarage(g: Garage | null) {
+  try {
+    if (g) localStorage.setItem(KEY, JSON.stringify(g));
+    else localStorage.removeItem(KEY);
+  } catch {
+    /* storage blocked: the choice still works for this visit */
+  }
+  window.dispatchEvent(new CustomEvent(GARAGE_EVENT, { detail: g }));
+}
+
 /**
  * "WHAT DO YOU DRIVE?" — brand → model → variant → year.
  * The choice is remembered so the rest of the site can filter by fitment.
@@ -38,14 +52,19 @@ export function FitmentPicker({ compact = false }: { compact?: boolean }) {
   const [saved, setSaved] = useState<Garage | null>(null);
 
   useEffect(() => {
-    const g = readGarage();
-    if (g) {
+    const show = (g: Garage | null) => {
       setSaved(g);
-      setBrandSlug(g.brandSlug);
-      setModelSlug(g.modelSlug);
-      setVariant(g.variant);
-      setYear(String(g.year));
-    }
+      setBrandSlug(g?.brandSlug ?? "");
+      setModelSlug(g?.modelSlug ?? "");
+      setVariant(g?.variant ?? "");
+      setYear(g ? String(g.year) : "");
+    };
+    const g = readGarage();
+    if (g) show(g);
+    // The car can also arrive from the signed-in account (AccountSync), or be changed by another picker.
+    const onChange = (e: Event) => show((e as CustomEvent<Garage | null>).detail);
+    window.addEventListener(GARAGE_EVENT, onChange);
+    return () => window.removeEventListener(GARAGE_EVENT, onChange);
   }, []);
 
   const brand = useMemo(() => BRANDS.find((b) => b.slug === brandSlug), [brandSlug]);
@@ -62,12 +81,12 @@ export function FitmentPicker({ compact = false }: { compact?: boolean }) {
       year: Number(year),
       label: `${brand.name} ${model.name} ${variant} ${year}`,
     };
-    localStorage.setItem(KEY, JSON.stringify(g));
+    writeGarage(g);
     setSaved(g);
   }
 
   function reset() {
-    localStorage.removeItem(KEY);
+    writeGarage(null);
     setSaved(null);
     setBrandSlug("");
     setModelSlug("");

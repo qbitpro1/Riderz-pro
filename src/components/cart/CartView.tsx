@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { useCart } from "./CartContext";
+import { useAccount } from "@/components/account/AccountContext";
 import { rupees } from "@/lib/format";
 import { FREE_SHIPPING_OVER, shippingFor } from "@/lib/store/shipping";
 import { CartThumb } from "./CartThumb";
@@ -13,6 +14,7 @@ import { CheckoutForm, type PlacedOrder } from "./CheckoutForm";
 export function CartView() {
   const { lines, subtotal, installTotal, setQty, remove, clear, ready, count } = useCart();
   const [placed, setPlaced] = useState<PlacedOrder | null>(null);
+  const { customer } = useAccount();
 
   if (!ready) {
     return <div className="card p-10 text-center text-sm text-dim">Loading your cart…</div>;
@@ -33,6 +35,11 @@ export function CartView() {
             <Icon name="whatsapp" size={16} />
             Open WhatsApp
           </a>
+          {customer && (
+            <Link href={`/account/orders/${placed.number}`} className="btn btn-outline btn-sm">
+              View in your account
+            </Link>
+          )}
           <Link href="/shop" className="btn btn-outline btn-sm">
             Continue shopping
           </Link>

@@ -99,3 +99,36 @@ export function maskContact(value: string): string {
   }
   return `${value.slice(0, 2)}••••••${value.slice(-2)}`;
 }
+
+/** Where to go after signing in: a page on this site only, never the API or another site. */
+export function safeNext(next: string | null | undefined): string {
+  if (!next || !next.startsWith("/") || next.startsWith("//") || next.includes("\\") || next.startsWith("/api")) return "/account";
+  if (next.startsWith("/account/sign-in")) return "/account";
+  return next;
+}
+
+/** What a shopper sees for each stage (worded for them, not the seller). */
+export const PART_STATUS_LABELS: Record<VendorOrderStatus, string> = {
+  new: "Order received",
+  accepted: "Confirmed by seller",
+  packed: "Packed",
+  shipped: "Shipped",
+  delivered: "Delivered",
+  cancelled: "Cancelled",
+  return_requested: "Return requested",
+  returned: "Returned",
+};
+
+export const ORDER_STATUS_TEXT: Record<OrderStatus, string> = {
+  placed: "Placed",
+  confirmed: "Confirmed",
+  completed: "Completed",
+  cancelled: "Cancelled",
+};
+
+/** The steps shown as a progress line for a seller's part of an order. */
+export const PART_STEPS: VendorOrderStatus[] = ["new", "accepted", "packed", "shipped", "delivered"];
+
+/** "17 Oct 2026" */
+export const fmtDay = (iso: string) =>
+  new Date(iso).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Kolkata" });

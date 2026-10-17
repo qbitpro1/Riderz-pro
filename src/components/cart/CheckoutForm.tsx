@@ -1,6 +1,7 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
+import Link from "next/link";
 import { api, ApiFailure } from "@/lib/vendor/client";
 import { INDIAN_STATES } from "@/lib/vendor/validators";
 import { whatsapp } from "@/lib/data/site";
@@ -9,6 +10,8 @@ import { Icon } from "@/components/ui/Icon";
 import { useCart } from "./CartContext";
 import { orderMessage } from "./cartMessage";
 import { customerSchema } from "./orderSchema";
+import { useAccount } from "@/components/account/AccountContext";
+import { ADDRESS_MAX, type AddressView } from "@/lib/account/types";
 
 export type PlacedOrder = { number: string; total: number; whatsappHref: string };
 
@@ -41,8 +44,55 @@ export function CheckoutForm({
   onPlaced: (order: PlacedOrder) => void;
 }) {
   const { clear } = useCart();
+  const { customer } = useAccount();
   const uid = useId();
   const [values, setValues] = useState<Values>(EMPTY);
+  const [saved, setSaved] = useState<AddressView[]>([]);
+  const [chosen, setChosen] = useState<string | "new">("new");
+  const [saveNew, setSaveNew] = useState(true);
+
+  // Signed in: fill in the account's details and offer its saved addresses (default first).
+  useEffect(() => {
+    if (!customer) return;
+    setValues((v) => ({
+      ...v,
+      name: v.name || customer.name || "",
+      mobile: v.mobile || customer.mobile || "",
+      email: v.email || customer.email || "",
+    }));
+    let alive = true;
+    api<{ addresses: AddressView[] }>("/api/account/addresses")
+      .then(({ addresses }) => {
+        if (!alive || addresses.length === 0) return;
+        setSaved(addresses);
+        const a = addresses.find((x) => x.isDefault) ?? addresses[0];
+        pick(a);
+      })
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+    // `pick` only sets state.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [customer]);
+
+  function pick(a: AddressView | "new") {
+    if (a === "new") {
+      setChosen("new");
+      setValues((v) => ({ ...v, address: "", city: "", state: "", pincode: "" }));
+      return;
+    }
+    setChosen(a.id);
+    setValues((v) => ({ ...v, name: a.name, mobile: a.mobile, address: a.address, city: a.city, state: a.state, pincode: a.pincode }));
+    setErrors({});
+  }
+
+  /** After the order is placed: keep a new address in the account (best effort, never blocks the order). */
+  function rememberAddress(c: { name: string; mobile: string; address: string; city: string; state: string; pincode: string }) {
+    if (!customer || chosen !== "new" || !saveNew || saved.length >= ADDRESS_MAX) return;
+    const label = saved.length === 0 ? "Home" : `Address ${saved.length + 1}`;
+    api("/api/account/addresses", { body: { label, ...c, isDefault: saved.length === 0 } }).catch(() => {});
+  }
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [formError, setFormError] = useState<string | null>(null);
   const [fallbackHref, setFallbackHref] = useState<string | null>(null);
@@ -68,7 +118,7 @@ export function CheckoutForm({
       return;
     }
     setErrors({});
-    const customer = parsed.data;
+    const details = parsed.data;
 
     setBusy(true);
     try {
@@ -78,8 +128,9 @@ export function CheckoutForm({
           lines: lines.map((l) => ({ id: l.id, qty: l.qty, install: Boolean(l.install) })),
         },
       });
-      const href = whatsapp(orderMessage(lines, { ...totals, total: res.order.total }, { orderNumber: res.order.number, customer }));
+      const href = whatsapp(orderMessage(lines, { ...totals, total: res.order.total }, { orderNumber: res.order.number, customer: details }));
       clear();
+      rememberAddress(details);
       window.open(href, "_blank", "noopener,noreferrer");
       onPlaced({ number: res.order.number, total: res.order.total, whatsappHref: href });
     } catch (err) {
@@ -90,7 +141,7 @@ export function CheckoutForm({
         setFormError(err.message);
       } else {
         // Order service unavailable or unreachable: take the order the old way.
-        const href = whatsapp(orderMessage(lines, totals, { customer }));
+        const href = whatsapp(orderMessage(lines, totals, { customer: details }));
         setFallbackHref(href);
         window.open(href, "_blank", "noopener,noreferrer");
       }
@@ -123,7 +174,33 @@ export function CheckoutForm({
 
   return (
     <form onSubmit={submit} noValidate className="space-y-3" aria-label="Delivery details">
-      <p className="eyebrow">Delivery details</p>
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <p className="eyebrow">Delivery details</p>
+        {!customer && (
+          <Link href="/account/sign-in?next=/cart" className="text-xs font-semibold text-accent underline underline-offset-4">
+            Sign in for saved addresses
+          </Link>
+        )}
+      </div>
+      {saved.length > 0 && (
+        <fieldset className="space-y-2">
+          <legend className="label">Deliver to</legend>
+          {saved.map((a) => (
+            <label key={a.id} className={`flex cursor-pointer items-start gap-3 rounded-sm border p-3 text-xs ${chosen === a.id ? "border-accent" : "border-tint/15"}`}>
+              <input type="radio" name={`${uid}-addr`} checked={chosen === a.id} onChange={() => pick(a)} className="mt-0.5 accent-[var(--accent)]" />
+              <span className="min-w-0 text-ash">
+                <span className="font-semibold text-chalk">{a.label}</span> · {a.name}
+                <br />
+                {a.address}, {a.city}, {a.state} {a.pincode}
+              </span>
+            </label>
+          ))}
+          <label className={`flex cursor-pointer items-center gap-3 rounded-sm border p-3 text-xs ${chosen === "new" ? "border-accent" : "border-tint/15"}`}>
+            <input type="radio" name={`${uid}-addr`} checked={chosen === "new"} onChange={() => pick("new")} className="accent-[var(--accent)]" />
+            <span className="font-semibold text-chalk">A different address</span>
+          </label>
+        </fieldset>
+      )}
       {field("name", "Full name", { autoComplete: "name", maxLength: 80 })}
       {field("mobile", "Mobile", { type: "tel", inputMode: "tel", autoComplete: "tel-national", maxLength: 16, placeholder: "10-digit number" })}
       {field("email", "Email (optional)", { type: "email", autoComplete: "email", maxLength: 254 })}
@@ -173,6 +250,13 @@ export function CheckoutForm({
         />
         {errors.notes && <p className="mt-1 text-xs text-danger">{errors.notes}</p>}
       </div>
+
+      {customer && chosen === "new" && saved.length < ADDRESS_MAX && (
+        <label className="flex items-center gap-2 text-xs text-ash">
+          <input type="checkbox" checked={saveNew} onChange={(e) => setSaveNew(e.target.checked)} className="h-4 w-4 accent-[var(--accent)]" />
+          Save this address to my account
+        </label>
+      )}
 
       {formError && (
         <p role="alert" className="text-xs text-danger">

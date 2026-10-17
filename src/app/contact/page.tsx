@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHero } from "@/components/layout/PageHero";
 import { BookingForm } from "@/components/garage/BookingForm";
+import { HelpForm } from "@/components/account/HelpForm";
 import { SectionHead } from "@/components/ui/Section";
 import { Icon } from "@/components/ui/Icon";
 import { LOCATIONS, SITE, whatsapp } from "@/lib/data/site";
@@ -138,7 +139,10 @@ export default function ContactPage() {
             </ul>
           </div>
 
-          <BookingForm />
+          <div className="space-y-6">
+            <HelpForm />
+            <BookingForm />
+          </div>
         </div>
       </section>
     </>

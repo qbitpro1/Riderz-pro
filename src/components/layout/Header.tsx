@@ -8,6 +8,7 @@ import { Logo } from "@/components/brand/Logo";
 import { SearchPanel } from "@/components/search/SearchPanel";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { useCart } from "@/components/cart/CartContext";
+import { AccountLink } from "@/components/account/AccountLink";
 import { DesktopNav } from "@/components/nav/DesktopNav";
 import { MobileDrawer } from "@/components/nav/MobileDrawer";
 import { navActions, useNavState } from "@/components/nav/navStore";
@@ -48,6 +49,8 @@ export function Header({ liveGroups }: { liveGroups?: LiveGroups }) {
             <IconButton label="Search" onClick={navActions.openSearch}>
               <Icon name="search" size={20} />
             </IconButton>
+
+            <AccountLink />
 
             <button
               type="button"

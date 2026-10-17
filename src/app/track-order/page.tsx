@@ -31,6 +31,13 @@ export default function TrackOrderPage() {
               delivery. If a consignment stalls for more than 48 hours, we chase the carrier ourselves.
             </p>
             <p>
+              Have a Riderzpro account?{" "}
+              <Link className="text-accent underline underline-offset-4" href="/account/orders">
+                See your orders
+              </Link>{" "}
+              with each seller&apos;s progress and courier tracking number.
+            </p>
+            <p>
               Cannot find the message? Send us your order reference or phone number and we will reply on WhatsApp.
             </p>
             <p>

@@ -7,6 +7,7 @@ import { Logo } from "@/components/brand/Logo";
 import { DEPARTMENT_MENUS, MORE_SECTIONS, liveMenuGroups, type LiveGroups } from "@/lib/data/nav";
 import { SITE, whatsapp } from "@/lib/data/site";
 import { WishlistLink } from "@/components/wishlist/WishlistLink";
+import { AccountLink } from "@/components/account/AccountLink";
 
 const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
@@ -166,6 +167,9 @@ export function MobileDrawer({ onClose, liveGroups }: { onClose: () => void; liv
           </ul>
 
           <ul className="mt-6 border-t border-tint/10 pt-4">
+            <li>
+              <AccountLink variant="text" className="flex min-h-11 items-center" />
+            </li>
             <li>
               <WishlistLink variant="text" className="flex min-h-11 items-center" />
             </li>

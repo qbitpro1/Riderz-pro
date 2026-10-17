@@ -7,6 +7,7 @@ import { WhatsAppFab } from "@/components/layout/WhatsAppFab";
 import { Footer } from "@/components/layout/Footer";
 import { SiteChrome } from "@/components/layout/SiteChrome";
 import { CartProvider } from "@/components/cart/CartContext";
+import { AccountProvider } from "@/components/account/AccountContext";
 import { LIVE_GROUPS } from "@/lib/catalog";
 import { SITE } from "@/lib/data/site";
 import { ldJson } from "@/lib/data/seo";
@@ -128,6 +129,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           Skip to content
         </a>
+        <AccountProvider>
         <CartProvider>
           <SiteChrome part="header">
             <Header liveGroups={LIVE_GROUPS} />
@@ -139,6 +141,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <WhatsAppFab />
           </SiteChrome>
         </CartProvider>
+        </AccountProvider>
       </body>
     </html>
   );

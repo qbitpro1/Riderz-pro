@@ -4,9 +4,9 @@ import { useMemo, useSyncExternalStore } from "react";
 import type { ProductImage } from "@/lib/store/types";
 
 /**
- * Browser-only "save for later". No accounts yet, so the list lives in
- * localStorage; a small snapshot of each product is kept so the wishlist page
- * renders without a catalogue lookup. The wishlist page overlays the live catalogue on top, so a saved price is only a fallback.
+ * "Save for later". The list lives in localStorage; a small snapshot of each product is kept so
+ * the wishlist page renders without a catalogue lookup. When a customer is signed in, AccountSync
+ * merges it with the list saved in their account and keeps the two in step. The wishlist page overlays the live catalogue on top, so a saved price is only a fallback.
  */
 export type WishlistItem = {
   slug: string;
@@ -103,6 +103,17 @@ function getTrimmed() {
 }
 
 const noopSubscribe = () => () => {};
+
+/* For AccountSync: read, replace and watch the whole list outside React. */
+export function wishlistSnapshot(): WishlistItem[] {
+  load();
+  return items;
+}
+export function replaceWishlist(next: WishlistItem[]) {
+  load();
+  commit(next.slice(0, MAX));
+}
+export const watchWishlist = subscribe;
 
 export function useWishlist() {
   const list = useSyncExternalStore(subscribe, getSnapshot, () => EMPTY);

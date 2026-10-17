@@ -28,7 +28,8 @@ type IconName =
   | "filter"
   | "sun"
   | "moon"
-  | "heart";
+  | "heart"
+  | "user";
 
 const PATHS: Record<IconName, React.ReactNode> = {
   home: <path d="M3 10.2 12 3l9 7.2V21H3z" />,
@@ -131,6 +132,12 @@ const PATHS: Record<IconName, React.ReactNode> = {
   facebook: <path d="M14 8.5h2.5V5.5H14c-2 0-3.5 1.5-3.5 3.5v2H8v3h2.5v6.5h3V14H16l.5-3h-3V9.5c0-.6.4-1 1-1z" />,
   filter: <path d="M3 6h18M6.5 12h11M10 18h4" />,
   heart: <path d="M12 20.5s-8-4.9-8-11A4.5 4.5 0 0 1 12 7a4.5 4.5 0 0 1 8 2.5c0 6.1-8 11-8 11z" />,
+  user: (
+    <>
+      <circle cx="12" cy="8" r="3.8" />
+      <path d="M4.5 20.5c.8-3.9 3.8-6 7.5-6s6.7 2.1 7.5 6" />
+    </>
+  ),
 };
 
 export function Icon({
