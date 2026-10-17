@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { useCart } from "./CartContext";
 import { useAccount } from "@/components/account/AccountContext";
@@ -11,11 +11,35 @@ import { FREE_SHIPPING_OVER, shippingFor } from "@/lib/store/shipping";
 import { CartThumb } from "./CartThumb";
 import { CheckoutButton } from "./CheckoutButton";
 import { CheckoutForm, type PlacedOrder } from "./CheckoutForm";
+import { CouponBox, fetchQuote } from "./CouponBox";
+import type { CouponQuote } from "@/lib/coupons/types";
 
 export function CartView() {
   const { lines, subtotal, installTotal, setQty, remove, clear, ready, count } = useCart();
   const [placed, setPlaced] = useState<PlacedOrder | null>(null);
   const { customer } = useAccount();
+  const [coupon, setCoupon] = useState<CouponQuote | null>(null);
+  const [couponNote, setCouponNote] = useState<string | null>(null);
+
+  // The cart changed: ask again what the applied code takes off (or drop it, with a note).
+  const cartKey = lines.map((l) => `${l.id}:${l.qty}:${l.install ? 1 : 0}`).join("|");
+  const lastKey = useRef(cartKey);
+  useEffect(() => {
+    if (lastKey.current === cartKey) return;
+    lastKey.current = cartKey;
+    if (!coupon || lines.length === 0) return;
+    let live = true;
+    fetchQuote(coupon.code, lines)
+      .then((q) => live && setCoupon(q))
+      .catch((err: unknown) => {
+        if (!live) return;
+        setCoupon(null);
+        setCouponNote(err instanceof Error ? `${coupon.code} was removed: ${err.message}` : `${coupon.code} was removed.`);
+      });
+    return () => {
+      live = false;
+    };
+  }, [cartKey, coupon, lines]);
 
   if (!ready) {
     return <div className="card p-10 text-center text-sm text-dim">Loading your cart…</div>;
@@ -110,8 +134,10 @@ export function CartView() {
     );
   }
 
-  const shipping = shippingFor(subtotal);
-  const total = subtotal + installTotal + shipping;
+  const listShipping = shippingFor(subtotal);
+  const shipping = coupon?.freeShipping ? 0 : listShipping;
+  const discount = coupon?.discount ?? 0;
+  const total = subtotal + installTotal + shipping - discount;
 
   return (
     <div className="grid gap-6 lg:grid-cols-[1.6fr_1fr] lg:items-start">
@@ -173,12 +199,23 @@ export function CartView() {
           <Row label={`Subtotal (${count} item${count === 1 ? "" : "s"})`} value={rupees(subtotal)} />
           {installTotal > 0 && <Row label="Installation" value={rupees(installTotal)} />}
           <Row label="Shipping" value={shipping === 0 ? "Free" : rupees(shipping)} />
+          {discount > 0 && <Row label={`Coupon ${coupon?.code}`} value={`−${rupees(discount)}`} />}
         </dl>
         <div className="mt-4 flex items-baseline justify-between border-t border-tint/8 pt-4">
           <span className="font-display text-sm font-bold uppercase tracking-[0.14em]">Total</span>
           <span className="font-display text-2xl font-extrabold tnum">{rupees(total)}</span>
         </div>
         <p className="mt-1 text-[11px] text-dim">Inclusive of GST</p>
+
+        <CouponBox
+          lines={lines}
+          quote={coupon}
+          onChange={(q) => {
+            setCoupon(q);
+            setCouponNote(null);
+          }}
+        />
+        {couponNote && <p role="status" className="mt-2 text-xs text-gold">{couponNote}</p>}
 
         {shipping > 0 && (
           <p className="mt-3 text-xs text-accent tnum">
@@ -188,7 +225,7 @@ export function CartView() {
 
         <CheckoutButton lines={lines} className="mt-5" />
         <div className="mt-5 border-t border-tint/8 pt-5">
-          <CheckoutForm lines={lines} totals={{ subtotal, installTotal, shipping, total }} onPlaced={setPlaced} />
+          <CheckoutForm lines={lines} totals={{ subtotal, installTotal, shipping, total, discount, couponCode: coupon?.code }} onPlaced={setPlaced} />
         </div>
         <p className="mt-3 text-[11px] leading-relaxed text-dim">
           Pay online now, or order on WhatsApp and we confirm fitment against your variant before you pay. See the{" "}

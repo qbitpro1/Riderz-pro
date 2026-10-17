@@ -40,6 +40,8 @@ export type AdminOrder = {
   notes: string | null;
   subtotal: number;
   shipping: number;
+  discount: number;
+  couponCode: string | null;
   total: number;
   channel: string;
   paymentMethod: PaymentMethod;

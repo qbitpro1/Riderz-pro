@@ -729,4 +729,50 @@ CREATE UNIQUE INDEX admin_invites_one_open ON admin_invites (email) WHERE used_a
 CREATE INDEX audit_log_at_idx ON audit_log (at DESC);
 `,
   },
+  {
+    // Coupons (src/lib/server/coupons.ts). A coupon lowers Riderzpro's own part of an order only
+    // (its products, installation and the delivery charge), never a marketplace seller's items, so
+    // seller invoices and payouts are untouched and the discount shows on Riderzpro's tax invoice.
+    //   coupons             the codes; "public" ones are listed on /offers
+    //   coupon_redemptions  one per order; cancelled orders don't count towards the limits
+    id: "010_coupons",
+    sql: `
+CREATE TABLE coupons (
+  id               text PRIMARY KEY,
+  code             text NOT NULL UNIQUE CHECK (code ~ '^[A-Z0-9]{3,20}$'),
+  title            text NOT NULL,
+  description      text,
+  kind             text NOT NULL CHECK (kind IN ('percent','flat','free_shipping')),
+  value            integer NOT NULL DEFAULT 0 CHECK (value >= 0),
+  max_discount     integer CHECK (max_discount IS NULL OR max_discount > 0),
+  min_order        integer NOT NULL DEFAULT 0 CHECK (min_order >= 0),
+  starts_at        timestamptz,
+  ends_at          timestamptz,
+  usage_limit      integer CHECK (usage_limit IS NULL OR usage_limit > 0),
+  per_customer     integer NOT NULL DEFAULT 1 CHECK (per_customer > 0),
+  public           boolean NOT NULL DEFAULT false,
+  status           text NOT NULL DEFAULT 'active' CHECK (status IN ('active','paused','ended')),
+  created_by       text NOT NULL,
+  created_at       timestamptz NOT NULL DEFAULT now(),
+  updated_at       timestamptz NOT NULL DEFAULT now(),
+  CHECK (kind <> 'percent' OR value BETWEEN 1 AND 90),
+  CHECK (kind <> 'flat' OR value > 0),
+  CHECK (ends_at IS NULL OR starts_at IS NULL OR ends_at > starts_at)
+);
+
+CREATE TABLE coupon_redemptions (
+  id             text PRIMARY KEY,
+  coupon_id      text NOT NULL REFERENCES coupons(id) ON DELETE RESTRICT,
+  order_id       text NOT NULL UNIQUE REFERENCES orders(id) ON DELETE CASCADE,
+  customer_phone text NOT NULL,
+  amount         integer NOT NULL CHECK (amount >= 0),
+  created_at     timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX coupon_redemptions_coupon_idx ON coupon_redemptions (coupon_id, customer_phone);
+
+-- Order totals: total = subtotal + shipping - discount (integer rupees).
+ALTER TABLE orders ADD COLUMN discount integer NOT NULL DEFAULT 0 CHECK (discount >= 0);
+ALTER TABLE orders ADD COLUMN coupon_code text;
+`,
+  },
 ];

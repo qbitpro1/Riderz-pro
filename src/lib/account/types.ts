@@ -71,6 +71,9 @@ export type AccountOrderSummary = {
 export type AccountOrder = AccountOrderSummary & {
   subtotal: number;
   shipping: number;
+  /** Coupon discount (integer rupees) and its code; 0 / null without one. */
+  discount: number;
+  couponCode: string | null;
   name: string;
   phone: string;
   email: string | null;

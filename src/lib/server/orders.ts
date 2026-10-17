@@ -13,6 +13,7 @@ import { newId, sha256 } from "./security";
 import { LIVE_PRODUCT_WHERE } from "./vendor-products";
 import { audit, notifyVendor, type Actor } from "./vendors";
 import { onOrderConfirmed } from "./payments-hooks";
+import { applyCoupon, recordRedemption } from "./coupons";
 import { onOrderConfirmedMessages } from "./order-emails";
 import type { PaymentMethod, PaymentStatus } from "@/lib/payments/types";
 
@@ -58,27 +59,16 @@ type VendorProductLookup = {
 export type PlacedOrderRecord = { id: string; number: string; total: number };
 
 /**
- * `customerId` comes from the session (never the request body); null for guest checkout.
- *
- * `method: "online"`: the order waits for its Razorpay payment (payments.ts). Stock is taken now and
- * held; sellers are told and see the order only once it is paid; unpaid orders are cancelled and
- * their stock released after UNPAID_HOLD_MINUTES (releaseUnpaidOrders).
+ * Prices a cart from the server's own data (the browser only names products and quantities).
+ * `houseItems` is Riderzpro's own products and installation, the part a coupon can lower.
  */
-export async function placeOrder(
-  input: PlaceOrderInput,
-  customerId: string | null = null,
-  opts: { method?: "whatsapp" | "online" } = {},
-): Promise<PlacedOrderRecord> {
-  const { customer } = input;
-  const method = opts.method ?? "whatsapp";
-
-  /* ---- 1. price every line from the server's own data ---- */
+export async function priceCart(lines: PlaceOrderInput["lines"]) {
   const seen = new Set<string>();
   const items: PricedItem[] = [];
   const commissions = new Map<string, number>();
   const vendorWanted: { slug: string; qty: number }[] = [];
 
-  for (const line of input.lines) {
+  for (const line of lines) {
     if (seen.has(line.id)) throw new ApiError(400, "invalid", "The same item appears twice in your cart.");
     seen.add(line.id);
 
@@ -151,9 +141,31 @@ export async function placeOrder(
 
   const merchandise = items.reduce((n, i) => n + i.unit * i.qty, 0);
   const installTotal = items.reduce((n, i) => n + i.install * i.qty, 0);
-  const shipping = shippingFor(merchandise);
-  const subtotal = merchandise + installTotal;
-  const total = subtotal + shipping;
+  const houseItems = items.filter((i) => i.kind === "house").reduce((n, i) => n + (i.unit + i.install) * i.qty, 0);
+  return { items, commissions, subtotal: merchandise + installTotal, shipping: shippingFor(merchandise), houseItems };
+}
+
+
+/**
+ * `customerId` comes from the session (never the request body); null for guest checkout.
+ *
+ * `method: "online"`: the order waits for its Razorpay payment (payments.ts). Stock is taken now and
+ * held; sellers are told and see the order only once it is paid; unpaid orders are cancelled and
+ * their stock released after UNPAID_HOLD_MINUTES (releaseUnpaidOrders).
+ */
+export async function placeOrder(
+  input: PlaceOrderInput,
+  customerId: string | null = null,
+  opts: { method?: "whatsapp" | "online" } = {},
+): Promise<PlacedOrderRecord> {
+  const { customer } = input;
+  const method = opts.method ?? "whatsapp";
+
+  /* ---- 1. price every line from the server's own data ---- */
+  const { items, commissions, subtotal, shipping: listShipping, houseItems } = await priceCart(input.lines);
+  let shipping = listShipping;
+  let discount = 0;
+  let total = subtotal + shipping;
 
   /* ---- 2. write everything at once ---- */
   const orderId = newId("ord");
@@ -161,13 +173,20 @@ export async function placeOrder(
   type Low = { vendorId: string; title: string; stock: number };
 
   const { number, placed, low } = await transaction(async (q) => {
+    // The coupon is checked again here, with its row locked, so two orders can't take its last use.
+    const coupon = input.couponCode ? await applyCoupon(q, input.couponCode, { houseItems, subtotal, shipping: listShipping }, customer.mobile) : null;
+    if (coupon) {
+      discount = coupon.discount;
+      shipping = coupon.shipping;
+      total = subtotal + shipping - discount;
+    }
     let number = "";
     for (let attempt = 0; attempt < 8 && !number; attempt++) {
       const candidate = newOrderNumber();
       const rows = await q<{ number: string }>(
         `INSERT INTO orders (id, number, customer_name, customer_phone, customer_email, address, city, state, pincode, notes, subtotal, shipping, total, customer_id,
-                             payment_method, channel, delivery_lat, delivery_lng, delivery_geo, delivery_geo_at)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,CASE WHEN $17::float8 IS NULL THEN NULL ELSE now() END)
+                             payment_method, channel, delivery_lat, delivery_lng, delivery_geo, delivery_geo_at, discount, coupon_code)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,CASE WHEN $17::float8 IS NULL THEN NULL ELSE now() END,$20,$21)
          ON CONFLICT (number) DO NOTHING RETURNING number`,
         [
           orderId, candidate, customer.name, customer.mobile, customer.email, customer.address, customer.city,
@@ -175,11 +194,13 @@ export async function placeOrder(
           method, method === "online" ? "online" : "whatsapp",
           // "Detect my location" at checkout; without it the address is geocoded when a rider accepts.
           input.deliveryPoint?.lat ?? null, input.deliveryPoint?.lng ?? null, input.deliveryPoint ? "device" : null,
+          discount, coupon?.code ?? null,
         ],
       );
       if (rows[0]) number = rows[0].number;
     }
     if (!number) throw new ApiError(503, "busy", "We couldn't create your order just now. Please try again.");
+    if (coupon) await recordRedemption(q, { couponId: coupon.couponId, orderId, phone: customer.mobile, saved: coupon.saved });
 
     // One part per vendor.
     const parts = new Map<string, { id: string; subtotal: number; count: number }>();
@@ -246,7 +267,7 @@ export async function placeOrder(
       });
     }
     await audit({ type: "customer", id: sha256(customer.mobile).slice(0, 12) }, "order.place", {
-      detail: { number, total, vendorParts: placed.length, paymentMethod: method },
+      detail: { number, total, vendorParts: placed.length, paymentMethod: method, ...(input.couponCode ? { coupon: input.couponCode, discount } : {}) },
     });
     if (method !== "online") await onOrderConfirmed(orderId, "whatsapp_placed");
   } catch (err) {
@@ -621,6 +642,8 @@ type AdminOrderRow = {
   notes: string | null;
   subtotal: number;
   shipping: number;
+  discount: number;
+  coupon_code: string | null;
   total: number;
   channel: string;
   payment_method: PaymentMethod;
@@ -691,6 +714,8 @@ async function assembleAdminOrders(rows: AdminOrderRow[]): Promise<AdminOrder[]>
       notes: r.notes,
       subtotal: r.subtotal,
       shipping: r.shipping,
+      discount: r.discount,
+      couponCode: r.coupon_code,
       total: r.total,
       channel: r.channel,
       paymentMethod: r.payment_method,
@@ -704,7 +729,7 @@ async function assembleAdminOrders(rows: AdminOrderRow[]): Promise<AdminOrder[]>
 }
 
 const ORDER_COLS =
-  "id, number, status, customer_name, customer_phone, customer_email, address, city, state, pincode, notes, subtotal, shipping, total, channel, payment_method, payment_status, paid_at, created_at";
+  "id, number, status, customer_name, customer_phone, customer_email, address, city, state, pincode, notes, subtotal, shipping, discount, coupon_code, total, channel, payment_method, payment_status, paid_at, created_at";
 
 export async function listAdminOrders(opts: { status?: OrderStatus; q?: string } = {}): Promise<AdminOrder[]> {
   const q = opts.q?.trim().slice(0, 80) || null;

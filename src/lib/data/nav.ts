@@ -121,6 +121,7 @@ export const SHOP_BY_LINKS: NavLink[] = [
   { label: "OE", href: "/shop?oe=1" },
   { label: "Collections", href: "/collections" },
   { label: "Wishlist", href: "/wishlist" },
+  { label: "Offers", href: "/offers" },
 ];
 
 /** Mobile bottom bar. `kind` decides how the item behaves. */

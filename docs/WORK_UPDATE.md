@@ -1,5 +1,42 @@
 # Work update
 
+## 17 Oct 2026 (night, later): Phase 5 part 2, coupons and the Offers page (on V0.4)
+
+- **What a coupon lowers**: Riderzpro's own products and installation (% off with an optional cap,
+  or ₹ off), or the delivery charge (free delivery).
+  - Never a marketplace seller's items, so seller invoices and payouts don't change.
+  - The discount is spread over Riderzpro's lines on the GST tax invoice, lowering the taxable
+    value and the tax ("Less coupon CODE").
+- **Checkout**:
+  - A "Coupon code" box in the order summary. The server works out the discount from its own prices.
+  - The code is re-checked when the cart changes, and again inside the order's transaction with
+    the coupon row locked, so the last use can't be taken twice.
+  - The WhatsApp message, confirmation email, order pages (customer and admin) and invoice show it.
+- **Limits**: minimum order, start/end dates, total uses, uses per customer (by mobile). Cancelled
+  orders don't count, so an abandoned online payment frees its use.
+- **Admin**:
+  - `/admin/coupons`: create; pause or resume; end for good; show on or hide from `/offers`.
+  - Usage count and rupees given.
+  - The new "coupons" permission: Owner, Manager, Catalogue.
+- **`/offers`**: public, live codes with "Copy code"; in the footer and the sitemap. The old-site
+  redirect `/offers → /shop` is removed.
+- **Database**: migration 010 (coupons, coupon_redemptions, orders.discount, orders.coupon_code).
+- **Verified**:
+  - 34 scripted coupon checks:
+    - invalid, duplicate, over-90% and too-short codes refused
+    - the discount and its cap; a seller-only cart refused; a mixed cart discounted only on
+      Riderzpro items
+    - minimum order; free delivery
+    - one use per customer; a one-use code refused for the next customer, then freed by
+      cancelling
+    - browser totals ignored; pause and end; ended can't resume; /offers lists only live public
+      codes
+    - invoice and admin order show the coupon
+  - Invoice maths checked: ₹4,499 − ₹449 = ₹4,050, taxable ₹3,432, IGST ₹618.
+  - The cart re-quotes when the quantity changes.
+  - `/offers` fits a 375 px phone screen.
+  - The payment (29), signature (18) and invoice (22) tests still pass; build clean.
+
 ## 17 Oct 2026 (night, later): Phase 5 part 1, admin team logins and roles (on V0.4)
 
 - **Own login for each person**:

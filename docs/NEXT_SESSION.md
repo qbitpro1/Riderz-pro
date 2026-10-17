@@ -50,8 +50,9 @@
    (staging), invoice-numbering test on real Postgres.
 2. **Phase 5: admin.**
    - Done on V0.4: team logins with roles and invites, audit log page (`docs/WORK_UPDATE.md`).
-   - Next: coupons + `/offers` page; header delivery-location picker (Phase 3 leftover);
-     extra screens: customers, reviews, warranty, reports.
+   - Done on V0.4: coupons + `/offers` page.
+   - Next: header delivery-location picker (Phase 3 leftover); extra screens: customers, reviews,
+     warranty, reports.
 3. **Later.** Installation bookings, AI assistant (Claude API), mobile app shell (rider app first).
 
 ## Choices made without the owner (change if asked)

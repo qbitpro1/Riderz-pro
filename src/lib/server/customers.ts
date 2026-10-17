@@ -394,6 +394,8 @@ type OrderRow = {
   notes: string | null;
   subtotal: number;
   shipping: number;
+  discount: number;
+  coupon_code: string | null;
   total: number;
   created_at: Date;
 };
@@ -427,7 +429,7 @@ export async function listCustomerOrders(customerId: string): Promise<AccountOrd
 export async function customerOrderDetail(customerId: string, number: string): Promise<AccountOrder | null> {
   const o = await sqlOne<OrderRow>(
     `SELECT id, number, status, customer_name, customer_phone, customer_email, address, city, state, pincode, notes,
-            subtotal, shipping, total, created_at
+            subtotal, shipping, discount, coupon_code, total, created_at
        FROM orders WHERE number = $1 AND customer_id = $2`,
     [number, customerId],
   );
@@ -528,6 +530,8 @@ export async function customerOrderDetail(customerId: string, number: string): P
     firstItem: items[0]?.title ?? "",
     subtotal: o.subtotal,
     shipping: o.shipping,
+    discount: o.discount,
+    couponCode: o.coupon_code,
     name: o.customer_name,
     phone: o.customer_phone,
     email: o.customer_email,

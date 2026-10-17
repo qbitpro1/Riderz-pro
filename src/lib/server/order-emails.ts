@@ -32,6 +32,8 @@ type OrderForMail = {
   pincode: string;
   subtotal: number;
   shipping: number;
+  discount: number;
+  coupon_code: string | null;
   total: number;
   created_at: Date;
 };
@@ -42,7 +44,7 @@ const loadOrder = (orderId: string) =>
   sqlOne<OrderForMail>(
     `SELECT o.id, o.number, o.status, o.customer_name, o.customer_phone, o.customer_email,
             CASE WHEN c.email_verified_at IS NOT NULL THEN c.email END AS account_email,
-            o.address, o.city, o.state, o.pincode, o.subtotal, o.shipping, o.total, o.created_at
+            o.address, o.city, o.state, o.pincode, o.subtotal, o.shipping, o.discount, o.coupon_code, o.total, o.created_at
        FROM orders o LEFT JOIN customers c ON c.id = o.customer_id
       WHERE o.id = $1`,
     [orderId],
@@ -69,6 +71,7 @@ export function confirmationEmail(o: OrderForMail, items: ItemForMail[], invoice
     "",
     `Items: ${rupees(o.subtotal)}`,
     `Delivery: ${o.shipping ? rupees(o.shipping) : "Free"}`,
+    ...(o.coupon_code ? [`Coupon ${o.coupon_code}: ${o.discount ? `-${rupees(o.discount)}` : "free delivery"}`] : []),
     `Total: ${rupees(o.total)} (prices include GST)`,
     "",
     "Delivering to:",
@@ -105,7 +108,7 @@ ${items
   .join("\n")}
 </table>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-size:14px;margin-top:8px">
-${row("Items", rupees(o.subtotal))}${row("Delivery", o.shipping ? rupees(o.shipping) : "Free")}${row("Total", rupees(o.total), true)}
+${row("Items", rupees(o.subtotal))}${row("Delivery", o.shipping ? rupees(o.shipping) : "Free")}${o.coupon_code ? row(`Coupon ${esc(o.coupon_code)}`, o.discount ? `-${rupees(o.discount)}` : "Free delivery") : ""}${row("Total", rupees(o.total), true)}
 </table><p style="margin:4px 0 0;font-size:12px;color:#777">Prices include GST.</p></td></tr>
 <tr><td style="padding:0 24px 16px;font-size:14px;line-height:1.5"><p style="margin:0;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#888">Delivering to</p>
 <p style="margin:6px 0 0">${esc(o.customer_name)}<br>${esc(o.address)}<br>${esc(o.city)}, ${esc(o.state)} ${esc(o.pincode)}<br>+91 ${esc(o.customer_phone)}</p></td></tr>

@@ -43,6 +43,8 @@ type OrderRow = {
   state: string;
   pincode: string;
   shipping: number;
+  discount: number;
+  coupon_code: string | null;
   total: number;
   created_at: Date;
 };
@@ -77,6 +79,24 @@ function departmentOf(productRef: string): string | null {
   return (slug && getProductDetail(slug)?.department) || null;
 }
 
+/**
+ * Spreads a coupon discount over the goods and installation lines in proportion to their amounts
+ * (the last one takes the rounding), never more than a line's own amount. Delivery is not
+ * discounted here: a free-delivery coupon already sets the delivery charge to 0.
+ */
+function spreadDiscount(input: InvoiceInputLine[], discount: number) {
+  const lines = input.filter((l) => l.kind !== "delivery");
+  const base = lines.reduce((n, l) => n + l.unitPrice * l.qty, 0);
+  if (discount <= 0 || base <= 0) return;
+  let left = Math.min(discount, base);
+  lines.forEach((l, i) => {
+    const amount = l.unitPrice * l.qty;
+    const share = i === lines.length - 1 ? left : Math.min(left, Math.floor((discount * amount) / base));
+    l.discount = Math.min(share, amount);
+    left -= l.discount;
+  });
+}
+
 function buildSnapshot(o: OrderRow, items: ItemRow[], number: string, issuedAt: Date): CustomerInvoiceSnapshot | null {
   const input: InvoiceInputLine[] = [];
   for (const i of items.filter((i) => i.product_kind === "house" && !i.vendor_order_id)) {
@@ -90,6 +110,7 @@ function buildSnapshot(o: OrderRow, items: ItemRow[], number: string, issuedAt: 
     input.push({ kind: "delivery", title: "Delivery charge", variant: null, qty: 1, unitPrice: o.shipping, ...TAX_CODES.delivery });
   }
   if (input.length === 0) return null;
+  spreadDiscount(input, o.discount);
 
   const { intraState, lines, totals } = computeInvoice(input, { supplierState: SUPPLIER.state, buyerState: o.state });
   return {
@@ -112,6 +133,7 @@ function buildSnapshot(o: OrderRow, items: ItemRow[], number: string, issuedAt: 
     lines,
     totals,
     amountInWords: rupeesInWords(totals.amount),
+    ...(o.coupon_code && o.discount > 0 ? { coupon: { code: o.coupon_code, discount: o.discount } } : {}),
     sellerItems: items
       .filter((i) => i.vendor_order_id)
       .map((i) => ({ title: i.title, variant: i.variant, qty: i.qty, amount: i.unit_price * i.qty, seller: i.store_name ?? "Riderzpro seller" })),
@@ -137,7 +159,7 @@ export async function issueCustomerInvoice(orderId: string, opts: { at?: Date } 
     const o = (
       await q<OrderRow>(
         `SELECT id, number, status, customer_name, customer_phone, customer_email, address, city, state, pincode,
-                shipping, total, created_at
+                shipping, discount, coupon_code, total, created_at
            FROM orders WHERE id = $1 FOR UPDATE`,
         [orderId],
       )

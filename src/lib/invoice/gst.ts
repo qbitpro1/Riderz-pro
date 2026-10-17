@@ -111,7 +111,8 @@ export function rupeesInWords(amount: number): string {
 /* ---------------------------------------------------------- the document */
 
 export type InvoiceLineKind = "goods" | "installation" | "delivery";
-export type CustomerInvoiceLine = InvoiceLine & { kind: InvoiceLineKind };
+/** `discount`: the coupon's share of this line (GST-inclusive rupees), already taken off `amount`. */
+export type CustomerInvoiceLine = InvoiceLine & { kind: InvoiceLineKind; discount?: number };
 
 export type CustomerInvoiceTotals = { taxable: number; cgst: number; sgst: number; igst: number; amount: number };
 
@@ -131,6 +132,8 @@ export type CustomerInvoiceSnapshot = {
   lines: CustomerInvoiceLine[];
   totals: CustomerInvoiceTotals;
   amountInWords: string;
+  /** The coupon on Riderzpro's part of the order; its discount is spread over the lines above. */
+  coupon?: { code: string; discount: number };
   /** Marketplace items in the same order: sold and invoiced by their sellers, not part of this invoice. */
   sellerItems: { title: string; variant: string | null; qty: number; amount: number; seller: string }[];
 };
@@ -144,6 +147,8 @@ export type InvoiceInputLine = {
   unitPrice: number;
   hsn: string;
   gstRate: number;
+  /** Rupees off this line (GST-inclusive), from a coupon. The tax is worked out on what is left. */
+  discount?: number;
 };
 
 /** Works out every line and the totals (the seller invoice's maths, line by line). */
@@ -162,7 +167,16 @@ export function computeInvoice(input: InvoiceInputLine[], opts: { supplierState:
     hsn: l.hsn,
     gstRate: l.gstRate,
   }));
-  const lines: CustomerInvoiceLine[] = invoiceLines(views, { gstExempt: false, intraState }).map((l, i) => ({ ...l, kind: input[i].kind }));
+  const lines: CustomerInvoiceLine[] = invoiceLines(views, { gstExempt: false, intraState }).map((l, i) => {
+    const off = input[i].discount ?? 0;
+    if (off <= 0) return { ...l, kind: input[i].kind };
+    // Same maths as invoiceLines, on the amount after the discount.
+    const amount = l.amount - off;
+    const taxable = Math.round((amount * 100) / (100 + l.gstRate));
+    const tax = amount - taxable;
+    const half = Math.floor(tax / 2);
+    return { ...l, kind: input[i].kind, discount: off, amount, taxable, cgst: intraState ? half : 0, sgst: intraState ? tax - half : 0, igst: intraState ? 0 : tax };
+  });
   const sum = (k: keyof CustomerInvoiceTotals) => lines.reduce((n, l) => n + l[k], 0);
   const totals: CustomerInvoiceTotals = { taxable: sum("taxable"), cgst: sum("cgst"), sgst: sum("sgst"), igst: sum("igst"), amount: sum("amount") };
   return { intraState, lines, totals };

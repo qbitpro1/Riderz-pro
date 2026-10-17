@@ -49,6 +49,7 @@ export default async function OrderPage({ params }: Params) {
             <dl className="mt-3 space-y-1.5">
               <Row label="Items" value={rupees(order.subtotal)} />
               <Row label="Shipping" value={order.shipping ? rupees(order.shipping) : "Free"} />
+              {order.couponCode && <Row label={`Coupon ${order.couponCode}`} value={order.discount ? `−${rupees(order.discount)}` : "Free delivery"} />}
               <div className="border-t border-tint/10 pt-1.5">
                 <Row label="Total" value={rupees(order.total)} strong />
               </div>

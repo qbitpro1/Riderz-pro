@@ -37,7 +37,7 @@ type PayPhase = "idle" | "creating" | "open" | "verifying" | "dismissed";
 type PendingPayment = { key: string; number: string; total: number; payment: OnlinePaymentStart };
 const DEV = process.env.NODE_ENV !== "production";
 
-type Totals = { subtotal: number; installTotal: number; shipping: number; total: number };
+type Totals = { subtotal: number; installTotal: number; shipping: number; total: number; discount?: number; couponCode?: string };
 type Values = {
   name: string;
   mobile: string;
@@ -186,7 +186,7 @@ export function CheckoutForm({
       setPhase("creating");
       try {
         const res = await api<{ order: { number: string; total: number }; payment: OnlinePaymentStart }>("/api/orders", {
-          body: { customer: values, lines: cartLines, paymentMethod: "online", deliveryPoint: point ?? undefined },
+          body: { customer: values, lines: cartLines, paymentMethod: "online", deliveryPoint: point ?? undefined, couponCode: totals.couponCode },
         });
         p = { key, number: res.order.number, total: res.order.total, payment: res.payment };
         setPending(p);
@@ -293,6 +293,7 @@ export function CheckoutForm({
           customer: values,
           lines: lines.map((l) => ({ id: l.id, qty: l.qty, install: Boolean(l.install) })),
           deliveryPoint: point ?? undefined,
+          couponCode: totals.couponCode,
         },
       });
       const href = whatsapp(orderMessage(lines, { ...totals, total: res.order.total }, { orderNumber: res.order.number, customer: details }));

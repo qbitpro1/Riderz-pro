@@ -83,6 +83,13 @@ you confirm them (`src/lib/invoice/gst.ts`, `src/lib/data/site.ts`):
 - [ ] The wording on the Payments help page (`/support/payments`): "Pay online with Razorpay, or
       confirm on WhatsApp; unpaid online orders are cancelled after 30 minutes."
 
+## 8. Coupons (built 17 Oct 2026)
+
+- [ ] Coupons lower only Riderzpro's own products, installation and delivery (never sellers' items),
+      and the discount is shown on Riderzpro's tax invoice, lowering the taxable value. Please confirm
+      with the accountant that this treatment (a discount at the time of sale, on the invoice) is right.
+- [ ] Who may create coupons: today Owner, Manager and Catalogue roles.
+
 ## When done
 
 Tell the owner which boxes are ticked. The developer then switches the payment tests from placeholders

@@ -5,7 +5,7 @@
  *   owner       everything, including the team and the audit log
  *   manager     everything except the team
  *   operations  orders, dispatch, riders, customer and seller messages
- *   catalog     sellers (KYC, products, changes), the catalogue tools; orders to look at
+ *   catalog     sellers (KYC, products, changes), the catalogue tools, coupons; orders to look at
  *   finance     payouts, refunds, sellers' bank details, the audit log; orders to look at
  *   support     customer and seller messages; orders to look at
  */
@@ -27,6 +27,7 @@ export const ADMIN_PERMS = [
   "sellers.reveal",
   "payouts",
   "catalog",
+  "coupons",
 ] as const;
 export type AdminPerm = (typeof ADMIN_PERMS)[number];
 
@@ -34,7 +35,7 @@ const ROLE_PERMS: Record<AdminRole, readonly AdminPerm[]> = {
   owner: ADMIN_PERMS,
   manager: ADMIN_PERMS.filter((p) => p !== "team"),
   operations: ["orders", "orders.view", "dispatch", "riders", "support"],
-  catalog: ["sellers", "catalog", "orders.view"],
+  catalog: ["sellers", "catalog", "coupons", "orders.view"],
   finance: ["payouts", "refunds", "sellers.reveal", "audit", "orders.view"],
   support: ["support", "orders.view"],
 };
@@ -52,7 +53,7 @@ export const ROLE_TEXT: Record<AdminRole, string> = {
   owner: "Everything, including the team and the audit log.",
   manager: "Everything except managing the team.",
   operations: "Orders, dispatch, riders, customer and seller messages.",
-  catalog: "Seller KYC, products and changes, catalogue tools. Can look at orders.",
+  catalog: "Seller KYC, products and changes, catalogue tools, coupons. Can look at orders.",
   finance: "Payouts, refunds, sellers' bank details, audit log. Can look at orders.",
   support: "Customer and seller messages. Can look at orders.",
 };

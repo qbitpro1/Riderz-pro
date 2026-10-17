@@ -19,6 +19,7 @@ import {
   Store,
   Users,
   UserCog,
+  TicketPercent,
   ScrollText,
   type LucideIcon,
 } from "lucide-react";
@@ -49,6 +50,7 @@ export default async function AdminHub({ searchParams }: { searchParams: Promise
     { href: "/admin/orders", perm: "orders.view", title: "Seller orders", text: "Orders split by seller, cancellations, returns.", icon: ShoppingBag },
     { href: "/admin/payouts", perm: "payouts", title: "Payouts", text: "Settlements due and payments made to sellers.", icon: Banknote },
     { href: "/admin/support", perm: "support", title: "Seller support", text: "Tickets raised from the seller portal.", icon: LifeBuoy, count: counts?.tickets },
+    { href: "/admin/coupons", perm: "coupons", title: "Coupons", text: "Checkout codes and the public Offers page.", icon: TicketPercent },
     { href: "/admin/customer-support", perm: "support", title: "Customer messages", text: "Help-desk messages from shoppers.", icon: MessagesSquare, count: customerMessages },
   ];
   const delivery: Tile[] = [

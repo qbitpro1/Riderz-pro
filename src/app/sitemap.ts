@@ -86,6 +86,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
     entry("/faq", 0.5, "monthly"),
     entry("/track-order", 0.3, "yearly"),
+    entry("/offers", 0.5, "daily"),
     ...SUPPORT_POLICIES.map((p) => entry(`/support/${p.slug}`, 0.4, "monthly")),
     ...LEGAL_POLICIES.map((p) => entry(`/legal/${p.slug}`, 0.3, "yearly")),
   ];

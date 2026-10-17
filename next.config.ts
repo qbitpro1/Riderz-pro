@@ -78,7 +78,6 @@ const nextConfig: NextConfig = {
       { source: "/dashboard/rider", destination: "/rider/dashboard", permanent: true },
       { source: "/dashboard/admin", destination: "/admin", permanent: true },
       { source: "/dashboard/workshop", destination: "/garage", permanent: true },
-      { source: "/offers", destination: "/shop", permanent: true },
       { source: "/assistant", destination: "/shop", permanent: true },
       { source: "/app", destination: "/", permanent: true },
       { source: "/support", destination: "/contact", permanent: true },

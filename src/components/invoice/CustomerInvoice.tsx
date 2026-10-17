@@ -123,6 +123,7 @@ export function CustomerInvoice({ inv }: { inv: CustomerInvoiceSnapshot }) {
                 <td className="py-2 pr-2">
                   {l.title}
                   {l.variant && <span className="block text-dim">{l.variant}</span>}
+                  {l.discount ? <span className="block text-dim">Less coupon {inv.coupon?.code ?? ""}: −{rupees(l.discount)}</span> : null}
                 </td>
                 <td className="px-2 py-2 tnum">{l.hsn ?? "—"}</td>
                 <td className={num}>{l.qty}</td>

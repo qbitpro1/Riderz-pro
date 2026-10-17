@@ -18,7 +18,7 @@ export type MessageCustomer = {
  */
 export function orderMessage(
   lines: CartLine[],
-  t: { subtotal: number; installTotal: number; shipping: number; total: number },
+  t: { subtotal: number; installTotal: number; shipping: number; total: number; discount?: number; couponCode?: string },
   extra: { orderNumber?: string; customer?: MessageCustomer } = {},
 ): string {
   const c = extra.customer;
@@ -35,6 +35,7 @@ export function orderMessage(
     `Subtotal: ${rupees(t.subtotal)}`,
     ...(t.installTotal ? [`Installation: ${rupees(t.installTotal)}`] : []),
     `Shipping: ${t.shipping === 0 ? "Free" : rupees(t.shipping)}`,
+    ...(t.couponCode ? [`Coupon ${t.couponCode}${t.discount ? `: −${rupees(t.discount)}` : " (free delivery)"}`] : []),
     `Total: ${rupees(t.total)}`,
     "",
     "My car is: ",
