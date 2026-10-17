@@ -1,855 +1,521 @@
 "use client";
 
-import Image from "next/image";
-import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from "react";
-import { ArrowLeft, Lock, Maximize, Minimize, Minus, Plus, Search, ShoppingBag, Trash2, X } from "lucide-react";
-import { api, ApiFailure } from "@/lib/vendor/client";
-import { fileHref } from "@/lib/vendor/types";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { CarFront, Columns2, Search, ShoppingBag, SearchX, X } from "lucide-react";
 import { rupees } from "@/lib/format";
-import { ProductGallery } from "@/components/product/ProductGallery";
-import { findModelBySlug } from "@/lib/data/vehicles";
-import type { ProductImage } from "@/lib/store/types";
-import type { ScreenProduct, ScreenStore } from "./types";
+import { api } from "@/lib/vendor/client";
+import { AttractScreen } from "./AttractScreen";
+import { BrowseGrid, type TileActions } from "./BrowseGrid";
+import { CarPicker } from "./CarPicker";
+import { CompareSheet } from "./CompareSheet";
+import { IdlePrompt, SellerAccess, SellerDialog } from "./Dialogs";
+import { useIdle, useOrder, usePulse } from "./hooks";
+import { COMPARE_MAX, IDLE_MS, SORTS, fitsCar, matchesQuery, sortProducts, ui, type Car, type SortKey } from "./lib";
+import { OrderPanel } from "./OrderPanel";
+import { Empty, StoreMark } from "./parts";
+import { ProductSheet } from "./ProductSheet";
+import { ReviewScreen } from "./ReviewScreen";
+import { Styles } from "./Styles";
+import type { ScreenFitBrand, ScreenProduct, ScreenStore } from "./types";
 
 /**
  * THE OFFLINE STORE SCREEN (client)
  *
- * An order screen for customers in the seller's own shop, like a fast-food kiosk:
- * browse by category, tap a product, add it to an order, review the order and show
- * it at the counter. Nothing is saved or paid here; the order lives in this screen
- * only and clears itself after a customer walks away (IDLE_MS + a short countdown).
+ * A showroom touch screen for customers in the seller's own shop. It opens on an attract screen,
+ * then lets the customer browse every approved, in-stock product, narrow by category or "Find for
+ * my car", open products, compare up to three, build an order and show it at the counter.
+ * Nothing is saved or paid here: the order lives in this screen only and clears itself when a
+ * customer walks away (IDLE_MS, then a short "Still there?" countdown).
  *
- * Leaving the screen needs the seller's password (the session is locked to it).
+ * The screen is always light: product photos sit on white, and a shop looks the same whatever the
+ * device theme is. Leaving needs the seller's password (the session is locked to this screen).
  */
-
-const IDLE_MS = 120_000;
-const COUNTDOWN_S = 20;
-const MAX_QTY = 99;
-const LOW_STOCK = 5;
-
-type Order = Record<string, number>;
-
-const offPct = (p: { mrp: number; price: number }) => (p.mrp > p.price ? Math.round(((p.mrp - p.price) / p.mrp) * 100) : 0);
-const maxFor = (p: ScreenProduct) => Math.min(p.stock, MAX_QTY);
-
-export function StoreScreen({ store, products, locked }: { store: ScreenStore; products: ScreenProduct[]; locked: boolean }) {
-  const [group, setGroup] = useState<string>("all");
+export function StoreScreen({
+  store,
+  products,
+  fitment,
+  locked,
+}: {
+  store: ScreenStore;
+  products: ScreenProduct[];
+  fitment: ScreenFitBrand[];
+  locked: boolean;
+}) {
+  const [attract, setAttract] = useState<"on" | "leaving" | "off">("on");
+  const [group, setGroup] = useState("all");
   const [query, setQuery] = useState("");
-  const [order, setOrder] = useState<Order>({});
-  const [open, setOpen] = useState<ScreenProduct | null>(null);
+  const [sort, setSort] = useState<SortKey>("featured");
+  const [car, setCar] = useState<Car | null>(null);
+  const [compare, setCompare] = useState<string[]>([]);
+
+  const [openId, setOpenId] = useState<string | null>(null);
+  const [drawer, setDrawer] = useState(false);
   const [review, setReview] = useState(false);
-  const [unlock, setUnlock] = useState(false);
+  const [compareOpen, setCompareOpen] = useState(false);
+  const [carOpen, setCarOpen] = useState(false);
+  const [sellerOpen, setSellerOpen] = useState(false);
   const [idlePrompt, setIdlePrompt] = useState(false);
-  const [fullscreen, setFullscreen] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
+
   const scroller = useRef<HTMLElement>(null);
+  const order = useOrder(products, store.slug);
+  const { lines, count, total, savings, setQty } = order;
+  const badgePulse = usePulse(count);
+
+  const byId = useMemo(() => new Map(products.map((p) => [p.id, p])), [products]);
+  const open = openId ? (byId.get(openId) ?? null) : null;
+  const hasCars = fitment.some((b) => b.n > 0);
 
   // Opening the screen locks this session to it.
   useEffect(() => {
     if (!locked) api("/api/vendor/store-screen", { body: { action: "lock" } }).catch(() => {});
   }, [locked]);
 
-  // The screen is always light; the page around it (scrollbars, browser bar) follows while it is open.
+  // Always light; the page around it (scrollbars, browser bar) follows while it is open.
   useEffect(() => {
     const html = document.documentElement;
     const before = html.dataset.theme;
     html.dataset.theme = "light";
     return () => {
       if (before) html.dataset.theme = before;
+      else delete html.dataset.theme;
     };
   }, []);
 
+  // Short messages ("Added to order") fade after a moment.
   useEffect(() => {
-    const onChange = () => setFullscreen(Boolean(document.fullscreenElement));
-    document.addEventListener("fullscreenchange", onChange);
-    return () => document.removeEventListener("fullscreenchange", onChange);
-  }, []);
+    if (!notice) return;
+    const t = window.setTimeout(() => setNotice(null), 2600);
+    return () => window.clearTimeout(t);
+  }, [notice]);
 
-  const byId = useMemo(() => new Map(products.map((p) => [p.id, p])), [products]);
+  /* ---- what is shown ---- */
+  const base = useMemo(() => products.filter((p) => fitsCar(p, car) && matchesQuery(p, query)), [products, car, query]);
 
   const groups = useMemo(() => {
     const m = new Map<string, { name: string; count: number }>();
-    for (const p of products) {
-      const g = m.get(p.group) ?? { name: p.groupName, count: 0 };
-      g.count++;
-      m.set(p.group, g);
-    }
+    for (const p of products) if (!m.has(p.group)) m.set(p.group, { name: p.groupName, count: 0 });
+    for (const p of base) m.get(p.group)!.count++;
     return [...m.entries()].map(([slug, g]) => ({ slug, ...g }));
+  }, [products, base]);
+
+  const shown = useMemo(() => sortProducts(group === "all" ? base : base.filter((p) => p.group === group), sort), [base, group, sort]);
+  const gridKey = `${group}|${query}|${sort}|${car?.slug ?? ""}`;
+
+  const attractGroups = useMemo(() => {
+    const all = new Map<string, { slug: string; name: string; count: number }>();
+    for (const p of products) {
+      const g = all.get(p.group) ?? { slug: p.group, name: p.groupName, count: 0 };
+      g.count++;
+      all.set(p.group, g);
+    }
+    return [...all.values()].sort((a, b) => b.count - a.count);
   }, [products]);
 
-  const shown = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    return products.filter(
-      (p) =>
-        (group === "all" || p.group === group) &&
-        (!q || `${p.title} ${p.brand} ${p.groupName}`.toLowerCase().includes(q)),
-    );
-  }, [products, group, query]);
-
-  const lines = useMemo(
-    () =>
-      Object.entries(order)
-        .map(([id, qty]) => ({ product: byId.get(id), qty }))
-        .filter((l): l is { product: ScreenProduct; qty: number } => Boolean(l.product) && l.qty > 0),
-    [order, byId],
-  );
-  const count = lines.reduce((n, l) => n + l.qty, 0);
-  const total = lines.reduce((n, l) => n + l.product.price * l.qty, 0);
-  const savings = lines.reduce((n, l) => n + Math.max(0, l.product.mrp - l.product.price) * l.qty, 0);
-
-  const setQty = useCallback(
-    (id: string, qty: number) =>
-      setOrder((o) => {
-        const p = byId.get(id);
-        if (!p) return o;
-        const next = { ...o };
-        const q = Math.max(0, Math.min(qty, maxFor(p)));
-        if (q === 0) delete next[id];
-        else next[id] = q;
-        return next;
-      }),
-    [byId],
-  );
-
-  const startOver = useCallback(() => {
-    setOrder({});
-    setOpen(null);
-    setReview(false);
-    setIdlePrompt(false);
+  /* ---- actions ---- */
+  const resetBrowse = useCallback(() => {
     setGroup("all");
     setQuery("");
-    scroller.current?.scrollTo({ top: 0 });
+    setSort("featured");
+    setCar(null);
+    setCompare([]);
   }, []);
 
-  /* ---- idle reset: a walk-away customer's order never greets the next one ---- */
-  const busy = count > 0 || open !== null || review || query !== "" || group !== "all";
-  useEffect(() => {
-    if (unlock) return;
-    let timer = window.setTimeout(onIdle, IDLE_MS);
-    function onIdle() {
-      if (busy) setIdlePrompt(true);
-      else scroller.current?.scrollTo({ top: 0 });
-    }
-    const poke = () => {
-      window.clearTimeout(timer);
-      timer = window.setTimeout(onIdle, IDLE_MS);
-    };
-    const events = ["pointerdown", "keydown", "wheel", "touchmove"] as const;
-    events.forEach((e) => window.addEventListener(e, poke, { passive: true }));
-    return () => {
-      window.clearTimeout(timer);
-      events.forEach((e) => window.removeEventListener(e, poke));
-    };
-  }, [busy, unlock]);
+  const closeLayers = useCallback(() => {
+    setOpenId(null);
+    setDrawer(false);
+    setReview(false);
+    setCompareOpen(false);
+    setCarOpen(false);
+    setIdlePrompt(false);
+    setNotice(null);
+  }, []);
 
-  async function toggleFullscreen() {
-    try {
-      if (document.fullscreenElement) await document.exitFullscreen();
-      else await document.documentElement.requestFullscreen();
-    } catch {
-      /* not allowed here (some tablets); the screen still works */
-    }
-  }
+  /** Back to the attract screen with a clean slate for the next customer. */
+  const startOver = useCallback(() => {
+    order.clear();
+    closeLayers();
+    resetBrowse();
+    setAttract("on");
+    scroller.current?.scrollTo({ top: 0 });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- `order.clear` is stable
+  }, [closeLayers, resetBrowse, order.clear]);
+
+  const begin = useCallback((g?: string) => {
+    if (g) setGroup(g);
+    setAttract("leaving");
+    window.setTimeout(() => setAttract("off"), 520);
+  }, []);
+
+  const toggleCompare = useCallback(
+    (id: string) =>
+      setCompare((c) => (c.includes(id) ? c.filter((x) => x !== id) : c.length >= COMPARE_MAX ? c : [...c, id])),
+    [],
+  );
+
+  const overlays = open !== null || drawer || review || compareOpen || carOpen;
+  useIdle(
+    () => {
+      if (count > 0 || overlays) setIdlePrompt(true);
+      else startOver();
+    },
+    IDLE_MS,
+    attract === "on" || idlePrompt || sellerOpen,
+  );
+
+  const actions: TileActions = {
+    car,
+    qtys: order.qtys,
+    compare,
+    onOpen: (p) => setOpenId(p.id),
+    onSetQty: setQty,
+    onToggleCompare: toggleCompare,
+  };
+
+  const compareProducts = compare.map((id) => byId.get(id)).filter((p): p is ScreenProduct => Boolean(p));
+  const dockBottom = count > 0 || compare.length > 0;
+
+  const orderButton = (
+    <button type="button" onClick={() => setDrawer(true)} className={`${ui.primary} relative h-14 shrink-0 px-4 md:px-6`} aria-label={`Your order, ${count} items, ${rupees(total)}`}>
+      <ShoppingBag size={22} aria-hidden />
+      <span className="hidden md:inline">Your order</span>
+      {count > 0 && <span className="tnum hidden border-l border-on-accent/30 pl-2.5 lg:inline">{rupees(total)}</span>}
+      <span
+        aria-hidden
+        className={`absolute -right-1.5 -top-1.5 grid h-7 min-w-7 place-items-center rounded-full bg-chalk px-1.5 text-sm font-bold text-void tnum ring-2 ring-void transition-opacity ${
+          count > 0 ? "opacity-100" : "opacity-0"
+        } ${badgePulse ? "ss-bump" : ""}`}
+      >
+        {count}
+      </span>
+    </button>
+  );
 
   return (
     // Always light: a shop screen looks the same whatever theme the device or the site is set to.
-    <div data-theme="light" className="flex h-dvh flex-col bg-void text-chalk">
-      {/* Top bar */}
-      <header className="z-30 shrink-0 border-b border-tint/10 bg-void">
-        <div className="flex items-center gap-3 px-4 py-3 md:px-6">
-          <div className="relative grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-[2px] border border-tint/10 bg-carbon">
-            {store.logo ? (
-              <Image src={fileHref(store.logo)} alt="" fill sizes="48px" className="object-contain p-1" />
-            ) : (
-              <span className="font-display text-xl font-extrabold uppercase text-accent">{store.name.slice(0, 1)}</span>
-            )}
-          </div>
-          <div className="min-w-0 flex-1">
-            <h1 className="truncate font-display text-lg font-extrabold uppercase leading-tight text-chalk md:text-2xl">{store.name}</h1>
-            <p className="hidden truncate text-sm text-ash sm:block">Tap a product to add it to your order</p>
-          </div>
-          <label className="relative hidden w-72 md:block">
-            <span className="sr-only">Search products</span>
-            <Search size={18} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-dim" aria-hidden />
-            <input
-              type="search"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search products"
-              className="field pl-10"
-              autoComplete="off"
-            />
-          </label>
-          <button
-            type="button"
-            onClick={toggleFullscreen}
-            aria-label={fullscreen ? "Exit full screen" : "Full screen"}
-            className="grid h-12 w-12 shrink-0 place-items-center rounded-[2px] border border-tint/10 text-ash hover:text-chalk"
-          >
-            {fullscreen ? <Minimize size={20} aria-hidden /> : <Maximize size={20} aria-hidden />}
-          </button>
-          <button
-            type="button"
-            onClick={() => setUnlock(true)}
-            aria-label="Close store screen (seller only)"
-            className="grid h-12 w-12 shrink-0 place-items-center rounded-[2px] border border-tint/10 text-dim hover:text-chalk"
-          >
-            <Lock size={18} aria-hidden />
-          </button>
-        </div>
+    <div data-theme="light" className="ss-root flex h-dvh select-none flex-col bg-void text-chalk [&_input]:select-text">
+      <Styles />
 
-        {/* Search (phones) and categories */}
-        <div className="px-4 pb-3 md:hidden">
-          <label className="relative block">
-            <span className="sr-only">Search products</span>
-            <Search size={18} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-dim" aria-hidden />
-            <input
-              type="search"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search products"
-              className="field pl-10"
-              autoComplete="off"
-            />
-          </label>
-        </div>
-        {groups.length > 1 && (
-          <nav aria-label="Categories" className="flex gap-2 overflow-x-auto px-4 pb-3 md:px-6">
-            <CategoryTab active={group === "all"} onClick={() => setGroup("all")} label="All" count={products.length} />
-            {groups.map((g) => (
-              <CategoryTab key={g.slug} active={group === g.slug} onClick={() => setGroup(g.slug)} label={g.name} count={g.count} />
-            ))}
-          </nav>
-        )}
-      </header>
+      {/* Browse (stays mounted under the attract screen, so the first touch is instant) */}
+      <div className="flex min-h-0 flex-1 flex-col" inert={attract === "on"} aria-hidden={attract === "on"}>
+        <header className="z-20 shrink-0 border-b border-tint/10 bg-void">
+          <div className="flex items-center gap-3 px-4 py-3 md:gap-4 md:px-6">
+            <button
+              type="button"
+              onClick={() => {
+                resetBrowse();
+                scroller.current?.scrollTo({ top: 0 });
+              }}
+              aria-label={`${store.name}. Show all products`}
+              className="hidden min-w-0 shrink-0 items-center gap-3 rounded-2xl text-left transition-transform duration-200 active:scale-[0.97] sm:flex lg:w-52 xl:w-56"
+            >
+              <StoreMark store={store} className="h-12 w-12 md:h-14 md:w-14" text="text-xl" />
+              <span className="hidden min-w-0 lg:block">
+                <h1 className="truncate font-display text-lg font-extrabold leading-tight tracking-tight text-chalk">{store.name}</h1>
+                <span className="block text-sm text-dim tnum">{products.length} in stock</span>
+              </span>
+            </button>
 
-      <div className="flex min-h-0 flex-1">
-        {/* Products (the root layout already provides <main>) */}
-        <section
-          ref={scroller}
-          className={`min-w-0 flex-1 overflow-y-auto px-4 py-5 md:px-6 ${count > 0 ? "pb-32 lg:pb-8" : "pb-8"}`}
-          aria-label="Products"
-        >
-          {products.length === 0 ? (
-            <Empty title="No products to show yet">
-              Approved products with stock appear here. Add products and stock from your seller dashboard.
-            </Empty>
-          ) : shown.length === 0 ? (
-            <Empty title="Nothing matches">
-              <button type="button" className="btn btn-outline btn-sm mt-4" onClick={() => { setQuery(""); setGroup("all"); }}>
-                Show all products
+            <label className="relative min-w-0 flex-1">
+              <span className="sr-only">Search products</span>
+              <Search size={20} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-dim" aria-hidden />
+              <input
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search seat covers, speakers, brands…"
+                autoComplete="off"
+                enterKeyHint="search"
+                className="h-14 w-full rounded-xl border border-tint/15 bg-carbon pl-12 pr-14 text-base text-chalk outline-none transition-colors placeholder:text-dim focus:border-accent [&::-webkit-search-cancel-button]:hidden"
+              />
+              {query && (
+                <button
+                  type="button"
+                  onClick={() => setQuery("")}
+                  aria-label="Clear search"
+                  className="absolute right-1 top-1/2 grid h-12 w-12 -translate-y-1/2 place-items-center rounded-full text-ash active:bg-steel"
+                >
+                  <X size={20} aria-hidden />
+                </button>
+              )}
+            </label>
+
+            {hasCars && (
+              <button
+                type="button"
+                onClick={() => setCarOpen(true)}
+                className={`${ui.secondary} h-14 shrink-0 px-4 md:px-5 ${car ? "border-chalk bg-chalk text-void hover:bg-chalk" : ""}`}
+                aria-label={car ? `Your car: ${car.brand} ${car.name}. Change` : "Find for my car"}
+              >
+                <CarFront size={22} aria-hidden />
+                <span className="hidden max-w-40 truncate md:inline">{car ? `${car.brand} ${car.name}` : "Find for my car"}</span>
               </button>
-            </Empty>
-          ) : (
-            <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-4 xl:grid-cols-4 2xl:grid-cols-5">
-              {shown.map((p) => (
-                <li key={p.id}>
-                  <ProductTile product={p} qty={order[p.id] ?? 0} onOpen={() => setOpen(p)} onAdd={() => setQty(p.id, (order[p.id] ?? 0) + 1)} />
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
+            )}
 
-        {/* Order (large screens) */}
-        <aside aria-label="Your order" className="hidden w-[380px] shrink-0 flex-col border-l border-tint/10 bg-carbon lg:flex">
-          <OrderPanel lines={lines} count={count} total={total} savings={savings} setQty={setQty} onReview={() => setReview(true)} onClear={startOver} />
-        </aside>
+            {orderButton}
+            <SellerAccess onOpen={() => setSellerOpen(true)} />
+          </div>
+
+          {/* Categories on phones and tablets (the rail takes over from lg) */}
+          {groups.length > 1 && (
+            <nav aria-label="Categories" className="ss-hide-bar flex gap-2 overflow-x-auto px-4 pb-3 lg:hidden md:px-6">
+              <CategoryPill active={group === "all"} onClick={() => setGroup("all")} label="All products" count={base.length} />
+              {groups.map((g) => (
+                <CategoryPill key={g.slug} active={group === g.slug} onClick={() => setGroup(g.slug)} label={g.name} count={g.count} />
+              ))}
+            </nav>
+          )}
+        </header>
+
+        <div className="flex min-h-0 flex-1">
+          {/* Category rail */}
+          {groups.length > 1 && (
+            <nav aria-label="Categories" className="ss-scroll hidden w-60 shrink-0 overflow-y-auto border-r border-tint/10 bg-carbon px-3 py-5 lg:block xl:w-64">
+              <ul className="space-y-1">
+                <li>
+                  <RailItem active={group === "all"} onClick={() => setGroup("all")} label="All products" count={base.length} />
+                </li>
+                {groups.map((g) => (
+                  <li key={g.slug}>
+                    <RailItem active={group === g.slug} onClick={() => setGroup(g.slug)} label={g.name} count={g.count} dim={g.count === 0} />
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          )}
+
+          <section ref={scroller} aria-label="Products" className={`ss-scroll min-w-0 flex-1 overflow-y-auto px-4 pt-4 md:px-6 md:pt-5 ${dockBottom ? "pb-32" : "pb-8"}`}>
+            {products.length > 0 && (
+              <div className="mb-5 flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
+                <div className="flex min-w-0 items-center gap-3">
+                  <p className="text-base font-semibold text-chalk tnum" aria-live="polite">
+                    {shown.length} {shown.length === 1 ? "product" : "products"}
+                  </p>
+                  {car && (
+                    <button type="button" onClick={() => setCar(null)} className="inline-flex min-h-10 items-center gap-1.5 rounded-full bg-chalk pl-3.5 pr-2.5 text-sm font-semibold text-void active:scale-95">
+                      <span className="max-w-48 truncate">For your {car.name}</span> <X size={16} aria-hidden />
+                      <span className="sr-only">Clear car</span>
+                    </button>
+                  )}
+                </div>
+                <div role="group" aria-label="Sort products" className="ss-hide-bar -mx-4 flex max-w-[100vw] gap-2 overflow-x-auto px-4 md:mx-0 md:px-0">
+                  {SORTS.map((s) => (
+                    <button
+                      key={s.key}
+                      type="button"
+                      aria-pressed={sort === s.key}
+                      onClick={() => setSort(s.key)}
+                      className={`${ui.pill} min-h-12 text-sm ${sort === s.key ? "border-chalk bg-chalk text-void" : "border-tint/15 text-ash hover:border-tint/35"}`}
+                    >
+                      {s.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {products.length === 0 ? (
+              <Empty title="No products to show yet">
+                Approved products with stock appear here. Add products and stock from your seller dashboard.
+              </Empty>
+            ) : shown.length === 0 ? (
+              <Empty title={car ? `Nothing listed for your ${car.name} yet` : "Nothing matches"} icon={<SearchX size={40} aria-hidden />}>
+                <p>{car ? "Universal products show up here too, so ask us at the counter." : "Try a different word or category."}</p>
+                <button
+                  type="button"
+                  className={`${ui.primary} mt-5`}
+                  onClick={() => {
+                    setQuery("");
+                    setGroup("all");
+                    setCar(null);
+                  }}
+                >
+                  Show all products
+                </button>
+              </Empty>
+            ) : (
+              <div key={gridKey} className="ss-fade">
+                <BrowseGrid products={shown} actions={actions} />
+              </div>
+            )}
+          </section>
+        </div>
+
+        {/* Floating dock: compare, and the order on phones */}
+        {dockBottom && (
+          <div className="pointer-events-none fixed inset-x-0 bottom-0 z-30 flex flex-col items-center gap-2 px-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+            <div className="pointer-events-auto flex w-full max-w-xl items-center justify-center gap-2">
+              {compare.length > 0 && (
+                <div className="ss-pop flex items-center rounded-2xl bg-chalk text-void shadow-xl">
+                  <button type="button" onClick={() => setCompareOpen(true)} className="inline-flex min-h-14 items-center gap-2.5 rounded-l-2xl pl-5 pr-3 text-base font-bold active:opacity-80">
+                    <Columns2 size={20} aria-hidden /> Compare <span className="tnum">({compare.length})</span>
+                  </button>
+                  <button type="button" onClick={() => setCompare([])} aria-label="Clear compare" className="grid h-14 w-12 place-items-center rounded-r-2xl active:opacity-80">
+                    <X size={18} aria-hidden />
+                  </button>
+                </div>
+              )}
+              {count > 0 && (
+                <button type="button" onClick={() => setDrawer(true)} className={`${ui.primary} ss-pop flex-1 justify-between shadow-xl md:hidden`}>
+                  <span className="flex items-center gap-2.5">
+                    <ShoppingBag size={20} aria-hidden /> {count} {count === 1 ? "item" : "items"}
+                  </span>
+                  <span className="tnum">{rupees(total)}</span>
+                </button>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Order bar (phones and tablets) */}
-      {count > 0 && (
-        <div className="safe-b fixed inset-x-0 bottom-0 z-30 border-t border-tint/10 bg-void p-3 lg:hidden">
-          <button type="button" onClick={() => setReview(true)} className="btn btn-primary btn-block min-h-14 justify-between text-base">
-            <span className="flex items-center gap-2">
-              <ShoppingBag size={20} aria-hidden />
-              View order · {count} {count === 1 ? "item" : "items"}
-            </span>
-            <span className="tnum">{rupees(total)}</span>
-          </button>
+      {/* Added-to-order message */}
+      {notice && (
+        <div role="status" className="ss-pop pointer-events-none fixed inset-x-0 bottom-24 z-[70] flex justify-center px-4 md:bottom-8">
+          <div className="pointer-events-auto flex items-center gap-4 rounded-2xl bg-chalk py-2 pl-5 pr-2 text-void shadow-xl">
+            <span className="text-base font-semibold">{notice}</span>
+            <button type="button" onClick={() => { setNotice(null); setDrawer(true); }} className="min-h-12 rounded-xl bg-void px-4 text-base font-bold text-chalk active:scale-95">
+              View order
+            </button>
+          </div>
         </div>
       )}
 
+      {/* Layers, bottom to top */}
       {open && (
-        <ProductView
+        <ProductSheet
+          key={open.id}
           product={open}
-          inOrder={order[open.id] ?? 0}
+          products={products}
+          car={car}
+          inOrder={order.qtys[open.id] ?? 0}
           orderCount={count}
           orderTotal={total}
+          compare={compare}
+          actions={actions}
+          onClose={() => setOpenId(null)}
+          onToggleCompare={toggleCompare}
           onViewOrder={() => {
-            setOpen(null);
+            setOpenId(null);
+            setDrawer(true);
+          }}
+          onAdd={(qty) => {
+            setQty(open.id, (order.qtys[open.id] ?? 0) + qty);
+            setOpenId(null);
+            setNotice(`Added ${qty > 1 ? `${qty} × ` : ""}${open.title.length > 34 ? `${open.title.slice(0, 33)}…` : open.title}`);
+          }}
+        />
+      )}
+
+      {compareOpen && (
+        <CompareSheet
+          products={compareProducts}
+          qtys={order.qtys}
+          onSetQty={setQty}
+          onRemove={toggleCompare}
+          onOpen={(p) => {
+            setCompareOpen(false);
+            setOpenId(p.id);
+          }}
+          onClose={() => setCompareOpen(false)}
+        />
+      )}
+
+      {drawer && (
+        <OrderPanel
+          lines={lines}
+          count={count}
+          total={total}
+          savings={savings}
+          setQty={setQty}
+          onClose={() => setDrawer(false)}
+          onReview={() => {
+            setDrawer(false);
             setReview(true);
           }}
-          onClose={() => setOpen(null)}
-          onAdd={(qty) => {
-            setQty(open.id, (order[open.id] ?? 0) + qty);
-            setOpen(null);
+          onClear={() => {
+            order.clear();
+            setDrawer(false);
           }}
         />
       )}
 
       {review && (
         <ReviewScreen
+          store={store}
           lines={lines}
           count={count}
           total={total}
           savings={savings}
-          setQty={setQty}
+          token={order.token}
           onBack={() => setReview(false)}
-          onDone={startOver}
+          onNewOrder={startOver}
+        />
+      )}
+
+      {carOpen && (
+        <CarPicker
+          brands={fitment}
+          car={car}
+          onClose={() => setCarOpen(false)}
+          onPick={(c) => {
+            setCar(c);
+            setCarOpen(false);
+            scroller.current?.scrollTo({ top: 0 });
+          }}
+        />
+      )}
+
+      {attract !== "off" && (
+        <AttractScreen
+          store={store}
+          products={products}
+          groups={attractGroups}
+          leaving={attract === "leaving"}
+          onStart={begin}
+          seller={<SellerAccess onOpen={() => setSellerOpen(true)} />}
         />
       )}
 
       {idlePrompt && <IdlePrompt onStay={() => setIdlePrompt(false)} onTimeout={startOver} />}
-      {unlock && <UnlockDialog onClose={() => setUnlock(false)} />}
+      {sellerOpen && <SellerDialog
+          onClose={() => setSellerOpen(false)}
+          onWelcome={() => {
+            setSellerOpen(false);
+            startOver();
+          }}
+        />}
     </div>
   );
 }
 
 /* ------------------------------------------------------------------ parts */
 
-function CategoryTab({ active, onClick, label, count }: { active: boolean; onClick: () => void; label: string; count: number }) {
+function CategoryPill({ active, onClick, label, count }: { active: boolean; onClick: () => void; label: string; count: number }) {
   return (
     <button
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`flex min-h-11 shrink-0 items-center gap-2 rounded-full border px-4 text-sm font-semibold transition-colors ${
-        active ? "border-accent bg-accent text-on-accent" : "border-tint/15 text-ash hover:border-tint/30 hover:text-chalk"
-      }`}
+      className={`${ui.pill} ${active ? "border-accent bg-accent text-on-accent" : "border-tint/15 text-ash"} ${count === 0 && !active ? "opacity-50" : ""}`}
     >
       {label}
-      <span className={`tnum text-xs ${active ? "text-on-accent/80" : "text-dim"}`}>{count}</span>
+      <span className={`tnum text-sm ${active ? "text-on-accent" : "text-dim"}`}>{count}</span>
     </button>
   );
 }
 
-function Thumb({ id, alt, sizes, className = "" }: { id: string | undefined; alt: string; sizes: string; className?: string }) {
+function RailItem({ active, onClick, label, count, dim = false }: { active: boolean; onClick: () => void; label: string; count: number; dim?: boolean }) {
   return (
-    <div className={`relative overflow-hidden bg-steel ${className}`}>
-      {id ? (
-        <Image src={fileHref(id)} alt={alt} fill sizes={sizes} className="object-contain p-2" />
-      ) : (
-        <div className="grid h-full w-full place-items-center text-dim">
-          <ShoppingBag size={28} aria-hidden />
-        </div>
-      )}
-    </div>
-  );
-}
-
-function Price({ p, large = false }: { p: { mrp: number; price: number }; large?: boolean }) {
-  const off = offPct(p);
-  return (
-    <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-      <span className={`tnum font-display font-extrabold text-chalk ${large ? "text-3xl" : "text-lg md:text-xl"}`}>{rupees(p.price)}</span>
-      {off > 0 && (
-        <>
-          <span className="tnum text-xs text-dim line-through">{rupees(p.mrp)}</span>
-          <span className="text-xs font-bold text-accent">{off}% off</span>
-        </>
-      )}
-    </div>
-  );
-}
-
-function ProductTile({ product: p, qty, onOpen, onAdd }: { product: ScreenProduct; qty: number; onOpen: () => void; onAdd: () => void }) {
-  const full = qty >= maxFor(p);
-  return (
-    <div className="card relative flex h-full flex-col overflow-hidden p-0">
-      <button type="button" onClick={onOpen} className="flex flex-1 flex-col text-left" aria-label={`${p.title}, ${rupees(p.price)}. View details`}>
-        <Thumb id={p.images[0]} alt="" sizes="(min-width:1536px) 18vw, (min-width:1280px) 22vw, (min-width:640px) 30vw, 48vw" className="aspect-square w-full" />
-        <div className="flex flex-1 flex-col gap-1 p-3">
-          <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-dim">{p.brand}</p>
-          <p className="line-clamp-2 text-sm font-semibold leading-snug text-chalk md:text-base">{p.title}</p>
-          <div className="mt-auto pt-1">
-            <Price p={p} />
-          </div>
-        </div>
-      </button>
-      <div className="px-3 pb-3">
-        <button
-          type="button"
-          onClick={onAdd}
-          disabled={full}
-          className="btn btn-primary btn-block min-h-11 gap-1.5 disabled:opacity-50"
-          aria-label={full ? `${p.title}: no more in stock` : `Add ${p.title} to order`}
-        >
-          <Plus size={16} aria-hidden /> {full ? "Max in order" : "Add"}
-        </button>
-      </div>
-      {qty > 0 && (
-        <span className="absolute right-2 top-2 grid h-8 min-w-8 place-items-center rounded-full bg-accent px-2 text-sm font-bold text-on-accent tnum">
-          <span className="sr-only">In order: </span>
-          {qty}
-        </span>
-      )}
-    </div>
-  );
-}
-
-function Stepper({ value, max, onChange, label }: { value: number; max: number; onChange: (n: number) => void; label: string }) {
-  return (
-    <div className="flex items-center rounded-[2px] border border-tint/15" role="group" aria-label={`Quantity, ${label}`}>
-      <button type="button" onClick={() => onChange(value - 1)} disabled={value <= 0} className="grid h-11 w-11 place-items-center text-chalk disabled:opacity-40" aria-label={`One less ${label}`}>
-        <Minus size={16} aria-hidden />
-      </button>
-      <span className="w-8 text-center font-bold tnum text-chalk" aria-live="polite">
-        {value}
-      </span>
-      <button type="button" onClick={() => onChange(value + 1)} disabled={value >= max} className="grid h-11 w-11 place-items-center text-chalk disabled:opacity-40" aria-label={`One more ${label}`}>
-        <Plus size={16} aria-hidden />
-      </button>
-    </div>
-  );
-}
-
-type Line = { product: ScreenProduct; qty: number };
-
-function OrderLines({ lines, setQty }: { lines: Line[]; setQty: (id: string, n: number) => void }) {
-  return (
-    <ul className="divide-y divide-tint/10">
-      {lines.map(({ product: p, qty }) => (
-        <li key={p.id} className="flex gap-3 py-3">
-          <Thumb id={p.images[0]} alt="" sizes="64px" className="h-16 w-16 shrink-0 rounded-[2px]" />
-          <div className="min-w-0 flex-1">
-            <p className="line-clamp-2 text-sm font-semibold leading-snug text-chalk">{p.title}</p>
-            <p className="text-xs text-dim tnum">{rupees(p.price)} each</p>
-            <div className="mt-2 flex items-center justify-between gap-2">
-              <Stepper value={qty} max={maxFor(p)} onChange={(n) => setQty(p.id, n)} label={p.title} />
-              <span className="font-bold tnum text-chalk">{rupees(p.price * qty)}</span>
-            </div>
-          </div>
-          <button type="button" onClick={() => setQty(p.id, 0)} className="grid h-9 w-9 shrink-0 place-items-center text-dim hover:text-danger" aria-label={`Remove ${p.title}`}>
-            <Trash2 size={16} aria-hidden />
-          </button>
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-function Totals({ count, total, savings }: { count: number; total: number; savings: number }) {
-  return (
-    <div className="space-y-1">
-      <div className="flex items-baseline justify-between">
-        <span className="text-sm text-ash">
-          Total ({count} {count === 1 ? "item" : "items"})
-        </span>
-        <span className="font-display text-3xl font-extrabold text-chalk tnum">{rupees(total)}</span>
-      </div>
-      <p className="text-right text-xs text-dim">Inclusive of GST</p>
-      {savings > 0 && <p className="text-right text-sm font-semibold text-accent">You save {rupees(savings)} on MRP</p>}
-    </div>
-  );
-}
-
-function OrderPanel({
-  lines, count, total, savings, setQty, onReview, onClear,
-}: { lines: Line[]; count: number; total: number; savings: number; setQty: (id: string, n: number) => void; onReview: () => void; onClear: () => void }) {
-  return (
-    <>
-      <div className="flex items-center justify-between border-b border-tint/10 px-5 py-4">
-        <h2 className="font-display text-xl font-extrabold uppercase text-chalk">Your order</h2>
-        {count > 0 && (
-          <button type="button" onClick={onClear} className="text-sm font-semibold text-dim hover:text-danger">
-            Clear
-          </button>
-        )}
-      </div>
-      <div className="flex-1 overflow-y-auto px-5">
-        {count === 0 ? (
-          <div className="grid h-full place-items-center py-10 text-center">
-            <div>
-              <ShoppingBag size={36} className="mx-auto text-dim" aria-hidden />
-              <p className="mt-3 text-sm text-ash">Your order is empty.</p>
-              <p className="text-sm text-dim">Tap Add on any product.</p>
-            </div>
-          </div>
-        ) : (
-          <OrderLines lines={lines} setQty={setQty} />
-        )}
-      </div>
-      {count > 0 && (
-        <div className="space-y-4 border-t border-tint/10 p-5">
-          <Totals count={count} total={total} savings={savings} />
-          <button type="button" onClick={onReview} className="btn btn-primary btn-block min-h-14 text-base">
-            Review order
-          </button>
-        </div>
-      )}
-    </>
-  );
-}
-
-/** A modal layer: focus moves in, Escape closes, focus returns on close. `full` covers the whole screen. */
-function Layer({
-  label, onClose, children, wide = false, full = false,
-}: { label: string; onClose?: () => void; children: ReactNode; wide?: boolean; full?: boolean }) {
-  const box = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const before = document.activeElement as HTMLElement | null;
-    const first = box.current?.querySelector<HTMLElement>("[data-autofocus]") ?? box.current?.querySelector<HTMLElement>("button, input");
-    first?.focus();
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && onClose) onClose();
-      if (e.key === "Tab" && box.current) {
-        const f = [...box.current.querySelectorAll<HTMLElement>("button:not([disabled]), input, [href]")];
-        if (f.length === 0) return;
-        const [a, z] = [f[0], f[f.length - 1]];
-        if (e.shiftKey && document.activeElement === a) { e.preventDefault(); z.focus(); }
-        else if (!e.shiftKey && document.activeElement === z) { e.preventDefault(); a.focus(); }
-      }
-    };
-    document.addEventListener("keydown", onKey);
-    const overflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = overflow;
-      before?.focus?.();
-    };
-  }, [onClose]);
-  if (full) {
-    return (
-      <div ref={box} className="fixed inset-0 z-50 overflow-y-auto bg-void" role="dialog" aria-modal="true" aria-label={label}>
-        {children}
-      </div>
-    );
-  }
-  return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-6" role="dialog" aria-modal="true" aria-label={label}>
-      <div className="absolute inset-0 bg-ink/70" onClick={onClose} aria-hidden />
-      <div
-        ref={box}
-        className={`relative max-h-[92dvh] w-full overflow-y-auto rounded-t-[8px] border border-tint/10 bg-void sm:rounded-[4px] ${wide ? "sm:max-w-4xl" : "sm:max-w-md"}`}
-      >
-        {children}
-      </div>
-    </div>
-  );
-}
-
-function CloseButton({ onClick, label = "Close" }: { onClick: () => void; label?: string }) {
-  return (
-    <button type="button" onClick={onClick} aria-label={label} className="grid h-11 w-11 shrink-0 place-items-center rounded-[2px] text-ash hover:text-chalk">
-      <X size={22} aria-hidden />
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className={`flex min-h-14 w-full items-center justify-between gap-3 rounded-xl px-4 text-left text-base font-semibold transition-colors duration-200 active:scale-[0.98] ${
+        active ? "bg-accent text-on-accent shadow-sm" : "text-chalk hover:bg-steel"
+      } ${dim && !active ? "opacity-45" : ""}`}
+    >
+      <span className="min-w-0 leading-tight">{label}</span>
+      <span className={`tnum shrink-0 text-sm font-bold ${active ? "text-on-accent" : "text-dim"}`}>{count}</span>
     </button>
-  );
-}
-
-/** Which vehicles a product fits, in words. */
-function fitsText(fitment: string[]): string | null {
-  if (fitment.length === 0) return null;
-  if (fitment.includes("universal")) return "Universal fit";
-  return fitment
-    .map((s) => {
-      const m = findModelBySlug(s);
-      return m ? `${m.brand} ${m.name}` : s;
-    })
-    .join(", ");
-}
-
-function DetailRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex justify-between gap-6 py-3">
-      <dt className="shrink-0 text-sm text-dim">{label}</dt>
-      <dd className="min-w-0 break-words text-right text-sm text-chalk">{value}</dd>
-    </div>
-  );
-}
-
-const sectionTitle = "font-display text-lg font-bold uppercase tracking-[0.04em] text-chalk";
-
-/**
- * One product, full screen: the same layout as a product page on the main site
- * (gallery, price, highlights, then About / Highlights / Product details / Specifications),
- * with "Add to order" in place of checkout.
- */
-function ProductView({
-  product: p, inOrder, orderCount, orderTotal, onClose, onAdd, onViewOrder,
-}: {
-  product: ScreenProduct;
-  inOrder: number;
-  orderCount: number;
-  orderTotal: number;
-  onClose: () => void;
-  onAdd: (qty: number) => void;
-  onViewOrder: () => void;
-}) {
-  const room = maxFor(p) - inOrder;
-  const [qty, setQty] = useState(room > 0 ? 1 : 0);
-  const images: ProductImage[] = p.images.map((id, i) => ({
-    kind: "remote",
-    src: fileHref(id),
-    alt: i === 0 ? p.title : `${p.title}, photo ${i + 1}`,
-    fit: "contain",
-    tone: "light",
-  }));
-  const fits = fitsText(p.fitment);
-  const facts = [
-    { label: "Brand", value: p.brand },
-    { label: "Category", value: p.groupName },
-    { label: "Part type", value: p.partType },
-    ...(p.warrantyMonths ? [{ label: "Warranty", value: `${p.warrantyMonths} months` }] : []),
-    ...(fits ? [{ label: "Fits", value: fits }] : []),
-  ];
-
-  const addBlock =
-    room > 0 ? (
-      <div className="flex items-center gap-3">
-        <Stepper value={qty} max={room} onChange={(n) => setQty(Math.max(1, n))} label={p.title} />
-        <button type="button" data-autofocus onClick={() => onAdd(qty)} className="btn btn-primary min-h-14 flex-1 text-base">
-          <Plus size={18} aria-hidden /> Add to order · <span className="tnum">{rupees(p.price * qty)}</span>
-        </button>
-      </div>
-    ) : (
-      <p className="text-sm text-ash">All available units are already in your order.</p>
-    );
-
-  return (
-    <Layer label={p.title} onClose={onClose} full>
-      {/* Top bar */}
-      <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-tint/10 bg-void px-4 py-3 md:px-6">
-        <button type="button" onClick={onClose} className="btn btn-outline min-h-12 gap-2">
-          <ArrowLeft size={18} aria-hidden /> Back to products
-        </button>
-        {orderCount > 0 && (
-          <button type="button" onClick={onViewOrder} className="btn btn-primary min-h-12 gap-2">
-            <ShoppingBag size={18} aria-hidden />
-            <span className="hidden sm:inline">Your order ·</span> {orderCount} · <span className="tnum">{rupees(orderTotal)}</span>
-          </button>
-        )}
-      </div>
-
-      <div className={`mx-auto max-w-[1400px] px-4 py-6 md:px-8 md:py-10 ${room > 0 ? "pb-32 lg:pb-10" : ""}`}>
-        <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
-          <div className="min-w-0">
-            <ProductGallery images={images} brandName={p.brand} />
-          </div>
-          <div className="min-w-0 space-y-5">
-            <p className="eyebrow">
-              {p.brand} · {p.groupName}
-            </p>
-            <h2 className="display-3 text-balance">{p.title}</h2>
-            <div>
-              <Price p={p} large />
-              <p className="mt-1 text-xs text-dim">Inclusive of GST</p>
-            </div>
-            <ul className="flex flex-wrap gap-2 text-sm">
-              <li className="chip">{p.stock <= LOW_STOCK ? `Only ${p.stock} left` : "In stock"}</li>
-              <li className="chip">{p.partType}</li>
-              {p.warrantyMonths ? <li className="chip">{p.warrantyMonths}-month warranty</li> : null}
-              {fits === "Universal fit" && <li className="chip">Universal fit</li>}
-            </ul>
-            {p.highlights.length > 0 && (
-              <ul className="space-y-2 text-sm text-ash md:text-base">
-                {p.highlights.slice(0, 4).map((h) => (
-                  <li key={h} className="flex gap-3">
-                    <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 bg-accent" />
-                    <span>{h}</span>
-                  </li>
-                ))}
-              </ul>
-            )}
-            <div className="hidden border-t border-tint/10 pt-5 lg:block">{addBlock}</div>
-          </div>
-        </div>
-
-        {/* Full description, as on the main site product page */}
-        <div className="mt-10 grid gap-8 border-t border-tint/10 pt-10 md:gap-10 lg:grid-cols-2">
-          <div className="min-w-0 space-y-8">
-            {p.summary && (
-              <div>
-                <h3 className={sectionTitle}>About this product</h3>
-                <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-ash md:text-base">{p.summary}</p>
-              </div>
-            )}
-            {p.highlights.length > 0 && (
-              <div>
-                <h3 className={sectionTitle}>Highlights</h3>
-                <ul className="mt-3 space-y-2 text-sm text-ash md:text-base">
-                  {p.highlights.map((h) => (
-                    <li key={h} className="flex gap-3">
-                      <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 bg-accent" />
-                      <span>{h}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            <div>
-              <h3 className={sectionTitle}>Product details</h3>
-              <dl className="mt-3 divide-y divide-tint/8 border-y border-tint/8">
-                {facts.map((f) => (
-                  <DetailRow key={f.label} label={f.label} value={f.value} />
-                ))}
-              </dl>
-            </div>
-          </div>
-          {p.specs.length > 0 && (
-            <div className="min-w-0">
-              <h3 className={sectionTitle}>Specifications</h3>
-              <dl className="mt-3 divide-y divide-tint/8 border-y border-tint/8">
-                {p.specs.map((s) => (
-                  <DetailRow key={s.label} label={s.label} value={s.value} />
-                ))}
-              </dl>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Add bar (phones and tablets) */}
-      {room > 0 && <div className="safe-b fixed inset-x-0 bottom-0 z-10 border-t border-tint/10 bg-void p-3 lg:hidden">{addBlock}</div>}
-    </Layer>
-  );
-}
-
-function ReviewScreen({
-  lines, count, total, savings, setQty, onBack, onDone,
-}: { lines: Line[]; count: number; total: number; savings: number; setQty: (id: string, n: number) => void; onBack: () => void; onDone: () => void }) {
-  const [confirmNew, setConfirmNew] = useState(false);
-  useEffect(() => {
-    if (count === 0) onBack();
-  }, [count, onBack]);
-  return (
-    <Layer label="Your order" onClose={onBack} wide>
-      <div className="flex items-center justify-between gap-3 border-b border-tint/10 p-4 md:p-6">
-        <h2 className="font-display text-2xl font-extrabold uppercase text-chalk md:text-3xl">Your order</h2>
-        <CloseButton onClick={onBack} label="Back to products" />
-      </div>
-      <div className="grid gap-6 p-4 md:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] md:p-6">
-        <OrderLines lines={lines} setQty={setQty} />
-        <div className="space-y-5">
-          <Totals count={count} total={total} savings={savings} />
-          <div className="rounded-[2px] border border-accent/40 bg-accent/10 p-4 text-center">
-            <p className="font-display text-lg font-extrabold uppercase text-chalk">Show this screen at the counter</p>
-            <p className="mt-1 text-sm text-ash">Our team will confirm your items and take payment there.</p>
-          </div>
-          <div className="grid gap-2">
-            <button type="button" data-autofocus onClick={onBack} className="btn btn-outline btn-block min-h-12">
-              Add more items
-            </button>
-            {confirmNew ? (
-              <div className="grid grid-cols-2 gap-2">
-                <button type="button" onClick={() => setConfirmNew(false)} className="btn btn-outline min-h-12">
-                  Keep order
-                </button>
-                <button type="button" onClick={onDone} className="btn btn-primary min-h-12">
-                  Yes, start new
-                </button>
-              </div>
-            ) : (
-              <button type="button" onClick={() => setConfirmNew(true)} className="btn btn-primary btn-block min-h-12">
-                Done · start new order
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
-    </Layer>
-  );
-}
-
-function IdlePrompt({ onStay, onTimeout }: { onStay: () => void; onTimeout: () => void }) {
-  const [left, setLeft] = useState(COUNTDOWN_S);
-  useEffect(() => {
-    if (left <= 0) {
-      onTimeout();
-      return;
-    }
-    const t = window.setTimeout(() => setLeft((n) => n - 1), 1000);
-    return () => window.clearTimeout(t);
-  }, [left, onTimeout]);
-  return (
-    <Layer label="Are you still there?" onClose={onStay}>
-      <div className="p-6 text-center">
-        <p className="font-display text-2xl font-extrabold uppercase text-chalk">Still there?</p>
-        <p className="mt-2 text-sm text-ash" aria-live="polite">
-          This order clears in <span className="font-bold tnum text-chalk">{left}</span> seconds so the next customer can start fresh.
-        </p>
-        <div className="mt-5 grid gap-2">
-          <button type="button" data-autofocus onClick={onStay} className="btn btn-primary btn-block min-h-12">
-            I&apos;m still here
-          </button>
-          <button type="button" onClick={onTimeout} className="btn btn-outline btn-block min-h-12">
-            Start a new order
-          </button>
-        </div>
-      </div>
-    </Layer>
-  );
-}
-
-function UnlockDialog({ onClose }: { onClose: () => void }) {
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [busy, setBusy] = useState(false);
-  async function submit(e: FormEvent) {
-    e.preventDefault();
-    if (!password) {
-      setError("Enter your password.");
-      return;
-    }
-    setBusy(true);
-    setError(null);
-    try {
-      const res = await api<{ next: string }>("/api/vendor/store-screen", { body: { action: "unlock", password } });
-      if (document.fullscreenElement) await document.exitFullscreen().catch(() => {});
-      window.location.href = res.next;
-    } catch (err) {
-      setError(err instanceof ApiFailure ? err.message : "Something went wrong. Please try again.");
-      setPassword("");
-      setBusy(false);
-    }
-  }
-  return (
-    <Layer label="Close the store screen" onClose={onClose}>
-      <form onSubmit={submit} noValidate className="p-6">
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <p className="font-display text-xl font-extrabold uppercase text-chalk">Seller only</p>
-            <p className="mt-1 text-sm text-ash">Enter your seller password to close the store screen and go back to your dashboard.</p>
-          </div>
-          <CloseButton onClick={onClose} />
-        </div>
-        <label htmlFor="screen-password" className="label mt-5">
-          Seller password
-        </label>
-        <input
-          id="screen-password"
-          type="password"
-          autoComplete="current-password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="field"
-          aria-invalid={error ? true : undefined}
-          aria-describedby={error ? "screen-password-msg" : undefined}
-          data-autofocus
-        />
-        {error && (
-          <p id="screen-password-msg" role="alert" className="mt-1.5 text-xs text-danger">
-            {error}
-          </p>
-        )}
-        <div className="mt-5 grid grid-cols-2 gap-2">
-          <button type="button" onClick={onClose} className="btn btn-outline min-h-12">
-            Cancel
-          </button>
-          <button type="submit" disabled={busy} className="btn btn-primary min-h-12 disabled:opacity-60">
-            {busy ? "Checking…" : "Unlock"}
-          </button>
-        </div>
-      </form>
-    </Layer>
-  );
-}
-
-function Empty({ title, children }: { title: string; children: ReactNode }) {
-  return (
-    <div className="card mx-auto max-w-lg p-10 text-center">
-      <p className="font-display text-xl font-extrabold uppercase text-chalk">{title}</p>
-      <div className="mt-2 text-sm text-ash">{children}</div>
-    </div>
   );
 }

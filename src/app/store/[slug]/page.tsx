@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { currentSession } from "@/lib/server/session";
-import { screenProducts, screenStore } from "@/lib/server/store-screen";
+import { screenFitment, screenProducts, screenStore } from "@/lib/server/store-screen";
 import { vendorHome } from "@/lib/vendor/types";
 import { StoreScreen } from "@/components/vendor/store-screen/StoreScreen";
 
@@ -27,5 +27,12 @@ export default async function StoreScreenPage({ params }: { params: Promise<{ sl
   if (vendor.slug !== slug) redirect(`/store/${vendor.slug}`);
 
   const products = await screenProducts(vendor.id);
-  return <StoreScreen store={screenStore(vendor)} products={products} locked={session.locked} />;
+  return (
+    <StoreScreen
+      store={screenStore(vendor)}
+      products={products}
+      fitment={screenFitment(products)}
+      locked={session.locked}
+    />
+  );
 }

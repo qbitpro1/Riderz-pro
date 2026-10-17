@@ -20,8 +20,12 @@ export type ScreenProduct = {
   stock: number;
   /** "OEM (Original Equipment)", "Genuine brand part" or "Aftermarket". */
   partType: string;
-  /** Vehicle model slugs, or ["universal"]. */
-  fitment: string[];
+  /** True when the product fits every vehicle. */
+  universal: boolean;
+  /** Vehicle model slugs this product is listed for (never "universal"). */
+  fitSlugs: string[];
+  /** The same models in words, "Mahindra BE 6". */
+  fitLabels: string[];
   warrantyMonths: number | null;
   summary: string | null;
   highlights: string[];
@@ -29,3 +33,7 @@ export type ScreenProduct = {
   /** Image file ids, in display order. */
   images: string[];
 };
+
+/** One car model in the "Find for my car" picker. `n` = products listed for this exact model. */
+export type ScreenFitModel = { slug: string; name: string; n: number };
+export type ScreenFitBrand = { slug: string; name: string; n: number; models: ScreenFitModel[] };
