@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { Armchair, BadgeCheck, Hand, Lightbulb, Package, Speaker } from "lucide-react";
+import { Armchair, BadgeCheck, Camera, Hand, Lightbulb, Package, Speaker } from "lucide-react";
 import { fileHref } from "@/lib/vendor/types";
 import { StoreMark } from "./parts";
 import type { ScreenProduct, ScreenStore } from "./types";
@@ -178,7 +178,8 @@ export function AttractScreen({
 /** An icon for a category shortcut, by its group slug. */
 function groupIcon(slug: string) {
   if (/seat|cushion|mat|steering/.test(slug)) return Armchair;
-  if (/speaker|sub|amp|processor|display|camera|installation/.test(slug)) return Speaker;
+  if (/camera|dash/.test(slug)) return Camera;
+  if (/speaker|sub|amp|processor|display|installation/.test(slug)) return Speaker;
   if (/light|lamp|led|fog/.test(slug)) return Lightbulb;
   return Package;
 }

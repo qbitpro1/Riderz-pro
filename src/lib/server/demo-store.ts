@@ -8,6 +8,7 @@ import { PRODUCT_DETAILS } from "@/lib/store/products";
 import type { ProductDetail } from "@/lib/store/types";
 import { DEFAULT_COMMISSION_RATE, type VendorOnboarding } from "@/lib/vendor/types";
 import { emailSchema, mobileSchema } from "@/lib/vendor/validators";
+import { DASHCAM_DEPARTMENT, DASHCAM_GROUP, DEMO_DASHCAMS } from "./demo-dashcams";
 import { saveFile } from "./files";
 import { ApiError } from "./http";
 import { hashPassword, newId } from "./security";
@@ -17,8 +18,9 @@ import { audit, type Actor } from "./vendors";
 /**
  * THE DEMO STORE — "Indus Enterprises"
  *
- * An approved seller with seat covers and speakers copied from the house catalogue,
- * so the offline store screen can be shown without a real seller. Run from
+ * An approved seller with seat covers and speakers copied from the house catalogue, plus
+ * Qubo dashcams (details and photos from quboworld.com, see demo-dashcams.ts), so the
+ * offline store screen can be shown without a real seller. Run from
  * /admin/vendors (admin only). Safe to run again: it refreshes the demo products
  * (SKUs starting DEMO-) and leaves anything else the seller added alone.
  *
@@ -78,15 +80,14 @@ async function imageBytes(src: string): Promise<Uint8Array<ArrayBuffer> | null> 
   }
 }
 
-async function copyImages(vendorId: string, d: ProductDetail): Promise<string[]> {
+async function copyImages(vendorId: string, sources: string[]): Promise<string[]> {
   const ids: string[] = [];
-  for (const img of d.images) {
+  for (const src of sources) {
     if (ids.length >= IMAGES_PER_PRODUCT) break;
-    if (img.kind !== "remote") continue;
-    const bytes = await imageBytes(img.src);
+    const bytes = await imageBytes(src);
     if (!bytes) continue;
     try {
-      const saved = await saveFile(vendorId, "product_image", new File([bytes], path.basename(img.src.split("?")[0]) || "photo"));
+      const saved = await saveFile(vendorId, "product_image", new File([bytes], path.basename(src.split("?")[0]) || "photo"));
       ids.push(saved.id);
     } catch {
       /* not a JPG/PNG/WebP or too large: skip this photo */
@@ -100,9 +101,12 @@ const ONBOARDING: VendorOnboarding = {
     storeName: DEMO_NAME,
     slug: DEMO_SLUG,
     sellerType: "Retailer",
-    description: "Demo store: seat covers and car speakers, shown on the offline store screen.",
+    description: "Demo store: seat covers, car speakers and Qubo dashcams, shown on the offline store screen.",
     departments: ["interior", "multimedia"],
-    brands: [{ name: "Various", authType: "Authorised" }],
+    brands: [
+      { name: "Various", authType: "Authorised" },
+      { name: "Qubo (Hero Electronix)", authType: "Authorised" },
+    ],
     logoFileId: null,
     bannerFileId: null,
   },
@@ -212,16 +216,16 @@ export async function seedDemoStore(input: z.infer<typeof demoStoreSchema>, by: 
 
   let products = 0;
   let photos = 0;
-  for (const [i, { detail: d, department, group }] of demoProducts().entries()) {
-    const images = await copyImages(vendor.id, d);
-    if (images.length === 0) continue;
+  const insert = async (
+    n: number,
+    p: {
+      title: string; brand: string; department: string; group: string; mrp: number; price: number;
+      summary: string | null; highlights: string[]; specs: { label: string; value: string }[]; fitment: string[]; imageSources: string[];
+    },
+  ) => {
+    const images = await copyImages(vendor.id, p.imageSources);
+    if (images.length === 0) return;
     photos += images.length;
-    const price = d.price!;
-    const mrp = Math.max(d.mrp ?? price, price);
-    const fitment = d.fitment.length && !d.fitment.includes("universal") ? d.fitment.slice(0, 60) : ["universal"];
-    // Model codes tell similar products apart (the shop shows "SAM65 — L-1 Series …").
-    const { highlights, specs, summary } = tidy(d);
-    const title = d.code && !d.title.toLowerCase().includes(d.code.toLowerCase()) ? `${d.code} — ${d.title}` : d.title;
     await sql(
       `INSERT INTO vendor_products (id, vendor_id, slug, status, title, brand, department, group_slug, sku, gst_rate, mrp, price,
                                     stock, low_stock_at, part_type, summary, highlights, specs, fitment, images,
@@ -229,15 +233,38 @@ export async function seedDemoStore(input: z.infer<typeof demoStoreSchema>, by: 
        VALUES ($1, $2, $3, 'live', $4, $5, $6, $7, $8, 18, $9, $10, $11, 3, 'genuine', $12, $13::jsonb, $14::jsonb, $15::jsonb, $16::jsonb,
                now(), now(), $17)`,
       [
-        newId("vp"), vendor.id, await newSlug(sql, d.brandName, title), title.slice(0, 120), d.brandName.slice(0, 60),
-        department, group, `${SKU_PREFIX}${String(i + 1).padStart(2, "0")}`, mrp, price, DEMO_STOCK,
-        summary,
-        JSON.stringify(highlights.map((h) => h.slice(0, 140)).slice(0, 8)),
-        JSON.stringify(specs.slice(0, 20).map((s) => ({ label: s.label.slice(0, 40), value: s.value.slice(0, 120) }))),
-        JSON.stringify(fitment), JSON.stringify(images), by.id,
+        newId("vp"), vendor.id, await newSlug(sql, p.brand, p.title), p.title.slice(0, 120), p.brand.slice(0, 60),
+        p.department, p.group, `${SKU_PREFIX}${String(n).padStart(2, "0")}`, p.mrp, p.price, DEMO_STOCK,
+        p.summary,
+        JSON.stringify(p.highlights.map((h) => h.slice(0, 140)).slice(0, 8)),
+        JSON.stringify(p.specs.slice(0, 20).map((s) => ({ label: s.label.slice(0, 40), value: s.value.slice(0, 120) }))),
+        JSON.stringify(p.fitment), JSON.stringify(images), by.id,
       ],
     );
     products++;
+  };
+
+  const picks = demoProducts();
+  for (const [i, { detail: d, department, group }] of picks.entries()) {
+    const price = d.price!;
+    const mrp = Math.max(d.mrp ?? price, price);
+    const fitment = d.fitment.length && !d.fitment.includes("universal") ? d.fitment.slice(0, 60) : ["universal"];
+    // Model codes tell similar products apart (the shop shows "SAM65 — L-1 Series …").
+    const { highlights, specs, summary } = tidy(d);
+    const title = d.code && !d.title.toLowerCase().includes(d.code.toLowerCase()) ? `${d.code} — ${d.title}` : d.title;
+    await insert(i + 1, {
+      title, brand: d.brandName, department, group, mrp, price, summary, highlights, specs, fitment,
+      imageSources: d.images.filter((img) => img.kind === "remote").map((img) => img.src),
+    });
+  }
+
+  // Qubo dashcams: SKUs continue after the catalogue picks; fitment is universal.
+  for (const [i, c] of DEMO_DASHCAMS.entries()) {
+    await insert(picks.length + i + 1, {
+      title: c.title, brand: c.brand, department: DASHCAM_DEPARTMENT, group: DASHCAM_GROUP,
+      mrp: Math.max(c.mrp, c.price), price: c.price, summary: c.summary, highlights: c.highlights, specs: c.specs,
+      fitment: ["universal"], imageSources: c.images,
+    });
   }
 
   await audit(by, "demo_store.seed", { vendorId: vendor.id, ip, detail: { action, products, photos } });
