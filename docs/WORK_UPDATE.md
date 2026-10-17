@@ -1,5 +1,53 @@
 # Work update
 
+## 17 Oct 2026 (later): V0.4 started, Phase 1 customer accounts done
+
+Branch `V0.4`, from `main`. Plan: `docs/MIGRATION_PLAN_V0.4.md` (what to bring over from the old
+riderzpro.com repo; this repo becomes the live site, car accessories only).
+
+**Phase 1: customer accounts (done, tested)**
+- **Sign-in** at `/account/sign-in`: a 6-digit code to a mobile or email, no password. The first
+  code creates the account and asks for a name. Codes for customers have their own purposes, so a
+  seller's code can never sign a customer in.
+- **Account pages** (`/account`, noindex, disallowed in robots): overview; orders with each seller's
+  progress (received → confirmed → packed → shipped → delivered), courier and tracking number;
+  addresses (up to 10, one default); help messages with our replies; settings (name, add or change
+  mobile/email with a code, sign out, sign out on all devices, delete account; orders are kept but
+  unlinked).
+- **Orders join the account**: checkout links the order from the session (never the request). On
+  sign-in with a verified mobile, earlier guest orders placed with that mobile join too (email is not
+  used for this: it is unverified at checkout).
+- **Checkout** fills in the account's name, mobile, email and default address, offers the other saved
+  addresses and can save a new one; the confirmation links to the order in the account. Guest
+  checkout is unchanged.
+- **Wishlist and chosen car** are saved to the account and merged on sign-in (newest first; a car
+  picked on this device wins). Signing out clears them from the browser only.
+- **Help desk**: "Send us a message" on `/contact` (guests) and `/account/help`; admin inbox at
+  `/admin/customer-support` (reply in the account, or open WhatsApp for guests).
+- **Header**: account icon (dot when signed in) and "Sign in / My orders" in the mobile menu.
+- **Code delivery providers** (`src/lib/server/otp.ts`, `.env.example`): Resend for email, MSG91 or
+  Twilio for SMS. Untested until real keys are added; development still prints codes in the console.
+- **Database**: migration 004 (customers, customer_sessions, customer_addresses, customer_wishlist,
+  customer_tickets, orders.customer_id).
+- **Verified**: about 40 API checks (codes, wrong/reused codes, guest-order claiming, another account
+  cannot see or change your orders or addresses, cross-site requests blocked, unsafe wishlist links
+  refused, contact change, sign out everywhere, delete); in the browser: sign-in, name step, address
+  book, checkout prefill and order, order page after the seller shipped it, help message and admin
+  reply. Production build clean (533 pages), no dealer prices in built files.
+
+**Offline Store (same day)**
+- **Dashcams**: 9 Qubo dashcams added to the Indus Enterprises demo store (details, prices and photos
+  from quboworld.com, read 17 Oct 2026; `src/lib/server/demo-dashcams.ts`, photos in
+  `public/demo/qubo/`), in a "Cameras" category with a camera icon. Refresh the demo store from
+  `/admin/vendors` to load them.
+- **Blue verified tick** beside the store name and on the welcome screen (new `verified` colour token).
+- **Compare** now shows details side by side: price, MRP, saving, brand, category, part type,
+  warranty, fitment, stock, every specification and highlights, under a compact product header;
+  "Differences only" hides matching rows.
+
+**Next**: Phase 2 (riders) once the owner answers the open questions in the plan (delivery area,
+SMS/email provider, rider pay).
+
 ## 17 Oct 2026: sellers do both, online marketplace restored
 
 Decided by the owner: a seller works with Riderzpro in two ways. This reverses the removal of the
