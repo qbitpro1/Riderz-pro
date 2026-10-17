@@ -292,6 +292,18 @@ export async function saveAddress(customerId: string, input: AddressInput, id?: 
   });
 }
 
+/**
+ * The map point of a saved address ("Detect my location"), or null to clear it. Only the owner's
+ * address changes; checkout can copy it to the order (setOrderDeliveryPoint) for live tracking.
+ */
+export async function setAddressPoint(customerId: string, id: string, point: { lat: number; lng: number } | null): Promise<void> {
+  const row = await sqlOne(
+    "UPDATE customer_addresses SET lat = $3, lng = $4, updated_at = now() WHERE id = $1 AND customer_id = $2 RETURNING id",
+    [id, customerId, point?.lat ?? null, point?.lng ?? null],
+  );
+  if (!row) throw new ApiError(404, "not_found", "That address was not found.");
+}
+
 export async function deleteAddress(customerId: string, id: string): Promise<void> {
   await transaction(async (q) => {
     const rows = await q<{ is_default: boolean }>(

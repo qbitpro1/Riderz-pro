@@ -7,6 +7,7 @@ import { JOB_LABELS, RIDER_DEFAULT_PAY, RIDER_PAY_MAX, vehicleLabel } from "@/li
 import { api, ApiFailure } from "@/lib/vendor/client";
 import { rupees } from "@/lib/format";
 import { fmtDate, Notice, StatusBadge } from "@/components/admin/vendors/ui";
+import LiveRiders from "./LiveRiders";
 
 const failure = (e: unknown) => (e instanceof ApiFailure ? (Object.values(e.fields)[0] ?? e.message) : "Something went wrong.");
 
@@ -139,6 +140,7 @@ export default function DispatchBoard({ candidates, riders, live, recent }: { ca
       </section>
       <section>
         <h2 className="font-display text-lg font-extrabold uppercase">On the road</h2>
+        <LiveRiders />
         {live.length === 0 ? <p className="card mt-3 p-6 text-sm text-ash">No live rider jobs.</p> : <ul className="mt-3 space-y-3">{live.map((j) => <LiveJob key={j.id} j={j} />)}</ul>}
       </section>
       {finished.length > 0 && (
