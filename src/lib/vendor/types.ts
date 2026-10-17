@@ -254,6 +254,9 @@ export const vendorLineSlug = (productSlug: string) => `${VENDOR_LINE_PREFIX}${p
 export const isVendorLineSlug = (slug: string) => slug.startsWith(VENDOR_LINE_PREFIX);
 
 /** Public URLs. */
-export const storeHref = (vendorSlug: string) => `/store/${vendorSlug}`;
-export const vendorProductHref = (vendorSlug: string, productSlug: string) => `/store/${vendorSlug}/${productSlug}`;
+/** Public seller storefront (online marketplace). */
+export const storeHref = (vendorSlug: string) => `/sellers/${vendorSlug}`;
+export const vendorProductHref = (vendorSlug: string, productSlug: string) => `/sellers/${vendorSlug}/${productSlug}`;
+/** The owner-only Offline Store screen for the seller's physical shop. */
+export const offlineStoreHref = (vendorSlug: string) => `/store/${vendorSlug}`;
 export const fileHref = (fileId: string) => `/api/files/${fileId}`;

@@ -1,5 +1,29 @@
 # Work update
 
+## 17 Oct 2026: sellers do both, online marketplace restored
+
+Decided by the owner: a seller works with Riderzpro in two ways. This reverses the removal of the
+online marketplace made on 16 Oct (commit `449a110`) and keeps the Offline Store screen.
+
+- **Online marketplace (restored, adapted).** An approved seller's admin-approved (`live`) products are
+  listed on the main website and sold across India: merged after the house items in `/shop` and the
+  department pages (`CatalogCard` shows "Verified seller" and "Sold by <store>"; quick add puts a
+  `vendor:` line in the cart), a public seller storefront and product pages, and entries in the
+  sitemap. Checkout is the existing `/api/orders` (server-side pricing and stock).
+- **New public URLs:** `/sellers/[slug]` and `/sellers/[slug]/[product]`. `/store/[slug]` stays the
+  owner-only, password-locked Offline Store screen (still `noindex` and disallowed in robots).
+  `storeHref` / `vendorProductHref` now point to `/sellers/...`; new `offlineStoreHref` points to `/store/...`.
+- **Gate and privacy.** `src/lib/server/marketplace.ts` (restored from before `449a110`) uses
+  `LIVE_PRODUCT_WHERE` (product live and seller approved); no holiday-mode references; public fields only;
+  everything degrades to empty without a database so the house shop and sitemap still build.
+- **Wording.** `/vendor` landing now has two sections (sell online across India; Offline Store screen)
+  and a six-step how-it-works; sign-in perks, onboarding store-step hint, settings text, products empty
+  state, suspension messages ("hidden from the website and the Offline Store") and the README and
+  `docs/VENDOR_PORTAL.md` updated. Dashboard has a "View my online store" link beside the Offline Store box.
+- **Footer and nav:** "Sell on Riderzpro" stays under Partners and in the Cars menu, pointing to `/vendor`.
+- **Still open:** seller fees for the Offline Store; run `npm run build` and the dealer-price check
+  after this change; browser pass at 360 px in light and dark on `/sellers/...`.
+
 ## 16 Oct 2026: V0.3 seller portal and Offline Store
 
 Branch `V0.3`, pushed to GitHub. Commits from this session: `449a110` to `de036a7`, plus this update.

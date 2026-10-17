@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { AlertTriangle, ArrowRight, Boxes, ClipboardList, IndianRupee, MonitorSmartphone, PackageCheck, Truck, Warehouse } from "lucide-react";
+import { offlineStoreHref, storeHref } from "@/lib/vendor/types";
 import { vendorPage } from "@/lib/server/session";
 import { vendorOverview } from "@/lib/server/vendor-catalogue";
 import { screenProducts } from "@/lib/server/store-screen";
@@ -44,7 +45,24 @@ export default async function OverviewPage() {
         <h1 className="display-3 mt-1">Welcome back, {vendor.storeName ?? "seller"}</h1>
       </div>
 
-      {/* The offline store screen: a separate tool from online selling. */}
+      {/* Online marketplace: the public storefront, then the Offline Store screen for the seller's own shop. */}
+      {vendor.status === "approved" && vendor.slug && (
+        <section aria-labelledby="online-store" className="card p-5 md:p-6">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div>
+              <h2 id="online-store" className="font-display text-xl font-extrabold uppercase text-chalk">Online store</h2>
+              <p className="mt-1 max-w-2xl text-sm leading-relaxed text-ash">
+                Your approved products are on the Riderzpro website, sold across India with your store name on them. Orders arrive under Orders.
+              </p>
+            </div>
+            <Link href={storeHref(vendor.slug)} className="btn btn-outline shrink-0">
+              View my online store <ArrowRight size={16} aria-hidden />
+            </Link>
+          </div>
+        </section>
+      )}
+
+      {/* The Offline Store screen: a separate tool for the seller's physical shop. */}
       <section aria-labelledby="offline-store" className="rounded-[4px] border-2 border-accent/60 bg-accent/10 p-5 md:p-6">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="flex gap-4">
@@ -54,7 +72,7 @@ export default async function OverviewPage() {
             <div>
               <h2 id="offline-store" className="font-display text-xl font-extrabold uppercase text-chalk">Offline Store</h2>
               <p className="mt-1 max-w-2xl text-sm leading-relaxed text-ash">
-                Show your available stock to customers who walk into your shop. Open it on a tablet or TV: customers browse,
+                For your own shop: show your available stock to customers who walk in. Open it on a tablet or TV: customers browse,
                 add products to an order and show it at your counter. Closing the screen needs your password.
               </p>
               <p className="mt-2 text-sm font-semibold text-chalk">
@@ -65,7 +83,7 @@ export default async function OverviewPage() {
             </div>
           </div>
           {vendor.status === "approved" && vendor.slug ? (
-            <Link href={`/store/${vendor.slug}`} className="btn btn-primary shrink-0">
+            <Link href={offlineStoreHref(vendor.slug)} className="btn btn-primary shrink-0">
               Open Offline Store <ArrowRight size={16} aria-hidden />
             </Link>
           ) : (

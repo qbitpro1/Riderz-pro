@@ -130,7 +130,7 @@ function notAllowedMessage(status: VendorStatus, allow: readonly VendorStatus[])
   const onboardingRoute = allow.includes("draft");
   switch (status) {
     case "suspended":
-      return "Your store is suspended. Contact seller support.";
+      return "Your store is suspended: your products are hidden from the Riderzpro website and the Offline Store. Contact seller support.";
     case "rejected":
       return "Your seller application was not approved. Contact seller support if you have questions.";
     case "submitted":

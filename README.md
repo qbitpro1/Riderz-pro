@@ -4,8 +4,9 @@ Car & bike accessories online at https://riderzpro.com. Riderzpro is a registere
 Motorbotz Automotive Pvt. Ltd., which makes and sells the range. The store carries the Riderzpro
 house range plus RECOIL, Blaupunkt and Autoform, across eight departments, with fitment checks per
 car and installation at the company's garages in Bengaluru, Hyderabad and Pune. Since V0.3, approved
-third-party sellers list their products through a seller login and show them to customers in their own
-shop on the Offline Store screen; seller products are not on the main website (see "Vendor portal").
+third-party sellers list their products through a seller login. Approved products are sold online on the
+main website across India (shop, department pages, a public storefront per seller), and each seller can
+also show their stock to walk-in customers in their own shop on the Offline Store screen (see "Vendor portal").
 
 Secondary areas, under the "Cars" and "Services" menus: garage and detailing services (PPF, audio, body kits,
 off-road, interiors, performance), used-car buy/sell, and the Mahindra BE 6 programme.
@@ -123,8 +124,17 @@ with `data-theme="dark"` plus the `.scrim`, so it stays legible in both themes.
 
 ## Vendor portal and Offline Store (V0.3)
 
-Approved sellers list car and bike accessories through the seller login. Their products are **not** on
-the main website; each seller shows them to walk-in customers on the **Offline Store** screen.
+Approved sellers list car and bike accessories through the seller login and use Riderzpro in two ways:
+
+1. **Online marketplace.** A seller's admin-approved (`live`) products are listed on the main website and
+   sold anywhere in India: merged after the house items in `/shop` and the department pages, on a public
+   storefront (`/sellers/[slug]`) and public product pages (`/sellers/[slug]/[product]`), marked "Sold by
+   <store>". Add to cart goes to the existing checkout (`/api/orders`, server-side pricing and stock).
+   Visibility gate: product `live` and seller `approved` (`LIVE_PRODUCT_WHERE`); a suspended seller's
+   products leave the website at once. Public pages never show email, mobile, legal or tax ids, bank or
+   address lines.
+2. **Offline Store screen.** The same catalogue, shown to walk-in customers on a tablet or TV in the
+   seller's own shop (below). Owner-only and password-locked.
 
 - **Database.** Postgres through `DATABASE_URL` (`src/lib/db/client.ts`, migrations in
   `src/lib/db/migrations.ts`). In development with no `DATABASE_URL`, an embedded PGlite database in
@@ -146,8 +156,7 @@ the main website; each seller shows them to walk-in customers on the **Offline S
   after 2 minutes and a 20-second prompt.
 - **Demo store.** "Indus Enterprises", created or refreshed from the panel on `/admin/vendors`: seat
   covers and speakers copied from the house catalogue. An existing `asha-accessories` store is renamed.
-- **Orders.** The online order plumbing from V0.3's first session stays in place for later (the main
-  site no longer sells seller products). The cart posts to `/api/orders`. The server recomputes every price, shipping and the
+- **Orders.** Online orders for seller products come through the main-site cart, which posts to `/api/orders`. The server recomputes every price, shipping and the
   total (the browser sends only who, where, which products and how many), checks stock, and splits the
   order per seller. Sellers accept, pack, ship (courier and tracking required) and deliver; a GST
   invoice (CGST/SGST, GSTIN, invoice number) is available per order.
@@ -163,9 +172,10 @@ Key URLs:
 | Who | URL | What |
 |---|---|---|
 | Public | `/vendor`, `/vendor/auth` | "Sell on Riderzpro" landing; sign in / sign up / reset |
+| Public | `/sellers/[slug]`, `/sellers/[slug]/[product]` | Seller storefront and product page (online marketplace; indexed, in the sitemap) |
 | Seller | `/vendor/onboarding`, `/vendor/pending` | KYC steps; review status |
-| Seller | `/vendor/dashboard/...` | Overview (Offline Store box), products, inventory, pricing, orders, payments, settings, notifications, support |
-| Seller | `/store/[slug]` | Offline Store screen (owner only, locks the session) |
+| Seller | `/vendor/dashboard/...` | Overview (Online store and Offline Store boxes), products, inventory, pricing, orders, payments, settings, notifications, support |
+| Seller | `/store/[slug]` | Offline Store screen (owner only, locks the session; `noindex`, disallowed in robots) |
 | Admin | `/admin/vendors`, `/admin/vendor-products` | KYC queue and demo store panel; product approval queue |
 | Admin | `/admin/orders`, `/admin/payouts`, `/admin/support`, `/admin/change-requests` | Orders, payouts, tickets, change requests |
 | API | `/api/orders` | Order capture |
@@ -218,9 +228,13 @@ Branches: `main` is the original V0.1 baseline; `V0.2` and `V0.3` build on it.
   seller dashboard (products, inventory, pricing, orders, payments, settings, notifications, support).
 - Admin queues for sellers and products, change requests and support; `/api/admin/*` now sits behind
   the same Basic auth as `/admin`.
-- Seller products taken off the main website; `/store/[slug]` became the owner-only Offline Store
-  screen (kiosk-style order screen, cart only, password-locked, always light) with a highlighted entry
-  on the dashboard; demo store "Indus Enterprises"; `/vendor` landing reworded.
+- `/store/[slug]` became the owner-only Offline Store screen (kiosk-style order screen, cart only,
+  password-locked, always light) with a highlighted entry on the dashboard; demo store "Indus
+  Enterprises".
+- Online marketplace restored (17 Oct 2026): sellers do both. Approved products are sold on the main
+  website again (`/shop`, department pages, sitemap) with a public storefront and product pages now at
+  `/sellers/[slug]` and `/sellers/[slug]/[product]`; the Offline Store stays at `/store/[slug]`.
+  `/vendor` landing, sign-in perks and seller messages describe both. Holiday mode stays removed.
 - Order capture at `/api/orders` (server-side pricing and stock), per-seller orders, GST invoices,
   payouts with a 7-day hold.
 - Migrations 002 (one pending change request per seller) and 003 (store screen lock).
@@ -244,7 +258,7 @@ Branches: `main` is the original V0.1 baseline; `V0.2` and `V0.3` build on it.
   - [ ] `VENDOR_DATA_KEY` generated and stored safely (losing it loses sellers' bank details).
   - [ ] `ADMIN_USER` / `ADMIN_PASSWORD` set wherever the site is reachable.
   - [ ] A one-time-code provider (email and SMS), wired in `src/lib/server/otp.ts`.
-  - [ ] Seller fees for the Offline Store, and commission defaults for any later online orders (code default 10%).
+  - [ ] Seller fees for the Offline Store, and commission defaults for online orders (code default 10%).
   - [ ] Create the demo store on the live database from `/admin/vendors` if wanted.
   - [ ] Seller terms page content.
   - [ ] Whether uploads move to object storage later.

@@ -9,6 +9,7 @@ import {
   LayoutDashboard,
   LifeBuoy,
   LogOut,
+  ExternalLink,
   MonitorSmartphone,
   MoreHorizontal,
   Package,
@@ -21,7 +22,7 @@ import {
 } from "lucide-react";
 import { Logo } from "@/components/brand/Logo";
 import { api } from "@/lib/vendor/client";
-import { storeHref } from "@/lib/vendor/types";
+import { offlineStoreHref, storeHref } from "@/lib/vendor/types";
 
 type Props = {
   storeName: string;
@@ -85,15 +86,27 @@ export function DashboardShell({ storeName, slug, tier, status, unreadNotificati
       </span>
     ) : null;
 
-  // The offline store screen: separate from online selling, so it sits apart and highlighted.
+  // The Offline Store screen (the seller's own shop): separate from online selling, so it sits apart and highlighted.
   const offlineStore =
     status === "approved" && slug ? (
       <Link
-        href={storeHref(slug)}
+        href={offlineStoreHref(slug)}
         className="flex min-h-11 items-center gap-3 rounded-[2px] border border-accent/60 bg-accent/10 px-3 text-sm font-bold text-chalk transition-colors hover:bg-accent/20"
       >
         <MonitorSmartphone size={18} className="text-accent" aria-hidden />
         Offline Store
+      </Link>
+    ) : null;
+
+  // The public storefront on the Riderzpro website.
+  const onlineStore =
+    status === "approved" && slug ? (
+      <Link
+        href={storeHref(slug)}
+        className="flex min-h-11 items-center gap-3 rounded-[2px] px-3 text-sm font-semibold text-ash transition-colors hover:bg-tint/5 hover:text-chalk"
+      >
+        <ExternalLink size={18} aria-hidden />
+        View my online store
       </Link>
     ) : null;
 
@@ -117,6 +130,7 @@ export function DashboardShell({ storeName, slug, tier, status, unreadNotificati
               {storeName}
             </p>
             {offlineStore && <div className="mt-3">{offlineStore}</div>}
+            {onlineStore && <div className="mt-1">{onlineStore}</div>}
           </div>
           <nav aria-label="Seller dashboard" className="flex-1 space-y-1 overflow-y-auto p-3">
             {items.map((i) => {
@@ -182,7 +196,7 @@ export function DashboardShell({ storeName, slug, tier, status, unreadNotificati
 
           {status === "suspended" && (
             <div role="alert" className="border-b border-danger/40 bg-danger/10 px-4 py-3 text-sm font-semibold text-danger md:px-6">
-              Your store is suspended: the Offline Store screen is closed and changes are disabled. Contact seller support.
+              Your store is suspended: your products are hidden from the Riderzpro website and the Offline Store screen is closed, and changes are disabled. Contact seller support.
             </div>
           )}
 
@@ -253,6 +267,7 @@ export function DashboardShell({ storeName, slug, tier, status, unreadNotificati
             </div>
             <div className="space-y-1">
               {offlineStore && <div className="mb-2">{offlineStore}</div>}
+              {onlineStore}
               {rest.map((i) => {
                 const active = isActive(i.href);
                 return (

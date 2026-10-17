@@ -1,12 +1,12 @@
 # Vendor portal and Offline Store (V0.3)
 
-Approved sellers list their car and bike accessories through the seller login and
-show them to customers in their own shop on the **Offline Store** screen: a
-tablet or TV order screen (like a fast-food kiosk) where customers browse, build
-an order and show it at the counter. Seller products are **not** on the main
-Riderzpro website (shop, department pages, search, sitemap). This document is the contract every part of the portal is built
+Approved sellers list their car and bike accessories through the seller login and use
+Riderzpro in two ways: they **sell online** (their approved products are on the main
+Riderzpro website, sold across India) and they can run the **Offline Store** screen in
+their own shop: a tablet or TV order screen (like a fast-food kiosk) where customers
+browse, build an order and show it at the counter. This document is the contract every part of the portal is built
 against. Read it before changing anything under `src/app/vendor`,
-`src/app/store`, `src/components/vendor/store-screen`, `src/app/admin/vendors*`, `src/app/api/vendor`,
+`src/app/store`, `src/app/sellers`, `src/lib/server/marketplace.ts`, `src/components/vendor/store-screen`, `src/app/admin/vendors*`, `src/app/api/vendor`,
 `src/app/api/admin` or `src/lib/server`.
 
 The design and flow follow the vendor portal of the earlier Riderzpro EV site
@@ -28,7 +28,8 @@ browser and had demo passwords and OTPs; none of its plumbing is used here.
 | Vendor rows, audit, notifications | `src/lib/server/vendors.ts` | `toVendorSelf`, `vendorById`, `publicVendorBySlug`, `audit()`, `notifyVendor()`. |
 | Files | `src/lib/server/files.ts`, `/api/vendor/files`, `/api/files/[id]`, `/api/admin/files/[id]` | Stored in the database; type sniffed from bytes; documents never public. |
 | One-time codes | `src/lib/server/otp.ts` | Dev prints codes to the server console. Production has no provider yet (`otpDeliveryAvailable` is false) — contact details are verified by the admin team during KYC. |
-| Vendor products | `src/lib/server/vendor-products.ts` | Row mapping and the **visibility gate** `LIVE_PRODUCT_WHERE` / `isOnSale` (used by order capture). |
+| Vendor products | `src/lib/server/vendor-products.ts` | Row mapping and the **visibility gate** `LIVE_PRODUCT_WHERE` / `isOnSale` (used by order capture and the marketplace). |
+| Marketplace read side | `src/lib/server/marketplace.ts`, `src/app/sellers/**`, `src/components/marketplace/`, seller parts of `src/app/shop/**` and `src/components/catalog/` | Live products as shop items, public storefront and product page, sitemap feed. Public fields only; every function degrades to empty/null without a database. |
 | Offline Store screen | `src/app/store/[slug]/page.tsx`, `src/lib/server/store-screen.ts`, `src/components/vendor/store-screen/`, `/api/vendor/store-screen` | Owner-only order screen: `live` products with stock > 0, each opening full screen with the full description (gallery, About, Highlights, Product details, Specifications). A showcase: cart only, nothing saved or paid. Session lock: see rule 12. |
 | Demo store | `src/lib/server/demo-store.ts`, `/api/admin/demo-store`, panel on `/admin/vendors` | "Indus Enterprises": seat covers and speakers copied from the house catalogue (SKUs `DEMO-`). Renames an existing `asha-accessories` store. Safe to re-run. |
 | Browser fetch | `src/lib/vendor/client.ts` | `api()`, `uploadFile()`, `ApiFailure` (with `fields` for form errors). |
@@ -72,10 +73,15 @@ browser and had demo passwords and OTPs; none of its plumbing is used here.
     `accent`, `tint/N`, `gold`, `danger`). Never `white/N`, `black/N`, `gray-*`, hex or
     rgba in class names. Icons: `lucide-react` is available for portal UI. The Offline Store
     screen is always light (`data-theme="light"`).
-11. **Seller products stay off the main website.** Nothing under `/shop`, search, the sitemap or
-    the house catalogue reads `vendor_products`. `/store/[slug]` is the Offline Store screen: only
-    the signed-in owner of an approved store can open it (others go to sign-in or their own
-    screen), it is `noindex` and disallowed in `robots.txt`.
+11. **Two surfaces, one gate.** Approved sellers' `live` products are sold on the main website:
+    `/shop` and `/shop/[category]` merge them after the house items, `/sellers/[slug]` and
+    `/sellers/[slug]/[product]` are the public storefront and product page, and the sitemap lists
+    them. Every public query goes through `LIVE_PRODUCT_WHERE` and exposes public fields only (never
+    email, mobile, legal/tax ids, bank or address lines); pages `notFound()` unless the gate passes. The
+    house catalogue itself never reads `vendor_products`. `/store/[slug]` is the Offline Store
+    screen: only the signed-in owner of an approved store can open it (others go to sign-in or their
+    own screen), it is `noindex` and disallowed in `robots.txt`; `/sellers` stays allowed. Use
+    `storeHref`, `vendorProductHref` (public) and `offlineStoreHref` (screen) from `src/lib/vendor/types.ts`.
 12. **Store screen lock.** Opening the screen locks that session (`vendor_sessions.kiosk_locked_at`,
     migration 003): vendor pages redirect back to the screen and vendor APIs answer 423 until the
     seller's password unlocks it (`POST /api/vendor/store-screen`, rate-limited, audited). The lock
@@ -90,7 +96,9 @@ browser and had demo passwords and OTPs; none of its plumbing is used here.
 | Public | `/vendor/auth` | Sign in / sign up / reset password |
 | Vendor | `/vendor/onboarding` | Six steps (draft, changes requested) |
 | Vendor | `/vendor/pending` | Review status, timeline, what happens next |
-| Vendor | `/vendor/dashboard` | Overview, with the highlighted **Offline Store** box |
+| Public | `/sellers/[slug]` | Seller storefront (online marketplace) |
+| Public | `/sellers/[slug]/[product]` | Seller product page with add to cart |
+| Vendor | `/vendor/dashboard` | Overview, with the **Online store** and highlighted **Offline Store** boxes |
 | Vendor | `/store/[slug]` | Offline Store screen (owner only, locks the session) |
 | Vendor | `/vendor/dashboard/products` (`/new`, `/[id]`) | Catalogue, add / edit |
 | Vendor | `/vendor/dashboard/inventory`, `/pricing` | Stock, price |
@@ -109,6 +117,16 @@ browser and had demo passwords and OTPs; none of its plumbing is used here.
 | `VENDOR_DATA_KEY` | production | 32 random bytes, base64 (`openssl rand -base64 32`). Seals bank/PAN. Losing it makes stored bank details unreadable. |
 | `ADMIN_USER`, `ADMIN_PASSWORD` | production | Already required for `/admin`; now also protect `/api/admin`. |
 | `OTP_EMAIL_PROVIDER`, `OTP_SMS_PROVIDER` | later | Turn on code delivery once a provider is wired in `src/lib/server/otp.ts`. |
+
+## Status (17 Oct 2026)
+
+Direction changed again: sellers do both. The online marketplace is restored (adapted) and the
+Offline Store screen stays. Seller products are back in `/shop`, department pages and the sitemap;
+the public storefront and product page moved from `/store/...` to `/sellers/[slug]` and
+`/sellers/[slug]/[product]` so `/store/[slug]` remains the owner-only screen. Holiday mode stays
+removed. The `/vendor` landing, sign-in perks, onboarding hint, settings and "not allowed" messages
+describe both. Rule 11 and the URL table above are current; the 16 Oct notes below describe the
+earlier, offline-only decision.
 
 ## Status (16 Oct 2026, session 2)
 
