@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AccountShell } from "@/components/account/AccountShell";
+import { LiveTracking } from "@/components/tracking/LiveTracking";
 import { customerOrderDetail, customerPage } from "@/lib/server/customers";
 import { rupees } from "@/lib/format";
 import { whatsapp } from "@/lib/data/site";
@@ -17,6 +18,8 @@ export default async function OrderPage({ params }: Params) {
   const me = await customerPage(`/account/orders/${encodeURIComponent(number)}`);
   const order = /^RZP-[A-Z0-9]{6}$/.test(number) ? await customerOrderDetail(me.id, number) : null;
   if (!order) notFound();
+  // Live map while a Riderzpro rider has the delivery (it polls, and stops once delivered).
+  const riding = order.parts.some((p) => p.rider?.status === "accepted" || p.rider?.status === "picked_up");
 
   return (
     <AccountShell me={me} title={`Order ${order.number}`}>
@@ -31,7 +34,8 @@ export default async function OrderPage({ params }: Params) {
       </div>
 
       <div className="mt-6 grid gap-8 lg:grid-cols-[1fr_20rem]">
-        <div className="space-y-4">
+        <div className="min-w-0 space-y-4">
+          {riding && <LiveTracking number={order.number} sellers={Object.fromEntries(order.parts.map((p) => [p.key, p.seller]))} />}
           {order.parts.map((p) => (
             <Part key={p.key} part={p} orderStatus={order.status} />
           ))}

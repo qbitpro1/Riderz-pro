@@ -141,6 +141,8 @@ export type RiderSelf = {
   status: RiderStatus;
   reviewNote: string | null;
   online: boolean;
+  /** Agreed to share their location while delivering (live tracking). */
+  locationConsent: boolean;
 };
 
 export type RiderEarnings = { unpaid: number; unpaidJobs: number; paid: number; today: number; payouts: { id: string; amount: number; jobs: number; reference: string; createdAt: string }[] };

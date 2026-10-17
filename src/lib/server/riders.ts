@@ -23,6 +23,7 @@ import { ApiError } from "./http";
 import { checkOtp } from "./otp";
 import { riderMovePart } from "./orders";
 import { newId, newToken, sha256 } from "./security";
+import { closeTracking } from "./tracking";
 import { audit, notifyVendor } from "./vendors";
 
 /**
@@ -39,6 +40,8 @@ import { audit, notifyVendor } from "./vendors";
  *               customer's 4-digit code (shipment becomes "delivered"); 5 wrong codes lock the job
  *               until the admin resets it
  *   earnings    each delivered job's pay; the admin records a payout with a bank/UPI reference
+ *   location    while a job is accepted or picked up, with the rider's consent (src/lib/server/tracking.ts);
+ *               closing a job deletes its trail (closeTracking, in the same transaction)
  *
  * Status moves are checked here, inside transactions with row locks. Identity always comes from the
  * session. A rider sees the customer's phone and full address only after accepting a job.
@@ -60,6 +63,7 @@ type RiderRow = {
   status: RiderStatus;
   review_note: string | null;
   online: boolean;
+  location_consent_at: Date | null;
 };
 const toSelf = (r: RiderRow): RiderSelf => ({
   id: r.id,
@@ -71,6 +75,7 @@ const toSelf = (r: RiderRow): RiderSelf => ({
   status: r.status,
   reviewNote: r.review_note,
   online: r.online,
+  locationConsent: r.location_consent_at !== null,
 });
 
 /* --------------------------------------------------------------- sessions */
@@ -289,6 +294,7 @@ export async function riderAct(rider: RiderSelf, jobId: string, input: z.infer<t
         if (j.status !== "offered" && j.status !== "accepted") throw bad();
         await q("UPDATE rider_jobs SET status='declined', cancel_reason=$2, closed_at=now(), updated_at=now() WHERE id=$1", [j.id, input.reason || null]);
         await event(q, j.id, who, j.status, "declined", input.reason || null);
+        await closeTracking(q, j.id, "declined");
         return "declined" as const;
       case "pickup":
         if (j.status !== "accepted") throw bad();
@@ -308,6 +314,7 @@ export async function riderAct(rider: RiderSelf, jobId: string, input: z.infer<t
         if (j.vendor_order_id) await riderMovePart(q, j.vendor_order_id, "delivered", shortRef(j.id), rider.id);
         await q("UPDATE rider_jobs SET status='delivered', delivered_at=now(), closed_at=now(), updated_at=now() WHERE id=$1", [j.id]);
         await event(q, j.id, who, j.status, "delivered");
+        await closeTracking(q, j.id, "delivered");
         return "delivered" as const;
       }
     }
@@ -410,10 +417,11 @@ export async function riderDecision(riderId: string, input: z.infer<typeof rider
     if (input.action === "suspend") {
       const onRoad = (await q("SELECT 1 FROM rider_jobs WHERE rider_id = $1 AND status = 'picked_up'", [riderId]))[0];
       if (onRoad) throw new ApiError(409, "on_road", "This rider is carrying a parcel. Let them finish it first.");
-      await q(
-        "UPDATE rider_jobs SET status='cancelled', cancel_reason='Rider suspended', closed_at=now(), updated_at=now() WHERE rider_id=$1 AND status IN ('offered','accepted')",
+      const closed = await q<{ id: string }>(
+        "UPDATE rider_jobs SET status='cancelled', cancel_reason='Rider suspended', closed_at=now(), updated_at=now() WHERE rider_id=$1 AND status IN ('offered','accepted') RETURNING id",
         [riderId],
       );
+      for (const c of closed) await closeTracking(q, c.id, "cancelled");
     }
     await q(
       `UPDATE riders SET status=$2, review_note=$3, reviewed_by=$4, reviewed_at=now(), online = CASE WHEN $2 = 'approved' THEN online ELSE false END, updated_at=now() WHERE id=$1`,
@@ -603,6 +611,7 @@ export async function adminJobAction(jobId: string, input: z.infer<typeof jobAdm
       }
       await q("UPDATE rider_jobs SET status='cancelled', cancel_reason=$2, closed_at=now(), updated_at=now() WHERE id=$1", [jobId, input.reason]);
       await event(q, jobId, `admin:${actor}`, j.status, "cancelled", input.reason);
+      await closeTracking(q, jobId, "cancelled");
     } else {
       await q("UPDATE rider_jobs SET code_attempts = 0, updated_at = now() WHERE id = $1", [jobId]);
     }

@@ -7,6 +7,7 @@ import { ApiFailure, api } from "@/lib/vendor/client";
 import { rupees } from "@/lib/format";
 import { JOB_LABELS, type RiderEarnings, type RiderJobView, type RiderSelf } from "@/lib/rider/types";
 import { Notice } from "@/components/vendor/auth/fields";
+import { LocationShare } from "./LocationShare";
 
 type Jobs = { live: RiderJobView[]; done: RiderJobView[] };
 const POLL_MS = 15_000;
@@ -53,6 +54,8 @@ export function RiderApp({ rider, initialJobs, initialEarnings }: { rider: Rider
 
   const offers = jobs.live.filter((j) => j.status === "offered");
   const active = jobs.live.filter((j) => j.status !== "offered");
+  // Live tracking: the phone shares its position only for these (accepted or picked up).
+  const tracked = active.filter((j) => j.status === "accepted" || j.status === "picked_up").map((j) => j.id);
 
   return (
     <div className="space-y-6">
@@ -97,6 +100,7 @@ export function RiderApp({ rider, initialJobs, initialEarnings }: { rider: Rider
 
       <section aria-label="Active deliveries" className="space-y-3">
         <h2 className="text-xs font-bold uppercase tracking-[0.14em] text-dim">Active</h2>
+        <LocationShare jobIds={tracked} initialConsent={rider.locationConsent} onStale={load} />
         {active.length === 0 ? (
           <p className="card p-5 text-sm text-ash">{online ? "No active deliveries. New offers appear here." : "Go online to receive delivery offers."}</p>
         ) : (

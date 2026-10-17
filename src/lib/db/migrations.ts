@@ -482,4 +482,87 @@ ALTER TABLE vendor_otps ADD CONSTRAINT vendor_otps_purpose_check
   CHECK (purpose IN ('verify','login','reset','customer_login','customer_contact','rider_login'));
 `,
   },
+  {
+    // Phase 3: live tracking. The rider's phone sends its position only while a job is accepted or
+    // picked up, after the rider agrees (riders.location_consent_at). Each live job keeps its latest
+    // point and a short trail; the trail is deleted when the job closes, and a delivered job keeps
+    // only its last point for 30 days (src/lib/server/tracking.ts, trackingHousekeeping).
+    id: "006_live_tracking",
+    sql: `
+ALTER TABLE riders ADD COLUMN location_consent_at timestamptz;
+
+-- Where the parcel goes. 'device': the customer's own GPS at checkout; 'address': the address
+-- geocoded to a street-level point; 'area': only the pincode or locality matched (no geofence);
+-- 'failed': geocoding found nothing (the order page shows status without a map); 'pending': a
+-- geocode is in flight.
+ALTER TABLE orders ADD COLUMN delivery_lat double precision;
+ALTER TABLE orders ADD COLUMN delivery_lng double precision;
+ALTER TABLE orders ADD COLUMN delivery_geo text CHECK (delivery_geo IN ('device','address','area','failed','pending'));
+ALTER TABLE orders ADD COLUMN delivery_geo_at timestamptz;
+ALTER TABLE orders ADD CONSTRAINT orders_delivery_point_check
+  CHECK ((delivery_lat IS NULL) = (delivery_lng IS NULL)
+         AND (delivery_lat IS NULL OR (delivery_lat BETWEEN -90 AND 90 AND delivery_lng BETWEEN -180 AND 180)));
+
+ALTER TABLE customer_addresses ADD COLUMN lat double precision;
+ALTER TABLE customer_addresses ADD COLUMN lng double precision;
+ALTER TABLE customer_addresses ADD CONSTRAINT customer_addresses_point_check
+  CHECK ((lat IS NULL) = (lng IS NULL) AND (lat IS NULL OR (lat BETWEEN -90 AND 90 AND lng BETWEEN -180 AND 180)));
+
+-- The latest point for each live job, plus what the geofence and off-route checks remember.
+CREATE TABLE rider_locations (
+  job_id          text PRIMARY KEY REFERENCES rider_jobs(id) ON DELETE CASCADE,
+  rider_id        text NOT NULL REFERENCES riders(id),
+  lat             double precision NOT NULL CHECK (lat BETWEEN -90 AND 90),
+  lng             double precision NOT NULL CHECK (lng BETWEEN -180 AND 180),
+  accuracy_m      integer NOT NULL CHECK (accuracy_m >= 0),
+  heading         integer CHECK (heading BETWEEN 0 AND 359),
+  speed_kmh       integer CHECK (speed_kmh >= 0),
+  at              timestamptz NOT NULL,
+  -- Straight-line metres to the delivery point at the last ping (null without a delivery point).
+  distance_m      integer,
+  -- Off-route check (picked-up jobs only): where the rider was when the trip to the customer began,
+  -- the closest they have been since, and when they first looked off route (null = on route).
+  start_lat       double precision,
+  start_lng       double precision,
+  min_distance_m  integer,
+  off_route_since timestamptz,
+  -- Road route cached for the customer's map: refreshed when the rider has moved or it is old.
+  route           jsonb,
+  route_m         integer,
+  route_s         integer,
+  route_from_lat  double precision,
+  route_from_lng  double precision,
+  route_at        timestamptz,
+  updated_at      timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX rider_locations_rider_idx ON rider_locations (rider_id, at DESC);
+
+-- A short trail of recent points per live job (pruned to the last 30 minutes on every ping).
+CREATE TABLE rider_location_trail (
+  id         bigserial PRIMARY KEY,
+  job_id     text NOT NULL REFERENCES rider_jobs(id) ON DELETE CASCADE,
+  lat        double precision NOT NULL,
+  lng        double precision NOT NULL,
+  accuracy_m integer NOT NULL,
+  at         timestamptz NOT NULL
+);
+CREATE INDEX rider_location_trail_job_idx ON rider_location_trail (job_id, at);
+
+-- Geofence and route alerts. No coordinates are stored here, only the distance.
+CREATE TABLE tracking_events (
+  id          bigserial PRIMARY KEY,
+  job_id      text NOT NULL REFERENCES rider_jobs(id) ON DELETE CASCADE,
+  order_id    text NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+  kind        text NOT NULL CHECK (kind IN ('arriving','arrived','off_route')),
+  distance_m  integer,
+  detail      text,
+  at          timestamptz NOT NULL DEFAULT now(),
+  resolved_at timestamptz
+);
+CREATE INDEX tracking_events_job_idx ON tracking_events (job_id, at);
+-- "arriving" and "arrived" happen once per job; one open off-route alert per job at a time.
+CREATE UNIQUE INDEX tracking_events_once ON tracking_events (job_id, kind) WHERE kind IN ('arriving','arrived');
+CREATE UNIQUE INDEX tracking_events_open_off_route ON tracking_events (job_id) WHERE kind = 'off_route' AND resolved_at IS NULL;
+`,
+  },
 ];
