@@ -3,11 +3,14 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { OrderStatusButtons, PartActions } from "@/components/admin/orders/AdminOrderActions";
 import { ORDER_STATUS_LABELS } from "@/components/admin/orders/types";
+import { PAYMENT_STATUS_LABELS } from "@/lib/payments/types";
 import { fmtDateTime } from "@/components/vendor/orders/format";
 import { StatusBadge } from "@/components/vendor/orders/StatusBadge";
 import type { OrderItemView } from "@/components/vendor/orders/types";
 import { rupees } from "@/lib/format";
 import { adminOrderDetail } from "@/lib/server/orders";
+import { adminPaymentSummary } from "@/lib/server/payments";
+import { PaymentCard } from "@/components/admin/orders/PaymentCard";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -38,6 +41,8 @@ function Items({ items }: { items: OrderItemView[] }) {
 export default async function AdminOrderPage({ params }: { params: Promise<{ id: string }> }) {
   const order = await adminOrderDetail((await params).id);
   if (!order) notFound();
+  const payment = await adminPaymentSummary(order.id);
+  const paidOnline = order.paymentMethod === "online" && (order.paymentStatus === "paid" || order.paymentStatus === "partially_refunded");
 
   return (
     <section className="section pt-24 md:pt-32">
@@ -47,6 +52,7 @@ export default async function AdminOrderPage({ params }: { params: Promise<{ id:
         <h1 className="display-2">{order.number}</h1>
         <p className="mt-3 text-sm text-ash">
           {ORDER_STATUS_LABELS[order.status]} · placed {fmtDateTime(order.createdAt)} via {order.channel}
+          {order.paymentMethod === "online" ? ` · ${PAYMENT_STATUS_LABELS[order.paymentStatus]}` : ""}
         </p>
 
         <div className="mt-6 grid gap-6 lg:grid-cols-[1.6fr_1fr] lg:items-start">
@@ -70,7 +76,7 @@ export default async function AdminOrderPage({ params }: { params: Promise<{ id:
                   {p.paidOut ? " · paid out" : ""}
                 </p>
                 {p.cancelReason && <p className="mt-1 text-xs text-ash">Reason: {p.cancelReason}</p>}
-                <PartActions partId={p.id} status={p.status} />
+                <PartActions partId={p.id} status={p.status} paidOnline={paidOnline} />
               </div>
             ))}
           </div>
@@ -98,9 +104,11 @@ export default async function AdminOrderPage({ params }: { params: Promise<{ id:
               </dl>
             </div>
 
+            {payment && <PaymentCard orderId={order.id} summary={payment} />}
+
             <div className="card p-5">
               <h2 className="eyebrow mb-3">Order status</h2>
-              <OrderStatusButtons orderId={order.id} status={order.status} />
+              <OrderStatusButtons orderId={order.id} status={order.status} paymentMethod={order.paymentMethod} paymentStatus={order.paymentStatus} />
               {order.parts.length > 0 && (
                 <p className="mt-3 text-xs text-dim">
                   Orders with seller parts close on their own once every part is delivered, cancelled or returned.

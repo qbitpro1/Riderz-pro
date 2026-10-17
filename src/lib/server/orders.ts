@@ -12,6 +12,8 @@ import { ApiError } from "./http";
 import { newId, sha256 } from "./security";
 import { LIVE_PRODUCT_WHERE } from "./vendor-products";
 import { audit, notifyVendor, type Actor } from "./vendors";
+import { onOrderConfirmed } from "./payments-hooks";
+import type { PaymentMethod, PaymentStatus } from "@/lib/payments/types";
 
 /**
  * ORDERS
@@ -52,9 +54,22 @@ type VendorProductLookup = {
   commission_rate: string | null;
 };
 
-/** `customerId` comes from the session (never the request body); null for guest checkout. */
-export async function placeOrder(input: PlaceOrderInput, customerId: string | null = null): Promise<{ number: string; total: number }> {
+export type PlacedOrderRecord = { id: string; number: string; total: number };
+
+/**
+ * `customerId` comes from the session (never the request body); null for guest checkout.
+ *
+ * `method: "online"`: the order waits for its Razorpay payment (payments.ts). Stock is taken now and
+ * held; sellers are told and see the order only once it is paid; unpaid orders are cancelled and
+ * their stock released after UNPAID_HOLD_MINUTES (releaseUnpaidOrders).
+ */
+export async function placeOrder(
+  input: PlaceOrderInput,
+  customerId: string | null = null,
+  opts: { method?: "whatsapp" | "online" } = {},
+): Promise<PlacedOrderRecord> {
   const { customer } = input;
+  const method = opts.method ?? "whatsapp";
 
   /* ---- 1. price every line from the server's own data ---- */
   const seen = new Set<string>();
@@ -149,12 +164,14 @@ export async function placeOrder(input: PlaceOrderInput, customerId: string | nu
     for (let attempt = 0; attempt < 8 && !number; attempt++) {
       const candidate = newOrderNumber();
       const rows = await q<{ number: string }>(
-        `INSERT INTO orders (id, number, customer_name, customer_phone, customer_email, address, city, state, pincode, notes, subtotal, shipping, total, customer_id)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
+        `INSERT INTO orders (id, number, customer_name, customer_phone, customer_email, address, city, state, pincode, notes, subtotal, shipping, total, customer_id,
+                             payment_method, channel)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)
          ON CONFLICT (number) DO NOTHING RETURNING number`,
         [
           orderId, candidate, customer.name, customer.mobile, customer.email, customer.address, customer.city,
           customer.state, customer.pincode, customer.notes, subtotal, shipping, total, customerId,
+          method, method === "online" ? "online" : "whatsapp",
         ],
       );
       if (rows[0]) number = rows[0].number;
@@ -206,13 +223,16 @@ export async function placeOrder(input: PlaceOrderInput, customerId: string | nu
 
   /* ---- 3. after commit: tell the sellers; failures here must not undo the order ---- */
   try {
-    for (const p of placed) {
-      await notifyVendor(p.vendorId, {
-        type: "order",
-        title: `New order ${number}`,
-        body: `${p.count} item${p.count === 1 ? "" : "s"} to pack and ship.`,
-        link: `/vendor/dashboard/orders/${p.vendorOrderId}`,
-      });
+    // An online order reaches its sellers only once paid (notifySellersOfOrder, from payments.ts).
+    if (method !== "online") {
+      for (const p of placed) {
+        await notifyVendor(p.vendorId, {
+          type: "order",
+          title: `New order ${number}`,
+          body: `${p.count} item${p.count === 1 ? "" : "s"} to pack and ship.`,
+          link: `/vendor/dashboard/orders/${p.vendorOrderId}`,
+        });
+      }
     }
     for (const l of low) {
       await notifyVendor(l.vendorId, {
@@ -223,14 +243,69 @@ export async function placeOrder(input: PlaceOrderInput, customerId: string | nu
       });
     }
     await audit({ type: "customer", id: sha256(customer.mobile).slice(0, 12) }, "order.place", {
-      detail: { number, total, vendorParts: placed.length },
+      detail: { number, total, vendorParts: placed.length, paymentMethod: method },
     });
+    if (method !== "online") await onOrderConfirmed(orderId, "whatsapp_placed");
   } catch (err) {
     console.error("[orders] post-commit step failed", err instanceof Error ? err.message : err);
   }
 
-  return { number, total };
+  return { id: orderId, number, total };
 }
+
+/** Tell each seller about their part of an order (used when an online order is paid). */
+export async function notifySellersOfOrder(orderId: string): Promise<void> {
+  const parts = await sql<{ id: string; vendor_id: string; number: string; count: number }>(
+    `SELECT vo.id, vo.vendor_id, o.number,
+            (SELECT count(*)::int FROM order_items i WHERE i.vendor_order_id = vo.id) AS count
+       FROM vendor_orders vo JOIN orders o ON o.id = vo.order_id
+      WHERE vo.order_id = $1 AND vo.status = 'new'`,
+    [orderId],
+  );
+  for (const p of parts) {
+    await notifyVendor(p.vendor_id, {
+      type: "order",
+      title: `New order ${p.number}`,
+      body: `${p.count} item${p.count === 1 ? "" : "s"} to pack and ship. Paid online.`,
+      link: `/vendor/dashboard/orders/${p.id}`,
+    });
+  }
+}
+
+/**
+ * Cancel an online order whose payment never arrived: every open seller part is cancelled, its
+ * stock goes back on sale, and the order is cancelled. Runs inside the caller's transaction and
+ * re-checks the order under a row lock. Returns false when the order no longer qualifies
+ * (paid meanwhile, already cancelled, not an online order).
+ */
+export async function cancelUnpaidOnlineOrder(q: Query, orderId: string, reason: string): Promise<boolean> {
+  const o = (
+    await q<{ status: OrderStatus; payment_method: string; payment_status: string; number: string }>(
+      "SELECT status, payment_method, payment_status, number FROM orders WHERE id = $1 FOR UPDATE",
+      [orderId],
+    )
+  )[0];
+  if (!o || o.payment_method !== "online" || o.status !== "placed" || !["pending", "failed"].includes(o.payment_status)) return false;
+  const parts = await q<{ id: string }>(
+    "SELECT id FROM vendor_orders WHERE order_id = $1 AND status IN ('new','accepted','packed') ORDER BY id FOR UPDATE",
+    [orderId],
+  );
+  for (const p of parts) {
+    await q(
+      `UPDATE rider_jobs SET status='cancelled', cancel_reason=$2, closed_at=now(), updated_at=now()
+        WHERE vendor_order_id = $1 AND status IN ('offered','accepted')`,
+      [p.id, `Order cancelled: ${reason}`],
+    );
+    await q("UPDATE vendor_orders SET status='cancelled', cancelled_at=now(), cancel_reason=$2, updated_at=now() WHERE id=$1", [p.id, reason]);
+    await restoreStock(q, p.id);
+  }
+  await q("UPDATE orders SET status='cancelled', payment_status='failed', updated_at=now() WHERE id=$1", [orderId]);
+  await audit({ type: "system", id: "payments" }, "order.payment_expired", { detail: { orderId, number: o.number, parts: parts.length, reason } }, q);
+  return true;
+}
+
+/** SQL condition: an online order still waiting for its money. Sellers never see or act on these. */
+const AWAITING_PAYMENT_SQL = "(o.payment_method = 'online' AND o.payment_status IN ('pending','failed'))";
 
 /* ----------------------------------------------------------- shared bits */
 
@@ -313,7 +388,7 @@ export async function listVendorOrders(vendorId: string, status?: VendorOrderSta
             COALESCE((SELECT sum(i.qty) FROM order_items i WHERE i.vendor_order_id = vo.id), 0)::int AS item_count,
             (SELECT i.title FROM order_items i WHERE i.vendor_order_id = vo.id ORDER BY i.title LIMIT 1) AS first_title
        FROM vendor_orders vo JOIN orders o ON o.id = vo.order_id
-      WHERE vo.vendor_id = $1 AND ($2::text IS NULL OR vo.status = $2)
+      WHERE vo.vendor_id = $1 AND ($2::text IS NULL OR vo.status = $2) AND NOT ${AWAITING_PAYMENT_SQL}
       ORDER BY vo.created_at DESC LIMIT 300`,
     [vendorId, status ?? null],
   );
@@ -357,7 +432,7 @@ export async function vendorOrderDetail(vendorId: string, id: string): Promise<V
               o.number, o.customer_name, o.customer_phone, o.address, o.city, o.state, o.pincode, o.notes,
               0 AS item_count, NULL AS first_title
          FROM vendor_orders vo JOIN orders o ON o.id = vo.order_id
-        WHERE vo.id = $1 AND vo.vendor_id = $2`,
+        WHERE vo.id = $1 AND vo.vendor_id = $2 AND NOT ${AWAITING_PAYMENT_SQL}`,
       [id, vendorId],
     )
   )[0];
@@ -428,7 +503,7 @@ export async function vendorChangeStatus(
     const row = (
       await q<{ status: VendorOrderStatus; order_id: string; number: string }>(
         `SELECT vo.status, vo.order_id, o.number FROM vendor_orders vo JOIN orders o ON o.id = vo.order_id
-          WHERE vo.id = $1 AND vo.vendor_id = $2 FOR UPDATE OF vo`,
+          WHERE vo.id = $1 AND vo.vendor_id = $2 AND NOT ${AWAITING_PAYMENT_SQL} FOR UPDATE OF vo`,
         [id, vendorId],
       )
     )[0];
@@ -545,6 +620,9 @@ type AdminOrderRow = {
   shipping: number;
   total: number;
   channel: string;
+  payment_method: PaymentMethod;
+  payment_status: PaymentStatus;
+  paid_at: Date | null;
   created_at: Date;
 };
 
@@ -612,6 +690,9 @@ async function assembleAdminOrders(rows: AdminOrderRow[]): Promise<AdminOrder[]>
       shipping: r.shipping,
       total: r.total,
       channel: r.channel,
+      paymentMethod: r.payment_method,
+      paymentStatus: r.payment_status,
+      paidAt: iso(r.paid_at),
       createdAt: iso(r.created_at)!,
       parts: adminParts,
       houseItems: mine.filter((i) => !i.vendor_order_id).map((i) => toItem(i)),
@@ -620,7 +701,7 @@ async function assembleAdminOrders(rows: AdminOrderRow[]): Promise<AdminOrder[]>
 }
 
 const ORDER_COLS =
-  "id, number, status, customer_name, customer_phone, customer_email, address, city, state, pincode, notes, subtotal, shipping, total, channel, created_at";
+  "id, number, status, customer_name, customer_phone, customer_email, address, city, state, pincode, notes, subtotal, shipping, total, channel, payment_method, payment_status, paid_at, created_at";
 
 export async function listAdminOrders(opts: { status?: OrderStatus; q?: string } = {}): Promise<AdminOrder[]> {
   const q = opts.q?.trim().slice(0, 80) || null;
@@ -714,10 +795,19 @@ const ORDER_MOVES: Record<OrderStatus, OrderStatus[]> = {
 /** Order-level status for the house's own part of an order (placed → confirmed → completed / cancelled). */
 export async function adminChangeOrderStatus(actor: string, orderId: string, to: OrderStatus): Promise<void> {
   await transaction(async (q) => {
-    const row = (await q<{ status: OrderStatus; number: string }>("SELECT status, number FROM orders WHERE id = $1 FOR UPDATE", [orderId]))[0];
+    const row = (
+      await q<{ status: OrderStatus; number: string; payment_method: PaymentMethod; payment_status: PaymentStatus; total: number }>(
+        "SELECT status, number, payment_method, payment_status, total FROM orders WHERE id = $1 FOR UPDATE",
+        [orderId],
+      )
+    )[0];
     if (!row) throw new ApiError(404, "not_found", "Order not found.");
     if (!ORDER_MOVES[row.status].includes(to)) {
       throw new ApiError(409, "bad_transition", `This order is ${row.status}; it can't move to ${to}.`);
+    }
+    // An online order is confirmed by its payment, never by hand.
+    if (to !== "cancelled" && row.payment_method === "online" && (row.payment_status === "pending" || row.payment_status === "failed")) {
+      throw new ApiError(409, "awaiting_payment", "This order hasn't been paid yet. It confirms itself when the payment arrives.");
     }
     if (to === "completed" || to === "cancelled") {
       const open = await q<{ n: number }>(
@@ -729,6 +819,9 @@ export async function adminChangeOrderStatus(actor: string, orderId: string, to:
       }
     }
     await q("UPDATE orders SET status = $2, updated_at = now() WHERE id = $1", [orderId, to]);
-    await audit({ type: "admin", id: actor }, `order.status_${to}`, { detail: { orderId, number: row.number, from: row.status } }, q);
+    // Cancelling a paid online order does not move money by itself: the admin order page then shows
+    // the refundable amount and the refund form (payments.ts adminRefund). The audit row records it.
+    const refundDue = to === "cancelled" && row.payment_method === "online" && (row.payment_status === "paid" || row.payment_status === "partially_refunded");
+    await audit({ type: "admin", id: actor }, `order.status_${to}`, { detail: { orderId, number: row.number, from: row.status, ...(refundDue ? { refundDue: true } : {}) } }, q);
   });
 }

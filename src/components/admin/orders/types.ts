@@ -1,5 +1,6 @@
 import type { VendorOrderStatus } from "@/lib/vendor/types";
 import type { OrderItemView } from "@/components/vendor/orders/types";
+import type { PaymentMethod, PaymentStatus } from "@/lib/payments/types";
 
 export type OrderStatus = "placed" | "confirmed" | "completed" | "cancelled";
 export const ORDER_STATUSES: readonly OrderStatus[] = ["placed", "confirmed", "completed", "cancelled"];
@@ -41,6 +42,9 @@ export type AdminOrder = {
   shipping: number;
   total: number;
   channel: string;
+  paymentMethod: PaymentMethod;
+  paymentStatus: PaymentStatus;
+  paidAt: string | null;
   createdAt: string;
   parts: AdminOrderPart[];
   /** Items the house sells directly (not tied to a seller). */

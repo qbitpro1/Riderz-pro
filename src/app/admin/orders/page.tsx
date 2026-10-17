@@ -5,6 +5,8 @@ import { fmtDateTime, STATUS_TONE } from "@/components/vendor/orders/format";
 import { rupees } from "@/lib/format";
 import { listAdminOrders } from "@/lib/server/orders";
 import { VENDOR_ORDER_LABELS } from "@/lib/vendor/types";
+import { PAYMENT_STATUS_LABELS } from "@/lib/payments/types";
+import { PAYMENT_TONE } from "@/components/admin/orders/PaymentCard";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -68,6 +70,9 @@ export default async function AdminOrdersPage({ searchParams }: { searchParams: 
                   <div className="text-right">
                     <p className="font-display text-xl font-extrabold tnum">{rupees(o.total)}</p>
                     <span className={`chip mt-1 bg-transparent ${ORDER_TONE[o.status]}`}>{ORDER_STATUS_LABELS[o.status]}</span>
+                    {o.paymentMethod === "online" && (
+                      <span className={`chip mt-1 ml-1 bg-transparent ${PAYMENT_TONE[o.paymentStatus]}`}>{PAYMENT_STATUS_LABELS[o.paymentStatus]}</span>
+                    )}
                   </div>
                 </div>
                 <ul className="mt-3 flex flex-wrap gap-2 border-t border-tint/8 pt-3 text-xs">

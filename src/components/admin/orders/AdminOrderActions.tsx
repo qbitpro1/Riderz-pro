@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useId, useState } from "react";
 import { api, ApiFailure } from "@/lib/vendor/client";
 import type { VendorOrderStatus } from "@/lib/vendor/types";
+import type { PaymentMethod, PaymentStatus } from "@/lib/payments/types";
 import type { OrderStatus } from "./types";
 
 type PartMove = "cancelled" | "return_requested" | "returned";
@@ -22,7 +23,7 @@ const MOVE_LABEL: Record<PartMove, string> = {
 };
 
 /** Cancel / return buttons for one seller's part of an order. A written reason is required. */
-export function PartActions({ partId, status }: { partId: string; status: VendorOrderStatus }) {
+export function PartActions({ partId, status, paidOnline = false }: { partId: string; status: VendorOrderStatus; paidOnline?: boolean }) {
   const router = useRouter();
   const uid = useId();
   const [reason, setReason] = useState("");
@@ -32,8 +33,9 @@ export function PartActions({ partId, status }: { partId: string; status: Vendor
   if (!moves) return null;
 
   async function go(to: PartMove) {
-    if (to === "returned" && !window.confirm("Record this as returned? The stock goes back on sale and the order is excluded from payouts.")) return;
-    if (to === "cancelled" && !window.confirm("Cancel this seller's part of the order? The stock goes back on sale.")) return;
+    const refundNote = paidOnline ? " The order was paid online: refund this part from the Payment card afterwards." : "";
+    if (to === "returned" && !window.confirm(`Record this as returned? The stock goes back on sale and the order is excluded from payouts.${refundNote}`)) return;
+    if (to === "cancelled" && !window.confirm(`Cancel this seller's part of the order? The stock goes back on sale.${refundNote}`)) return;
     setBusy(to);
     setError(null);
     try {
@@ -71,15 +73,34 @@ const NEXT: Record<OrderStatus, ("confirmed" | "completed" | "cancelled")[]> = {
 };
 const LABEL = { confirmed: "Confirm order", completed: "Mark completed", cancelled: "Cancel order" } as const;
 
-/** Order-level status buttons. */
-export function OrderStatusButtons({ orderId, status }: { orderId: string; status: OrderStatus }) {
+/**
+ * Order-level status buttons. An unpaid online order can only be cancelled (payment confirms it).
+ * Cancelling a paid online order asks first and then leaves the refund to the Payment card.
+ */
+export function OrderStatusButtons({
+  orderId,
+  status,
+  paymentMethod = "whatsapp",
+  paymentStatus = "pending",
+}: {
+  orderId: string;
+  status: OrderStatus;
+  paymentMethod?: PaymentMethod;
+  paymentStatus?: PaymentStatus;
+}) {
   const router = useRouter();
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  if (NEXT[status].length === 0) return null;
+  const awaitingPayment = paymentMethod === "online" && (paymentStatus === "pending" || paymentStatus === "failed");
+  const paidOnline = paymentMethod === "online" && (paymentStatus === "paid" || paymentStatus === "partially_refunded");
+  const moves = NEXT[status].filter((to) => !(awaitingPayment && to !== "cancelled"));
+  if (moves.length === 0) return null;
 
   async function go(to: "confirmed" | "completed" | "cancelled") {
-    if (to === "cancelled" && !window.confirm("Cancel this order?")) return;
+    const ask = paidOnline
+      ? "Cancel this order? It was paid online: cancelling does NOT refund it. Refund it from the Payment card afterwards."
+      : "Cancel this order?";
+    if (to === "cancelled" && !window.confirm(ask)) return;
     setBusy(to);
     setError(null);
     try {
@@ -95,12 +116,13 @@ export function OrderStatusButtons({ orderId, status }: { orderId: string; statu
   return (
     <div>
       <div className="flex flex-wrap gap-2">
-        {NEXT[status].map((to) => (
+        {moves.map((to) => (
           <button key={to} type="button" className={`btn btn-sm ${to === "cancelled" ? "btn-outline" : "btn-primary"}`} disabled={busy !== null} onClick={() => go(to)}>
             {busy === to ? "Saving…" : LABEL[to]}
           </button>
         ))}
       </div>
+      {awaitingPayment && <p className="mt-2 text-xs text-dim">Waiting for the online payment; the order confirms itself when it arrives.</p>}
       {error && <p role="alert" className="mt-2 text-xs text-danger">{error}</p>}
     </div>
   );

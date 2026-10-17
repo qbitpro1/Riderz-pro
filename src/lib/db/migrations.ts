@@ -565,4 +565,73 @@ CREATE UNIQUE INDEX tracking_events_once ON tracking_events (job_id, kind) WHERE
 CREATE UNIQUE INDEX tracking_events_open_off_route ON tracking_events (job_id) WHERE kind = 'off_route' AND resolved_at IS NULL;
 `,
   },
+  {
+    // Online payments (Razorpay). Order totals stay integer RUPEES as everywhere else; every
+    // amount in the payment tables is integer PAISE (`*_paise`), the unit Razorpay's API uses.
+    id: "007_payments",
+    sql: `
+ALTER TABLE orders ADD COLUMN payment_method text NOT NULL DEFAULT 'whatsapp'
+  CHECK (payment_method IN ('whatsapp','cod','online'));
+-- pending: not paid yet (WhatsApp orders are settled offline and stay pending here)
+-- failed: the last online attempt failed or the order expired unpaid
+ALTER TABLE orders ADD COLUMN payment_status text NOT NULL DEFAULT 'pending'
+  CHECK (payment_status IN ('pending','paid','failed','refunded','partially_refunded'));
+ALTER TABLE orders ADD COLUMN paid_at timestamptz;
+-- The unpaid-order release (releaseUnpaidOrders) scans only these.
+CREATE INDEX orders_unpaid_online_idx ON orders (created_at)
+  WHERE payment_method = 'online' AND payment_status IN ('pending','failed') AND status = 'placed';
+
+-- One Razorpay order per attempt to pay a Riderzpro order.
+CREATE TABLE payments (
+  id                  text PRIMARY KEY,
+  order_id            text NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+  provider            text NOT NULL DEFAULT 'razorpay' CHECK (provider IN ('razorpay')),
+  razorpay_order_id   text NOT NULL UNIQUE,
+  razorpay_payment_id text UNIQUE,
+  amount_paise        integer NOT NULL CHECK (amount_paise > 0),
+  currency            text NOT NULL DEFAULT 'INR',
+  status              text NOT NULL DEFAULT 'created' CHECK (status IN ('created','failed','paid','expired')),
+  method              text,
+  error_code          text,
+  error_description   text,
+  failed_attempts     integer NOT NULL DEFAULT 0,
+  verified_via        text CHECK (verified_via IN ('checkout','webhook','reconcile')),
+  last_event_id       text,
+  paid_at             timestamptz,
+  created_at          timestamptz NOT NULL DEFAULT now(),
+  updated_at          timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX payments_order_idx ON payments (order_id);
+CREATE UNIQUE INDEX payments_one_paid_per_order ON payments (order_id) WHERE status = 'paid';
+
+CREATE TABLE refunds (
+  id                 text PRIMARY KEY,
+  payment_id         text NOT NULL REFERENCES payments(id) ON DELETE CASCADE,
+  order_id           text NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+  razorpay_refund_id text UNIQUE,
+  amount_paise       integer NOT NULL CHECK (amount_paise > 0),
+  -- requested: sent to Razorpay, no answer yet; pending: accepted by Razorpay; processed: money returned
+  status             text NOT NULL DEFAULT 'requested' CHECK (status IN ('requested','pending','processed','failed')),
+  reason             text NOT NULL,
+  source             text NOT NULL DEFAULT 'admin' CHECK (source IN ('admin','dashboard')),
+  created_by         text NOT NULL,
+  error              text,
+  processed_at       timestamptz,
+  created_at         timestamptz NOT NULL DEFAULT now(),
+  updated_at         timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX refunds_payment_idx ON refunds (payment_id);
+CREATE INDEX refunds_order_idx ON refunds (order_id, created_at);
+
+-- Razorpay retries webhooks; each event id is processed once.
+CREATE TABLE payment_webhook_events (
+  event_id          text PRIMARY KEY,
+  event             text NOT NULL,
+  razorpay_order_id text,
+  result            text,
+  received_at       timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX payment_webhook_events_received_idx ON payment_webhook_events (received_at);
+`,
+  },
 ];
