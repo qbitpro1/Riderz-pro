@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { rupees } from "@/lib/format";
 import { whatsapp } from "@/lib/data/site";
@@ -12,23 +12,20 @@ import {
   INSTALLATION_RATE,
   type BuildOption,
 } from "@/lib/data/configurator";
-import { readGarage } from "@/components/fitment/FitmentPicker";
+import { garageKey, useGarage, type Garage } from "@/lib/client/garage";
 
 export function Configurator() {
-  const [brandSlug, setBrandSlug] = useState("");
-  const [modelSlug, setModelSlug] = useState("");
-  const [year, setYear] = useState("");
+  // Starts from the shopper's saved car (and starts again if they change it in My Garage).
+  const garage = useGarage();
+  return <Build key={garageKey(garage)} garage={garage} />;
+}
+
+function Build({ garage }: { garage: Garage | null }) {
+  const [brandSlug, setBrandSlug] = useState(garage?.brandSlug ?? "");
+  const [modelSlug, setModelSlug] = useState(garage?.modelSlug ?? "");
+  const [year, setYear] = useState(garage ? String(garage.year) : "");
   const [stage, setStage] = useState(BUILD_STAGES[0].slug);
   const [picked, setPicked] = useState<Set<string>>(new Set());
-
-  useEffect(() => {
-    const g = readGarage();
-    if (g) {
-      setBrandSlug(g.brandSlug);
-      setModelSlug(g.modelSlug);
-      setYear(String(g.year));
-    }
-  }, []);
 
   const brand = BRANDS.find((b) => b.slug === brandSlug);
   const model = brand?.models.find((m) => m.slug === modelSlug);

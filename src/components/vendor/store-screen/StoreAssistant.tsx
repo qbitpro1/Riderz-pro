@@ -43,6 +43,7 @@ export function StoreAssistant({
   byId: Map<string, ScreenProduct>;
   qtys: Record<string, number>;
   car: Car | null;
+  /** The special price in force (already checked: not expired, order not empty). */
   offer: ScreenOffer | null;
   turns: AssistantTurn[];
   setTurns: (fn: (t: AssistantTurn[]) => AssistantTurn[]) => void;
@@ -58,8 +59,11 @@ export function StoreAssistant({
   const [error, setError] = useState<string | null>(null);
   const end = useRef<HTMLDivElement>(null);
   const seeded = useRef(false);
+  // The latest conversation for `ask` (it can run from a voice callback holding an older render).
   const turnsRef = useRef(turns);
-  turnsRef.current = turns;
+  useEffect(() => {
+    turnsRef.current = turns;
+  }, [turns]);
   // Voice fills the box as the customer speaks; the question goes when they stop.
   const spoken = useRef("");
 
@@ -81,7 +85,7 @@ export function StoreAssistant({
           messages: next.slice(-12),
           cart: Object.entries(qtys).map(([id, qty]) => ({ id, qty })),
           car: car?.slug,
-          offerId: offer && offer.expiresAt > Date.now() ? offer.id : null,
+          offerId: offer?.id ?? null,
         },
       });
       setTurns((t) => [...t, { role: "assistant", content: r.reply || "Here you go.", products: r.products }]);
@@ -181,7 +185,7 @@ export function StoreAssistant({
         <div ref={end} />
       </div>
 
-      {offer && offer.expiresAt > Date.now() && (
+      {offer && (
         <div className="mx-5 mb-3 rounded-2xl border border-accent bg-accent/10 px-4 py-3 text-base md:mx-6">
           <span className="font-bold text-chalk">Special price agreed: {offer.percent}% off</span>
           <span className="text-ash"> · you save {rupees(offer.discount)} · ready at checkout</span>
@@ -215,7 +219,6 @@ export function StoreAssistant({
                 setText(t);
               }}
               onListening={(on) => {
-                // Called on every render too (VoiceSearch's effect), so take the words only once.
                 if (on) spoken.current = "";
                 else if (spoken.current) {
                   const q = spoken.current;

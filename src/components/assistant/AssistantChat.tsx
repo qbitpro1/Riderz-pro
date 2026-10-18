@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { api, ApiFailure } from "@/lib/vendor/client";
 import { CatalogCard } from "@/components/catalog/CatalogCard";
-import { readGarage, GARAGE_EVENT } from "@/components/fitment/FitmentPicker";
+import { useGarage } from "@/lib/client/garage";
+import { useHydrated } from "@/lib/client/hooks";
 import { ASSISTANT_MAX_CHARS, WEB_STARTERS, type AssistantMessage } from "@/lib/assistant/types";
 import type { ShopItem } from "@/lib/catalog/types";
 import { whatsapp } from "@/lib/data/site";
@@ -27,25 +28,32 @@ function load(): Turn[] {
  * sent with each question; the server answers from Riderzpro's own catalogue.
  */
 export function AssistantChat({ initialQuestion }: { initialQuestion?: string }) {
-  const [turns, setTurns] = useState<Turn[]>([]);
+  // The kept conversation lives in this tab's storage, so the chat starts once in the browser.
+  const hydrated = useHydrated();
+  if (!hydrated) return <p className="text-sm text-dim">Loading the assistant…</p>;
+  return <Chat initialQuestion={initialQuestion} />;
+}
+
+function Chat({ initialQuestion }: { initialQuestion?: string }) {
+  const [turns, setTurns] = useState<Turn[]>(load);
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [enabled, setEnabled] = useState<boolean | null>(null);
-  const [car, setCar] = useState<{ slug: string; label: string } | null>(null);
+  const garage = useGarage();
+  const car = garage ? { slug: garage.modelSlug, label: garage.label } : null;
   const end = useRef<HTMLDivElement>(null);
   const asked = useRef(false);
 
   useEffect(() => {
-    setTurns(load());
-    const g = () => {
-      const garage = readGarage();
-      setCar(garage ? { slug: garage.modelSlug, label: garage.label } : null);
+    let live = true;
+    api<{ enabled: boolean }>("/api/assistant").then(
+      (r) => live && setEnabled(r.enabled),
+      () => live && setEnabled(false),
+    );
+    return () => {
+      live = false;
     };
-    g();
-    window.addEventListener(GARAGE_EVENT, g);
-    api<{ enabled: boolean }>("/api/assistant").then((r) => setEnabled(r.enabled), () => setEnabled(false));
-    return () => window.removeEventListener(GARAGE_EVENT, g);
   }, []);
 
   useEffect(() => {

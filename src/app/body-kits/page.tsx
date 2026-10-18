@@ -117,7 +117,7 @@ export default function BodyKitsPage() {
               <figcaption className="p-4 text-xs leading-relaxed text-ash">
                 A front-end conversion replaces the bumper, grille, headlamps and DRL bar as one
                 assembly, painted to your VIN colour code. Ask us for the before-and-after set from
-                any conversion we've completed on your model — we photograph every one.
+                any conversion we&apos;ve completed on your model — we photograph every one.
               </figcaption>
             </figure>
           </Reveal>
@@ -147,7 +147,7 @@ export default function BodyKitsPage() {
             <Accordion items={FAQ} />
           </div>
           <div className="card p-6">
-            <p className="font-display text-lg font-extrabold uppercase">Your car isn't listed?</p>
+            <p className="font-display text-lg font-extrabold uppercase">Your car isn&apos;t listed?</p>
             <p className="mt-2 text-sm text-ash">
               We convert far more models than we list here — and we build custom kits in fibreglass
               and carbon when nothing exists off the shelf. Send us the car and the look you want.

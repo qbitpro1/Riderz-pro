@@ -1,15 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { readGarage, type Garage } from "@/components/fitment/FitmentPicker";
+import { useGarage } from "@/lib/client/garage";
 import { Icon } from "@/components/ui/Icon";
 import { findModelBySlug } from "@/lib/data/vehicles";
 import { whatsapp } from "@/lib/data/site";
 
 /** Fitment as the data states it: universal, a model list, or "confirmed on WhatsApp". */
 export function FitsYourCar({ fitment, title, code }: { fitment: string[]; title: string; code: string | null }) {
-  const [garage, setGarage] = useState<Garage | null>(null);
-  useEffect(() => setGarage(readGarage()), []);
+  const garage = useGarage();
 
   const universal = fitment.includes("universal");
   const models = fitment

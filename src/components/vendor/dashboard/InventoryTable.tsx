@@ -36,7 +36,6 @@ export function InventoryTable({ initial, readOnly }: { initial: VendorProduct[]
       }
       return true;
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rows, q, lowOnly]);
 
   const patch = (id: string, change: Partial<Pick<Row, "stock" | "low">>) => {

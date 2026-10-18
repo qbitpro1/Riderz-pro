@@ -76,9 +76,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
+  // Load the saved cart once in the browser. It can't be read during render: the server has no
+  // storage, and the first client render must match the server HTML. One extra render, by design.
   useEffect(() => {
     try {
       const stored = parseLines(readStored(KEY));
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- hydrating from browser storage (see above)
       if (stored) setLines(stored);
     } catch {
       // A corrupt or unavailable store should never block the page.

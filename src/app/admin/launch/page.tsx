@@ -69,7 +69,7 @@ export default async function LaunchReadinessPage() {
         </ul>
 
         {/* blockers ------------------------------------------------ */}
-        <h2 className="display-2 mt-16">WHAT'S HOLDING PRODUCTS BACK.</h2>
+        <h2 className="display-2 mt-16">WHAT&apos;S HOLDING PRODUCTS BACK.</h2>
         <p className="mt-3 max-w-2xl text-sm leading-relaxed text-ash">
           Grouped by what would fix it, not by which brand it belongs to — one document usually
           clears a whole group at once.
@@ -100,7 +100,7 @@ export default async function LaunchReadinessPage() {
                       <th className="py-2 pr-4 font-medium">Brand</th>
                       <th className="py-2 pr-4 font-medium">Reference</th>
                       <th className="py-2 pr-4 font-medium">Product</th>
-                      <th className="py-2 font-medium">Why it's held</th>
+                      <th className="py-2 font-medium">Why it&apos;s held</th>
                     </tr>
                   </thead>
                   <tbody>

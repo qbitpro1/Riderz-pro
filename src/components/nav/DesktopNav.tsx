@@ -50,10 +50,13 @@ export function DesktopNav({ liveGroups }: { liveGroups?: LiveGroups }) {
     [clear],
   );
 
-  useEffect(() => {
-    clear();
+  // A new page closes any open menu (adjusting state while rendering) and its pending close timer.
+  const [menuFor, setMenuFor] = useState(pathname);
+  if (menuFor !== pathname) {
+    setMenuFor(pathname);
     setOpen(null);
-  }, [pathname, clear]);
+  }
+  useEffect(() => clear(), [pathname, clear]);
 
   useEffect(() => clear, [clear]);
 

@@ -25,7 +25,6 @@ export function listingTitle(l: Pick<Listing, "year" | "make" | "model" | "varia
 
 /** Facts only, in Riderzpro's voice, hedged where the source is the only witness. */
 export function buildDescription(l: Listing): string {
-  const title = listingTitle(l);
   const parts: string[] = [];
 
   const powertrain = [l.fuel?.toLowerCase(), l.transmission ? transmissionWords(l.transmission) : null]

@@ -155,10 +155,10 @@ export default function OffRoadPage() {
             <Accordion items={FAQ} />
           </div>
           <div className="card p-6">
-            <p className="font-display text-lg font-extrabold uppercase">Tell us where you're going</p>
+            <p className="font-display text-lg font-extrabold uppercase">Tell us where you&apos;re going</p>
             <p className="mt-2 text-sm text-ash">
               Spiti in June is a different build from Rann in December, and both are different from
-              weekend trails outside the city. Tell us the trip and we'll spec the truck for it.
+              weekend trails outside the city. Tell us the trip and we&apos;ll spec the truck for it.
             </p>
             <a
               href={whatsapp("Hi Riderzpro, I want to build my off-road SUV. My vehicle is:  and I mostly drive: ")}

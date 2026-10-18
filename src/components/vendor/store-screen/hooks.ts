@@ -111,10 +111,23 @@ export function usePulse(value: number, ms = 450): boolean {
       first.current = false;
       return;
     }
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- a timed visual flag
     setOn(true);
     const t = window.setTimeout(() => setOn(false), ms);
     return () => window.clearTimeout(t);
   }, [value, ms]);
   return on;
+}
+
+/**
+ * False once `expiresAt` (epoch ms) has passed, and re-renders at that moment, so something that
+ * expires (a special price) disappears on time without polling. True while `expiresAt` is null.
+ */
+export function useStillValid(expiresAt: number | null): boolean {
+  const [expired, setExpired] = useState<number | null>(null);
+  useEffect(() => {
+    if (expiresAt === null) return;
+    const t = window.setTimeout(() => setExpired(expiresAt), Math.max(0, expiresAt - Date.now()));
+    return () => window.clearTimeout(t);
+  }, [expiresAt]);
+  return expiresAt === null || expired !== expiresAt;
 }

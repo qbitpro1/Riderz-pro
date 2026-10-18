@@ -2,7 +2,8 @@
 
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
+import { usePoll } from "@/lib/client/hooks";
 import { MapPin } from "lucide-react";
 import { ApiFailure, api } from "@/lib/vendor/client";
 import { STALE_AFTER_S, TRACK_POLL_MS, fmtAge, fmtDistance, type CustomerTracking, type CustomerTrackingJob } from "@/lib/tracking/geo";
@@ -41,16 +42,7 @@ export function LiveTracking({ number, sellers = {} }: { number: string; sellers
     }
   }, [number, router]);
 
-  useEffect(() => {
-    void load();
-    const tick = () => document.visibilityState === "visible" && void load();
-    const t = window.setInterval(tick, TRACK_POLL_MS);
-    document.addEventListener("visibilitychange", tick);
-    return () => {
-      window.clearInterval(t);
-      document.removeEventListener("visibilitychange", tick);
-    };
-  }, [load]);
+  usePoll(load, TRACK_POLL_MS);
 
   const moving = data?.jobs.filter((j) => j.status === "picked_up") ?? [];
   const markers = useMemo<MapMarker[]>(() => {

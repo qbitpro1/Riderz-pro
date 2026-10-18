@@ -6,7 +6,7 @@ import { CatalogCard } from "./CatalogCard";
 import { Icon } from "@/components/ui/Icon";
 import { whatsapp } from "@/lib/data/site";
 import { DEPARTMENT_BY_SLUG } from "@/lib/data/taxonomy";
-import { readGarage } from "@/components/fitment/FitmentPicker";
+import { useGarage } from "@/lib/client/garage";
 import {
   activeFilterCount,
   AVAILABILITY_LABELS,
@@ -19,7 +19,6 @@ import {
   SORTS,
   TIER_LABELS,
   type CatalogFilters,
-  type Facet,
   type SortKey,
 } from "@/lib/catalog/filters";
 import type { ShopItem } from "@/lib/catalog/types";
@@ -44,7 +43,7 @@ export function CatalogBrowser({
   const [visible, setVisible] = useState(PAGE);
   const [panelOpen, setPanelOpen] = useState(false);
   const countRef = useRef<HTMLParagraphElement>(null);
-  const [garage, setGarage] = useState<{ modelSlug: string; label: string } | null>(null);
+  const garage = useGarage();
 
   /* A client-side navigation to the same route with different query params —
      "Autoform" from the category page's brand rail, say — re-renders this
@@ -57,11 +56,6 @@ export function CatalogBrowser({
     setAdopted(incoming);
     setFilters(initial);
   }
-
-  useEffect(() => {
-    const g = readGarage();
-    if (g) setGarage({ modelSlug: g.modelSlug, label: g.label });
-  }, []);
 
   /* The filtered view is a real URL, so it can be shared, bookmarked and linked
      to from the brand pages and search. Replace rather than push — filtering is
@@ -76,7 +70,12 @@ export function CatalogBrowser({
   const results = useMemo(() => filterCatalog(items, filters), [items, filters]);
   const facets = useMemo(() => facetsFor(items, filters), [items, filters]);
 
-  useEffect(() => setVisible(PAGE), [filters]);
+  // New filters start from the first page again (adjusting state while rendering, not in an effect).
+  const [pagedFor, setPagedFor] = useState(filters);
+  if (pagedFor !== filters) {
+    setPagedFor(filters);
+    setVisible(PAGE);
+  }
 
   const patch = useCallback((next: Partial<CatalogFilters>) => setFilters((f) => ({ ...f, ...next })), []);
 
@@ -218,7 +217,7 @@ export function CatalogBrowser({
           <div className="card p-10 text-center">
             <p className="font-display text-xl uppercase">Nothing matches those filters</p>
             <p className="mt-2 text-sm text-ash">
-              We stock far more than we list. Ask on WhatsApp and we'll check availability and fitment.
+              We stock far more than we list. Ask on WhatsApp and we&apos;ll check availability and fitment.
             </p>
             <button type="button" onClick={clearAll} className="btn btn-outline btn-sm mt-5">
               Reset filters
@@ -408,7 +407,7 @@ function FilterPanel({
             href={`/accessories/${garage.modelSlug}`}
             className="mt-2 inline-block text-[11px] text-accent underline underline-offset-4"
           >
-            Open my car's page
+            Open my car&apos;s page
           </Link>
         </section>
       )}

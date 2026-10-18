@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useBrowserValue, useLatest } from "@/lib/client/hooks";
 import { Mic, MicOff } from "lucide-react";
 
 /**
@@ -42,17 +43,20 @@ const MESSAGES: Record<string, string> = {
 };
 
 export function VoiceSearch({ onText, onListening }: { onText: (text: string) => void; onListening?: (on: boolean) => void }) {
-  const [supported, setSupported] = useState(false);
-  const [listening, setListening] = useState(false);
+  const supported = useBrowserValue(() => recognitionCtor() !== null, false);
+  const [listening, setListeningState] = useState(false);
   const [note, setNote] = useState<string | null>(null);
   const rec = useRef<Recognition | null>(null);
   const timer = useRef<number | null>(null);
+  const onListeningRef = useLatest(onListening);
 
-  useEffect(() => setSupported(recognitionCtor() !== null), []);
+  /** Tells the parent only when listening actually starts or stops. */
+  const setListening = (on: boolean) => {
+    setListeningState(on);
+    onListeningRef.current?.(on);
+  };
+
   useEffect(() => () => rec.current?.abort(), []);
-  useEffect(() => {
-    onListening?.(listening);
-  }, [listening, onListening]);
   useEffect(() => {
     if (!note) return;
     const t = window.setTimeout(() => setNote(null), 4000);

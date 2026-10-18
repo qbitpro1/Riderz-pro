@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
+import { usePoll } from "@/lib/client/hooks";
 import { useRouter } from "next/navigation";
 import { MapPin, Navigation, Package, Phone } from "lucide-react";
 import { ApiFailure, api } from "@/lib/vendor/client";
@@ -32,15 +33,8 @@ export function RiderApp({ rider, initialJobs, initialEarnings }: { rider: Rider
     }
   }, [router]);
 
-  useEffect(() => {
-    const tick = () => document.visibilityState === "visible" && void load();
-    const t = window.setInterval(tick, POLL_MS);
-    document.addEventListener("visibilitychange", tick);
-    return () => {
-      window.clearInterval(t);
-      document.removeEventListener("visibilitychange", tick);
-    };
-  }, [load]);
+  // The page arrives with today's jobs; refresh them while the app is open.
+  usePoll(load, POLL_MS, { immediate: false });
 
   async function toggleOnline() {
     setError(null);

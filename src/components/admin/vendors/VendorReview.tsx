@@ -140,7 +140,6 @@ export default function VendorReview({ review }: { review: Review }) {
   const imgUrl = (id: string | null | undefined) => (id ? `/api/admin/files/${id}` : null);
   const logo = imgUrl(o.store?.logoFileId);
   const banner = imgUrl(o.store?.bannerFileId);
-  const sectionTitle = (id: OnboardingSectionId) => ONBOARDING_STEPS.find((s) => s.id === id)!.title;
   const stepOf = useMemo(() => Object.fromEntries(ONBOARDING_STEPS.map((s) => [s.id, s.title])), []);
 
   return (
@@ -221,8 +220,15 @@ export default function VendorReview({ review }: { review: Review }) {
             {logo || banner ? (
               <KV label="Branding">
                 <div className="flex flex-wrap items-center gap-3">
-                  {logo ? /* eslint-disable-next-line @next/next/no-img-element */ <img src={logo} alt="Store logo" className="h-14 w-14 rounded-[2px] border border-tint/10 bg-steel object-contain" /> : null}
-                  {banner ? /* eslint-disable-next-line @next/next/no-img-element */ <img src={banner} alt="Store banner" className="h-14 max-w-full rounded-[2px] border border-tint/10 bg-steel object-cover" /> : null}
+                  {/* Private uploads behind the admin login: the image optimiser can't fetch them, so plain <img>. */}
+                  {logo ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={logo} alt="Store logo" className="h-14 w-14 rounded-[2px] border border-tint/10 bg-steel object-contain" />
+                  ) : null}
+                  {banner ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={banner} alt="Store banner" className="h-14 max-w-full rounded-[2px] border border-tint/10 bg-steel object-cover" />
+                  ) : null}
                 </div>
               </KV>
             ) : null}

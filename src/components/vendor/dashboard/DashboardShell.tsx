@@ -41,7 +41,12 @@ export function DashboardShell({ storeName, slug, tier, status, unreadNotificati
   const [more, setMore] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
 
-  useEffect(() => setMore(false), [pathname]);
+  // A new page closes the "More" menu (adjusting state while rendering, not in an effect).
+  const [moreFor, setMoreFor] = useState(pathname);
+  if (moreFor !== pathname) {
+    setMoreFor(pathname);
+    setMore(false);
+  }
   useEffect(() => {
     if (!more) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setMore(false);
@@ -58,6 +63,7 @@ export function DashboardShell({ storeName, slug, tier, status, unreadNotificati
     { href: `${base}/pricing`, label: "Pricing", icon: Tags },
     { href: `${base}/payments`, label: "Payments", icon: Wallet },
     { href: `${base}/notifications`, label: "Notifications", icon: Bell, badge: unreadNotifications },
+    { href: `${base}/store-screen`, label: "Offline Store", icon: MonitorSmartphone },
     { href: `${base}/settings`, label: "Settings", icon: Settings },
     { href: `${base}/support`, label: "Support", icon: LifeBuoy },
   ];
@@ -75,7 +81,9 @@ export function DashboardShell({ storeName, slug, tier, status, unreadNotificati
     } catch {
       /* the cookie may already be gone */
     }
-    window.location.href = "/vendor/auth";
+    // A full page load (not a client navigation), so nothing of the seller's session stays in memory;
+    // `replace` keeps Back from returning to the dashboard.
+    window.location.replace(new URL("/vendor/auth", window.location.origin));
   }
 
   const badge = (n?: number) =>

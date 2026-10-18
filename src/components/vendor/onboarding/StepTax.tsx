@@ -84,7 +84,7 @@ export function StepTax({ state, editable, onSaved, goBack, goNext }: StepProps)
           {formError && <Notice tone="error">{formError}</Notice>}
 
           <CheckField id="gstExempt" checked={gstExempt} onChange={(e) => setGstExempt(e.target.checked)}>
-            I don't have a GSTIN (not registered for GST)
+            I don&apos;t have a GSTIN (not registered for GST)
           </CheckField>
 
           {!gstExempt ? (

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useMemo, useCallback, useEffect, useRef, useState } from "react";
 import { AlertTriangle, Check } from "lucide-react";
 import { ONBOARDING_STEPS, type VendorSelf } from "@/lib/vendor/types";
 import { api } from "@/lib/vendor/client";
@@ -23,7 +23,10 @@ function firstIncomplete(completed: number[]) {
 export function OnboardingFlow({ initial }: { initial: OnboardingState }) {
   const [state, setState] = useState(initial);
   const { vendor } = state;
-  const flagged = vendor.status === "changes_requested" ? (vendor.changesRequested?.sections ?? []) : null;
+  const flagged = useMemo(
+    () => (vendor.status === "changes_requested" ? (vendor.changesRequested?.sections ?? []) : null),
+    [vendor.status, vendor.changesRequested],
+  );
 
   const editableStep = useCallback(
     (step: number) => flagged === null || flagged.includes(ONBOARDING_STEPS[step - 1].id),

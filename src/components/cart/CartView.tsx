@@ -119,7 +119,7 @@ export function CartView() {
         <Icon name="bag" size={32} className="mx-auto text-dim" />
         <p className="mt-4 font-display text-xl uppercase">Nothing in here yet</p>
         <p className="mx-auto mt-2 max-w-sm text-sm text-ash">
-          Start with the accessories store, or tell us what you drive and we'll only show parts that
+          Start with the accessories store, or tell us what you drive and we&apos;ll only show parts that
           fit.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">

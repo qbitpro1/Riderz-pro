@@ -21,7 +21,7 @@ function buildSnapshot(): InventorySnapshot {
   const pulls = pullAll();
 
   const raw = pulls.flatMap((p) => p.listings);
-  const { merged, review } = deduplicate(raw);
+  const { merged } = deduplicate(raw);
 
   const listings = merged.map((l) => {
     const status = applyStaleness(l, now);

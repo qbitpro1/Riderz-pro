@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useBrowserValue } from "@/lib/client/hooks";
 
 type Props = {
   children: ReactNode;
@@ -16,15 +17,14 @@ type Props = {
  */
 export function Reveal({ children, className = "", delay = 0, as = "div" }: Props) {
   const ref = useRef<HTMLElement | null>(null);
-  const [shown, setShown] = useState(false);
+  const [seen, setShown] = useState(false);
+  // Without IntersectionObserver (very old browsers) everything is simply shown.
+  const noObserver = useBrowserValue(() => typeof IntersectionObserver === "undefined", false);
+  const shown = seen || noObserver;
 
   useEffect(() => {
     const node = ref.current;
-    if (!node) return;
-    if (typeof IntersectionObserver === "undefined") {
-      setShown(true);
-      return;
-    }
+    if (!node || noObserver) return;
     const io = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
@@ -38,7 +38,7 @@ export function Reveal({ children, className = "", delay = 0, as = "div" }: Prop
     );
     io.observe(node);
     return () => io.disconnect();
-  }, []);
+  }, [noObserver]);
 
   const Tag = as as "div";
   return (

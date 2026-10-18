@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { api } from "@/lib/vendor/client";
 import type { CustomerSelf } from "@/lib/account/types";
 import { replaceWishlist, watchWishlist, wishlistSnapshot, type WishlistItem } from "@/components/wishlist/wishlistStore";
-import { GARAGE_EVENT, readGarage, writeGarage, type Garage } from "@/components/fitment/FitmentPicker";
+import { GARAGE_EVENT, readGarage, writeGarage, type Garage } from "@/lib/client/garage";
 
 /**
  * Who is signed in, for the shopper chrome (header link, checkout prefill). Asked once per page
@@ -72,26 +72,33 @@ export function AccountProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const skip = ownSignIn(pathname);
   const [customer, setCustomer] = useState<CustomerSelf | null>(null);
-  const [ready, setReady] = useState(false);
+  const [loaded, setReady] = useState(false);
+  // Pages with their own sign-in (seller, rider, store screen) never ask: ready at once, as a guest.
+  const ready = skip || loaded;
+
+  /** The signed-in customer, or null (also when accounts are unavailable: the site works as a guest). */
+  const fetchMe = useCallback(
+    () => api<{ customer: CustomerSelf | null }>("/api/account/me").then((r) => r.customer, () => null),
+    [],
+  );
 
   const refresh = useCallback(async () => {
-    try {
-      const res = await api<{ customer: CustomerSelf | null }>("/api/account/me");
-      setCustomer(res.customer);
-    } catch {
-      setCustomer(null); // accounts unavailable: the site works as a guest
-    } finally {
-      setReady(true);
-    }
-  }, []);
+    setCustomer(await fetchMe());
+    setReady(true);
+  }, [fetchMe]);
 
   useEffect(() => {
-    if (skip) {
+    if (skip) return;
+    let live = true;
+    void fetchMe().then((c) => {
+      if (!live) return; // left for a page with its own sign-in meanwhile
+      setCustomer(c);
       setReady(true);
-      return;
-    }
-    void refresh();
-  }, [refresh, skip]);
+    });
+    return () => {
+      live = false;
+    };
+  }, [fetchMe, skip]);
 
   const forget = useCallback(() => {
     signingOut = true;

@@ -2,6 +2,7 @@
 
 import { X } from "lucide-react";
 import { useEffect, useId, useRef, type ReactNode } from "react";
+import { useLatest } from "@/lib/client/hooks";
 
 /** Small shared pieces for the admin marketplace screens. */
 
@@ -64,8 +65,7 @@ export function Modal({
 }) {
   const titleId = useId();
   const box = useRef<HTMLDivElement>(null);
-  const closeRef = useRef(onClose);
-  closeRef.current = onClose;
+  const closeRef = useLatest(onClose);
 
   useEffect(() => {
     if (!open) return;
@@ -99,7 +99,7 @@ export function Modal({
       document.body.style.overflow = prevOverflow;
       opener?.focus?.();
     };
-  }, [open]);
+  }, [open, closeRef]);
 
   if (!open) return null;
   return (

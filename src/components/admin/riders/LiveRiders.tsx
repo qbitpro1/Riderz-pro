@@ -1,7 +1,8 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
+import { usePoll } from "@/lib/client/hooks";
 import { api } from "@/lib/vendor/client";
 import { STALE_AFTER_S, TRACK_POLL_MS, fmtAge, fmtDistance, type DispatchRiderPosition } from "@/lib/tracking/geo";
 import type { MapMarker } from "@/components/tracking/TrackingMap";
@@ -25,16 +26,7 @@ export default function LiveRiders() {
     }
   }, []);
 
-  useEffect(() => {
-    void load();
-    const tick = () => document.visibilityState === "visible" && void load();
-    const t = window.setInterval(tick, TRACK_POLL_MS);
-    document.addEventListener("visibilitychange", tick);
-    return () => {
-      window.clearInterval(t);
-      document.removeEventListener("visibilitychange", tick);
-    };
-  }, [load]);
+  usePoll(load, TRACK_POLL_MS);
 
   const markers = useMemo<MapMarker[]>(() => {
     const out: MapMarker[] = [];

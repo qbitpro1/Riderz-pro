@@ -350,12 +350,12 @@ function SignUp({ onSwitch }: { onSwitch: () => void }) {
         <Link href="/legal/terms" target="_blank" className="font-semibold text-accent underline">
           seller terms
         </Link>{" "}
-        and confirm I'm authorised to register this business.
+        and confirm I&apos;m authorised to register this business.
       </CheckField>
       <button type="submit" disabled={busy} className="btn btn-primary btn-block">
         {busy ? "Creating account…" : "Create seller account"}
       </button>
-      <p className="text-center text-xs text-dim">You'll add tax, store and bank details in the next steps.</p>
+      <p className="text-center text-xs text-dim">You&apos;ll add tax, store and bank details in the next steps.</p>
     </form>
   );
 }

@@ -32,6 +32,7 @@ export function CheckoutSheet({
   store: ScreenStore;
   lines: OrderLine[];
   total: number;
+  /** The special price in force (already checked by the screen). */
   offer: ScreenOffer | null;
   pay: PayOptions;
   onClose: () => void;
@@ -47,7 +48,7 @@ export function CheckoutSheet({
   const [placed, setPlaced] = useState<Placed | null>(null);
   const [pending, setPending] = useState<{ number: string; total: number; discount: number; payment: OnlinePaymentStart } | null>(null);
 
-  const liveOffer = offer && offer.expiresAt > Date.now() ? offer : null;
+  const liveOffer = offer;
   const shownDiscount = liveOffer ? Math.min(liveOffer.discount, Math.floor((total * liveOffer.percent) / 100)) : 0;
 
   async function payOnScreen(p: { number: string; total: number; discount: number; payment: OnlinePaymentStart }) {

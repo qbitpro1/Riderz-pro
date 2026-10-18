@@ -156,7 +156,7 @@ export default async function RecoilPage({ searchParams }: { searchParams: Promi
       <section className="section border-t border-tint/8 bg-carbon">
         <div className="shell grid gap-6 lg:grid-cols-[1.3fr_1fr] lg:items-center">
           <div>
-            <p className="eyebrow mb-3">Can't find a model number?</p>
+            <p className="eyebrow mb-3">Can&apos;t find a model number?</p>
             <h2 className="display-2">WE STOCK MORE THAN WE LIST.</h2>
             <p className="mt-4 max-w-lg text-sm leading-relaxed text-ash">
               {PRODUCTS.length} products are live here from the May 2026 price list. RECOIL releases

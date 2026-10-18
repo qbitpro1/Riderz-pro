@@ -7,7 +7,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "sync:recoil": "node scripts/sync-recoil-manufacturer.mjs",
     "verify:recoil": "node scripts/verify-price-list.mjs",
@@ -35,6 +35,8 @@
     "@types/pg": "^8.23.1",
     "@types/react": "19.1.13",
     "@types/react-dom": "19.1.9",
+    "eslint": "9.39.5",
+    "eslint-config-next": "16.4.0",
     "pdfjs-dist": "^6.2.108",
     "tailwindcss": "4.1.13",
     "typescript": "5.9.2"

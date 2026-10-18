@@ -243,7 +243,7 @@ export default async function VehicleAccessoriesPage({
               Not sure what suits your {model.name}?
             </p>
             <p className="mt-2 text-sm text-ash">
-              Send us your variant, year and what you want the car to do. We'll come back with two or
+              Send us your variant, year and what you want the car to do. We&apos;ll come back with two or
               three options at different budgets — not a catalogue dump.
             </p>
             <a

@@ -1,71 +1,28 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { BRANDS } from "@/lib/data/vehicles";
-import { readStored } from "@/lib/storage";
+import { garageKey, useGarage, writeGarage, type Garage } from "@/lib/client/garage";
 
-export type Garage = {
-  brandSlug: string;
-  modelSlug: string;
-  variant: string;
-  year: number;
-  label: string;
-};
-
-const KEY = "riderzpro.garage.v1";
-
-export function readGarage(): Garage | null {
-  if (typeof window === "undefined") return null;
-  try {
-    const raw = readStored(KEY);
-    return raw ? (JSON.parse(raw) as Garage) : null;
-  } catch {
-    return null;
-  }
-}
-
-/** Fired on window when the chosen car changes on this page (AccountSync saves it to the account). */
-export const GARAGE_EVENT = "riderzpro:garage";
-
-/** Saves (or clears) the chosen car in this browser and tells listeners. */
-export function writeGarage(g: Garage | null) {
-  try {
-    if (g) localStorage.setItem(KEY, JSON.stringify(g));
-    else localStorage.removeItem(KEY);
-  } catch {
-    /* storage blocked: the choice still works for this visit */
-  }
-  window.dispatchEvent(new CustomEvent(GARAGE_EVENT, { detail: g }));
-}
+export { GARAGE_EVENT, readGarage, writeGarage, type Garage } from "@/lib/client/garage";
 
 /**
  * "WHAT DO YOU DRIVE?" — brand → model → variant → year.
  * The choice is remembered so the rest of the site can filter by fitment.
  */
 export function FitmentPicker({ compact = false }: { compact?: boolean }) {
-  const [brandSlug, setBrandSlug] = useState("");
-  const [modelSlug, setModelSlug] = useState("");
-  const [variant, setVariant] = useState("");
-  const [year, setYear] = useState("");
-  const [saved, setSaved] = useState<Garage | null>(null);
+  // The form starts from the saved car; it starts again when the car changes (another picker, the account).
+  const saved = useGarage();
+  return <PickerForm key={garageKey(saved)} saved={saved} compact={compact} />;
+}
 
-  useEffect(() => {
-    const show = (g: Garage | null) => {
-      setSaved(g);
-      setBrandSlug(g?.brandSlug ?? "");
-      setModelSlug(g?.modelSlug ?? "");
-      setVariant(g?.variant ?? "");
-      setYear(g ? String(g.year) : "");
-    };
-    const g = readGarage();
-    if (g) show(g);
-    // The car can also arrive from the signed-in account (AccountSync), or be changed by another picker.
-    const onChange = (e: Event) => show((e as CustomEvent<Garage | null>).detail);
-    window.addEventListener(GARAGE_EVENT, onChange);
-    return () => window.removeEventListener(GARAGE_EVENT, onChange);
-  }, []);
+function PickerForm({ saved, compact }: { saved: Garage | null; compact: boolean }) {
+  const [brandSlug, setBrandSlug] = useState(saved?.brandSlug ?? "");
+  const [modelSlug, setModelSlug] = useState(saved?.modelSlug ?? "");
+  const [variant, setVariant] = useState(saved?.variant ?? "");
+  const [year, setYear] = useState(saved ? String(saved.year) : "");
 
   const brand = useMemo(() => BRANDS.find((b) => b.slug === brandSlug), [brandSlug]);
   const model = useMemo(() => brand?.models.find((m) => m.slug === modelSlug), [brand, modelSlug]);
@@ -82,16 +39,10 @@ export function FitmentPicker({ compact = false }: { compact?: boolean }) {
       label: `${brand.name} ${model.name} ${variant} ${year}`,
     };
     writeGarage(g);
-    setSaved(g);
   }
 
   function reset() {
     writeGarage(null);
-    setSaved(null);
-    setBrandSlug("");
-    setModelSlug("");
-    setVariant("");
-    setYear("");
   }
 
   if (saved && compact) {

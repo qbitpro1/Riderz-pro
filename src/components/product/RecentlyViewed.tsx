@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useHydrated } from "@/lib/client/hooks";
 import { rupees } from "@/lib/format";
 import { productHref, type ProductImage } from "@/lib/store/types";
 import { imageBackdrop, ProductImageView } from "./ProductImageView";
@@ -25,12 +26,18 @@ function load(): SeenProduct[] {
 
 /** Records this product as viewed and shows the others the shopper looked at before. */
 export function RecentlyViewed({ current }: { current: SeenProduct }) {
-  const [others, setOthers] = useState<SeenProduct[]>([]);
+  // The history is in this browser's storage: shown once hydrated, afresh for each product.
+  const hydrated = useHydrated();
+  return hydrated ? <Recent key={current.slug} current={current} /> : null;
+}
+
+function Recent({ current }: { current: SeenProduct }) {
+  // What was seen before this product (read once, before this visit is recorded below).
+  const [others] = useState(() => load().filter((s) => s.slug !== current.slug));
   const { slug, title, price, image } = current;
 
   useEffect(() => {
     const prev = load();
-    setOthers(prev.filter((s) => s.slug !== slug));
     try {
       const next = [{ slug, title, price, image }, ...prev.filter((s) => s.slug !== slug)].slice(0, MAX);
       localStorage.setItem(KEY, JSON.stringify(next));

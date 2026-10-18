@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useLatest } from "@/lib/client/hooks";
 import { CheckCircle2, ImagePlus, Plus, X } from "lucide-react";
 import { DEPARTMENTS, type DepartmentSlug } from "@/lib/data/taxonomy";
 import { BRAND_AUTH_TYPES, SELLER_TYPES, fileHref, type BrandAuthType, type SellerType, type VendorSelf } from "@/lib/vendor/types";
@@ -103,38 +104,39 @@ export function StepStore({ state, editable, onSaved, onUploaded, goBack, goNext
   const [errors, setErrors] = useState<FieldErrors>({});
   const [formError, setFormError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const [avail, setAvail] = useState<Availability>({ state: "idle" });
+  // The last answer from the server, for the name it was about.
+  const [checked, setChecked] = useState<(Availability & { name: string }) | null>(null);
+  const name = storeName.trim();
+  const needsCheck = editable && name.length >= 3 && slugify(name).length >= 3 && !(saved?.storeName === name && saved.slug);
+  const avail: Availability = !editable || name.length < 3 || slugify(name).length < 3
+    ? { state: "idle" }
+    : !needsCheck
+      ? { state: "free", slug: saved?.slug }
+      : checked?.name === name
+        ? checked
+        : { state: "checking" };
+  // Read when the answer arrives (re-running the check when it changes would refire the request).
+  const slugTouchedRef = useLatest(slugTouched);
 
   // Check the name 450 ms after typing stops; suggest a free address unless the seller edited it.
   useEffect(() => {
-    const name = storeName.trim();
-    if (!editable || name.length < 3 || slugify(name).length < 3) {
-      setAvail({ state: "idle" });
-      return;
-    }
-    if (saved?.storeName === name && saved.slug) {
-      setAvail({ state: "free", slug: saved.slug });
-      return;
-    }
-    setAvail({ state: "checking" });
+    if (!needsCheck) return;
     const ctl = new AbortController();
     const t = setTimeout(async () => {
       try {
         const res = await api<{ available: boolean; slug: string }>(`/api/vendor/onboarding/store-name?name=${encodeURIComponent(name)}`);
         if (ctl.signal.aborted) return;
-        setAvail({ state: res.available ? "free" : "taken", slug: res.slug });
-        if (!slugTouched) setSlug(res.slug);
+        setChecked({ name, state: res.available ? "free" : "taken", slug: res.slug });
+        if (!slugTouchedRef.current) setSlug(res.slug);
       } catch {
-        if (!ctl.signal.aborted) setAvail({ state: "error" });
+        if (!ctl.signal.aborted) setChecked({ name, state: "error" });
       }
     }, 450);
     return () => {
       ctl.abort();
       clearTimeout(t);
     };
-    // slugTouched is read when the response arrives; re-running on it would refire the request.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [storeName, editable]);
+  }, [name, needsCheck, slugTouchedRef]);
 
   const toggleDept = (d: DepartmentSlug) =>
     setDepartments((cur) => (cur.includes(d) ? cur.filter((x) => x !== d) : [...cur, d]));

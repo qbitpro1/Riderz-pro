@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useState, type FormEvent } from "react";
+import { useId, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ApiFailure, api } from "@/lib/vendor/client";
@@ -25,15 +25,16 @@ export function HelpForm({ orderNumber = "", compact = false }: { orderNumber?: 
   const [busy, setBusy] = useState(false);
 
   // Fill in the signed-in customer's details once they are known (never overwrite what was typed).
-  useEffect(() => {
-    if (!customer) return;
+  const [filledFor, setFilledFor] = useState<string | null>(null);
+  if (customer && filledFor !== customer.id) {
+    setFilledFor(customer.id);
     setV((x) => ({
       ...x,
       name: x.name || customer.name || "",
       mobile: x.mobile || customer.mobile || "",
       email: x.email || customer.email || "",
     }));
-  }, [customer]);
+  }
 
   const set = (k: keyof Values) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
     setV((x) => ({ ...x, [k]: e.target.value }));

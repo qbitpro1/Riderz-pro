@@ -112,7 +112,7 @@ export default function CarsPage() {
 
           <div className="card mt-8 flex flex-col items-start justify-between gap-4 p-6 md:flex-row md:items-center">
             <div>
-              <p className="font-display text-lg font-extrabold uppercase">Can't find the right car?</p>
+              <p className="font-display text-lg font-extrabold uppercase">Can&apos;t find the right car?</p>
               <p className="mt-1 text-sm text-ash">
                 Tell us the spec and budget. We source to order every week across three cities.
               </p>

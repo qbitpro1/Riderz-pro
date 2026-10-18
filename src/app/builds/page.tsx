@@ -43,7 +43,7 @@ export default function BuildsPage() {
             <div>
               <p className="font-display text-lg font-extrabold uppercase">Build something like this</p>
               <p className="mt-1 text-sm text-ash">
-                Send us a reference and a budget. We'll come back with a spec sheet and a schedule.
+                Send us a reference and a budget. We&apos;ll come back with a spec sheet and a schedule.
               </p>
             </div>
             <div className="flex flex-wrap gap-3">

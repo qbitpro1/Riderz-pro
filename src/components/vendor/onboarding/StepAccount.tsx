@@ -82,7 +82,7 @@ function VerifyRow({
         ) : null}
       </div>
       {!verified && !deliverable && (
-        <p className="mt-3 text-xs leading-relaxed text-ash">We'll confirm this during review. Nothing to do for now.</p>
+        <p className="mt-3 text-xs leading-relaxed text-ash">We&apos;ll confirm this during review. Nothing to do for now.</p>
       )}
       {!verified && deliverable && sent && (
         <form onSubmit={verify} className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-end">

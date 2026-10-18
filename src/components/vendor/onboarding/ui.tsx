@@ -27,7 +27,7 @@ export function StepFrame({ title, intro, locked, children }: { title: string; i
       {locked && (
         <p className="mt-4 flex items-start gap-2 rounded-sm border border-tint/10 bg-tint/5 px-3 py-2.5 text-xs leading-relaxed text-ash">
           <Lock size={14} className="mt-px shrink-0 text-dim" aria-hidden="true" />
-          The reviewer didn't flag this section, so it's read-only while you fix the others.
+          The reviewer didn&apos;t flag this section, so it&apos;s read-only while you fix the others.
         </p>
       )}
       <div className="mt-6">{children}</div>

@@ -157,7 +157,7 @@ export default async function PendingPage() {
         <div>
           <h2 className="text-sm font-bold text-chalk">Listing products unlocks after approval</h2>
           <p className="mt-1 text-xs leading-relaxed text-ash">
-            Adding products, managing stock and prices, and receiving orders open up as soon as your application is approved. We'll show it on this page and in your seller notifications.
+            Adding products, managing stock and prices, and receiving orders open up as soon as your application is approved. We&apos;ll show it on this page and in your seller notifications.
           </p>
         </div>
       </div>

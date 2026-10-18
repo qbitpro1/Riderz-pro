@@ -158,11 +158,11 @@ function ImportPending({ name }: { name: string }) {
     <div className="card p-8 md:p-10">
       <p className="eyebrow">Catalogue import in progress</p>
       <p className="mt-3 font-display text-2xl font-extrabold uppercase tracking-[-0.02em]">
-        {name} isn't listed online yet.
+        {name} isn&apos;t listed online yet.
       </p>
       <p className="mt-3 max-w-2xl text-sm leading-relaxed text-ash">
         Nothing goes live here until every SKU carries a verified price and a manufacturer image, so
-        the range isn't published yet. Ask us and we'll quote you against the current price list.
+        the range isn&apos;t published yet. Ask us and we&apos;ll quote you against the current price list.
       </p>
       <div className="mt-6 flex flex-wrap gap-3">
         <a

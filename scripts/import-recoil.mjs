@@ -120,10 +120,6 @@ function slugify(sku) {
   return sku.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 }
 
-function titleCase(s) {
-  return s.replace(/\b([a-z])/g, (m) => m.toUpperCase());
-}
-
 /** "RECOIL [Series] [Product Type] – [Key Specification] – [SKU]" */
 function buildTitle(row) {
   const parts = ["RECOIL"];

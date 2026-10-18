@@ -20,6 +20,7 @@ export const metadata: Metadata = {
 export default async function InventoryAdminPage() {
   await adminPage("catalog", "/admin/inventory");
   const { totals, listings, importLog } = SNAPSHOT;
+  // eslint-disable-next-line react-hooks/purity -- a Server Component, rendered per request
   const now = Date.now();
 
   return (

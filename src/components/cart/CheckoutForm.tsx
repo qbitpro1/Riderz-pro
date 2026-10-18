@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import { useLatest } from "@/lib/client/hooks";
 import Link from "next/link";
 import { api, ApiFailure } from "@/lib/vendor/client";
 import { INDIAN_STATES } from "@/lib/vendor/validators";
@@ -83,31 +84,51 @@ export function CheckoutForm({
   /** GPS point from "Detect my location"; dropped when the city, state or pincode is changed by hand. */
   const [point, setPoint] = useState<LatLng | null>(null);
 
-  // Signed in: fill in the account's details and offer its saved addresses (default first).
-  useEffect(() => {
-    if (!customer) return;
+  function pick(a: AddressView | "new") {
+    setPoint(null);
+    if (a === "new") {
+      setChosen("new");
+      setValues((v) => ({ ...v, address: "", city: "", state: "", pincode: "" }));
+      return;
+    }
+    setChosen(a.id);
+    setValues((v) => ({ ...v, name: a.name, mobile: a.mobile, address: a.address, city: a.city, state: a.state, pincode: a.pincode }));
+    setErrors({});
+  }
+
+  // Signed in: fill in the account's details once per account (never over what was typed)…
+  const customerId = customer?.id ?? null;
+  const [filledFor, setFilledFor] = useState<string | null>(null);
+  if (customer && filledFor !== customer.id) {
+    setFilledFor(customer.id);
     setValues((v) => ({
       ...v,
       name: v.name || customer.name || "",
       mobile: v.mobile || customer.mobile || "",
       email: v.email || customer.email || "",
     }));
+  }
+
+  // …and offer its saved addresses, picking the default unless the shopper already chose or typed one.
+  const chosenRef = useLatest(chosen);
+  useEffect(() => {
+    if (!customerId) return;
     let alive = true;
     api<{ addresses: AddressView[] }>("/api/account/addresses")
       .then(({ addresses }) => {
         if (!alive || addresses.length === 0) return;
         setSaved(addresses);
-        if (typedAddress.current) return;
+        if (typedAddress.current || chosenRef.current !== "new") return;
         const a = addresses.find((x) => x.isDefault) ?? addresses[0];
-        pick(a);
+        setPoint(null);
+        setChosen(a.id);
+        setValues((v) => ({ ...v, name: a.name, mobile: a.mobile, address: a.address, city: a.city, state: a.state, pincode: a.pincode }));
       })
       .catch(() => {});
     return () => {
       alive = false;
     };
-    // `pick` only sets state.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [customer]);
+  }, [customerId, chosenRef]);
 
   function detected(loc: DetectedLocation) {
     typedAddress.current = true;
@@ -123,18 +144,6 @@ export function CheckoutForm({
       state: state || v.state,
       pincode: /^\d{6}$/.test(a.pincode) ? a.pincode : v.pincode,
     }));
-  }
-
-  function pick(a: AddressView | "new") {
-    setPoint(null);
-    if (a === "new") {
-      setChosen("new");
-      setValues((v) => ({ ...v, address: "", city: "", state: "", pincode: "" }));
-      return;
-    }
-    setChosen(a.id);
-    setValues((v) => ({ ...v, name: a.name, mobile: a.mobile, address: a.address, city: a.city, state: a.state, pincode: a.pincode }));
-    setErrors({});
   }
 
   /** After the order is placed: keep a new address in the account (best effort, never blocks the order). */

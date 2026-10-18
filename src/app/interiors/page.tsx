@@ -91,7 +91,7 @@ export default function InteriorsPage() {
             <p className="mt-4 text-sm leading-relaxed text-ash">
               Electric recliners with memory, automatic footrests, a partition console with a fridge,
               roof-mounted or headrest screens, alcantara headliner and concealed ambient runs. Built
-              on Fortuner, Innova, Carnival, Gloster, XUV700 and every luxury SUV we've been asked for.
+              on Fortuner, Innova, Carnival, Gloster, XUV700 and every luxury SUV we&apos;ve been asked for.
             </p>
             <ul className="mt-6 grid gap-2.5 sm:grid-cols-2">
               {[

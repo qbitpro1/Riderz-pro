@@ -10,7 +10,7 @@ import { BrowseGrid, type TileActions } from "./BrowseGrid";
 import { CarPicker } from "./CarPicker";
 import { CompareSheet } from "./CompareSheet";
 import { IdlePrompt, SellerAccess, SellerDialog } from "./Dialogs";
-import { useIdle, useOrder, usePulse } from "./hooks";
+import { useIdle, useOrder, usePulse, useStillValid } from "./hooks";
 import { COMPARE_MAX, IDLE_MS, SORTS, fitsCar, matchesQuery, sortProducts, ui, type Car, type SortKey } from "./lib";
 import { OrderPanel } from "./OrderPanel";
 import { Empty, StoreMark } from "./parts";
@@ -171,11 +171,9 @@ export function StoreScreen({
 
   const overlays = open !== null || drawer || review || compareOpen || carOpen || aiOpen || checkoutOpen;
 
-  // A special price belongs to this order: gone when the order is emptied or it expires.
-  useEffect(() => {
-    if (count === 0 && offer) setOffer(null);
-  }, [count, offer]);
-  const liveOffer = offer && offer.expiresAt > Date.now() ? offer : null;
+  // A special price belongs to this order: gone when the order is empty or the offer has expired.
+  const offerValid = useStillValid(offer?.expiresAt ?? null);
+  const liveOffer = offer && offerValid && count > 0 ? offer : null;
   const specialOff = liveOffer ? Math.min(liveOffer.discount, Math.floor((total * liveOffer.percent) / 100)) : 0;
   const askAi = (q?: string) => {
     setAiSeed(q?.trim() ? q.trim() : null);
@@ -484,6 +482,7 @@ export function StoreScreen({
           }}
           onClear={() => {
             order.clear();
+            setOffer(null);
             setDrawer(false);
           }}
           onCheckout={

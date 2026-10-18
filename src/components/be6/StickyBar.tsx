@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useBrowserValue } from "@/lib/client/hooks";
 import { useBe6Build } from "./BuildState";
 import { lakh } from "@/lib/format";
 import { useStickyBarOffset } from "@/components/layout/useStickyBarOffset";
@@ -20,21 +21,21 @@ const LINKS = [
 ];
 
 export function StickyBar() {
-  const [shown, setShown] = useState(false);
+  const [pastHero, setShown] = useState(false);
+  // No hero to watch (or no IntersectionObserver): the bar is always there.
+  const always = useBrowserValue(() => typeof IntersectionObserver === "undefined" || !document.getElementById("be6-hero"), false);
+  const shown = pastHero || always;
   const { selected } = useBe6Build();
   const bar = useRef<HTMLDivElement>(null);
   useStickyBarOffset(bar, shown);
 
   useEffect(() => {
     const hero = document.getElementById("be6-hero");
-    if (!hero || typeof IntersectionObserver === "undefined") {
-      setShown(true);
-      return;
-    }
+    if (!hero || always) return;
     const io = new IntersectionObserver(([entry]) => setShown(!entry.isIntersecting), { threshold: 0.15 });
     io.observe(hero);
     return () => io.disconnect();
-  }, []);
+  }, [always]);
 
   const total = (selected.factoryPrice ?? 0) + selected.upgradeTotal;
 
