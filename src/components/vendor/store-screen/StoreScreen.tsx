@@ -272,9 +272,9 @@ export function StoreScreen({
             </label>
 
             {sales.aiEnabled && (
-              <button type="button" onClick={() => askAi()} className={`${ui.secondary} h-14 shrink-0 px-4 md:px-5`} aria-label="Ask our AI assistant">
+              <button type="button" onClick={() => askAi()} className={`${ui.secondary} h-14 shrink-0 px-4 md:px-5`} aria-label="Ask Salesman AI">
                 <Sparkles size={22} aria-hidden />
-                <span className="hidden xl:inline">Ask AI</span>
+                <span className="hidden xl:inline">Salesman AI</span>
               </button>
             )}
 
@@ -331,7 +331,7 @@ export function StoreScreen({
                   </p>
                   {sales.aiEnabled && query.trim().length > 2 && (
                     <button type="button" onClick={() => askAi(query)} className="inline-flex min-h-10 items-center gap-1.5 rounded-full border border-accent px-3.5 text-sm font-semibold text-accent active:scale-95">
-                      <Sparkles size={16} aria-hidden /> Ask AI about “{query.trim().slice(0, 30)}”
+                      <Sparkles size={16} aria-hidden /> Ask Salesman AI about “{query.trim().slice(0, 30)}”
                     </button>
                   )}
                   {car && (
@@ -366,7 +366,7 @@ export function StoreScreen({
                 <p>{car ? "Universal products show up here too, so ask us at the counter." : "Try a different word or category."}</p>
                 {sales.aiEnabled && (
                   <button type="button" className={`${ui.secondary} mt-5`} onClick={() => askAi(query || (car ? `Parts for my ${car.brand} ${car.name}` : ""))}>
-                    <Sparkles size={20} aria-hidden /> Ask our AI assistant
+                    <Sparkles size={20} aria-hidden /> Ask Salesman AI
                   </button>
                 )}
                 <button

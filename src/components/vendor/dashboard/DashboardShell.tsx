@@ -11,6 +11,7 @@ import {
   LogOut,
   ExternalLink,
   MonitorSmartphone,
+  Sparkles,
   MoreHorizontal,
   Package,
   Settings,
@@ -64,6 +65,7 @@ export function DashboardShell({ storeName, slug, tier, status, unreadNotificati
     { href: `${base}/payments`, label: "Payments", icon: Wallet },
     { href: `${base}/notifications`, label: "Notifications", icon: Bell, badge: unreadNotifications },
     { href: `${base}/store-screen`, label: "Offline Store", icon: MonitorSmartphone },
+    { href: `${base}/salesman-ai`, label: "Salesman AI", icon: Sparkles },
     { href: `${base}/settings`, label: "Settings", icon: Settings },
     { href: `${base}/support`, label: "Support", icon: LifeBuoy },
   ];

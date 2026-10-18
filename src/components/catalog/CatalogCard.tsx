@@ -150,7 +150,7 @@ function wishlistItem(item: ShopItem): WishlistInput {
   };
 }
 
-function CardImage({ item, sizes }: { item: ShopItem; sizes: string }) {
+export function CardImage({ item, sizes }: { item: ShopItem; sizes: string }) {
   if (item.image.kind === "media") {
     return <Photo media={item.image.key} sizes={sizes} alt={item.image.alt} className="zoom opacity-90" />;
   }

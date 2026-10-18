@@ -3,7 +3,7 @@ import { Archivo, Inter } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { BottomNav } from "@/components/layout/BottomNav";
-import { WhatsAppFab } from "@/components/layout/WhatsAppFab";
+import { AssistantFab } from "@/components/layout/AssistantFab";
 import { Footer } from "@/components/layout/Footer";
 import { SiteChrome } from "@/components/layout/SiteChrome";
 import { CartProvider } from "@/components/cart/CartContext";
@@ -138,7 +138,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <SiteChrome part="footer">
             <Footer />
             <BottomNav />
-            <WhatsAppFab />
+            <AssistantFab />
           </SiteChrome>
         </CartProvider>
         </AccountProvider>

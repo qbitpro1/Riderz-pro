@@ -6,7 +6,7 @@ import type { ReactNode } from "react";
 /**
  * Routes that bring their own chrome.
  *   /vendor/dashboard  the seller dashboard has its own header, sidebar and bottom bar, so none of
- *                      the shopper chrome (menus, cart, footer, bottom bar, WhatsApp) shows there
+ *                      the shopper chrome (menus, cart, footer, bottom bar, AI chat button) shows there
  *   /store             a seller's offline store screen runs full screen in their shop: no site
  *                      header either, nothing that leads a customer away from it
  *   /rider             the rider app (a phone on the road) has its own small header

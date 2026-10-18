@@ -13,7 +13,6 @@ import { DesktopNav } from "@/components/nav/DesktopNav";
 import { MobileDrawer } from "@/components/nav/MobileDrawer";
 import { navActions, useNavState } from "@/components/nav/navStore";
 import type { LiveGroups } from "@/lib/data/nav";
-import { whatsapp } from "@/lib/data/site";
 
 export function Header({ liveGroups }: { liveGroups?: LiveGroups }) {
   const [scrolled, setScrolled] = useState(false);
@@ -66,18 +65,6 @@ export function Header({ liveGroups }: { liveGroups?: LiveGroups }) {
                 </span>
               )}
             </button>
-
-            {/* Icon-only at xl so the department row fits at 1280px; labelled again from 2xl. */}
-            <a
-              href={whatsapp("Hi Riderzpro, I have a question.")}
-              target="_blank"
-              rel="noreferrer noopener"
-              aria-label="WhatsApp"
-              className="hidden h-10 items-center gap-2 border border-tint/15 px-3 font-display text-[11px] font-bold uppercase tracking-[0.14em] text-chalk/85 transition-colors hover:border-accent hover:text-accent lg:inline-flex xl:w-10 xl:justify-center xl:px-0 2xl:w-auto 2xl:px-3"
-            >
-              <Icon name="whatsapp" size={16} />
-              <span className="xl:sr-only 2xl:not-sr-only">WhatsApp</span>
-            </a>
 
             <IconButton label="Open menu" onClick={navActions.openDrawer} className="xl:hidden">
               <Icon name="menu" size={22} />

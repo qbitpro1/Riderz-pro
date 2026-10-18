@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useState } from "react";
+import Link from "next/link";
 import { api, ApiFailure } from "@/lib/vendor/client";
 
 export type StoreSettingsValue = {
@@ -49,9 +50,10 @@ export function StoreSettingsForm({ initial, aiAvailable, onlineAvailable }: { i
   return (
     <form onSubmit={save} className="mt-6 max-w-2xl space-y-6">
       <section className="space-y-3">
-        <h2 className="eyebrow">AI salesperson</h2>
-        {box("aiEnabled", "Show the AI assistant on the screen", "Customers talk or type; it finds your products, compares them, adds them to the order and opens checkout.", !aiAvailable)}
+        <h2 className="eyebrow">Salesman AI</h2>
+        {box("aiEnabled", "Show Salesman AI on the screen", "Customers talk or type; it finds your products, compares them, adds them to the order and opens checkout.", !aiAvailable)}
         {!aiAvailable && <p className="text-xs text-gold">The AI isn&apos;t switched on for Riderzpro yet. Your setting is kept for when it is.</p>}
+        <Link href="/vendor/dashboard/salesman-ai" className="inline-block text-xs text-ash underline underline-offset-4 hover:text-accent">Practise with Salesman AI</Link>
       </section>
 
       <section className="space-y-3">

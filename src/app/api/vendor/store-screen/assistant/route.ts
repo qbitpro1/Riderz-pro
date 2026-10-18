@@ -17,7 +17,7 @@ const schema = assistantRequestSchema.extend({
 export const POST = route(async (req: Request) => {
   guardMutation(req);
   const vendor = await requireVendor(CAN_SELL, { whileLocked: true });
-  if (!(await storeSettings(vendor.id)).aiEnabled) throw new ApiError(403, "assistant_off", "The AI assistant is switched off for this shop.");
+  if (!(await storeSettings(vendor.id)).aiEnabled) throw new ApiError(403, "assistant_off", "Salesman AI is switched off for this shop. Turn it on in Offline Store settings.");
   const body = await readJson(req, schema, 64 * 1024);
   const last = body.messages[body.messages.length - 1];
   if (last.role !== "user" || !last.content.trim()) throw new ApiError(400, "invalid", "Say or type a question first.");

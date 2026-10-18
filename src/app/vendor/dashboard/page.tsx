@@ -73,7 +73,7 @@ export default async function OverviewPage() {
               <h2 id="offline-store" className="font-display text-xl font-extrabold uppercase text-chalk">Offline Store</h2>
               <p className="mt-1 max-w-2xl text-sm leading-relaxed text-ash">
                 For your own shop: show your available stock to customers who walk in. Open it on a tablet or TV: customers browse,
-                ask the AI salesperson, and order and pay right there or at your counter. Closing the screen needs your password.
+                ask Salesman AI, and order and pay right there or at your counter. Closing the screen needs your password.
               </p>
               <p className="mt-2 text-sm font-semibold text-chalk">
                 {onScreen.length === 0

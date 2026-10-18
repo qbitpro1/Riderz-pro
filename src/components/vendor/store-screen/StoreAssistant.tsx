@@ -114,15 +114,15 @@ export function StoreAssistant({
   }, [seed]);
 
   return (
-    <Layer label="Ask our AI assistant" onClose={onClose} kind="drawer" size="lg">
+    <Layer label="Ask Salesman AI" onClose={onClose} kind="drawer" size="lg">
       <div className="flex items-center justify-between gap-3 border-b border-tint/10 px-5 py-4 md:px-6">
         <div className="flex items-center gap-3">
           <span className="grid h-11 w-11 place-items-center rounded-full bg-accent text-on-accent">
             <Sparkles size={22} aria-hidden />
           </span>
           <div>
-            <p className="font-display text-xl font-extrabold text-chalk">Ask our assistant</p>
-            <p className="text-sm text-dim">Finds parts, compares, adds to your order</p>
+            <p className="font-display text-xl font-extrabold text-chalk">Salesman AI</p>
+            <p className="text-sm text-dim">Your salesman: finds parts, compares, adds to your order</p>
           </div>
         </div>
         <CloseButton onClick={onClose} />
