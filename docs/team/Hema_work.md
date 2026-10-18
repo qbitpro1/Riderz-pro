@@ -1,68 +1,46 @@
-# Hema: hosting and go-live (this site replaces the current riderzpro.com)
+# Hema: hosting, deployment and the domain switch
 
-Written 17 Oct 2026. This new site replaces the current riderzpro.com website **on the same domain**
-(the old site has no real customers). Nothing here blocks building. It blocks **go-live** and the **real-phone tests** of
-live tracking: browsers only share a phone's location on an `https://` address.
+Updated 18 Oct 2026. The new site replaces the current riderzpro.com on the same domain (the old site
+has no real customers). Follow `docs/DEPLOY.md` step by step; this is the list of what it needs from
+you. Secrets go only into the hosting dashboard or a password manager.
 
-**How to send secrets:** never in chat, email, WhatsApp or git. Type them into the hosting dashboard's
-environment settings.
+## Before launch (must do)
 
-## 1. Hosting
+1. **Hosting** for a Next.js 16 app on Node 20+ (Vercel recommended: `vercel.json` already schedules
+   the hourly job). Give the developer access to the project, not billing.
+2. **Staging site** (e.g. `staging.riderzpro.com`) with its own database (Vamsi) and test keys.
+3. **Settings** (production and staging): enter what each person sends, plus your own:
 
-- [ ] Which hosting runs this Next.js 16 app (Vercel, or another Node host)? Name the account and give
-      the developer access to the project, not to billing.
-- [ ] A **staging** site (e.g. `staging.riderzpro.com`) on a separate database, for testing before go-live.
-- [ ] Node.js 20 or newer.
+   | Settings | From |
+   | --- | --- |
+   | `DATABASE_URL`, `DATABASE_POOL_MAX`, `VENDOR_DATA_KEY` | Vamsi |
+   | `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET` | Sathwik |
+   | `RESEND_API_KEY`, `OTP_EMAIL_FROM`, `ORDERS_EMAIL_FROM`, `MSG91_*` or `TWILIO_*`, `OTP_SMS_PROVIDER` | Amrutha |
+   | `NEXT_PUBLIC_MAP_TILES_URL`, `ROUTING_BASE_URL` | Viswanath |
+   | `ANTHROPIC_API_KEY` (AI assistants) | the owner (`Owner_work.md`) |
+   | `ADMIN_USER` (owner's email), `ADMIN_PASSWORD` (16+ random characters, in the password manager) | you |
+   | `CRON_SECRET` (long random text) | you |
+   | `NEXT_PUBLIC_SITE_URL` (`https://riderzpro.com`; staging its own address) | you |
 
-## 2. Environment settings to enter (production and staging)
+   Never set `OTP_SEND_IN_DEV`, `RAZORPAY_API_BASE` or `ANTHROPIC_API_BASE` on a server.
+4. **Hourly job:** `GET /api/cron/housekeeping` with `Authorization: Bearer <CRON_SECRET>`
+   (automatic on Vercel). It releases unpaid and uncollected orders and deletes old data on time.
+5. **Uptime check** on `/api/health` (200 = OK, 503 = database down).
+6. After each deploy, read the `[config]` lines in the log; a missing `DATABASE_URL` or
+   `VENDOR_DATA_KEY` stops the start with a clear message.
+7. The host must pass the visitor's real IP in `X-Forwarded-For` (Vercel does): sign-in limits and
+   the audit log use it.
+8. HTTPS on every address (the site sends HSTS for one year).
 
-| Env name | Who provides it |
-| --- | --- |
-| `DATABASE_URL`, `DATABASE_POOL_MAX`, `VENDOR_DATA_KEY` | Vamsi (`Vamsi_work.md`) |
-| `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET` | Sathwik (`Sathwik_work.md`) |
-| `RESEND_API_KEY`, `OTP_EMAIL_FROM`, `ORDERS_EMAIL_FROM`, `MSG91_*` (incl. `MSG91_TEMPLATE_*`) or `TWILIO_*`, `OTP_SMS_PROVIDER` | Amrutha (`Amrutha_work.md`) |
-| `NEXT_PUBLIC_SITE_URL` (`https://riderzpro.com`; staging uses its own address) | Hema |
-| `ADMIN_USER` (the owner's email), `ADMIN_PASSWORD` (a long random password): the owner's first login at `/admin/sign-in`, then kept as the way back in | Hema |
-| `NEXT_PUBLIC_MAP_TILES_URL`, `ROUTING_BASE_URL` | Viswanath (`Viswanath_work.md`) |
+## Go-live day (domain switch)
 
-Do **not** set `OTP_SEND_IN_DEV` or `RAZORPAY_API_BASE` on the hosting (development and tests only).
-
-## 2b. Admin team logins (built 17 Oct 2026)
-
-- [ ] After the first deploy, the owner signs in at `/admin/sign-in` with `ADMIN_USER` /
-      `ADMIN_PASSWORD` and invites the team from `/admin/team` (each person gets a one-time link and
-      their own password and role).
-- [ ] The hosting must set the visitor's real IP in `X-Forwarded-For` (Vercel does). The sign-in
-      rate limit and the audit log use it.
-- [ ] Store the `ADMIN_PASSWORD` in the company password manager; change it if anyone who knew it leaves.
-
-## 2c. Built 18 Oct 2026 for go-live (see docs/DEPLOY.md)
-
-- [ ] Set `CRON_SECRET` (long random text). On Vercel `vercel.json` already calls
-      `/api/cron/housekeeping` hourly; on another host set an hourly job sending
-      `Authorization: Bearer <CRON_SECRET>`.
-- [ ] Point the host's uptime check at `/api/health` (200 = database answering, 503 = not).
-- [ ] After each deploy, read the `[config]` lines in the log. Two settings stop the start if
-      missing: `DATABASE_URL`, `VENDOR_DATA_KEY`.
-- [ ] HTTPS is required; the site sends HSTS (one year) in production.
-
-## 3. Domain switch: replace the current site on riderzpro.com (go-live day only)
-
-- [ ] Access to riderzpro.com's DNS (where it is managed, e.g. Cloudflare or the registrar).
-- [ ] Before switching, write down every current DNS record. Change only the website records
-      (riderzpro.com and www). Keep the **email records** (MX, SPF, DKIM, DMARC) exactly as they are.
-- [ ] Add the Resend records for sending email from riderzpro.com (Amrutha will share them from
-      Resend, see `Amrutha_work.md`).
-- [ ] Point riderzpro.com and www to the new hosting, with HTTPS on both, and www redirecting to
-      riderzpro.com.
-- [ ] Keep the old site running on a spare address (e.g. `old.riderzpro.com`) for a week, so we can switch
-      back if something goes wrong. Then shut it down.
-- [ ] The old site's page addresses (`/login`, `/orders`, `/track/…`, `/vendor/…` and others) already
-      redirect to the matching new pages, so old links and bookmarks keep working.
-- [ ] After the switch: open `/admin/vendors` and refresh the demo store; tell Sathwik to save the
-      Razorpay webhook URL; tell Amrutha to check that code emails and SMS arrive.
-
-## When done
-
-Tell the owner. The developer then deploys staging, runs the full test list there, and tests live
-tracking on two real phones.
+1. Note every current DNS record; change only riderzpro.com and www; keep the email records (MX, SPF,
+   DKIM, DMARC) as they are, and add Amrutha's Resend records.
+2. Point riderzpro.com and www to the new hosting (HTTPS, www → riderzpro.com).
+3. Keep the old site on a spare address (e.g. `old.riderzpro.com`) for a week for rollback, then
+   switch it off. Old page addresses already redirect to the new pages.
+4. Right after:
+   - the owner signs in at `/admin/sign-in` and invites the team from `/admin/team`;
+   - Sathwik saves the webhook;
+   - Amrutha checks codes arrive;
+   - run the smoke test in `docs/DEPLOY.md` §4.

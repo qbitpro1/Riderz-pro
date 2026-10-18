@@ -1,55 +1,34 @@
 # Vamsi: database and data security
 
-Written 17 Oct 2026. Development carries on with the embedded database on the dev machine
-(`.data/pglite`), so nothing here blocks building. These items block **go-live** and
-**testing on a real server**.
+Updated 18 Oct 2026. The app creates and upgrades its own tables on start; nothing to run by hand.
+Secrets go only into the hosting dashboard or a password manager.
 
-**How to send secrets:** never in chat, email, WhatsApp or git. Put production values straight into
-the hosting dashboard; give the developer only the dev/staging URL, through a password manager.
+## Before launch (must do)
 
-## 1. A new, empty PostgreSQL database (main item)
+1. **Two new, empty PostgreSQL databases**: staging and production.
+   - PostgreSQL 16 (14+ works), no extensions needed.
+   - Region Mumbai (`ap-south-1`) or nearest to the hosting.
+   - A user that can create tables.
+   - **Not** the old riderzpro.com database: its table names clash.
+2. Give the **pooled** connection string (Neon / Supabase pooler or PgBouncer) as `DATABASE_URL`, e.g.
+   `postgres://user:pass@host:5432/riderzpro?sslmode=require`. Optional: `DATABASE_POOL_MAX` (default
+   10; 5 suits serverless).
+3. **Daily backups with point-in-time restore** switched on for production.
+4. **Encryption key** for sellers' bank details and PAN: `openssl rand -base64 32` → `VENDOR_DATA_KEY`.
+   - Use a different key for staging and production.
+   - Keep a copy in the company password manager. **If it is lost, stored bank details can never be
+     read again**; never change it after sellers sign up.
+   - The site refuses to start without it.
 
-- [ ] **New and empty.** Do **not** reuse the old riderzpro.com database. Its tables (`orders`,
-      `order_items`, `customers`, `customer_addresses`, `support_tickets`) have the same names as ours
-      but different columns, so the two would clash. The old site has no real customers, so nothing
-      needs copying.
-- [ ] PostgreSQL **16** (14 or newer works). No extensions needed (no PostGIS, no uuid extension).
-- [ ] Region: Mumbai (`ap-south-1`) or the nearest region to the hosting.
-- [ ] Two databases: **staging** (for testing) and **production**.
-- [ ] The database user must be able to create tables. The app creates and updates its own tables
-      automatically when it starts (`schema_migrations` table), so no SQL needs to be run by hand.
-- [ ] Hosting is serverless, so give the **pooled** connection string (Neon pooler, Supabase pooler or
-      PgBouncer) and say the pool size limit.
-- [ ] Daily backups with point-in-time restore switched on.
+## Decisions (today's behaviour in brackets)
 
-Send as:
-
-| What | Env name | Example shape |
-| --- | --- | --- |
-| Connection string | `DATABASE_URL` | `postgres://user:pass@host:5432/riderzpro?sslmode=require` |
-| Max connections per server instance (optional, default 10) | `DATABASE_POOL_MAX` | `5` |
-
-SSL is switched on automatically for Neon and Supabase hosts, or when the URL has `sslmode=require`.
-
-## 2. Encryption key for sellers' bank details
-
-- [ ] Create once: `openssl rand -base64 32`, then set it as `VENDOR_DATA_KEY` in hosting (production).
-- [ ] Store a copy in the company password manager. **If it is lost, stored bank account and PAN
-      details can never be read again.** Never change it after sellers sign up.
-- Staging should use a **different** key from production.
-
-## 3. Data rules to agree (for Phase 3, live tracking)
-
-- [ ] Rider location is saved only during an active delivery. Built (17 Oct 2026): the trail keeps the
-      last 30 minutes and is deleted when the job is delivered or cancelled; a delivered job keeps its
-      last point for 30 days (for disputes), then it is deleted. Confirm or change.
-- [ ] Order and delivery messages are logged (kind, status, no text, no recipient) in `message_log`.
-      How long to keep them? Nothing deletes them yet.
-- [ ] Once the staging database exists, the developer will re-run the invoice-numbering test on it
-      (the local database can't test two transactions at once).
-- [ ] Who in the team may read customer and rider personal data in the admin area.
+- Rider location retention [trail kept 30 minutes while delivering and deleted when the job closes;
+  a delivered job's last point kept 30 days, then deleted].
+- Message log retention (kind and status only, no text) [kept; nothing deletes it].
+- Who may see customer and rider personal data in admin [Owner, Manager, Operations and Support
+  roles see customers; Operations sees riders].
 
 ## When done
 
-Tell the owner. The developer then points staging at the new database, checks that all tables are
-created, loads the demo store from `/admin/vendors`, and runs the full test list.
+Tell the developer. They point staging at the database, check the tables, load the demo store and
+re-run the invoice-numbering test on real Postgres.

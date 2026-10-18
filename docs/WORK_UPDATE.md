@@ -1,5 +1,8 @@
 # Work update
 
+Older audits (`docs/AUDIT.md`, `docs/AUDIT_V0.4.md`) and the V0.4 plan (`docs/MIGRATION_PLAN_V0.4.md`) mentioned
+below were removed on 18 Oct 2026 (they are in git history); the current audit is `docs/AUDIT_V0.5.md`.
+
 ## 18 Oct 2026: code-quality pass, full audit, launch readiness (on V0.4)
 
 - **ESLint** (Next core-web-vitals + TypeScript) added and made clean across all 535 files.

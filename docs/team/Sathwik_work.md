@@ -1,105 +1,54 @@
-# Sathwik: billing, payments and invoices (Phase 4)
+# Sathwik: payments, refunds, GST invoices and commission
 
-Written 17 Oct 2026. Development carries on without these, using Razorpay **test mode** and
-placeholders. Nothing here blocks building; these items block **testing real payments** and **go-live**.
+Updated 18 Oct 2026. All of this is **built and tested in code**; these items are what only you can
+provide or decide. Secrets go only into the hosting dashboard or a password manager, never into chat,
+email or git.
 
-**How to send secrets:** never in chat, email, WhatsApp or git. Put them straight into the hosting
-dashboard's environment settings, and give the developer test keys only, through a password manager
-or by typing them into `.env.local` on the dev machine.
+## Before launch (must do)
 
-## 1. Razorpay keys (needed first)
+1. **Razorpay test keys** for staging: `RAZORPAY_KEY_ID` (`rzp_test_…`) and `RAZORPAY_KEY_SECRET`
+   (Dashboard → Test mode → Account & Settings → API keys).
+2. **Webhook**, once staging and then production have their address:
+   - URL `https://<site>/api/payments/razorpay/webhook`
+   - events `payment.captured`, `payment.failed`, `order.paid`, `refund.created`,
+     `refund.processed`, `refund.failed`
+   - the secret you choose goes in `RAZORPAY_WEBHOOK_SECRET`.
+3. **Account:**
+   - KYC approved (live payments need it)
+   - payment capture set to **automatic**
+   - payment methods on (UPI, cards, netbanking, wallets; EMI?)
+   - settlement to the company current account.
+4. **Live keys** at go-live (same names, production only).
+5. **GST invoice details.** Confirm or correct the values used today (`src/lib/invoice/gst.ts`,
+   `src/lib/data/site.ts`):
+   - Legal name Motorbotz Automotive Pvt. Ltd.; GSTIN 29AAJCM4412Q1ZP (Karnataka); the registered
+     office address to print (the Bengaluru address is used now).
+   - HSN and GST rate per product category (today every item is HSN 8708 at 18%); send a sheet of
+     category → HSN → rate.
+   - Installation SAC 998714 at 18%; delivery SAC 996812 at 18% (or should delivery take the goods'
+     rate?).
+   - Invoice numbers `RZP/2026-27/00001`, restarting each financial year (April).
+   - Signatory name and designation; signature or stamp image if needed; footer terms text.
+6. **Accountant check** (one conversation covers all four):
+   - TCS under GST section 52 and GSTR-8 for marketplace sales;
+   - coupons shown as a discount on Riderzpro's invoice;
+   - a shop special price as the seller's own discount;
+   - no buyer GSTIN field (B2C only) and no credit notes yet.
 
-| What | Env name | Where to find it |
-| --- | --- | --- |
-| Test Key ID (`rzp_test_…`) | `RAZORPAY_KEY_ID` | Razorpay Dashboard → Test mode → Account & Settings → API keys |
-| Test Key Secret | `RAZORPAY_KEY_SECRET` | Shown once when the key is generated |
-| Webhook secret (any long random text you choose) | `RAZORPAY_WEBHOOK_SECRET` | You set it when adding the webhook below |
-| Live Key ID and Secret | same names, in hosting only | Only after KYC is approved, only at go-live |
+## Decisions (today's behaviour in brackets)
 
-## 2. Webhook (set up once the site has its final address)
-
-- URL: `https://riderzpro.com/api/payments/razorpay/webhook` (built and tested, 17 Oct 2026).
-- Events: `payment.captured`, `payment.failed`, `order.paid`, `refund.created`, `refund.processed`, `refund.failed`.
-- Use the same secret as `RAZORPAY_WEBHOOK_SECRET`.
-
-## 3. Account settings to confirm
-
-- [ ] KYC / account activation status (live payments need it).
-- [ ] Payment capture is **automatic** (Settings → Payment capture).
-- [ ] Payment methods to switch on: UPI, cards, netbanking, wallets, EMI? (say which).
-- [ ] Settlement bank account is Motorbotz Automotive Pvt. Ltd.'s current account.
-- [ ] Seller payments: does Riderzpro collect the full amount and pay sellers later (current plan),
-      or should Razorpay **Route** split payments to sellers automatically? Route needs a separate
-      Razorpay approval.
-- [ ] Cash on delivery: keep it alongside online payment, or online only?
-
-## 4. Refund rules (business decision)
-
-- [ ] Who can approve a refund (admin only?), and the limit before a second approval is needed.
-- [ ] Full and partial refunds allowed? Is the delivery charge refunded?
-- [ ] Refund timing to state on the site (Razorpay usually takes 5–7 working days).
-
-## 5. Customer GST tax invoice
-
-The site already holds these values (`src/lib/data/site.ts`). Please **confirm each one or correct it**:
-
-- [ ] Legal name: Motorbotz Automotive Pvt. Ltd.
-- [ ] GSTIN: 29AAJCM4412Q1ZP (Karnataka)
-- [ ] Registered address printed on the invoice (exact text, with PIN code)
-- [ ] Invoice number format, e.g. `RZP/2026-27/00001`, starting again each financial year?
-- [ ] HSN code and GST rate for each category of Riderzpro's own products (the code assumes 18%
-      when none is given). A spreadsheet of category → HSN → rate is enough.
-- [ ] GST on the delivery charge (rate and HSN/SAC code).
-- [ ] Authorised signatory name and designation, and whether a signature or stamp image is needed.
-- [ ] Footer terms text (returns, warranty, "computer-generated invoice", etc.).
-- [ ] **Accountant check:** as a marketplace, does Riderzpro have to collect TCS (GST section 52) on
-      seller sales, and file GSTR-8? This decides whether the platform keeps a TCS ledger.
-      (Sellers already issue their own invoices from the seller portal for their items.)
-
-## 6. Order confirmation email
-
-Sent through Resend. It needs the sending domain verified (see `Amrutha_work.md`). Please confirm:
-
-- [ ] Sender name and address, e.g. `Riderzpro Orders <orders@riderzpro.com>`.
-- [ ] Support email and phone to print in the email.
-
-## 7. Placeholders now in the code (built 17 Oct 2026, please confirm or correct)
-
-Online payment, refunds and the customer tax invoice are built. These values are placeholders until
-you confirm them (`src/lib/invoice/gst.ts`, `src/lib/data/site.ts`):
-
-- [ ] Registered office address on the invoice: the Bengaluru address is used for now.
-- [ ] HSN and GST rate per product department: every item uses HSN 8708 at 18% for now.
-- [ ] Installation: SAC 998714 at 18%. Delivery charge: SAC 996812 at 18%. Or should delivery take
-      the goods' rate?
-- [ ] Unpaid online orders hold stock for **30 minutes**, then are cancelled. Right length?
-- [ ] Refunds: today any admin can refund up to the amount paid, in whole rupees; the delivery charge
-      isn't included in the suggested amount. Who should approve, and is there a limit?
-- [ ] A payment that arrives after its order was released is kept and flagged for a refund; there is
-      no automatic refund. OK?
-- [ ] Cancelling a paid order does not refund by itself (the admin page then offers the refund). OK?
-- [ ] Credit notes for refunds after an invoice is issued are not built yet. Needed now?
-- [ ] Buyers are treated as consumers (no field for a buyer's GSTIN). Needed for business buyers?
-- [ ] The wording on the Payments help page (`/support/payments`): "Pay online with Razorpay, or
-      confirm on WhatsApp; unpaid online orders are cancelled after 30 minutes."
-
-## 8. Coupons (built 17 Oct 2026)
-
-- [ ] Coupons lower only Riderzpro's own products, installation and delivery (never sellers' items),
-      and the discount is shown on Riderzpro's tax invoice, lowering the taxable value. Please confirm
-      with the accountant that this treatment (a discount at the time of sale, on the invoice) is right.
-- [ ] Who may create coupons: today Owner, Manager and Catalogue roles.
-
-## 9. Shop screen sales (built 18 Oct 2026)
-
-- [ ] Paid **at the seller's counter**: the seller keeps the money, so these sales are never paid out.
-      How should Riderzpro charge its commission on them (monthly invoice to the seller, deduct from the
-      next online payout, or no commission on counter sales)? Today: not charged, just recorded.
-- [ ] Paid **on the screen**: goes through Riderzpro's Razorpay and is paid out like online orders.
-- [ ] A special price agreed by the AI is the seller's own discount (it lowers the seller's invoice
-      price). Confirm this is right for GST.
+- Refund approval and limits [any admin with the Finance, Manager or Owner role, up to the amount
+  paid; delivery charge not suggested].
+- Unpaid online orders hold stock for [30 minutes].
+- Money that arrives after its order expired [kept, flagged on the order for a manual refund].
+- Cancelling a paid order [doesn't refund by itself; the admin page offers the refund].
+- Seller payouts [Riderzpro collects and pays sellers later; Razorpay Route not used].
+- Cash on delivery [not offered; WhatsApp ordering and pay-online are].
+- **Commission on shop-screen sales paid at the seller's counter** [recorded, not charged; Reports
+  shows the amount]: invoice the seller monthly, deduct from online payouts, or none?
+- Who may create coupons [Owner, Manager, Catalogue roles].
 
 ## When done
 
-Tell the owner which boxes are ticked. The developer then switches the payment tests from placeholders
-to the real test keys and runs a full test order, a failed payment and a refund in Razorpay test mode.
+Tell the developer. They switch staging to your test keys and run a full order, a failed payment and
+a refund in test mode before go-live.

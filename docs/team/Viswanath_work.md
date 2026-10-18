@@ -1,35 +1,29 @@
-# Viswanath: maps, routes and addresses for live tracking
+# Viswanath: maps, routes and addresses (live tracking)
 
-Written 17 Oct 2026. Phase 3 is built and tested on the free public services below, so **building does
-not wait**. Their usage rules forbid heavy production use, so before go-live a decision is needed.
+Updated 18 Oct 2026. Live tracking works today on free public services (OpenStreetMap tiles, the
+public OSRM demo router with a straight-line fallback, Nominatim for addresses). Their usage rules
+don't allow heavy production use, so choose providers before traffic grows.
 
-| Need | Used in development | Production choice needed |
-| --- | --- | --- |
-| Map pictures (tiles) | OpenStreetMap's own tile server | MapTiler, Stadia Maps or Carto (free tiers exist) and its key |
-| Road route and ETA | Public OSRM demo server, with a straight-line fallback | OpenRouteService key, or our own OSRM server, or straight-line ETA only |
-| Address from GPS ("Detect my location" at checkout) | OpenStreetMap Nominatim (max 1 lookup a second) | Fine for low volume; for more, LocationIQ / MapTiler geocoding key |
+## Before launch (must do)
 
-## Please decide
+1. **Contact email for OpenStreetMap services.** Their policy requires one. Today it says
+   `contact: TBD` (`USER_AGENT` in `src/lib/server/tracking-geo.ts`); send the address and the
+   developer sets it.
+2. **Map tiles provider** (MapTiler, Stadia Maps or Carto have free tiers): put the tile address,
+   with its key, in `NEXT_PUBLIC_MAP_TILES_URL`, e.g.
+   `https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=…`. Restrict the key to riderzpro.com in
+   the provider's dashboard (this key is public by design).
 
-Phase 3 is now built (17 Oct 2026). The settings it reads:
+## Decisions (today's behaviour in brackets)
 
-| Setting | What goes in it | Default today |
-| --- | --- | --- |
-| `NEXT_PUBLIC_MAP_TILES_URL` | The tile address from the chosen provider, with its key inside, e.g. `https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=…` (public by design: restrict the key to riderzpro.com in the provider's dashboard) | OpenStreetMap's own tiles |
-| `ROUTING_BASE_URL` | An OSRM-compatible routing server (our own, or a hosted one) | Public OSRM demo server |
+- Routing [public OSRM demo, straight-line ETA if it fails]: a hosted or own OSRM server in
+  `ROUTING_BASE_URL`, or keep the straight-line ETA.
+- Address lookup [Nominatim, once per order without GPS]: keep, or choose a provider.
+- Rider consent text ["Riderzpro shares your location with the customer only while you are
+  delivering their order."].
+- What customers see [rider's first name and vehicle; the rider on the map only after pickup; no
+  phone number].
 
-- [ ] Tiles provider and the tile address above.
-- [ ] Routing: a hosted or own OSRM server, or "straight-line ETA is fine" (it already falls back to that).
-- [ ] Geocoding: keep Nominatim (fine for low volume; it is only used once per order without GPS),
-      or choose a provider; tell the developer and it will be added.
-- [ ] A contact email for OpenStreetMap services. Their policy needs one in our app's identity:
-      today it says `contact: TBD` (`USER_AGENT` in `src/lib/server/tracking-geo.ts`).
+## When done
 
-## Policy wording (owner)
-
-- [ ] The rider's consent text. Today: "Riderzpro shares your location with the customer only while
-      you are delivering their order." (`LOCATION_CONSENT_TEXT` in `src/lib/tracking/geo.ts`).
-- [ ] Customers see the rider's first name and vehicle, and the rider on the map only after pickup
-      (not while the rider is going to the seller). Confirm, or say what to change.
-- [ ] Whether customers may call the rider (today: no phone number is shown; a masked call option
-      would need a calling provider).
+Tell the developer. They switch the settings on staging and test tracking on two real phones.
