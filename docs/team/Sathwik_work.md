@@ -90,6 +90,15 @@ you confirm them (`src/lib/invoice/gst.ts`, `src/lib/data/site.ts`):
       with the accountant that this treatment (a discount at the time of sale, on the invoice) is right.
 - [ ] Who may create coupons: today Owner, Manager and Catalogue roles.
 
+## 9. Shop screen sales (built 18 Oct 2026)
+
+- [ ] Paid **at the seller's counter**: the seller keeps the money, so these sales are never paid out.
+      How should Riderzpro charge its commission on them (monthly invoice to the seller, deduct from the
+      next online payout, or no commission on counter sales)? Today: not charged, just recorded.
+- [ ] Paid **on the screen**: goes through Riderzpro's Razorpay and is paid out like online orders.
+- [ ] A special price agreed by the AI is the seller's own discount (it lowers the seller's invoice
+      price). Confirm this is right for GST.
+
 ## When done
 
 Tell the owner which boxes are ticked. The developer then switches the payment tests from placeholders

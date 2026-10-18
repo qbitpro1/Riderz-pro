@@ -4,6 +4,8 @@ import { currentSession } from "@/lib/server/session";
 import { screenFitment, screenProducts, screenStore } from "@/lib/server/store-screen";
 import { vendorHome } from "@/lib/vendor/types";
 import { StoreScreen } from "@/components/vendor/store-screen/StoreScreen";
+import { payOptions, storeSettings } from "@/lib/server/store-sales";
+import { assistantEnabled } from "@/lib/server/assistant/claude";
 
 // Per request: products, stock and approvals change without a deploy.
 export const dynamic = "force-dynamic";
@@ -26,13 +28,14 @@ export default async function StoreScreenPage({ params }: { params: Promise<{ sl
   if (vendor.status !== "approved" || !vendor.slug) redirect(vendorHome(vendor.status));
   if (vendor.slug !== slug) redirect(`/store/${vendor.slug}`);
 
-  const products = await screenProducts(vendor.id);
+  const [products, settings] = await Promise.all([screenProducts(vendor.id), storeSettings(vendor.id)]);
   return (
     <StoreScreen
       store={screenStore(vendor)}
       products={products}
       fitment={screenFitment(products)}
       locked={session.locked}
+      sales={{ aiEnabled: settings.aiEnabled && assistantEnabled(), pay: payOptions(settings) }}
     />
   );
 }

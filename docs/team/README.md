@@ -10,6 +10,7 @@ setting name, and why.
 | [Vamsi_work.md](Vamsi_work.md) | Vamsi | New PostgreSQL database, encryption key, data rules | Staging, go-live |
 | [Amrutha_work.md](Amrutha_work.md) | Amrutha | OTP, SMS (MSG91/Twilio, DLT), email (Resend) | Real SMS codes, rider alerts, order emails |
 | [Hema_work.md](Hema_work.md) | Hema | Hosting, env settings, replacing the current site on riderzpro.com | Real-phone tracking test, go-live |
+| [AI_work.md](AI_work.md) | To be assigned | Anthropic (Claude) API key, spend limit, privacy wording | Turning on the AI assistants |
 | [Viswanath_work.md](Viswanath_work.md) | Viswanath | Map tiles, routing, geocoding keys | Production use of tracking maps |
 
 Start first, because these take days: Amrutha's DLT template approvals, and Sathwik's Razorpay KYC.

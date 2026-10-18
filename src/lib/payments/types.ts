@@ -6,7 +6,7 @@
  * is integer PAISE (1 rupee = 100 paise), the unit Razorpay uses.
  */
 
-export type PaymentMethod = "whatsapp" | "cod" | "online";
+export type PaymentMethod = "whatsapp" | "cod" | "online" | "counter";
 export type PaymentStatus = "pending" | "paid" | "failed" | "refunded" | "partially_refunded";
 export type RefundStatus = "requested" | "pending" | "processed" | "failed";
 
@@ -14,6 +14,7 @@ export const PAYMENT_METHOD_LABELS: Record<PaymentMethod, string> = {
   whatsapp: "WhatsApp order",
   cod: "Cash on delivery",
   online: "Paid online",
+  counter: "Pay at the shop counter",
 };
 
 export const PAYMENT_STATUS_LABELS: Record<PaymentStatus, string> = {

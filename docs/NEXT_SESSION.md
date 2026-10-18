@@ -51,6 +51,9 @@
 2. **Phase 5: admin.**
    - Done on V0.4: team logins with roles and invites, audit log page (`docs/WORK_UPDATE.md`).
    - Done on V0.4: coupons + `/offers` page; admin Customers and Reports (with orders CSV).
+   - Done on V0.4 (18 Oct): AI shopping assistant (`/assistant`) and the shop screen's AI salesperson
+     with bargaining and checkout on the screen (`docs/WORK_UPDATE.md`). Needs `ANTHROPIC_API_KEY`
+     (`docs/team/AI_work.md`).
    - Waiting for the owner's decision (not built):
      - Header "Deliver to" picker. Riders carry only marketplace sellers' parcels today, so for
        Riderzpro's own products it would promise something we don't do. Build it only once own

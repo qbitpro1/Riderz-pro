@@ -73,7 +73,7 @@ export default async function OverviewPage() {
               <h2 id="offline-store" className="font-display text-xl font-extrabold uppercase text-chalk">Offline Store</h2>
               <p className="mt-1 max-w-2xl text-sm leading-relaxed text-ash">
                 For your own shop: show your available stock to customers who walk in. Open it on a tablet or TV: customers browse,
-                add products to an order and show it at your counter. Closing the screen needs your password.
+                ask the AI salesperson, and order and pay right there or at your counter. Closing the screen needs your password.
               </p>
               <p className="mt-2 text-sm font-semibold text-chalk">
                 {onScreen.length === 0
@@ -83,9 +83,14 @@ export default async function OverviewPage() {
             </div>
           </div>
           {vendor.status === "approved" && vendor.slug ? (
-            <Link href={offlineStoreHref(vendor.slug)} className="btn btn-primary shrink-0">
-              Open Offline Store <ArrowRight size={16} aria-hidden />
-            </Link>
+            <div className="flex shrink-0 flex-col gap-2">
+              <Link href={offlineStoreHref(vendor.slug)} className="btn btn-primary">
+                Open Offline Store <ArrowRight size={16} aria-hidden />
+              </Link>
+              <Link href="/vendor/dashboard/store-screen" className="btn btn-outline btn-sm">
+                AI and payment settings
+              </Link>
+            </div>
           ) : (
             <p className="text-sm text-danger">Available again once your store is reinstated.</p>
           )}

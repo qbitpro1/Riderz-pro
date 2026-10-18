@@ -47,6 +47,8 @@ export function OrderPanel({
   onReview,
   onClear,
   onClose,
+  onCheckout,
+  specialOff = 0,
 }: {
   lines: OrderLine[];
   count: number;
@@ -56,6 +58,10 @@ export function OrderPanel({
   onReview: () => void;
   onClear: () => void;
   onClose: () => void;
+  /** Checkout and pay on the screen (or choose the counter). */
+  onCheckout?: () => void;
+  /** Rupees off from a special price the assistant agreed (shown; checked again at checkout). */
+  specialOff?: number;
 }) {
   const [confirmClear, setConfirmClear] = useState(false);
   return (
@@ -118,9 +124,26 @@ export function OrderPanel({
       {count > 0 && (
         <div className="space-y-4 border-t border-tint/10 bg-carbon px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-5 md:px-6">
           <Totals count={count} total={total} savings={savings} />
-          <button type="button" data-autofocus onClick={onReview} className={`${ui.primary} w-full min-h-16 text-lg`}>
-            Review and show at counter
-          </button>
+          {specialOff > 0 && (
+            <div className="flex items-baseline justify-between rounded-xl bg-accent/10 px-3 py-2 text-base font-bold text-accent">
+              <span>Special price at checkout</span>
+              <span className="tnum">−{rupees(specialOff)}</span>
+            </div>
+          )}
+          {onCheckout ? (
+            <>
+              <button type="button" data-autofocus onClick={onCheckout} className={`${ui.primary} w-full min-h-16 text-lg`}>
+                Checkout and pay
+              </button>
+              <button type="button" onClick={onReview} className={`${ui.secondary} w-full min-h-14`}>
+                Show at the counter instead
+              </button>
+            </>
+          ) : (
+            <button type="button" data-autofocus onClick={onReview} className={`${ui.primary} w-full min-h-16 text-lg`}>
+              Review and show at counter
+            </button>
+          )}
           {confirmClear ? (
             <div className="grid grid-cols-2 gap-2">
               <button type="button" onClick={() => setConfirmClear(false)} className={`${ui.secondary} min-h-12`}>

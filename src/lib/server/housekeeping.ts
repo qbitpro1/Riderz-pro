@@ -3,6 +3,7 @@ import "server-only";
 import { sql } from "@/lib/db/client";
 import { releaseUnpaidOrders } from "./payments";
 import { trackingHousekeeping } from "./tracking";
+import { releaseStaleCounterOrders } from "./store-sales";
 
 /**
  * Deletes rows nobody needs any more: expired seller, customer, rider and admin sessions, admin links a month past expiry, sign-in codes
@@ -28,6 +29,8 @@ export function housekeeping(): void {
       await sql("DELETE FROM rate_limits WHERE window_start < now() - interval '1 day'");
       await trackingHousekeeping();
       await releaseUnpaidOrders();
+      await releaseStaleCounterOrders();
+      await sql("DELETE FROM store_offers WHERE used_order_id IS NULL AND expires_at < now() - interval '7 days'");
     } catch (err) {
       console.error("[housekeeping]", err instanceof Error ? err.message : err);
     }

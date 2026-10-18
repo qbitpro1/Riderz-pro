@@ -52,6 +52,8 @@ export type VendorOrderDetail = VendorOrderListItem & {
   returnedAt: string | null;
   /** A Riderzpro rider booked to collect and deliver this order (Delhi NCR), while the job is live. */
   rider: { firstName: string; status: "offered" | "accepted" | "picked_up" } | null;
+  /** Set when the customer ordered on this seller's Offline Store screen. */
+  store: { pay: "counter" | "online"; paid: boolean } | null;
 };
 
 /** Tabs on the vendor orders page. */

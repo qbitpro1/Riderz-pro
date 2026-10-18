@@ -775,4 +775,43 @@ ALTER TABLE orders ADD COLUMN discount integer NOT NULL DEFAULT 0 CHECK (discoun
 ALTER TABLE orders ADD COLUMN coupon_code text;
 `,
   },
+  {
+    // Selling from the Offline Store screen (src/lib/server/store-sales.ts).
+    //   store_settings  per seller: the AI salesperson, bargaining limits, how customers may pay
+    //   store_offers    a discount the AI agreed with a customer at the screen, checked again at
+    //                   checkout (never above the seller's limit), usable once
+    //   vendor_orders.collected_by  'seller' when the customer paid at the shop's counter: the seller
+    //                   already has the money, so it is never paid out again
+    //   orders.payment_method 'counter' = pay at the shop's counter
+    id: "011_store_sales",
+    sql: `
+CREATE TABLE store_settings (
+  vendor_id           text PRIMARY KEY REFERENCES vendors(id) ON DELETE CASCADE,
+  ai_enabled          boolean NOT NULL DEFAULT true,
+  bargain_enabled     boolean NOT NULL DEFAULT false,
+  max_discount_pct    integer NOT NULL DEFAULT 5 CHECK (max_discount_pct BETWEEN 0 AND 30),
+  max_discount_rupees integer CHECK (max_discount_rupees IS NULL OR max_discount_rupees > 0),
+  pay_on_screen       boolean NOT NULL DEFAULT true,
+  pay_at_counter      boolean NOT NULL DEFAULT true,
+  updated_at          timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE TABLE store_offers (
+  id            text PRIMARY KEY,
+  vendor_id     text NOT NULL REFERENCES vendors(id) ON DELETE CASCADE,
+  percent       integer NOT NULL CHECK (percent BETWEEN 1 AND 30),
+  cap           integer NOT NULL CHECK (cap > 0),
+  reason        text,
+  created_at    timestamptz NOT NULL DEFAULT now(),
+  expires_at    timestamptz NOT NULL,
+  used_order_id text REFERENCES orders(id) ON DELETE SET NULL
+);
+CREATE INDEX store_offers_vendor_idx ON store_offers (vendor_id, created_at DESC);
+
+ALTER TABLE vendor_orders ADD COLUMN collected_by text NOT NULL DEFAULT 'platform' CHECK (collected_by IN ('platform','seller'));
+
+ALTER TABLE orders DROP CONSTRAINT IF EXISTS orders_payment_method_check;
+ALTER TABLE orders ADD CONSTRAINT orders_payment_method_check CHECK (payment_method IN ('whatsapp','cod','online','counter'));
+`,
+  },
 ];

@@ -171,16 +171,33 @@ export function SearchPanel({ onClose }: { onClose: () => void }) {
             <p className="mt-2 text-sm text-ash">
               Ask us on WhatsApp — if it fits a car, we can usually source it.
             </p>
+            <AskAi q={q} onNavigate={onClose} />
           </div>
         ) : (
-          <ul className="divide-y divide-tint/8">
-            {results.map((r) => (
-              <ResultRow key={r.id} entry={r} onNavigate={onClose} />
-            ))}
-          </ul>
+          <>
+            <ul className="divide-y divide-tint/8">
+              {results.map((r) => (
+                <ResultRow key={r.id} entry={r} onNavigate={onClose} />
+              ))}
+            </ul>
+            <AskAi q={q} onNavigate={onClose} />
+          </>
         )}
       </div>
     </div>
+  );
+}
+
+/** Hands the search words to the AI assistant ("seat covers for my Creta under 8000"). */
+function AskAi({ q, onNavigate }: { q: string; onNavigate: () => void }) {
+  return (
+    <Link
+      href={`/assistant?q=${encodeURIComponent(q.trim().slice(0, 300))}`}
+      onClick={onNavigate}
+      className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-accent underline underline-offset-4"
+    >
+      Ask the AI assistant about “{q.trim().slice(0, 60)}”
+    </Link>
   );
 }
 

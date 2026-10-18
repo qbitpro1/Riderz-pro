@@ -32,7 +32,7 @@ const iso = (d: Date | string | null | undefined) => (d ? new Date(d).toISOStrin
 
 /** Unambiguous: no 0/O, 1/I/L. */
 const NUMBER_ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
-const newOrderNumber = () =>
+export const newOrderNumber = () =>
   "RZP-" + Array.from({ length: 6 }, () => NUMBER_ALPHABET[randomInt(0, NUMBER_ALPHABET.length)]).join("");
 
 type PricedItem = {
@@ -283,7 +283,7 @@ export async function notifySellersOfOrder(orderId: string): Promise<void> {
     `SELECT vo.id, vo.vendor_id, o.number,
             (SELECT count(*)::int FROM order_items i WHERE i.vendor_order_id = vo.id) AS count
        FROM vendor_orders vo JOIN orders o ON o.id = vo.order_id
-      WHERE vo.order_id = $1 AND vo.status = 'new'`,
+      WHERE vo.order_id = $1 AND vo.status IN ('new','accepted')`,
     [orderId],
   );
   for (const p of parts) {
@@ -363,7 +363,7 @@ const toItem = (r: ItemRow, withTax = false): OrderItemView => ({
 });
 
 /** Put a vendor order's products back on the shelf (cancelled or returned). */
-async function restoreStock(q: Query, vendorOrderId: string) {
+export async function restoreStock(q: Query, vendorOrderId: string) {
   await q(
     `UPDATE vendor_products p SET stock = p.stock + i.qty, updated_at = now()
        FROM order_items i
@@ -375,7 +375,7 @@ async function restoreStock(q: Query, vendorOrderId: string) {
 const TERMINAL: VendorOrderStatus[] = ["delivered", "cancelled", "returned"];
 
 /** When every seller part is finished and the house sells nothing in the order, close the order. */
-async function settleOrderStatus(q: Query, orderId: string) {
+export async function settleOrderStatus(q: Query, orderId: string) {
   const parts = await q<{ status: VendorOrderStatus }>("SELECT status FROM vendor_orders WHERE order_id = $1", [orderId]);
   if (parts.length === 0 || !parts.every((p) => TERMINAL.includes(p.status))) return;
   const house = await q<{ n: number }>(
@@ -445,6 +445,9 @@ type DetailRow = ListRow & {
   delivered_at: Date | null;
   cancelled_at: Date | null;
   returned_at: Date | null;
+  channel: string;
+  payment_method: string;
+  payment_status: string;
 };
 
 /** One of THIS vendor's orders, or null. Only this vendor's items are included. */
@@ -454,6 +457,7 @@ export async function vendorOrderDetail(vendorId: string, id: string): Promise<V
       `SELECT vo.id, vo.status, vo.subtotal, vo.courier, vo.tracking_number, vo.created_at, vo.cancel_reason, vo.commission_rate,
               vo.accepted_at, vo.packed_at, vo.shipped_at, vo.delivered_at, vo.cancelled_at, vo.returned_at,
               o.number, o.customer_name, o.customer_phone, o.address, o.city, o.state, o.pincode, o.notes,
+              o.channel, o.payment_method, o.payment_status,
               0 AS item_count, NULL AS first_title
          FROM vendor_orders vo JOIN orders o ON o.id = vo.order_id
         WHERE vo.id = $1 AND vo.vendor_id = $2 AND NOT ${AWAITING_PAYMENT_SQL}`,
@@ -494,6 +498,7 @@ export async function vendorOrderDetail(vendorId: string, id: string): Promise<V
     deliveredAt: iso(r.delivered_at),
     cancelledAt: iso(r.cancelled_at),
     returnedAt: iso(r.returned_at),
+    store: r.channel === "store" ? { pay: r.payment_method === "online" ? "online" : "counter", paid: r.payment_status === "paid" } : null,
     rider: await sql<{ name: string; status: "offered" | "accepted" | "picked_up" }>(
       `SELECT r.name, j.status FROM rider_jobs j JOIN riders r ON r.id = j.rider_id
         WHERE j.vendor_order_id = $1 AND j.status IN ('offered','accepted','picked_up') LIMIT 1`,

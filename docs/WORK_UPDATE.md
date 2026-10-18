@@ -1,5 +1,62 @@
 # Work update
 
+## 18 Oct 2026: AI shopping assistant, and selling from the Offline Store screen (on V0.4)
+
+- **Website AI assistant**:
+  - Pages: `/assistant`, also reached from the search box ("Ask the AI assistant about …"), the
+    footer and the sitemap.
+  - Runs on the Claude API, with our own tools only: search the catalogue (Riderzpro's products +
+    approved sellers), product details, find a car, current offers, show product cards (with Add
+    to cart).
+  - Uses the shopper's garage car. The system prompt holds the store facts (delivery, returns,
+    fitment guarantee, payment, WhatsApp). It never invents products or prices and treats product
+    text as data.
+  - Limits: 20 questions per 10 minutes per visitor, 120 a day, 3,000 a day in all.
+- **Shop screen AI salesperson** (Offline Store):
+  - "Ask AI" in the header, "Ask AI about …" in search, and in the "nothing matches" state; voice
+    or typing.
+  - Knows only that seller's live, in-stock products. It asks about the car, needs and budget,
+    recommends and compares, adds to the order, and opens checkout.
+  - **Bargaining**:
+    - Only if the seller turns it on, within the seller's limits (most % off and most ₹ off one
+      order).
+    - The AI starts small and goes up in steps, and never reveals the limit.
+    - The server refuses any offer above the limit and checks it again at checkout; an offer
+      lasts 20 minutes and is used once.
+- **Selling from the screen**:
+  - "Checkout and pay" in the order: name + mobile, then pay on the screen (Razorpay UPI/card,
+    when keys are set) or pay at the counter.
+  - A big order number is shown at the end.
+  - The order is in the seller's dashboard; staff press "Paid and handed over" (counter) or
+    "Handed over" (paid on screen).
+  - Counter orders not collected in 12 hours are cancelled and the stock goes back.
+  - Counter sales are never paid out to the seller again (`collected_by = seller`).
+  - The special price lowers the seller's item prices on the order, so the invoice, commission
+    and payout follow the price paid.
+- **Seller settings**: `/vendor/dashboard/store-screen` (linked from the Offline Store card):
+  - AI on/off, bargaining on/off, most % (0–30) and ₹ off.
+  - Pay on screen / at the counter.
+- **Database**: migration 011 (store_settings, store_offers, vendor_orders.collected_by, payment
+  method "counter").
+- **Verified** (Claude replaced by a local stand-in that uses the tools like the model; no real key,
+  no cost):
+  - 31 scripted checks:
+    - website answers with real product cards; off-topic answered without cards; cross-site
+      blocked; rate limit
+    - shop assistant needs the seller session; finds stock and adds to the order
+    - no discount tool while bargaining is off; 50% refused by the server; 2% agreed with the
+      right maths
+    - AI opens checkout; bad mobile refused; pay on screen refused without Razorpay keys
+    - counter order with the special price; the offer can't be reused; over-stock refused
+    - the order is in the seller's list; paid-and-handed-over once only
+    - settings can't be changed while the screen is locked
+  - Browser walk-through on the shop screen: ask → cards → added → "give me a discount" → 2%
+    special price → checkout with the price → order RZP-MN5MRJ ₹6,851 → Done resets the screen.
+  - Website assistant page from a search; phone width fine.
+  - All 461 pages load; build clean; no dealer prices or secrets in built files.
+- **Not tried for real yet**: the real Claude model (needs `ANTHROPIC_API_KEY`), and paying on the
+  screen (needs Razorpay keys).
+
 ## 17 Oct 2026 (night, later): Phase 5 part 3, admin Customers and Reports (on V0.4)
 
 - **`/admin/customers`**:

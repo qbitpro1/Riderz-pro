@@ -141,7 +141,8 @@ export async function salesReport(range: ReportRange): Promise<SalesReport> {
   const IN = "o.created_at BETWEEN $1 AND $2";
   const LIVE = `${IN} AND o.status <> 'cancelled'`;
 
-  const [status, method, sums, parts, delivered, online, refunds, riders, coupons, accounts, daily, top] = await Promise.all([
+  const [own, status, method, sums, parts, delivered, online, refunds, riders, coupons, accounts, daily, top] = await Promise.all([
+    sqlOne<{ amount: number }>(`SELECT COALESCE(sum(i.line_total),0)::int AS amount FROM order_items i JOIN orders o ON o.id = i.order_id WHERE ${LIVE} AND i.vendor_order_id IS NULL`, p),
     sql<{ status: string; n: number }>(`SELECT o.status, count(*)::int AS n FROM orders o WHERE ${IN} GROUP BY 1`, p),
     sql<{ m: string; n: number }>(`SELECT o.payment_method AS m, count(*)::int AS n FROM orders o WHERE ${LIVE} GROUP BY 1`, p),
     sqlOne<{ total: number; items: number; shipping: number; discounts: number; n: number }>(
@@ -207,7 +208,7 @@ export async function salesReport(range: ReportRange): Promise<SalesReport> {
       shipping: sums?.shipping ?? 0,
       discounts: sums?.discounts ?? 0,
       average: placed ? Math.round(total / placed) : 0,
-      ownItems: Math.max(0, (sums?.items ?? 0) - marketplaceGross),
+      ownItems: own?.amount ?? 0,
       marketplaceItems: marketplaceGross,
     },
     marketplace: {

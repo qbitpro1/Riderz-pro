@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { VoiceSearch } from "./VoiceSearch";
-import { BadgeCheck, CarFront, Columns2, Search, ShoppingBag, SearchX, X } from "lucide-react";
+import { BadgeCheck, CarFront, Columns2, Search, ShoppingBag, SearchX, Sparkles, X } from "lucide-react";
 import { rupees } from "@/lib/format";
 import { api } from "@/lib/vendor/client";
 import { AttractScreen } from "./AttractScreen";
@@ -17,6 +17,8 @@ import { Empty, StoreMark } from "./parts";
 import { ProductSheet } from "./ProductSheet";
 import { ReviewScreen } from "./ReviewScreen";
 import { Styles } from "./Styles";
+import { StoreAssistant, type AssistantTurn, type ScreenOffer } from "./StoreAssistant";
+import { CheckoutSheet, type PayOptions } from "./CheckoutSheet";
 import type { ScreenFitBrand, ScreenProduct, ScreenStore } from "./types";
 
 /**
@@ -36,11 +38,14 @@ export function StoreScreen({
   products,
   fitment,
   locked,
+  sales,
 }: {
   store: ScreenStore;
   products: ScreenProduct[];
   fitment: ScreenFitBrand[];
   locked: boolean;
+  /** Selling from the screen: the AI salesperson and the ways to pay (the seller's store settings). */
+  sales: { aiEnabled: boolean; pay: PayOptions };
 }) {
   const [attract, setAttract] = useState<"on" | "leaving" | "off">("on");
   const [group, setGroup] = useState("all");
@@ -57,6 +62,11 @@ export function StoreScreen({
   const [sellerOpen, setSellerOpen] = useState(false);
   const [idlePrompt, setIdlePrompt] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
+  const [aiOpen, setAiOpen] = useState(false);
+  const [aiSeed, setAiSeed] = useState<string | null>(null);
+  const [aiTurns, setAiTurns] = useState<AssistantTurn[]>([]);
+  const [offer, setOffer] = useState<ScreenOffer | null>(null);
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
 
   const scroller = useRef<HTMLElement>(null);
   const order = useOrder(products, store.slug);
@@ -130,11 +140,16 @@ export function StoreScreen({
     setCarOpen(false);
     setIdlePrompt(false);
     setNotice(null);
+    setAiOpen(false);
+    setCheckoutOpen(false);
   }, []);
 
   /** Back to the attract screen with a clean slate for the next customer. */
   const startOver = useCallback(() => {
     order.clear();
+    setAiTurns([]);
+    setAiSeed(null);
+    setOffer(null);
     closeLayers();
     resetBrowse();
     setAttract("on");
@@ -154,7 +169,18 @@ export function StoreScreen({
     [],
   );
 
-  const overlays = open !== null || drawer || review || compareOpen || carOpen;
+  const overlays = open !== null || drawer || review || compareOpen || carOpen || aiOpen || checkoutOpen;
+
+  // A special price belongs to this order: gone when the order is emptied or it expires.
+  useEffect(() => {
+    if (count === 0 && offer) setOffer(null);
+  }, [count, offer]);
+  const liveOffer = offer && offer.expiresAt > Date.now() ? offer : null;
+  const specialOff = liveOffer ? Math.min(liveOffer.discount, Math.floor((total * liveOffer.percent) / 100)) : 0;
+  const askAi = (q?: string) => {
+    setAiSeed(q?.trim() ? q.trim() : null);
+    setAiOpen(true);
+  };
   useIdle(
     () => {
       if (count > 0 || overlays) setIdlePrompt(true);
@@ -247,6 +273,13 @@ export function StoreScreen({
               </span>
             </label>
 
+            {sales.aiEnabled && (
+              <button type="button" onClick={() => askAi()} className={`${ui.secondary} h-14 shrink-0 px-4 md:px-5`} aria-label="Ask our AI assistant">
+                <Sparkles size={22} aria-hidden />
+                <span className="hidden xl:inline">Ask AI</span>
+              </button>
+            )}
+
             {hasCars && (
               <button
                 type="button"
@@ -298,6 +331,11 @@ export function StoreScreen({
                   <p className="text-base font-semibold text-chalk tnum" aria-live="polite">
                     {shown.length} {shown.length === 1 ? "product" : "products"}
                   </p>
+                  {sales.aiEnabled && query.trim().length > 2 && (
+                    <button type="button" onClick={() => askAi(query)} className="inline-flex min-h-10 items-center gap-1.5 rounded-full border border-accent px-3.5 text-sm font-semibold text-accent active:scale-95">
+                      <Sparkles size={16} aria-hidden /> Ask AI about “{query.trim().slice(0, 30)}”
+                    </button>
+                  )}
                   {car && (
                     <button type="button" onClick={() => setCar(null)} className="inline-flex min-h-10 items-center gap-1.5 rounded-full bg-chalk pl-3.5 pr-2.5 text-sm font-semibold text-void active:scale-95">
                       <span className="max-w-48 truncate">For your {car.name}</span> <X size={16} aria-hidden />
@@ -328,6 +366,11 @@ export function StoreScreen({
             ) : shown.length === 0 ? (
               <Empty title={car ? `Nothing listed for your ${car.name} yet` : "Nothing matches"} icon={<SearchX size={40} aria-hidden />}>
                 <p>{car ? "Universal products show up here too, so ask us at the counter." : "Try a different word or category."}</p>
+                {sales.aiEnabled && (
+                  <button type="button" className={`${ui.secondary} mt-5`} onClick={() => askAi(query || (car ? `Parts for my ${car.brand} ${car.name}` : ""))}>
+                    <Sparkles size={20} aria-hidden /> Ask our AI assistant
+                  </button>
+                )}
                 <button
                   type="button"
                   className={`${ui.primary} mt-5`}
@@ -443,6 +486,58 @@ export function StoreScreen({
             order.clear();
             setDrawer(false);
           }}
+          onCheckout={
+            sales.pay.onScreen || sales.pay.atCounter
+              ? () => {
+                  setDrawer(false);
+                  setCheckoutOpen(true);
+                }
+              : undefined
+          }
+          specialOff={specialOff}
+        />
+      )}
+
+      {aiOpen && (
+        <StoreAssistant
+          byId={byId}
+          qtys={order.qtys}
+          car={car}
+          offer={liveOffer}
+          turns={aiTurns}
+          setTurns={setAiTurns}
+          seed={aiSeed}
+          onAdd={(id, qty) => {
+            const p = byId.get(id);
+            if (!p) return;
+            setQty(id, (order.qtys[id] ?? 0) + qty);
+            setNotice(`Added ${p.title.length > 34 ? `${p.title.slice(0, 33)}…` : p.title}`);
+          }}
+          onOffer={setOffer}
+          onCheckout={() => {
+            setAiOpen(false);
+            setCheckoutOpen(true);
+          }}
+          onOpenProduct={(id) => {
+            setAiOpen(false);
+            setOpenId(id);
+          }}
+          onClose={() => {
+            setAiOpen(false);
+            setAiSeed(null);
+          }}
+        />
+      )}
+
+      {checkoutOpen && count > 0 && (
+        <CheckoutSheet
+          store={store}
+          lines={lines}
+          total={total}
+          offer={liveOffer}
+          pay={sales.pay}
+          onClose={() => setCheckoutOpen(false)}
+          onDone={startOver}
         />
       )}
 

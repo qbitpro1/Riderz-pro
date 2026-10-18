@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, FileText } from "lucide-react";
 import { OrderActions } from "@/components/vendor/orders/OrderActions";
+import { HandOverButton } from "@/components/vendor/orders/HandOverButton";
 import { StatusBadge } from "@/components/vendor/orders/StatusBadge";
 import { fmtDateTime } from "@/components/vendor/orders/format";
 import { rupees } from "@/lib/format";
@@ -73,6 +74,14 @@ export default async function VendorOrderPage({ params }: { params: Promise<{ id
                   ? `Reason: ${order.cancelReason}`
                   : "Nothing more to do on this order."}
             </p>
+          ) : order.store ? (
+            <div className="space-y-2">
+              <p className="text-sm text-ash">
+                Ordered on your shop screen ·{" "}
+                {order.store.pay === "counter" ? "paying at your counter: take the payment, then hand over." : order.store.paid ? "paid on the screen: hand over the items." : "waiting for the online payment."}
+              </p>
+              <HandOverButton id={order.id} pay={order.store.pay} total={order.subtotal} />
+            </div>
           ) : (
             <OrderActions id={order.id} status={order.status} />
           )}

@@ -35,7 +35,7 @@ export async function payoutOverview(vendorId: string): Promise<PayoutOverview> 
             (vo.delivered_at <= now() - make_interval(days => $2)) AS due
        FROM vendor_orders vo JOIN orders o ON o.id = vo.order_id
        LEFT JOIN vendor_payouts p ON p.id = vo.payout_id
-      WHERE vo.vendor_id = $1 AND vo.status = 'delivered' AND vo.delivered_at IS NOT NULL
+      WHERE vo.vendor_id = $1 AND vo.status = 'delivered' AND vo.delivered_at IS NOT NULL AND vo.collected_by = 'platform'
       ORDER BY vo.delivered_at DESC LIMIT 500`,
     [vendorId, SETTLEMENT_DELAY_DAYS],
   );
@@ -116,7 +116,7 @@ export async function dueVendors(): Promise<DueVendor[]> {
        JOIN orders o ON o.id = vo.order_id
        JOIN vendors v ON v.id = vo.vendor_id
        LEFT JOIN vendor_secrets s ON s.vendor_id = vo.vendor_id
-      WHERE vo.status = 'delivered' AND vo.payout_id IS NULL
+      WHERE vo.status = 'delivered' AND vo.payout_id IS NULL AND vo.collected_by = 'platform'
         AND vo.delivered_at <= now() - make_interval(days => $1)
       ORDER BY v.store_name, vo.delivered_at`,
     [SETTLEMENT_DELAY_DAYS],
@@ -153,7 +153,7 @@ export async function recordPayout(
   const result = await transaction(async (q) => {
     const rows = await q<{ id: string; subtotal: number; commission_rate: string }>(
       `SELECT id, subtotal, commission_rate FROM vendor_orders
-        WHERE id = ANY($1) AND vendor_id = $2 AND status = 'delivered' AND payout_id IS NULL
+        WHERE id = ANY($1) AND vendor_id = $2 AND status = 'delivered' AND payout_id IS NULL AND collected_by = 'platform'
           AND delivered_at <= now() - make_interval(days => $3)
         FOR UPDATE`,
       [ids, input.vendorId, SETTLEMENT_DELAY_DAYS],
