@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { Logo } from "@/components/brand/Logo";
 import { DEPARTMENT_MENUS, MORE_SECTIONS, liveMenuGroups, type LiveGroups } from "@/lib/data/nav";
-import { SITE, whatsapp } from "@/lib/data/site";
+import { SITE } from "@/lib/data/site";
 import { WishlistLink } from "@/components/wishlist/WishlistLink";
 import { AccountLink } from "@/components/account/AccountLink";
 
@@ -192,15 +192,6 @@ export function MobileDrawer({ onClose, liveGroups }: { onClose: () => void; liv
           <div className="mt-8">
             <p className="eyebrow mb-3">Talk to us</p>
             <div className="flex flex-col gap-3">
-              <a
-                href={whatsapp("Hi Riderzpro, I have a question.")}
-                target="_blank"
-                rel="noreferrer noopener"
-                className="btn btn-whatsapp btn-block"
-              >
-                <Icon name="whatsapp" size={16} />
-                WhatsApp us
-              </a>
               <a href={SITE.phoneHref} className="btn btn-outline btn-block">
                 <Icon name="phone" size={15} />
                 {SITE.phone}

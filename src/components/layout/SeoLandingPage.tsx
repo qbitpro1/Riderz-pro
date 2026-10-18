@@ -4,7 +4,7 @@ import { Icon } from "@/components/ui/Icon";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHead } from "@/components/ui/Section";
 import { LANDING_MODELS } from "@/lib/data/vehicles";
-import { LOCATIONS, whatsapp } from "@/lib/data/site";
+import { LOCATIONS } from "@/lib/data/site";
 import { DEPARTMENTS, departmentHref } from "@/lib/data/taxonomy";
 import { COLLECTIONS } from "@/lib/data/collections";
 import { BRANDS, CATALOG } from "@/lib/catalog";
@@ -60,15 +60,10 @@ export function SeoLandingPage({ landing }: { landing: SeoLanding }) {
               {landing.cta.label}
               <Icon name="arrow" size={15} />
             </Link>
-            <a
-              href={whatsapp(`Hi Riderzpro, I found you looking for ${landing.eyebrow.toLowerCase()}. `)}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="btn btn-whatsapp"
-            >
-              <Icon name="whatsapp" size={16} />
-              Ask on WhatsApp
-            </a>
+            <Link href="/assistant" className="btn btn-outline">
+              <Icon name="spark" size={16} />
+              Ask our AI assistant
+            </Link>
           </div>
         </div>
       </section>

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Logo } from "@/components/brand/Logo";
 import { Icon } from "@/components/ui/Icon";
-import { LOCATIONS, SITE, whatsapp } from "@/lib/data/site";
+import { LOCATIONS, SITE } from "@/lib/data/site";
 import { LANDING_MODELS } from "@/lib/data/vehicles";
 import { CARS_NAV, DEPARTMENT_MENUS, PARTNERS_NAV, SERVICES_NAV, SHOP_BY_LINKS } from "@/lib/data/nav";
 
@@ -45,15 +45,6 @@ export function Footer() {
             </p>
 
             <div className="mt-6 flex flex-wrap gap-3">
-              <a
-                href={whatsapp("Hi Riderzpro, I'd like to talk about my car.")}
-                target="_blank"
-                rel="noreferrer noopener"
-                className="btn btn-whatsapp btn-sm"
-              >
-                <Icon name="whatsapp" size={15} />
-                WhatsApp
-              </a>
               <a href={SITE.phoneHref} className="btn btn-outline btn-sm">
                 <Icon name="phone" size={14} />
                 {SITE.phone}

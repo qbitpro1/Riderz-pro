@@ -21,7 +21,7 @@ import {
 } from "@/lib/data/taxonomy";
 import { REVIEWS, STATS } from "@/lib/data/community";
 import { LANDING_MODELS } from "@/lib/data/vehicles";
-import { LOCATIONS, SITE, whatsapp } from "@/lib/data/site";
+import { LOCATIONS, SITE } from "@/lib/data/site";
 import { rupees } from "@/lib/format";
 import type { MediaKey } from "@/lib/media";
 import { pageMeta } from "@/lib/data/seo";
@@ -97,8 +97,8 @@ const WHY = [
     body: "Installation is available at our garages for the products marked with the wrench.",
   },
   {
-    title: "Support on WhatsApp",
-    body: "Ask about fitment, fitting or an order and talk to a real person.",
+    title: "Help whenever you ask",
+    body: "Our AI assistant answers fitment and product questions any time, and a real person is a call away.",
   },
 ];
 
@@ -448,24 +448,19 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 14 — WHATSAPP ----------------------------------------------------- */}
+      {/* 14 — ASK AI ------------------------------------------------------- */}
       <section data-theme="dark" className="relative overflow-hidden bg-void py-16 md:py-24">
         <Photo media="garageSpotlit" sizes="100vw" className="opacity-60" />
         <div className="absolute inset-0 scrim" />
         <div className="shell relative text-center">
           <h2 className="display-2 mx-auto max-w-2xl text-balance">Not sure what fits your car?</h2>
           <p className="mx-auto mt-4 max-w-md text-base text-ash">
-            Message us your car model and what you are looking for. A real person replies.
+            Tell our AI assistant your car and what you are looking for. It shows parts that fit, within your budget.
           </p>
-          <a
-            href={whatsapp("Hi Riderzpro, I'd like help choosing accessories for my car.")}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn btn-accent mt-7"
-          >
-            <Icon name="whatsapp" size={18} />
-            Chat on WhatsApp
-          </a>
+          <Link href="/assistant" className="btn btn-accent mt-7">
+            <Icon name="spark" size={18} />
+            Ask our AI assistant
+          </Link>
           <p className="mt-4 text-xs text-dim">{SITE.hours}</p>
         </div>
       </section>

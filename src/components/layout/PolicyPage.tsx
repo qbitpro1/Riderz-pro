@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
 import { Breadcrumbs } from "./PageHero";
-import { SITE, whatsapp } from "@/lib/data/site";
+import { SITE } from "@/lib/data/site";
 import type { Policy } from "@/lib/data/policies";
 
 const RELATED = [
@@ -76,15 +76,10 @@ export function PolicyPage({ policy, parent }: { policy: Policy; parent: { label
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
-            <a
-              href={whatsapp("Hi Riderzpro, I have a support question about ")}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="btn btn-whatsapp btn-sm"
-            >
-              <Icon name="whatsapp" size={15} />
-              WhatsApp support
-            </a>
+            <Link href="/assistant" className="btn btn-outline btn-sm">
+              <Icon name="spark" size={15} />
+              Ask AI
+            </Link>
             <Link href="/contact" className="btn btn-outline btn-sm">
               Contact
             </Link>
