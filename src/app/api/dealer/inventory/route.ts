@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { rateLimit } from "@/lib/server/http";
 import { dealerByApiKey, dealerCanPublish } from "@/lib/inventory/dealers";
 import { processBatch, validateImages } from "@/lib/inventory/pipeline";
 
@@ -29,6 +30,12 @@ const ACTIONS: Action[] = ["create", "update", "price", "sold", "remove", "photo
 export async function POST(request: Request) {
   const dealer = authenticate(request);
   if ("error" in dealer) return dealer.error;
+  // The documented limit: 60 requests a minute per key.
+  try {
+    await rateLimit(`dealer-api:${dealer.dealer.id}`, 60, 60);
+  } catch {
+    return problem(429, "rate_limited", "Too many requests: at most 60 a minute per key.");
+  }
 
   let body: Record<string, unknown>;
   try {

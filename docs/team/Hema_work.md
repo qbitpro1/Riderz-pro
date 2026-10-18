@@ -36,6 +36,16 @@ Do **not** set `OTP_SEND_IN_DEV` or `RAZORPAY_API_BASE` on the hosting (developm
       rate limit and the audit log use it.
 - [ ] Store the `ADMIN_PASSWORD` in the company password manager; change it if anyone who knew it leaves.
 
+## 2c. Built 18 Oct 2026 for go-live (see docs/DEPLOY.md)
+
+- [ ] Set `CRON_SECRET` (long random text). On Vercel `vercel.json` already calls
+      `/api/cron/housekeeping` hourly; on another host set an hourly job sending
+      `Authorization: Bearer <CRON_SECRET>`.
+- [ ] Point the host's uptime check at `/api/health` (200 = database answering, 503 = not).
+- [ ] After each deploy, read the `[config]` lines in the log. Two settings stop the start if
+      missing: `DATABASE_URL`, `VENDOR_DATA_KEY`.
+- [ ] HTTPS is required; the site sends HSTS (one year) in production.
+
 ## 3. Domain switch: replace the current site on riderzpro.com (go-live day only)
 
 - [ ] Access to riderzpro.com's DNS (where it is managed, e.g. Cloudflare or the registrar).

@@ -69,7 +69,11 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
           <Stat label="Riderzpro's own items" value={rupees(r.sales.ownItems)} note="products and installation" />
           <Stat label="Marketplace items" value={rupees(r.sales.marketplaceItems)} note={`${r.marketplace.sellers} seller${r.marketplace.sellers === 1 ? "" : "s"}`} />
           <Stat label="Delivery charged" value={rupees(r.sales.shipping)} />
-          <Stat label="Coupon discounts" value={rupees(r.sales.discounts)} note={`${r.coupons.orders} order${r.coupons.orders === 1 ? "" : "s"} with a code`} />
+          <Stat
+            label="Discounts"
+            value={rupees(r.sales.discounts)}
+            note={`coupons ${rupees(r.sales.couponDiscounts)} (${r.coupons.orders} order${r.coupons.orders === 1 ? "" : "s"}) · shop special prices ${rupees(r.sales.shopDiscounts)}`}
+          />
           <Stat label="Paid online" value={rupees(r.online.paid)} note={`${r.online.paidOrders} payments · refunds ${rupees(r.online.refunded)}`} />
           <Stat
             label="Payment method"
@@ -78,13 +82,19 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
           />
         </div>
 
-        <h2 className="eyebrow mb-3 mt-10">Marketplace commission (parts delivered in the range)</h2>
+        <h2 className="eyebrow mb-3 mt-10">Marketplace commission (parts delivered in the range, paid through Riderzpro)</h2>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <Stat label="Delivered seller sales" value={rupees(r.marketplace.deliveredGross)} />
           <Stat label="Commission" value={rupees(r.marketplace.commission)} />
           <Stat label="GST on commission" value={rupees(r.marketplace.commissionGst)} />
           <Stat label="Due to sellers" value={rupees(r.marketplace.deliveredGross - r.marketplace.commission - r.marketplace.commissionGst)} note="before payouts already made" />
         </div>
+        {r.marketplace.counterGross > 0 && (
+          <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <Stat label="Paid at sellers' counters" value={rupees(r.marketplace.counterGross)} note="shop screen orders; the seller has the money" />
+            <Stat label="Commission on counter sales" value={rupees(r.marketplace.counterCommission)} note="not collected yet: billing rule to be decided" />
+          </div>
+        )}
 
         <h2 className="eyebrow mb-3 mt-10">Riders and customers</h2>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">

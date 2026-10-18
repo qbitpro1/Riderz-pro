@@ -22,6 +22,14 @@ built and tested with a local stand-in. They stay switched off ("not switched on
 - [ ] Bargaining is off by default for each seller; each seller sets their own limit (most 30%).
       Should Riderzpro cap it lower for everyone?
 
+## 3. Legal review (owner / lawyer)
+
+- [ ] The privacy policy (`/legal/privacy`) was rewritten on 18 Oct 2026 to match the site.
+  - It covers accounts, payments, sellers' and riders' data, rider location, the AI assistant, the
+    providers we use and how long data is kept.
+  - Please have it and the terms reviewed by a lawyer before launch, including the grievance
+    officer details Indian law asks for.
+
 ## When done
 
 Tell the owner. The developer then runs the same tests against the real model and checks the

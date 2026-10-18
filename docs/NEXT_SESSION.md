@@ -15,6 +15,9 @@
 - Done on `V0.4` (not yet on `main`): Phase 3 live tracking; Phase 4 Razorpay payments, refunds,
   customer GST invoice, confirmation email/SMS (see `docs/WORK_UPDATE.md`, 17 Oct late night).
 - Plan of phases: `docs/MIGRATION_PLAN_V0.4.md`. Running log: `docs/WORK_UPDATE.md`.
+- Launch: `docs/DEPLOY.md` (runbook) and `docs/AUDIT_V0.5.md` (last full audit, all fixed). From the
+  code side the site is ready; what's left is the team's inputs (`docs/team/`), staging tests with the
+  real keys, a legal review of the policies, and own hero photos instead of Unsplash.
 
 ## Owner's instructions for the next session (17 Oct 2026)
 

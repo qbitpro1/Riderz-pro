@@ -74,10 +74,17 @@ export function guardMutation(req: Request) {
   if (originHost !== host) throw new ApiError(403, "forbidden", "Request blocked.");
 }
 
+/** Refuses a request whose declared size is over `limit` bytes, before reading it. */
+export function assertBodySize(req: Request, limit: number) {
+  const declared = Number(req.headers.get("content-length") ?? 0);
+  if (Number.isFinite(declared) && declared > limit) throw new ApiError(413, "too_large", "That request is too large.");
+}
+
 /** Parse a JSON body (max `limit` bytes) against a zod schema; field errors come back as `fields`. */
 export async function readJson<S extends z.ZodTypeAny>(req: Request, schema: S, limit = 64 * 1024): Promise<z.infer<S>> {
+  assertBodySize(req, limit);
   const text = await req.text();
-  if (text.length > limit) throw new ApiError(413, "too_large", "That request is too large.");
+  if (Buffer.byteLength(text) > limit) throw new ApiError(413, "too_large", "That request is too large.");
   let body: unknown;
   try {
     body = text ? JSON.parse(text) : {};

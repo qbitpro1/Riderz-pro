@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { rateLimit } from "@/lib/server/http";
 import { dealerByApiKey, dealerCanPublish, type Dealer } from "@/lib/inventory/dealers";
 import { parseInventoryFile, googleSheetCsvUrl, parseCsv } from "@/lib/inventory/parsers";
 import { processBatch } from "@/lib/inventory/pipeline";
@@ -43,6 +44,11 @@ function authenticate(request: Request): Dealer | null {
 export async function POST(request: Request) {
   const dealer = authenticate(request);
   if (!dealer) return NextResponse.json({ ok: false }, { status: 401 });
+  try {
+    await rateLimit(`dealer-upload:${dealer.id}`, 20, 60 * 60);
+  } catch {
+    return fail("rate_limited", "Too many uploads: at most 20 an hour per key.", 429);
+  }
 
   const contentType = request.headers.get("content-type") ?? "";
 

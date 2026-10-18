@@ -160,6 +160,9 @@ export async function sqlOne<T extends Row = Row>(text: string, params: unknown[
   return rows[0] ?? null;
 }
 
+/** `%term%` for ILIKE / LIKE with the term's own `%`, `_` and `\` matched literally (Postgres escapes with `\`). */
+export const containsPattern = (term: string) => `%${term.replace(/[\\%_]/g, (c) => `\\${c}`)}%`;
+
 export type Query = <T extends Row = Row>(text: string, params?: unknown[]) => Promise<T[]>;
 
 /** Several statements that must succeed or fail together. */

@@ -1,5 +1,6 @@
 import { ApiError, clientIp, guardMutation, ok, rateLimit, readJson, route } from "@/lib/server/http";
 import { placeOrder } from "@/lib/server/orders";
+import { housekeeping } from "@/lib/server/housekeeping";
 import { onlinePaymentsEnabled, releaseUnpaidOrdersSoon, startOnlinePayment } from "@/lib/server/payments";
 import { currentCustomer } from "@/lib/server/customers";
 import { placeOrderSchema } from "@/components/cart/orderSchema";
@@ -21,6 +22,7 @@ export const POST = route(async (req: Request) => {
   await rateLimit(`order:${clientIp(req)}`, 10, 10 * 60);
   const input = await readJson(req, placeOrderSchema, 32 * 1024);
   releaseUnpaidOrdersSoon();
+  housekeeping();
   if (input.paymentMethod === "online" && !onlinePaymentsEnabled()) {
     throw new ApiError(409, "payments_unavailable", "Online payment isn't available right now. Please order on WhatsApp.");
   }

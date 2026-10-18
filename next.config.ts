@@ -26,7 +26,9 @@ const nextConfig: NextConfig = {
     optimizePackageImports: [],
   },
   // Baseline security headers on every route. No full CSP on purpose: the site
-  // relies on inline scripts and a CSP would break them. HSTS belongs at the host.
+  // relies on inline scripts and a CSP would break them. HSTS in production only (local dev is
+  // plain http); without includeSubDomains, so a subdomain still on http (the old site during the
+  // switch) keeps working.
   async headers() {
     return [
       {
@@ -36,6 +38,7 @@ const nextConfig: NextConfig = {
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           { key: "X-Frame-Options", value: "SAMEORIGIN" },
           { key: "Permissions-Policy", value: "camera=(), microphone=(self), geolocation=(self), payment=(self \"https://checkout.razorpay.com\" \"https://api.razorpay.com\")" },
+          ...(process.env.NODE_ENV === "production" ? [{ key: "Strict-Transport-Security", value: "max-age=31536000" }] : []),
         ],
       },
     ];

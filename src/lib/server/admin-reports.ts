@@ -1,6 +1,6 @@
 import "server-only";
 
-import { sql, sqlOne } from "@/lib/db/client";
+import { sql, sqlOne, containsPattern } from "@/lib/db/client";
 import { settlementFor } from "@/lib/vendor/types";
 
 /**
@@ -41,10 +41,10 @@ export async function listCustomersAdmin(q?: string, before?: string): Promise<{
             count(o.id)::int AS orders, COALESCE(sum(o.total), 0)::int AS spent, max(o.created_at) AS last_order_at
        FROM customers c
        LEFT JOIN orders o ON o.customer_id = c.id AND o.status <> 'cancelled'
-      WHERE ($1::text IS NULL OR c.name ILIKE '%' || $1 || '%' OR c.mobile LIKE '%' || $1 || '%' OR c.email ILIKE '%' || $1 || '%')
+      WHERE ($1::text IS NULL OR c.name ILIKE $1 OR c.mobile LIKE $1 OR c.email ILIKE $1)
         AND ($2::timestamptz IS NULL OR c.created_at < $2)
       GROUP BY c.id ORDER BY c.created_at DESC LIMIT ${LIMIT + 1}`,
-    [term, before ?? null],
+    [term ? containsPattern(term) : null, before ?? null],
   );
   const page = rows.slice(0, LIMIT).map((r) => ({
     id: r.id,
@@ -123,8 +123,9 @@ export type ReportRange = { from: string; to: string };
 export type SalesReport = {
   range: ReportRange;
   orders: { placed: number; cancelled: number; byStatus: Record<string, number>; byMethod: Record<string, number> };
-  sales: { total: number; items: number; shipping: number; discounts: number; average: number; ownItems: number; marketplaceItems: number };
-  marketplace: { gross: number; deliveredGross: number; commission: number; commissionGst: number; sellers: number };
+  sales: { total: number; items: number; shipping: number; discounts: number; couponDiscounts: number; shopDiscounts: number; average: number; ownItems: number; marketplaceItems: number };
+  /** Parts delivered in the range. `counter*`: paid at the seller's own counter (the seller has the money). */
+  marketplace: { gross: number; deliveredGross: number; commission: number; commissionGst: number; counterGross: number; counterCommission: number; sellers: number };
   online: { paid: number; paidOrders: number; refunded: number };
   riders: { delivered: number; earnings: number };
   coupons: { orders: number; given: number };
@@ -145,9 +146,10 @@ export async function salesReport(range: ReportRange): Promise<SalesReport> {
     sqlOne<{ amount: number }>(`SELECT COALESCE(sum(i.line_total),0)::int AS amount FROM order_items i JOIN orders o ON o.id = i.order_id WHERE ${LIVE} AND i.vendor_order_id IS NULL`, p),
     sql<{ status: string; n: number }>(`SELECT o.status, count(*)::int AS n FROM orders o WHERE ${IN} GROUP BY 1`, p),
     sql<{ m: string; n: number }>(`SELECT o.payment_method AS m, count(*)::int AS n FROM orders o WHERE ${LIVE} GROUP BY 1`, p),
-    sqlOne<{ total: number; items: number; shipping: number; discounts: number; n: number }>(
+    sqlOne<{ total: number; items: number; shipping: number; discounts: number; shop_discounts: number; n: number }>(
       `SELECT COALESCE(sum(o.total),0)::int AS total, COALESCE(sum(o.subtotal),0)::int AS items, COALESCE(sum(o.shipping),0)::int AS shipping,
-              COALESCE(sum(o.discount),0)::int AS discounts, count(*)::int AS n
+              COALESCE(sum(o.discount),0)::int AS discounts,
+              COALESCE(sum(o.discount) FILTER (WHERE o.channel = 'store'),0)::int AS shop_discounts, count(*)::int AS n
          FROM orders o WHERE ${LIVE}`,
       p,
     ),
@@ -157,8 +159,8 @@ export async function salesReport(range: ReportRange): Promise<SalesReport> {
         WHERE ${LIVE} AND vo.status NOT IN ('cancelled','returned')`,
       p,
     ),
-    sql<{ subtotal: number; commission_rate: string }>(
-      "SELECT subtotal, commission_rate FROM vendor_orders WHERE status = 'delivered' AND delivered_at BETWEEN $1 AND $2",
+    sql<{ subtotal: number; commission_rate: string; collected_by: "platform" | "seller" }>(
+      "SELECT subtotal, commission_rate, collected_by FROM vendor_orders WHERE status = 'delivered' AND delivered_at BETWEEN $1 AND $2",
       p,
     ),
     sqlOne<{ paise: string; n: number }>(
@@ -195,7 +197,8 @@ export async function salesReport(range: ReportRange): Promise<SalesReport> {
   ]);
 
   const byStatus = Object.fromEntries(status.map((r) => [r.status, r.n]));
-  const settled = delivered.map((d) => settlementFor(d.subtotal, Number(d.commission_rate)));
+  const settled = delivered.filter((d) => d.collected_by === "platform").map((d) => settlementFor(d.subtotal, Number(d.commission_rate)));
+  const counter = delivered.filter((d) => d.collected_by === "seller").map((d) => settlementFor(d.subtotal, Number(d.commission_rate)));
   const total = sums?.total ?? 0;
   const placed = sums?.n ?? 0;
   const marketplaceGross = parts?.gross ?? 0;
@@ -207,6 +210,8 @@ export async function salesReport(range: ReportRange): Promise<SalesReport> {
       items: sums?.items ?? 0,
       shipping: sums?.shipping ?? 0,
       discounts: sums?.discounts ?? 0,
+      couponDiscounts: coupons?.given ?? 0,
+      shopDiscounts: sums?.shop_discounts ?? 0,
       average: placed ? Math.round(total / placed) : 0,
       ownItems: own?.amount ?? 0,
       marketplaceItems: marketplaceGross,
@@ -216,6 +221,8 @@ export async function salesReport(range: ReportRange): Promise<SalesReport> {
       deliveredGross: settled.reduce((n, s) => n + s.gross, 0),
       commission: settled.reduce((n, s) => n + s.commission, 0),
       commissionGst: settled.reduce((n, s) => n + s.commissionGst, 0),
+      counterGross: counter.reduce((n, s) => n + s.gross, 0),
+      counterCommission: counter.reduce((n, s) => n + s.commission, 0),
       sellers: parts?.sellers ?? 0,
     },
     online: { paid: Math.round(Number(online?.paise ?? 0) / 100), paidOrders: online?.n ?? 0, refunded: Math.round(Number(refunds?.paise ?? 0) / 100) },

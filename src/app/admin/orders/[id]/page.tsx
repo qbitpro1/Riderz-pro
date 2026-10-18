@@ -107,9 +107,12 @@ export default async function AdminOrderPage({ params }: { params: Promise<{ id:
               <dl className="space-y-1.5 text-sm">
                 <div className="flex justify-between"><dt className="text-ash">Items</dt><dd className="tnum">{rupees(order.subtotal)}</dd></div>
                 <div className="flex justify-between"><dt className="text-ash">Shipping</dt><dd className="tnum">{order.shipping === 0 ? "Free" : rupees(order.shipping)}</dd></div>
-                {order.couponCode && (
+                {order.couponCode ? (
                   <div className="flex justify-between"><dt className="text-ash">Coupon {order.couponCode}</dt><dd className="tnum">{order.discount ? `−${rupees(order.discount)}` : "Free delivery"}</dd></div>
-                )}
+                ) : order.discount > 0 ? (
+                  // A special price agreed on a seller's shop screen (already in the seller's item prices).
+                  <div className="flex justify-between"><dt className="text-ash">Shop special price</dt><dd className="tnum">−{rupees(order.discount)}</dd></div>
+                ) : null}
                 <div className="flex justify-between border-t border-tint/8 pt-2"><dt className="font-bold">Total</dt><dd className="font-display text-lg font-extrabold tnum">{rupees(order.total)}</dd></div>
               </dl>
             </div>

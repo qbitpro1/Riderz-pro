@@ -112,19 +112,26 @@ export async function sendOtp(opts: { vendorId: string | null; channel: OtpChann
   await deliver(opts.channel, opts.target, code, opts.purpose);
 }
 
-/** Consumes the code if it matches. Wrong codes count against the attempt limit. */
+/**
+ * Consumes the code if it matches. Every try counts (MAX_ATTEMPTS per code), and the count and the
+ * use are each one atomic statement, so parallel guesses can't get extra tries and a code is used once.
+ */
 export async function checkOtp(opts: { target: string; purpose: OtpPurpose; code: string }): Promise<void> {
-  const row = await sqlOne<{ id: string; code_hash: string; attempts: number }>(
-    `SELECT id, code_hash, attempts FROM vendor_otps
+  const row = await sqlOne<{ id: string; code_hash: string }>(
+    `SELECT id, code_hash FROM vendor_otps
      WHERE target = $1 AND purpose = $2 AND consumed_at IS NULL AND expires_at > now()
      ORDER BY created_at DESC LIMIT 1`,
     [opts.target, opts.purpose],
   );
   if (!row) throw new ApiError(400, "otp_expired", "That code has expired. Ask for a new one.");
-  if (row.attempts >= MAX_ATTEMPTS) throw new ApiError(429, "otp_locked", "Too many wrong codes. Ask for a new one.");
+  const tried = await sqlOne<{ attempts: number }>(
+    "UPDATE vendor_otps SET attempts = attempts + 1 WHERE id = $1 AND attempts < $2 AND consumed_at IS NULL RETURNING attempts",
+    [row.id, MAX_ATTEMPTS],
+  );
+  if (!tried) throw new ApiError(429, "otp_locked", "Too many wrong codes. Ask for a new one.");
   if (!sameHash(row.code_hash, codeHash(opts.target, opts.purpose, opts.code))) {
-    await sql("UPDATE vendor_otps SET attempts = attempts + 1 WHERE id = $1", [row.id]);
     throw new ApiError(400, "otp_wrong", "That code is not right.");
   }
-  await sql("UPDATE vendor_otps SET consumed_at = now() WHERE id = $1", [row.id]);
+  const used = await sqlOne<{ id: string }>("UPDATE vendor_otps SET consumed_at = now() WHERE id = $1 AND consumed_at IS NULL RETURNING id", [row.id]);
+  if (!used) throw new ApiError(400, "otp_expired", "That code was already used. Ask for a new one.");
 }

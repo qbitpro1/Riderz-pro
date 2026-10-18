@@ -1,5 +1,6 @@
 import "server-only";
 
+import { after } from "next/server";
 import { sql, transaction, type Query } from "@/lib/db/client";
 import {
   PAYMENT_STATUS_LABELS,
@@ -534,7 +535,15 @@ export function releaseUnpaidOrdersSoon(): void {
   const now = Date.now();
   if (now - lastRelease < RELEASE_EVERY_MS) return;
   lastRelease = now;
-  void releaseUnpaidOrders().catch((err) => console.error("[payments] release failed", err instanceof Error ? err.message : err));
+  const task = () => releaseUnpaidOrders().then(
+    () => undefined,
+    (err) => console.error("[payments] release failed", err instanceof Error ? err.message : err),
+  );
+  try {
+    after(task); // after the response, kept alive on serverless hosts
+  } catch {
+    void task();
+  }
 }
 
 /* ------------------------------------------------------------ read views */
@@ -655,7 +664,8 @@ export async function customerOrderPayment(customerId: string, number: string): 
 
   let label: string;
   if (o.payment_method !== "online") {
-    label = o.payment_status === "paid" ? "Paid" : "Payment arranged on WhatsApp";
+    label =
+      o.payment_status === "paid" ? "Paid" : o.payment_method === "counter" ? "Pay at the shop counter" : "Payment arranged on WhatsApp";
   } else if (o.payment_status === "paid") {
     label = o.paid_at ? `Paid online on ${dayFmt.format(new Date(o.paid_at))}` : "Paid online";
   } else if (o.payment_status === "refunded") {

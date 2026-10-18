@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { clientIp, fail, guardMutation, rateLimit } from "@/lib/server/http";
 import { assertNoUserErrors, ShopifyError, storefront, type UserError } from "@/lib/shopify/client";
 import { isShopifyConfigured } from "@/lib/shopify/config";
 import { isVendorLineSlug } from "@/lib/vendor/types";
@@ -36,6 +37,12 @@ function bad(message: string) {
  * Only line ids and quantities are read; prices always come from Shopify.
  */
 export async function POST(req: Request) {
+  try {
+    guardMutation(req);
+    await rateLimit(`shopify-checkout:${clientIp(req)}`, 20, 10 * 60);
+  } catch (err) {
+    return fail(err);
+  }
   let raw: string;
   try {
     raw = await req.text();

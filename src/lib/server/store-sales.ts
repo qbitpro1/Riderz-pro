@@ -1,7 +1,7 @@
 import "server-only";
 
 import { sql, sqlOne, transaction } from "@/lib/db/client";
-import type { VendorSelf } from "@/lib/vendor/types";
+import { DEFAULT_COMMISSION_RATE, type VendorSelf } from "@/lib/vendor/types";
 import { ApiError } from "./http";
 import { newId, sha256 } from "./security";
 import { audit, notifyVendor } from "./vendors";
@@ -225,7 +225,7 @@ export async function placeStoreOrder(vendor: VendorSelf, input: StoreCheckoutIn
     await q(
       `INSERT INTO vendor_orders (id, order_id, vendor_id, status, subtotal, commission_rate, accepted_at, collected_by)
        VALUES ($1,$2,$3,'accepted',$4,$5, now(), $6)`,
-      [vendorOrderId, orderId, vendor.id, total, rows[0]?.commission_rate === null || rows[0]?.commission_rate === undefined ? 10 : Number(rows[0].commission_rate), input.pay === "counter" ? "seller" : "platform"],
+      [vendorOrderId, orderId, vendor.id, total, rows[0]?.commission_rate == null ? DEFAULT_COMMISSION_RATE : Number(rows[0].commission_rate), input.pay === "counter" ? "seller" : "platform"],
     );
     for (const i of priced) {
       await q(

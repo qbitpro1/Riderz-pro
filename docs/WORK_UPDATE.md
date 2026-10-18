@@ -1,5 +1,30 @@
 # Work update
 
+## 18 Oct 2026: code-quality pass, full audit, launch readiness (on V0.4)
+
+- **ESLint** (Next core-web-vitals + TypeScript) added and made clean across all 535 files.
+  - Shared client hooks: `useHydrated`, `useBrowserValue`, `useLatest`, `usePoll`.
+  - One My Garage store (`useGarage`).
+  - 22 effect anti-patterns removed.
+  - Real bugs fixed: checkout overwrote the chosen address after an account refresh; the shop's
+    special price didn't expire on screen on time; voice search spammed its parent;
+    `/cars/latest` day groups froze at build time.
+- **Audit** (`docs/AUDIT_V0.5.md`): 17 issues plus one found while fixing, all fixed.
+  - Housekeeping now runs on a schedule (`/api/cron/housekeeping`, `vercel.json`) and after busy
+    requests.
+  - The production start checks settings; `/api/health`; error pages.
+  - Reports split counter sales and shop special prices; the admin order page shows the shop special
+    price; sellers can cancel a counter order when the customer leaves.
+  - Body size checked before reading; rate limits on the Shopify checkout and the dealer API;
+    duplicate lines refused at the shop checkout; sign-in codes are atomic.
+  - Search patterns escaped; wording fixes; `.env.example` complete; HSTS; privacy policy
+    rewritten; `docs/DEPLOY.md` runbook.
+- **Verified**:
+  - every scripted suite passes (14 new, AI and shop 31, coupons 34, admin 54, payments 29,
+    signatures 18, invoices 22) plus the code checks;
+  - all 462 pages load; build clean; no secrets or dealer prices in built files;
+  - the production start fails clearly without its required settings.
+
 ## 18 Oct 2026: AI shopping assistant, and selling from the Offline Store screen (on V0.4)
 
 - **Website AI assistant**:

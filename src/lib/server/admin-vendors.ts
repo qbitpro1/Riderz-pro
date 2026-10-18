@@ -1,7 +1,7 @@
 import "server-only";
 
 import { z } from "zod";
-import { sql, sqlOne, transaction, type Query } from "@/lib/db/client";
+import { sql, sqlOne, transaction, type Query, containsPattern } from "@/lib/db/client";
 import { DEPARTMENT_BY_SLUG } from "@/lib/data/taxonomy";
 import { findModelBySlug } from "@/lib/data/vehicles";
 import { ApiError, rateLimit } from "./http";
@@ -62,7 +62,7 @@ export function parseVendorFilter(raw: string | null | undefined): VendorFilter 
   return "queue";
 }
 
-const likeEscape = (s: string) => `%${s.replace(/[\\%_]/g, (c) => `\\${c}`)}%`;
+const likeEscape = containsPattern;
 
 export async function listVendors(filter: VendorFilter, q: string): Promise<{ items: VendorListItem[]; counts: Record<string, number> }> {
   const params: unknown[] = [];

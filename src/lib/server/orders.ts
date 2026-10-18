@@ -1,7 +1,7 @@
 import "server-only";
 
 import { randomInt } from "node:crypto";
-import { sql, transaction, type Query } from "@/lib/db/client";
+import { sql, transaction, type Query, containsPattern } from "@/lib/db/client";
 import { checkBuyable, parseLineId } from "@/lib/shopify/variants";
 import { shippingFor } from "@/lib/store/shipping";
 import { VENDOR_LINE_PREFIX, VENDOR_ORDER_MOVES, DEFAULT_COMMISSION_RATE, isVendorLineSlug, type VendorOrderStatus } from "@/lib/vendor/types";
@@ -279,8 +279,8 @@ export async function placeOrder(
 
 /** Tell each seller about their part of an order (used when an online order is paid). */
 export async function notifySellersOfOrder(orderId: string): Promise<void> {
-  const parts = await sql<{ id: string; vendor_id: string; number: string; count: number }>(
-    `SELECT vo.id, vo.vendor_id, o.number,
+  const parts = await sql<{ id: string; vendor_id: string; number: string; count: number; channel: string }>(
+    `SELECT vo.id, vo.vendor_id, o.number, o.channel,
             (SELECT count(*)::int FROM order_items i WHERE i.vendor_order_id = vo.id) AS count
        FROM vendor_orders vo JOIN orders o ON o.id = vo.order_id
       WHERE vo.order_id = $1 AND vo.status IN ('new','accepted')`,
@@ -289,8 +289,11 @@ export async function notifySellersOfOrder(orderId: string): Promise<void> {
   for (const p of parts) {
     await notifyVendor(p.vendor_id, {
       type: "order",
-      title: `New order ${p.number}`,
-      body: `${p.count} item${p.count === 1 ? "" : "s"} to pack and ship. Paid online.`,
+      title: p.channel === "store" ? `Shop screen order ${p.number}: paid` : `New order ${p.number}`,
+      body:
+        p.channel === "store"
+          ? `Paid on your shop screen. Hand over ${p.count} item${p.count === 1 ? "" : "s"} and mark it handed over.`
+          : `${p.count} item${p.count === 1 ? "" : "s"} to pack and ship. Paid online.`,
       link: `/vendor/dashboard/orders/${p.id}`,
     });
   }
@@ -743,7 +746,7 @@ export async function listAdminOrders(opts: { status?: OrderStatus; q?: string }
       WHERE ($1::text IS NULL OR status = $1)
         AND ($2::text IS NULL OR number ILIKE $3 OR customer_name ILIKE $3 OR customer_phone LIKE $3)
       ORDER BY created_at DESC LIMIT 100`,
-    [opts.status ?? null, q, q ? `%${q.replace(/[\\%_]/g, (c) => `\\${c}`)}%` : null],
+    [opts.status ?? null, q, q ? containsPattern(q) : null],
   );
   return assembleAdminOrders(rows);
 }

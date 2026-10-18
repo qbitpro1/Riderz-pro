@@ -1,7 +1,7 @@
 import "server-only";
 
 import { z } from "zod";
-import { sql, transaction, type Query } from "@/lib/db/client";
+import { sql, transaction, type Query, containsPattern } from "@/lib/db/client";
 import { ALL_MODELS } from "@/lib/data/vehicles";
 import { ApiError } from "./http";
 import { assertOwnFiles } from "./files";
@@ -253,7 +253,7 @@ export async function listProducts(vendorId: string, filter: z.infer<typeof list
     where += ` AND status = $${params.length}`;
   }
   if (filter.q) {
-    params.push(`%${filter.q.replace(/[\\%_]/g, (m) => `\\${m}`)}%`);
+    params.push(containsPattern(filter.q));
     where += ` AND (title ILIKE $${params.length} OR sku ILIKE $${params.length} OR brand ILIKE $${params.length})`;
   }
   const rows = await sql<VendorProductRow>(

@@ -2,7 +2,7 @@ import "server-only";
 
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { sql, sqlOne, transaction } from "@/lib/db/client";
+import { sql, sqlOne, transaction, containsPattern } from "@/lib/db/client";
 import { ADMIN_ROLES, can, type AdminPerm, type AdminRole, type AdminSelf, type TeamInvite, type TeamMember } from "@/lib/admin/roles";
 import { ApiError, rateLimit } from "./http";
 import { sendEmail } from "./messaging";
@@ -348,11 +348,11 @@ export async function listAudit(f: { q?: string; actorType?: string; before?: nu
   const type = f.actorType && ["vendor", "admin", "system", "customer"].includes(f.actorType) ? f.actorType : null;
   const rows = await sql<{ id: string; at: Date; actor_type: string; actor: string; action: string; vendor_id: string | null; detail: Record<string, unknown> | null; ip: string | null }>(
     `SELECT id, at, actor_type, actor, action, vendor_id, detail, ip FROM audit_log
-      WHERE ($1::text IS NULL OR action ILIKE '%' || $1 || '%' OR actor ILIKE '%' || $1 || '%' OR detail::text ILIKE '%' || $1 || '%')
+      WHERE ($1::text IS NULL OR action ILIKE $1 OR actor ILIKE $1 OR detail::text ILIKE $1)
         AND ($2::text IS NULL OR actor_type = $2)
         AND ($3::bigint IS NULL OR id < $3)
       ORDER BY id DESC LIMIT ${LIMIT + 1}`,
-    [q, type, f.before ?? null],
+    [q ? containsPattern(q) : null, type, f.before ?? null],
   );
   const page = rows.slice(0, LIMIT).map((r) => ({ id: Number(r.id), at: iso(r.at) as string, actorType: r.actor_type, actor: r.actor, action: r.action, vendorId: r.vendor_id, detail: r.detail, ip: r.ip }));
   return { rows: page, next: rows.length > LIMIT ? page[page.length - 1].id : null };

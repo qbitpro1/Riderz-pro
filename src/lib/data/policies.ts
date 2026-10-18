@@ -248,41 +248,63 @@ export const LEGAL_POLICIES: Policy[] = [
     sections: [
       {
         id: "on-this-site",
-        heading: "What this website stores",
+        heading: "What this website stores on your device",
         body: [
-          "There are no customer accounts yet. Your cart, your saved car, your theme choice, your recently viewed products and your wishlist are kept in your browser's local storage, on your own device. We do not receive them unless you send them to us.",
-          "You can clear this at any time from your browser settings. Doing so empties your cart and forgets your saved car.",
+          "Your cart, your saved car, your theme choice, your recently viewed products and, when signed out, your wishlist are kept in your browser's local storage on your own device.",
+          "When you sign in, a sign-in cookie keeps you signed in (60 days for shoppers). Sellers, delivery riders and our team have their own sign-in cookies. These cookies are needed for the site to work; we set no advertising or tracking cookies.",
         ],
       },
       {
         id: "what-we-collect",
         heading: "What we collect from you",
         body: [
-          "Enquiries and orders reach us on WhatsApp, by phone or by email. That means the contact details you give us — name, phone number, email address and delivery address — and, where you give it, the vehicle detail we need to confirm fitment: make, model, variant and year.",
-          "Order and service history, so we can honour warranties and re-tune systems we have installed.",
+          "Your account: your name, mobile number and/or email address (each confirmed with a one-time code), your saved delivery addresses, wishlist and car.",
+          "Your orders: the items, the delivery details you give at checkout (name, phone, email, address and, if you choose \"Detect my location\", your location at that moment) and the order history, so we can deliver, honour warranties and answer questions. Messages you send us from the help form are kept with them.",
+          "Online payments are taken by Razorpay on its own secure page. We never see or store your card, UPI or bank details; we keep the payment reference, amount and status.",
+          "If you order on a seller's shop screen in their store, we keep your name and mobile number with that order.",
+          "Enquiries that reach us on WhatsApp, by phone or by email, with the vehicle details we need to confirm fitment (make, model, variant and year).",
+        ],
+      },
+      {
+        id: "riders-sellers",
+        heading: "Sellers and delivery riders",
+        body: [
+          "Sellers give us business and tax details, bank details and documents to verify their store. Bank account numbers and PAN are stored encrypted and shown only to our finance team when needed.",
+          "Delivery riders give us their name, mobile, city and vehicle details. While a rider is delivering an order, and only if they agree, their phone shares its location so the customer can follow the delivery. The route trail is deleted when the delivery ends; the last point of a delivered order is kept for 30 days in case of a dispute, then deleted.",
+        ],
+      },
+      {
+        id: "ai-assistant",
+        heading: "The AI shopping assistant",
+        body: [
+          "If you use the AI assistant (on this website or on a seller's shop screen), what you type or say is sent to Anthropic, which provides the AI model, to produce the answer. Don't type personal details into it; it never asks for them. We don't use your questions for advertising.",
         ],
       },
       {
         id: "why",
         heading: "Why we collect it",
         body: [
-          "To fulfil orders, confirm fitment, schedule workshop slots and honour warranties.",
-          "To contact you about a specific enquiry you started. We do not add you to marketing lists without your consent.",
+          "To run your account, fulfil orders, confirm fitment, take payments and refunds, schedule workshop slots, honour warranties and answer your messages.",
+          "To keep the site secure: sign-in codes, limits on repeated attempts and a record of account and order changes.",
+          "To contact you about an order or enquiry you started. We do not add you to marketing lists without your consent.",
         ],
       },
       {
         id: "sharing",
         heading: "Who we share it with",
         body: [
-          "Logistics partners, for delivery. Our payment processor (Razorpay), for online payments.",
+          "The seller of any marketplace item you order (your name, phone and delivery address, to fulfil it), our delivery riders and logistics partners, for delivery.",
+          "Service providers who process it for us: Razorpay (payments), our email and SMS providers (sign-in codes, order confirmations and delivery alerts), Anthropic (the AI assistant) and OpenStreetMap services (maps, routes and turning a location into an address).",
           "We never sell personal data, and we do not share your vehicle details with third-party marketers.",
         ],
       },
       {
-        id: "cookies",
-        heading: "Cookies",
+        id: "retention",
+        heading: "How long we keep it",
         body: [
-          "This site does not set advertising cookies. Its own functions use your browser's local storage, as described above.",
+          "Sign-in codes: one day. Sign-in sessions: until they expire or you sign out. Rider location: as described above.",
+          "Orders, invoices and payment records: as long as tax and accounting law requires.",
+          "Your account until you delete it. You can delete it yourself under My account → Settings; order records we must keep by law are kept without your account.",
         ],
       },
       {
