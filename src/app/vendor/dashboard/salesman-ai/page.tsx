@@ -11,18 +11,18 @@ export const metadata: Metadata = { title: "Salesman AI", robots: { index: false
 export default async function SalesmanAiPage() {
   const vendor = await vendorPage(["approved"], "/vendor/dashboard/salesman-ai");
   const [settings, products] = await Promise.all([storeSettings(vendor.id), screenProducts(vendor.id)]);
-  const available = assistantEnabled();
+  const full = assistantEnabled();
   return (
     <>
       <h1 className="display-3">SALESMAN AI</h1>
       <p className="mt-2 max-w-2xl text-sm text-ash">
         Your AI salesman on the Offline Store screen in your shop. It talks to the customer, finds what they need in your stock,
-        compares products, adds them to the order, can bargain within your limits, and takes them to checkout.
+        compares products, adds them to the order and takes them to checkout. The full Salesman AI can also bargain within your limits.
       </p>
       <SalesmanPractice
         products={products}
         status={{
-          available,
+          full,
           on: settings.aiEnabled,
           bargain: settings.bargainEnabled && settings.maxDiscountPct > 0 ? { pct: settings.maxDiscountPct, rupees: settings.maxDiscountRupees } : null,
         }}

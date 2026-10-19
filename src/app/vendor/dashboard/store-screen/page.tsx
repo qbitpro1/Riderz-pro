@@ -15,7 +15,7 @@ export default async function StoreScreenSettingsPage() {
     <>
       <h1 className="display-3">OFFLINE STORE</h1>
       <p className="mt-2 max-w-2xl text-sm text-ash">Sell from the screen in your shop: Salesman AI, special prices and how customers pay.</p>
-      <StoreSettingsForm initial={settings} aiAvailable={assistantEnabled()} onlineAvailable={onlinePaymentsEnabled()} />
+      <StoreSettingsForm initial={settings} fullAi={assistantEnabled()} onlineAvailable={onlinePaymentsEnabled()} />
     </>
   );
 }

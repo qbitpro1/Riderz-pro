@@ -5,7 +5,6 @@ import { screenFitment, screenProducts, screenStore } from "@/lib/server/store-s
 import { vendorHome } from "@/lib/vendor/types";
 import { StoreScreen } from "@/components/vendor/store-screen/StoreScreen";
 import { payOptions, storeSettings } from "@/lib/server/store-sales";
-import { assistantEnabled } from "@/lib/server/assistant/claude";
 
 // Per request: products, stock and approvals change without a deploy.
 export const dynamic = "force-dynamic";
@@ -35,7 +34,7 @@ export default async function StoreScreenPage({ params }: { params: Promise<{ sl
       products={products}
       fitment={screenFitment(products)}
       locked={session.locked}
-      sales={{ aiEnabled: settings.aiEnabled && assistantEnabled(), pay: payOptions(settings) }}
+      sales={{ aiEnabled: settings.aiEnabled, pay: payOptions(settings) }}
     />
   );
 }
