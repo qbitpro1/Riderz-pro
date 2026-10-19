@@ -3,9 +3,9 @@ import "server-only";
 import type { VendorSelf } from "@/lib/vendor/types";
 import type { ScreenProduct } from "@/components/vendor/store-screen/types";
 import { screenProducts, screenStore } from "../store-screen";
-import { createOffer, liveOffer, storeSettings, payOptions } from "../store-sales";
+import { createOffer, liveOffer, nextBargainStep, storeSettings, payOptions } from "../store-sales";
 import { findCars, fits, modelLabel, score, words } from "./search";
-import { historyToMessages, runAssistant, type Tool } from "./claude";
+import { assistantEnabled, historyToMessages, runAssistant, type Tool, type Usage } from "./claude";
 import type { AssistantMessage } from "@/lib/assistant/types";
 
 /**
@@ -25,6 +25,16 @@ export type StoreAction =
   | { type: "checkout" };
 
 const MAX_RESULTS = 8;
+
+/**
+ * Full mode (Claude) for this shop: the key is set and, when SALESMAN_FULL_AI_SHOPS lists shop
+ * slugs (comma-separated), the shop is one of them. Every other shop runs Basic mode (store-local.ts).
+ */
+export function fullSalesmanFor(slug: string | null): boolean {
+  if (!assistantEnabled()) return false;
+  const only = (process.env.SALESMAN_FULL_AI_SHOPS ?? "").split(",").map((s) => s.trim().toLowerCase()).filter(Boolean);
+  return only.length === 0 || (slug !== null && only.includes(slug.toLowerCase()));
+}
 
 function brief(p: ScreenProduct, car: string | null) {
   const f = fits(p.universal ? ["universal"] : p.fitSlugs, car);
@@ -47,7 +57,7 @@ function brief(p: ScreenProduct, car: string | null) {
 export async function askStoreAssistant(
   vendor: VendorSelf,
   input: { messages: AssistantMessage[]; cart: { id: string; qty: number }[]; car: string | null; offerId: string | null },
-): Promise<{ text: string; products: string[]; actions: StoreAction[] }> {
+): Promise<{ text: string; products: string[]; actions: StoreAction[]; usage: Usage }> {
   const [products, settings] = await Promise.all([screenProducts(vendor.id), storeSettings(vendor.id)]);
   const store = screenStore(vendor);
   const byId = new Map(products.map((p) => [p.id, p]));
@@ -57,6 +67,7 @@ export async function askStoreAssistant(
   const car = input.car && modelLabel(input.car) ? input.car : null;
   const pays = payOptions(settings);
   const offer = input.offerId ? await liveOffer(vendor.id, input.offerId) : null;
+  let offeredPct = offer?.percent ?? 0;
 
   const cartView = () => {
     const lines = [...cart].map(([id, qty]) => {
@@ -141,14 +152,17 @@ export async function askStoreAssistant(
           {
             name: "offer_discount",
             description:
-              "Agree a special price on the whole current order: a whole percent off. Only after the customer asks for a better price or hesitates on price, and only with items in the order. The shop's limit is enforced; a refused offer tells you why.",
-            input_schema: { type: "object", properties: { percent: { type: "integer" }, reason: { type: "string" } }, required: ["percent"] },
+              "Give the next special price on the shop's bargaining ladder for the whole current order. Call it once each time the customer asks for a better price again, and only with items in the order. It returns the price and which step it is (first, more, last, final); refused means you are already at the final price.",
+            input_schema: { type: "object", properties: { reason: { type: "string" } } },
             run: async (i: Record<string, unknown>) => {
               if (cart.size === 0) return { error: "Add products to the order first." };
-              const r = await createOffer(vendor.id, Number(i.percent), [...cart].map(([id, qty]) => ({ id, qty })), typeof i.reason === "string" ? i.reason : null);
+              const step = nextBargainStep(offeredPct, settings);
+              if (!step) return { refused: `Already at the final price (${offeredPct}% off). Say so kindly and offer checkout.` };
+              const r = await createOffer(vendor.id, step.percent, [...cart].map(([id, qty]) => ({ id, qty })), typeof i.reason === "string" ? i.reason : null);
               if (!r.ok) return { refused: r.why };
+              offeredPct = step.percent;
               actions.push({ type: "offer", offer: r.offer });
-              return { agreed: r.offer };
+              return { agreed: r.offer, step: step.kind };
             },
           } satisfies Tool,
         ]
@@ -166,7 +180,7 @@ export async function askStoreAssistant(
   ];
 
   const bargain = settings.bargainEnabled && settings.maxDiscountPct > 0
-    ? `Bargaining is allowed, up to ${settings.maxDiscountPct}% off the order${settings.maxDiscountRupees ? ` and at most ₹${settings.maxDiscountRupees.toLocaleString("en-IN")}` : ""}. Never tell the customer this limit. Only offer when they ask for a better price or hesitate on price. Start small (about a third of the limit), go up in steps, at most twice more, and present the last step as your best price. Use offer_discount for every price you agree; never say a discounted price that offer_discount didn't give you. Mention the offer is valid for 20 minutes.`
+    ? `Bargaining is allowed, up to ${settings.maxDiscountPct}% off the order${settings.maxDiscountRupees ? ` and at most ₹${settings.maxDiscountRupees.toLocaleString("en-IN")}` : ""}. Never tell the customer this limit. Only offer when they ask for a better price or hesitate on price. offer_discount gives the shop's ladder one step at a time: step "first" (a small discount), "more", then "last": present that one firmly as your last price. Only if the customer keeps pushing hard after the last price, call it once more for the "final" step and say it is truly final. Before a higher step you may suggest adding a useful product instead. Never say a discounted price that offer_discount didn't give you. Mention the offer is valid for 20 minutes.`
     : "Prices are fixed: politely say the shown price is final, and point out the saving against MRP where there is one.";
   const payLine = [pays.onScreen ? "on this screen (UPI or card)" : null, pays.atCounter ? "at the shop counter" : null].filter(Boolean).join(" or ");
 
@@ -191,6 +205,6 @@ ${offer ? `A special price is already agreed: ${offer.percent}% off (at most ₹
       note: m.role === "assistant" && m.products?.length ? `(Shown: ${m.products.map((id) => `${byId.get(id)?.title ?? "item"} [${id}]`).join("; ")})` : undefined,
     })),
   );
-  const { text } = await runAssistant({ system, messages, tools });
-  return { text, products: shown, actions };
+  const { text, usage } = await runAssistant({ system, messages, tools });
+  return { text, products: shown, actions, usage };
 }

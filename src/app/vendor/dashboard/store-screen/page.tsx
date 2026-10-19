@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { vendorPage } from "@/lib/server/session";
 import { storeSettings } from "@/lib/server/store-sales";
-import { assistantEnabled } from "@/lib/server/assistant/claude";
+import { fullSalesmanFor } from "@/lib/server/assistant/store";
 import { onlinePaymentsEnabled } from "@/lib/server/payments";
 import { StoreSettingsForm } from "@/components/vendor/store-settings/StoreSettingsForm";
 
@@ -15,7 +15,7 @@ export default async function StoreScreenSettingsPage() {
     <>
       <h1 className="display-3">OFFLINE STORE</h1>
       <p className="mt-2 max-w-2xl text-sm text-ash">Sell from the screen in your shop: Salesman AI, special prices and how customers pay.</p>
-      <StoreSettingsForm initial={settings} fullAi={assistantEnabled()} onlineAvailable={onlinePaymentsEnabled()} />
+      <StoreSettingsForm initial={settings} fullAi={fullSalesmanFor(vendor.slug)} onlineAvailable={onlinePaymentsEnabled()} />
     </>
   );
 }

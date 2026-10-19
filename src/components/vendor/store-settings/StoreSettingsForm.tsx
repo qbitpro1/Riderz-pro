@@ -52,13 +52,13 @@ export function StoreSettingsForm({ initial, fullAi, onlineAvailable }: { initia
       <section className="space-y-3">
         <h2 className="eyebrow">Salesman AI</h2>
         {box("aiEnabled", "Show Salesman AI on the screen", "Customers talk or type; it finds your products, compares them, adds them to the order and opens checkout.")}
-        {!fullAi && <p className="text-xs text-gold">Salesman AI runs in Basic mode for now: it finds, shows and adds products and opens checkout. Bargaining needs the full Salesman AI, which Riderzpro is switching on soon.</p>}
+        {!fullAi && <p className="text-xs text-gold">Salesman AI runs in Basic mode for your shop: it finds, compares and adds products, bargains on the steps below, and opens checkout. The full Salesman AI talks more naturally; Riderzpro is switching it on shop by shop.</p>}
         <Link href="/vendor/dashboard/salesman-ai" className="inline-block text-xs text-ash underline underline-offset-4 hover:text-accent">Practise with Salesman AI</Link>
       </section>
 
       <section className="space-y-3">
         <h2 className="eyebrow">Bargaining</h2>
-        {box("bargainEnabled", "Let the AI give a special price when a customer asks", "It starts small and never goes past your limits. Every price is checked again at checkout. The discount comes off your price.")}
+        {box("bargainEnabled", "Let the AI give a special price when a customer asks", "Each time the customer asks again it goes one step: 5%, then 7%, then 8% as its “last price”, and 10% only if the customer keeps pushing. It never goes past your limits below. Every price is checked again at checkout. The discount comes off your price.")}
         <div className="grid gap-3 sm:grid-cols-2">
           <div>
             <label className="label" htmlFor={`${uid}-pct`}>Most % off one order (0–30)</label>

@@ -40,7 +40,7 @@ export type StoreSettings = {
   payAtCounter: boolean;
 };
 
-const DEFAULTS: StoreSettings = { aiEnabled: true, bargainEnabled: false, maxDiscountPct: 5, maxDiscountRupees: null, payOnScreen: true, payAtCounter: true };
+const DEFAULTS: StoreSettings = { aiEnabled: true, bargainEnabled: false, maxDiscountPct: 10, maxDiscountRupees: null, payOnScreen: true, payAtCounter: true };
 
 export async function storeSettings(vendorId: string): Promise<StoreSettings> {
   const r = await sqlOne<{ ai_enabled: boolean; bargain_enabled: boolean; max_discount_pct: number; max_discount_rupees: number | null; pay_on_screen: boolean; pay_at_counter: boolean }>(
@@ -98,6 +98,29 @@ export async function priceStoreCart(vendorId: string, lines: CartLine[]): Promi
   return { items, subtotal: items.reduce((n, i) => n + i.price * i.qty, 0) };
 }
 
+/* ------------------------------------------------------------------ bargaining ladder */
+
+/**
+ * How Salesman AI bargains (both modes): each time the customer asks again it goes one step up.
+ * 5% first, then 7%, then 8% as "my last price"; 10% only for a customer who keeps pushing after
+ * that. Every step is capped by the seller's own limit; the top step it can reach is the final one.
+ */
+export const BARGAIN_LADDER = [5, 7, 8, 10] as const;
+export const LAST_PRICE_PCT = 8;
+
+export type BargainStep = { percent: number; kind: "first" | "more" | "last" | "final" };
+
+/** The next step after `current` percent (0 = no offer yet), or null when already at the top. */
+export function nextBargainStep(current: number, s: StoreSettings): BargainStep | null {
+  if (!s.bargainEnabled || s.maxDiscountPct <= 0) return null;
+  const steps = [...new Set(BARGAIN_LADDER.map((p) => Math.min(p, s.maxDiscountPct)))];
+  const i = steps.findIndex((p) => p > current);
+  if (i === -1) return null;
+  const percent = steps[i];
+  const kind = i === steps.length - 1 ? "final" : percent >= LAST_PRICE_PCT ? "last" : i === 0 ? "first" : "more";
+  return { percent, kind };
+}
+
 /** Rupees off `subtotal` for `percent`, within the seller's limits (and the offer's own cap). */
 function discountFor(subtotal: number, percent: number, s: StoreSettings, cap: number | null): number {
   if (!s.bargainEnabled || s.maxDiscountPct === 0) return 0;
@@ -144,6 +167,8 @@ export type StoreCheckoutInput = {
   customer: { name: string; mobile: string };
   offerId?: string | null;
   pay: "screen" | "counter";
+  /** The Salesman AI chat this order came from (salesman-log.ts). */
+  conversationId?: string;
 };
 
 /**
@@ -237,6 +262,7 @@ export async function placeStoreOrder(vendor: VendorSelf, input: StoreCheckoutIn
       if (!left[0]) throw new ApiError(409, "sold_out", `${i.title} just sold out.`);
     }
     if (offerId) await q("UPDATE store_offers SET used_order_id = $2 WHERE id = $1", [offerId, orderId]);
+    if (input.conversationId) await q("UPDATE orders SET salesman_conversation = $2 WHERE id = $1", [orderId, input.conversationId]);
     await audit({ type: "customer", id: sha256(input.customer.mobile).slice(0, 12) }, "order.place_store", { vendorId: vendor.id, ip, detail: { number, total, discount, pay: input.pay } }, q);
     return { number, total, discount };
   });

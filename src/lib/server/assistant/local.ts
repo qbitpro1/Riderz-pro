@@ -40,6 +40,8 @@ export type Intent = {
   cheaper: boolean;
   /** "add", "le lunga", "this one": the customer wants the product in the order. */
   add: boolean;
+  /** "best konsa hai inme", "which one is better", "compare": choose among what was shown. */
+  pick: boolean;
 };
 
 /** Filler in English and Hinglish that says nothing about the product. */
@@ -53,6 +55,8 @@ const FILLER = new Set(
     "ke ki ka ko liye lie wala wali wale se tak kam zyada jyada kitna kitni kitne kab kaise kahan kaun kyu kyun milega milegi milta milti milenge mil sakta sakti sakte hoga hogi hota hoti karoge karte sa si accha acha achha badhiya badiya sasta saste sasti mehenga mehnga aur bhi " +
     "gaadi gadi gaddi car cars vehicle model new latest please pls plz hi hello hey thanks thank ok okay yes no same instead other others another " +
     "biggest best saving savings most least highest good nice options option something thing things stuff accessories accessory parts part products product items item here shop store available stock show system add put " +
+    "karo kar kardo karna karun karde daal dal lo lena le ye yeh wo woh isko usko iske uske ise use ji " +
+    "namaste namaskar hii hola konsa kaunsa kon kaun inme inmein inmai dono both among better compare comparison difference farak fark " +
     "on of for in with at by how long take takes taking where when what why who whats does time times days much many policy policies rule rules details info information " +
     "fit fits fitting fitment compatible suit suits suitable work works go goes match"
   ).split(" "),
@@ -167,7 +171,7 @@ function findTopic(t: string): Topic | null {
   if (has(t, /\b(warranty|guarantee|guaranty)\b/)) return "warranty";
   if (has(t, /\b(coupon|coupons|promo|code|codes)\b/)) return "offers";
   if (has(t, /\b(call|phone|contact|human|person|staff|agent|talk to|baat)\b/)) return "contact";
-  if (has(t, /\b(better price|best price|last price|final price|kam karo|kam kar|discount do|discount dedo|thoda kam|negotiate|bargain|(get|give)( me| us)?( a| some| any)? (discount|better price)|(extra|more) discount|discount (milega|mil sakta|possible)|reduce (the )?price)\b/)) return "bargain";
+  if (has(t, /\b(better price|best price|last price|final price|kam karo|kam kar|discount do|discount dedo|thoda kam|negotiate|bargain|aur kam|or kam|kam kijiye|kam kar do|kam kardo|price kam|(get|give)( me| us)?( a| some| any)? (discount|better price)|(extra|more) discount|discount (milega|mil sakta|possible)|reduce (the )?price)\b/)) return "bargain";
   if (has(t, /\b(checkout|check out|bill|billing|buy now|place order|le lunga|le lungi|lena hai|done|that's all|thats all|pay now)\b/)) return "checkout";
   if (has(t, /^(hi|hii|hello|hey|namaste|namaskar|hola|good (morning|afternoon|evening))\b/)) return "greeting";
   if (has(t, /^(thanks|thank you|thx|ok thanks|great|shukriya|dhanyavad)\b/)) return "thanks";
@@ -201,7 +205,8 @@ export function parse(text: string): Intent {
     topic,
     more: has(t, /\b(more|others|other options|aur|another|next|baaki|baki)\b/),
     cheaper: has(t, /\b(cheaper|less expensive|sasta wala|saste wale|kam wala|lower price)\b/),
-    add: has(t, /^(add|yes add|put)\b|\b(add it|add this|add that|add to (my )?(order|cart)|this one|that one|ye wala|yeh wala|wo wala|le lunga|le lungi)\b/),
+    add: has(t, /^(add|yes add|put)\b|\b(add it|add this|add that|add to (my )?(order|cart)|this one|that one|ye wala|yeh wala|wo wala|woh wala|le lunga|le lungi|add karo|add kar do|add kardo|daal do|dal do|isko add|ise add|ye do|yeh do)\b/),
+    pick: has(t, /\b(best|which one|which is (the )?(best|better)|which (one )?should|konsa|kaunsa|kaun sa|kon sa|compare|difference|farak|fark|better|recommend)\b/),
   };
 }
 
@@ -231,6 +236,10 @@ export function withContext(history: AssistantMessage[], garageCar: { slug: stri
 
 /** A question that is only about returns, delivery and the like (no product asked for). */
 const isPureTopic = (i: Intent) => i.topic !== null && i.topic !== "offers" && i.topic !== "bargain" && i.topic !== "checkout" && i.words.length === 0;
+
+/** Hinglish in Latin letters ("best konsa hai inme"): reply in Hinglish too. */
+const HINGLISH = /\b(namaste|namaskar|hai|hain|kya|kaun|karo|konsa|kaunsa|chahiye|chaiye|dikhao|dikha|karo|kardo|milega|milegi|mujhe|mera|meri|mere|aap|aapke|aapka|inme|inmein|wala|wali|kitna|kitni|kitne|kaise|bhai|bhaiya|thoda|accha|acha|achha|theek|thik|nahi|nahin|haan|sasta|gaadi|gadi|lunga|lungi|dedo|batao|kuch|bhi|aur|kam)\b/;
+export const isHinglish = (text: string) => HINGLISH.test(norm(text));
 
 /* ------------------------------------------------------------------ search */
 
@@ -305,10 +314,14 @@ export function search<T extends Candidate>(all: T[], intent: Intent, shown: str
   const skip = intent.more || intent.cheaper ? new Set(shown) : new Set<string>();
   const sort = intent.cheaper ? "price_asc" : intent.sort;
 
+  // When some products match by name or category, drop the ones that only mention the words in
+  // their description ("speaker" must not bring up a dash cam with a built-in speaker).
+  const scores = new Map(all.map((c) => [c.id, match(c, ws)]));
+  const floor = Math.max(1, Math.max(0, ...scores.values()) / 2);
   const run = (opts: { car: string | null; min: number | null; max: number | null }) => {
     const ranked = all
-      .map((c) => ({ c, s: match(c, ws) }))
-      .filter(({ c, s }) => s > 0 && !skip.has(c.id))
+      .map((c) => ({ c, s: scores.get(c.id) ?? 0 }))
+      .filter(({ c, s }) => s >= floor && !skip.has(c.id))
       .filter(({ c }) => (opts.max === null || (c.price !== null && c.price <= opts.max)) && (opts.min === null || (c.price !== null && c.price >= opts.min)))
       .filter(({ c }) => fits(c.fitment, opts.car) !== false);
     const exact = (c: T) => (opts.car && c.fitment.includes(opts.car) ? 1 : 0);

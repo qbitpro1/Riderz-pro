@@ -65,19 +65,24 @@ async function callClaude(body: Record<string, unknown>): Promise<ClaudeResponse
   return (await res.json()) as ClaudeResponse;
 }
 
-export async function runAssistant(opts: { system: string; messages: ClaudeMessage[]; tools: Tool[] }): Promise<{ text: string; steps: number }> {
+export type Usage = { input: number; output: number };
+
+export async function runAssistant(opts: { system: string; messages: ClaudeMessage[]; tools: Tool[] }): Promise<{ text: string; steps: number; usage: Usage }> {
   if (!assistantEnabled()) throw new ApiError(503, "assistant_off", "The AI assistant isn't switched on yet.");
   const byName = new Map(opts.tools.map((t) => [t.name, t]));
   const tools = opts.tools.map(({ name, description, input_schema }) => ({ name, description, input_schema }));
   const messages = [...opts.messages];
   let text = "";
+  const usage: Usage = { input: 0, output: 0 };
 
   for (let step = 1; step <= MAX_STEPS; step++) {
     const r = await callClaude({ model: env("ASSISTANT_MODEL") || DEFAULT_MODEL, max_tokens: MAX_TOKENS, system: opts.system, messages, tools });
+    usage.input += r.usage?.input_tokens ?? 0;
+    usage.output += r.usage?.output_tokens ?? 0;
     const said = r.content.filter((b): b is TextBlock => b.type === "text").map((b) => b.text).join("\n").trim();
     if (said) text = said;
     const uses = r.content.filter((b): b is ToolUseBlock => b.type === "tool_use");
-    if (r.stop_reason !== "tool_use" || uses.length === 0) return { text, steps: step };
+    if (r.stop_reason !== "tool_use" || uses.length === 0) return { text, steps: step, usage };
 
     messages.push({ role: "assistant", content: r.content });
     const results: ToolResultBlock[] = [];
@@ -97,7 +102,7 @@ export async function runAssistant(opts: { system: string; messages: ClaudeMessa
     }
     messages.push({ role: "user", content: results });
   }
-  return { text: text || "Sorry, I couldn't finish that. Could you ask in a different way?", steps: MAX_STEPS };
+  return { text: text || "Sorry, I couldn't finish that. Could you ask in a different way?", steps: MAX_STEPS, usage };
 }
 
 /** Text-only history from the browser → Claude messages (first must be the user's). */

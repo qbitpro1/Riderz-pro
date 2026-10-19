@@ -41,5 +41,5 @@ export const STORE_STARTERS = [
   "Show me dashcams",
   "Seat covers for my car",
   "What's the best value here?",
-  "What has the biggest discount?",
+  "5000 tak ka dashcam dikhao",
 ];

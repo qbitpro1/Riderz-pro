@@ -24,7 +24,8 @@ other team files. Do it on **staging first**, then production.
 | `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET` | for online payment | Sathwik |
 | `RESEND_API_KEY`, `OTP_EMAIL_FROM`, `ORDERS_EMAIL_FROM` | for email codes and order emails | Amrutha |
 | `MSG91_AUTH_KEY`, `MSG91_OTP_TEMPLATE_ID`, `MSG91_TEMPLATE_*` (or `TWILIO_*`) | for SMS | Amrutha |
-| `ANTHROPIC_API_KEY` | optional: Salesman AI full mode (bargaining); Ask AI needs no key | Owner (`Owner_work.md`) |
+| `ANTHROPIC_API_KEY` | optional: Salesman AI Full mode; Ask AI and Basic mode need no key | Owner (`Owner_work.md`) |
+| `SALESMAN_FULL_AI_SHOPS` | optional: shop slugs that get Full mode (pilot: `indus-enterprises`); empty = all | Owner |
 | `WEB_ASSISTANT_ENGINE` | optional: `claude` to answer Ask AI with Claude (needs the key) | Owner |
 | `NEXT_PUBLIC_MAP_TILES_URL`, `ROUTING_BASE_URL` | optional (free defaults) | Viswanath |
 

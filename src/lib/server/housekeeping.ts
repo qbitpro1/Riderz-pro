@@ -4,6 +4,7 @@ import { after } from "next/server";
 import { sql } from "@/lib/db/client";
 import { releaseUnpaidOrders } from "./payments";
 import { trackingHousekeeping } from "./tracking";
+import { SALESMAN_LOG_DAYS } from "./salesman-log";
 import { releaseStaleCounterOrders } from "./store-sales";
 
 /**
@@ -37,6 +38,7 @@ const STEPS: Step[] = [
   { name: "admin links", run: () => sql("DELETE FROM admin_invites WHERE expires_at < now() - interval '30 days'") },
   { name: "sign-in codes", run: () => sql("DELETE FROM vendor_otps WHERE created_at < now() - interval '1 day'") },
   { name: "rate limits", run: () => sql("DELETE FROM rate_limits WHERE window_start < now() - interval '1 day'") },
+  { name: "salesman log", run: () => sql(`DELETE FROM salesman_turns WHERE created_at < now() - make_interval(days => ${SALESMAN_LOG_DAYS})`) },
   { name: "shop offers", run: () => sql("DELETE FROM store_offers WHERE used_order_id IS NULL AND expires_at < now() - interval '7 days'") },
 ];
 

@@ -814,4 +814,32 @@ ALTER TABLE orders DROP CONSTRAINT IF EXISTS orders_payment_method_check;
 ALTER TABLE orders ADD CONSTRAINT orders_payment_method_check CHECK (payment_method IN ('whatsapp','cod','online','counter'));
 `,
   },
+  {
+    // Salesman AI log (src/lib/server/salesman-log.ts): one row per customer question on a shop
+    // screen, to measure the salesman (Phase 1). Seller practice chats are not logged.
+    //   orders.salesman_conversation  the chat the order came from, so "% paid" can be counted
+    id: "012_salesman_log",
+    sql: `
+CREATE TABLE salesman_turns (
+  id              text PRIMARY KEY,
+  vendor_id       text NOT NULL REFERENCES vendors(id) ON DELETE CASCADE,
+  conversation_id text NOT NULL,
+  mode            text NOT NULL CHECK (mode IN ('full','basic')),
+  question        text NOT NULL,
+  reply           text NOT NULL,
+  shown           integer NOT NULL DEFAULT 0,
+  added           integer NOT NULL DEFAULT 0,
+  offer_pct       integer,
+  checkout        boolean NOT NULL DEFAULT false,
+  staff           boolean NOT NULL DEFAULT false,
+  input_tokens    integer NOT NULL DEFAULT 0,
+  output_tokens   integer NOT NULL DEFAULT 0,
+  created_at      timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX salesman_turns_vendor_idx ON salesman_turns (vendor_id, created_at DESC);
+CREATE INDEX salesman_turns_conversation_idx ON salesman_turns (conversation_id);
+
+ALTER TABLE orders ADD COLUMN salesman_conversation text;
+`,
+  },
 ];

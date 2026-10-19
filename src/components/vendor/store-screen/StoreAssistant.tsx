@@ -27,6 +27,8 @@ export type AssistantTurn = AssistantMessage;
  * the order.
  */
 export function StoreAssistant({
+  storeName,
+  conversationId,
   byId,
   qtys,
   car,
@@ -40,6 +42,8 @@ export function StoreAssistant({
   onOpenProduct,
   onClose,
 }: {
+  storeName: string;
+  conversationId: string;
   byId: Map<string, ScreenProduct>;
   qtys: Record<string, number>;
   car: Car | null;
@@ -86,6 +90,7 @@ export function StoreAssistant({
           cart: Object.entries(qtys).map(([id, qty]) => ({ id, qty })),
           car: car?.slug,
           offerId: offer?.id ?? null,
+          conversationId,
         },
       });
       setTurns((t) => [...t, { role: "assistant", content: r.reply || "Here you go.", products: r.products }]);
@@ -131,7 +136,7 @@ export function StoreAssistant({
       <div className="ss-scroll min-h-0 flex-1 space-y-4 overflow-y-auto px-5 py-5 md:px-6" aria-live="polite">
         {turns.length === 0 && (
           <div className="space-y-3">
-            <p className="text-base text-ash">Tell me your car and what you&apos;re looking for. You can talk: tap the mic.</p>
+            <p className="w-fit max-w-[92%] rounded-2xl rounded-bl-md bg-carbon px-4 py-3 text-base text-chalk">{`Namaste! Welcome to ${storeName}. Kaunsi gaadi hai aapki, aur kya dhoondh rahe hain? Type, or tap the mic and speak.`}</p>
             <div className="flex flex-wrap gap-2">
               {STORE_STARTERS.map((s) => (
                 <button key={s} type="button" onClick={() => ask(s)} disabled={busy} className={`${ui.pill} border-tint/15 text-ash`}>

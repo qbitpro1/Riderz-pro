@@ -20,7 +20,7 @@ type Status = { full: boolean; on: boolean; bargain: { pct: number; rupees: numb
  * seller plays the customer. It is the same salesman as the shop screen (same server, same stock,
  * same limits), but the order here is only for practice: nothing is sold or reserved.
  */
-export function SalesmanPractice({ products, status }: { products: ScreenProduct[]; status: Status }) {
+export function SalesmanPractice({ storeName, products, status }: { storeName: string; products: ScreenProduct[]; status: Status }) {
   const byId = useMemo(() => new Map(products.map((p) => [p.id, p])), [products]);
   const [turns, setTurns] = useState<AssistantMessage[]>([]);
   const [cart, setCart] = useState<Record<string, number>>({});
@@ -82,13 +82,11 @@ export function SalesmanPractice({ products, status }: { products: ScreenProduct
       <section className="grid gap-3 sm:grid-cols-3">
         <StatusCard title="Status" ok={status.on}>
           {status.on ? "On: customers see “Ask Salesman AI” on your shop screen." : "Off on your shop screen."}
-          {` Mode: ${status.full ? "Full AI" : "Basic (finds, shows and adds products; no bargaining)"}.`}
+          {` Mode: ${status.full ? "Full AI" : "Basic (free: finds, compares, adds products and bargains)"}.`}
         </StatusCard>
-        <StatusCard title="Bargaining" ok={Boolean(status.bargain) && status.full}>
-          {status.bargain && !status.full
-            ? "Off in Basic mode: prices are final. Bargaining comes with the full Salesman AI; your limits are kept."
-            : status.bargain
-            ? `Can give up to ${status.bargain.pct}% off${status.bargain.rupees ? ` (at most ${rupees(status.bargain.rupees)})` : ""} when a customer asks.`
+        <StatusCard title="Bargaining" ok={Boolean(status.bargain)}>
+          {status.bargain
+            ? `On: 5%, then 7%, then 8% as its last price; 10% only if pushed. Never above ${status.bargain.pct}%${status.bargain.rupees ? ` or ${rupees(status.bargain.rupees)}` : ""}.`
             : "Off: it tells customers your prices are final."}
         </StatusCard>
         <StatusCard title="Your stock" ok={products.length > 0}>
@@ -123,6 +121,9 @@ export function SalesmanPractice({ products, status }: { products: ScreenProduct
           <div className="grid md:grid-cols-[1fr_260px]">
             <div className="flex min-h-[420px] flex-col">
               <div ref={box} className="max-h-[520px] min-h-0 flex-1 space-y-3 overflow-y-auto px-4 py-4" aria-live="polite">
+                {turns.length === 0 && (
+                  <p className="w-fit max-w-[92%] rounded-sm bg-carbon px-3.5 py-2 text-sm text-chalk">{`Namaste! Welcome to ${storeName}. Kaunsi gaadi hai aapki, aur kya dhoondh rahe hain?`}</p>
+                )}
                 {turns.length === 0 && (
                   <div className="flex flex-wrap gap-2">
                     {STORE_STARTERS.map((s) => (
@@ -173,7 +174,7 @@ export function SalesmanPractice({ products, status }: { products: ScreenProduct
                   value={text}
                   onChange={(e) => setText(e.target.value)}
                   maxLength={ASSISTANT_MAX_CHARS}
-                  placeholder={status.full ? "Talk like a customer: “seat covers for my Creta, can you do a better price?”" : "Talk like a customer: “seat covers for my Creta under 10000”"}
+                  placeholder="Talk like a customer: “seat covers for my Creta, thoda kam karo?”"
                   autoComplete="off"
                 />
                 <button type="submit" className="btn btn-primary shrink-0" disabled={busy || !text.trim()}>Send</button>

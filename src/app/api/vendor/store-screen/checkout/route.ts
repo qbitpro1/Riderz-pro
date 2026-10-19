@@ -5,6 +5,7 @@ import { placeStoreOrder } from "@/lib/server/store-sales";
 import { housekeeping } from "@/lib/server/housekeeping";
 import { startOnlinePayment } from "@/lib/server/payments";
 import { mobileSchema } from "@/lib/vendor/validators";
+import { CONVERSATION_ID } from "@/lib/server/salesman-log";
 
 export const dynamic = "force-dynamic";
 
@@ -17,6 +18,8 @@ const schema = z.object({
   customer: z.object({ name: z.string().trim().min(2, "Enter your name").max(80), mobile: mobileSchema }),
   offerId: z.string().regex(/^sof_[A-Za-z0-9_-]{6,40}$/).nullable().optional(),
   pay: z.enum(["screen", "counter"]),
+  /** The Salesman AI chat this order came from, if any. */
+  conversationId: z.string().regex(CONVERSATION_ID).optional(),
 });
 
 /**
