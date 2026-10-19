@@ -50,10 +50,10 @@ const FILLER = new Set(
     "under below upto up to less than within max maximum budget above over more min minimum between from rs inr rupees rupee k " +
     "cheap cheaper cheapest lowest low affordable expensive costly premium top quality value discount discounts offer offers deal deals sale " +
     "mujhe muje mereko meri mera mere hamara apna chahiye chaiye chahie hai hain h kya koi kuch dikhao dikha batao bata bataiye do de dena " +
-    "ke ki ka ko liye lie wala wali wale se tak kam zyada jyada accha acha achha badhiya badiya sasta saste sasti mehenga mehnga aur bhi " +
+    "ke ki ka ko liye lie wala wali wale se tak kam zyada jyada sa si accha acha achha badhiya badiya sasta saste sasti mehenga mehnga aur bhi " +
     "gaadi gadi gaddi car cars vehicle model new latest please pls plz hi hello hey thanks thank ok okay yes no same instead other others another " +
     "biggest best saving savings most least highest good nice options option something thing things stuff accessories accessory parts part products product items item here shop store available stock show system add put " +
-    "how long take takes taking where when what why who whats does time times days much many policy policies rule rules details info information " +
+    "on of for in with at by how long take takes taking where when what why who whats does time times days much many policy policies rule rules details info information " +
     "fit fits fitting fitment compatible suit suits suitable work works go goes match"
   ).split(" "),
 );
@@ -167,7 +167,7 @@ function findTopic(t: string): Topic | null {
   if (has(t, /\b(warranty|guarantee|guaranty)\b/)) return "warranty";
   if (has(t, /\b(coupon|coupons|promo|code|codes)\b/)) return "offers";
   if (has(t, /\b(call|phone|contact|human|person|staff|agent|talk to|baat)\b/)) return "contact";
-  if (has(t, /\b(better price|best price|last price|final price|kam karo|kam kar|discount do|discount dedo|thoda kam|negotiate|bargain)\b/)) return "bargain";
+  if (has(t, /\b(better price|best price|last price|final price|kam karo|kam kar|discount do|discount dedo|thoda kam|negotiate|bargain|(get|give)( me| us)?( a| some| any)? (discount|better price)|(extra|more) discount|discount (milega|mil sakta|possible)|reduce (the )?price)\b/)) return "bargain";
   if (has(t, /\b(checkout|check out|bill|billing|buy now|place order|le lunga|le lungi|lena hai|done|that's all|thats all|pay now)\b/)) return "checkout";
   if (has(t, /^(hi|hii|hello|hey|namaste|namaskar|hola|good (morning|afternoon|evening))\b/)) return "greeting";
   if (has(t, /^(thanks|thank you|thx|ok thanks|great|shukriya|dhanyavad)\b/)) return "thanks";
@@ -253,7 +253,7 @@ const CANON: Record<string, string[]> = {
   dashcam: ["dash", "cam"], dashcams: ["dash", "cam"], camera: ["cam"], cameras: ["cam"], cams: ["cam"],
   footmat: ["foot", "mat"], footmats: ["foot", "mat"], floormat: ["floor", "mat"], floormats: ["floor", "mat"],
   seatcover: ["seat", "cover"], seatcovers: ["seat", "cover"],
-  odour: ["fragrance"], freshener: ["fragrance"], perfume: ["fragrance"], fragrances: ["fragrance"],
+  freshener: ["fragrance"], perfume: ["fragrance"], fragrances: ["fragrance"],
   compressor: ["inflator"], compressors: ["inflator"], inflators: ["inflator"], mobile: ["phone"],
   headlight: ["headlamp"], headlights: ["headlamp"], headlamps: ["headlamp"], tire: ["tyre"], tires: ["tyre"],
   boxes: ["box"], organizer: ["organiser"], organizers: ["organiser"], organisers: ["organiser"],

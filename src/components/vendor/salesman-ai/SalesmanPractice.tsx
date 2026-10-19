@@ -13,7 +13,7 @@ type Action =
   | { type: "offer"; offer: { id: string; percent: number; discount: number; subtotal: number; total: number; validMinutes: number } }
   | { type: "checkout" };
 
-type Status = { available: boolean; on: boolean; bargain: { pct: number; rupees: number | null } | null };
+type Status = { full: boolean; on: boolean; bargain: { pct: number; rupees: number | null } | null };
 
 /**
  * SALESMAN AI in the seller dashboard: what it does, whether it is on, and a practice chat where the
@@ -35,7 +35,7 @@ export function SalesmanPractice({ products, status }: { products: ScreenProduct
     box.current?.scrollTo({ top: box.current.scrollHeight, behavior: "smooth" });
   }, [turns, busy]);
 
-  const ready = status.available && status.on && products.length > 0;
+  const ready = status.on && products.length > 0;
   const lines = Object.entries(cart).flatMap(([id, qty]) => {
     const p = byId.get(id);
     return p ? [{ p, qty }] : [];
@@ -80,11 +80,14 @@ export function SalesmanPractice({ products, status }: { products: ScreenProduct
   return (
     <div className="mt-6 space-y-6">
       <section className="grid gap-3 sm:grid-cols-3">
-        <StatusCard title="Status" ok={status.available && status.on}>
-          {!status.available ? "Riderzpro is switching the AI on soon. Your settings are kept." : status.on ? "On: customers see “Ask Salesman AI” on your shop screen." : "Off on your shop screen."}
+        <StatusCard title="Status" ok={status.on}>
+          {status.on ? "On: customers see “Ask Salesman AI” on your shop screen." : "Off on your shop screen."}
+          {` Mode: ${status.full ? "Full AI" : "Basic (finds, shows and adds products; no bargaining)"}.`}
         </StatusCard>
-        <StatusCard title="Bargaining" ok={Boolean(status.bargain)}>
-          {status.bargain
+        <StatusCard title="Bargaining" ok={Boolean(status.bargain) && status.full}>
+          {status.bargain && !status.full
+            ? "Off in Basic mode: prices are final. Bargaining comes with the full Salesman AI; your limits are kept."
+            : status.bargain
             ? `Can give up to ${status.bargain.pct}% off${status.bargain.rupees ? ` (at most ${rupees(status.bargain.rupees)})` : ""} when a customer asks.`
             : "Off: it tells customers your prices are final."}
         </StatusCard>
@@ -112,9 +115,7 @@ export function SalesmanPractice({ products, status }: { products: ScreenProduct
 
         {!ready ? (
           <p className="px-4 py-6 text-sm text-ash">
-            {!status.available
-              ? "The practice chat opens once Riderzpro switches the AI on."
-              : !status.on
+            {!status.on
                 ? "Turn on Salesman AI in the Offline Store settings to practise here."
                 : "Add live products with stock first; the salesman only sells what you have."}
           </p>

@@ -10,7 +10,7 @@ the company's garages, and a marketplace of approved third-party sellers.
 | Area | What | Where |
 | --- | --- | --- |
 | Shop | House catalogue, marketplace items, fitment by car (My Garage), wishlist, collections, search | `/shop`, `/products/[slug]`, `/sellers/[slug]` |
-| AI assistant | Claude-powered shopping help over our own catalogue | `/assistant` |
+| AI assistant | Free built-in shopping help over our own catalogue (Claude optional) | `/assistant` |
 | Checkout | Server-priced orders; pay online (Razorpay) or order on WhatsApp; coupons; "Detect my location" | `/cart`, `/api/orders` |
 | Customer accounts | Sign-in with a mobile/email code, orders with live tracking, GST invoices, addresses, help desk | `/account` |
 | Sellers | Sign-up, KYC onboarding, products, stock, orders, invoices, payouts | `/vendor` |

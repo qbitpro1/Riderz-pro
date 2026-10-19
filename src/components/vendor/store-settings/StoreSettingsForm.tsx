@@ -14,7 +14,7 @@ export type StoreSettingsValue = {
 };
 
 /** The Offline Store screen: AI salesperson, bargaining limits, ways to pay. */
-export function StoreSettingsForm({ initial, aiAvailable, onlineAvailable }: { initial: StoreSettingsValue; aiAvailable: boolean; onlineAvailable: boolean }) {
+export function StoreSettingsForm({ initial, fullAi, onlineAvailable }: { initial: StoreSettingsValue; fullAi: boolean; onlineAvailable: boolean }) {
   const uid = useId();
   const [v, setV] = useState(initial);
   const [cap, setCap] = useState(initial.maxDiscountRupees ? String(initial.maxDiscountRupees) : "");
@@ -51,8 +51,8 @@ export function StoreSettingsForm({ initial, aiAvailable, onlineAvailable }: { i
     <form onSubmit={save} className="mt-6 max-w-2xl space-y-6">
       <section className="space-y-3">
         <h2 className="eyebrow">Salesman AI</h2>
-        {box("aiEnabled", "Show Salesman AI on the screen", "Customers talk or type; it finds your products, compares them, adds them to the order and opens checkout.", !aiAvailable)}
-        {!aiAvailable && <p className="text-xs text-gold">The AI isn&apos;t switched on for Riderzpro yet. Your setting is kept for when it is.</p>}
+        {box("aiEnabled", "Show Salesman AI on the screen", "Customers talk or type; it finds your products, compares them, adds them to the order and opens checkout.")}
+        {!fullAi && <p className="text-xs text-gold">Salesman AI runs in Basic mode for now: it finds, shows and adds products and opens checkout. Bargaining needs the full Salesman AI, which Riderzpro is switching on soon.</p>}
         <Link href="/vendor/dashboard/salesman-ai" className="inline-block text-xs text-ash underline underline-offset-4 hover:text-accent">Practise with Salesman AI</Link>
       </section>
 
