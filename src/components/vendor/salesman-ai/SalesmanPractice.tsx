@@ -173,7 +173,7 @@ export function SalesmanPractice({ products, status }: { products: ScreenProduct
                   value={text}
                   onChange={(e) => setText(e.target.value)}
                   maxLength={ASSISTANT_MAX_CHARS}
-                  placeholder="Talk like a customer: “seat covers for my Creta, can you do a better price?”"
+                  placeholder={status.full ? "Talk like a customer: “seat covers for my Creta, can you do a better price?”" : "Talk like a customer: “seat covers for my Creta under 10000”"}
                   autoComplete="off"
                 />
                 <button type="submit" className="btn btn-primary shrink-0" disabled={busy || !text.trim()}>Send</button>
