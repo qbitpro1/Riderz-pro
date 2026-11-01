@@ -58,6 +58,10 @@ export function AttractScreen({
   }, []);
 
   const shortcuts = groups.slice(0, 4);
+  // "Indus Enterprises" → "Indus " + "Enterprises" (the verified tick follows the last word).
+  const cut = store.name.trimEnd().lastIndexOf(" ") + 1;
+  const nameHead = store.name.slice(0, cut);
+  const nameTail = store.name.trimEnd().slice(cut);
 
   return (
     <div
@@ -129,9 +133,13 @@ export function AttractScreen({
               <div className="flex min-w-0 items-center gap-4">
                 <StoreMark store={store} className="h-14 w-14 lg:h-16 lg:w-16" text="text-2xl" />
                 <div className="min-w-0">
-                  <p className="flex min-w-0 items-center gap-1.5">
-                    <span className="truncate font-display text-xl font-extrabold tracking-tight text-chalk lg:text-2xl">{store.name}</span>
-                    <BadgeCheck size={20} aria-label="Riderzpro verified seller" className="shrink-0 fill-verified text-on-verified" />
+                  <p className="font-display text-xl font-extrabold leading-tight tracking-tight text-chalk lg:text-2xl">
+                    {nameHead}
+                    {/* The tick stays with the last word, so it never wraps onto a line of its own. */}
+                    <span className="whitespace-nowrap">
+                      {nameTail}
+                      <BadgeCheck size={20} aria-label="Riderzpro verified seller" className="ml-1.5 inline-block fill-verified align-[-2px] text-on-verified" />
+                    </span>
                   </p>
                   <p className="text-sm font-medium leading-snug text-ash lg:text-base">
                     {store.address ?? store.city ? `${store.address ?? store.city} · ` : ""}Riderzpro verified seller
