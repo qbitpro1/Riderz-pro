@@ -27,6 +27,7 @@ export function CheckoutSheet({
   total,
   offer,
   pay,
+  conversationId,
   onClose,
   onDone,
 }: {
@@ -36,6 +37,8 @@ export function CheckoutSheet({
   /** The special price in force (already checked by the screen). */
   offer: ScreenOffer | null;
   pay: PayOptions;
+  /** The Salesman AI chat that led to this order, if the customer used it. */
+  conversationId: string | null;
   onClose: () => void;
   onDone: () => void;
 }) {
@@ -93,6 +96,7 @@ export function CheckoutSheet({
           customer: { name, mobile },
           offerId: liveOffer?.id ?? null,
           pay: method,
+          ...(conversationId ? { conversationId } : {}),
         },
       });
       if (method === "counter" || !r.payment) {

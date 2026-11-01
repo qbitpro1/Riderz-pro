@@ -37,6 +37,8 @@ import { ReviewScreen } from "./ReviewScreen";
 import { Styles } from "./Styles";
 import { StoreAssistant, type AssistantTurn, type ScreenOffer } from "./StoreAssistant";
 import { CheckoutSheet, type PayOptions } from "./CheckoutSheet";
+
+const newChatId = () => `sc_${crypto.randomUUID().replaceAll("-", "")}`;
 import type { ScreenFitBrand, ScreenProduct, ScreenStore } from "./types";
 
 /**
@@ -87,6 +89,8 @@ export function StoreScreen({
   const [aiOpen, setAiOpen] = useState(false);
   const [aiSeed, setAiSeed] = useState<string | null>(null);
   const [aiTurns, setAiTurns] = useState<AssistantTurn[]>([]);
+  // One id per customer chat, for the Salesman AI log; a new one for each new customer.
+  const [aiChat, setAiChat] = useState(newChatId);
   const [offer, setOffer] = useState<ScreenOffer | null>(null);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
 
@@ -203,6 +207,7 @@ export function StoreScreen({
   const startOver = useCallback(() => {
     order.clear();
     setAiTurns([]);
+    setAiChat(newChatId());
     setAiSeed(null);
     setOffer(null);
     closeLayers();
@@ -632,6 +637,8 @@ export function StoreScreen({
 
       {aiOpen && (
         <StoreAssistant
+          storeName={store.name}
+          conversationId={aiChat}
           byId={byId}
           qtys={order.qtys}
           car={car}
@@ -668,6 +675,7 @@ export function StoreScreen({
           total={total}
           offer={liveOffer}
           pay={sales.pay}
+          conversationId={aiTurns.length ? aiChat : null}
           onClose={() => setCheckoutOpen(false)}
           onDone={startOver}
         />

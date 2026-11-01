@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Plus } from "lucide-react";
 import { vendorPage } from "@/lib/server/session";
 import { storeSettings } from "@/lib/server/store-sales";
-import { assistantEnabled } from "@/lib/server/assistant/claude";
+import { fullSalesmanFor } from "@/lib/server/assistant/store";
 import { onlinePaymentsEnabled } from "@/lib/server/payments";
 import { StoreSettingsForm } from "@/components/vendor/store-settings/StoreSettingsForm";
 
@@ -25,7 +25,7 @@ export default async function StoreScreenSettingsPage() {
         </Link>
       </div>
       <p className="mt-3 max-w-2xl text-xs text-dim">New products show on the screen once Riderzpro approves them and they have stock.</p>
-      <StoreSettingsForm initial={settings} fullAi={assistantEnabled()} onlineAvailable={onlinePaymentsEnabled()} />
+      <StoreSettingsForm initial={settings} fullAi={fullSalesmanFor(vendor.slug)} onlineAvailable={onlinePaymentsEnabled()} />
     </>
   );
 }
