@@ -78,7 +78,7 @@ export async function loadReceipt(vendor: VendorSelf, number: string): Promise<R
     [order.id],
   );
   const s = await storeSettings(vendor.id);
-  const shop = screenStore(vendor, s.screenAddress);
+  const shop = screenStore(vendor, s);
   return { shop: { name: shop.name, address: shop.address }, order, items, pay: payLabel(order) };
 }
 
