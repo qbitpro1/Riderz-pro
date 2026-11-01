@@ -3,6 +3,7 @@
 import { useId, useState } from "react";
 import Link from "next/link";
 import { api, ApiFailure } from "@/lib/vendor/client";
+import { SCREEN_HOURS_DEFAULT } from "@/components/vendor/store-screen/types";
 
 export type StoreSettingsValue = {
   aiEnabled: boolean;
@@ -10,14 +11,19 @@ export type StoreSettingsValue = {
   maxDiscountPct: number;
   maxDiscountRupees: number | null;
   screenAddress: string | null;
+  screenHours: string | null;
+  screenOffer: string | null;
   payOnScreen: boolean;
   payAtCounter: boolean;
 };
 
+/** Blank hours show the default on the screen, so the form starts with that text to edit. */
+const withHours = (s: StoreSettingsValue): StoreSettingsValue => ({ ...s, screenHours: s.screenHours || SCREEN_HOURS_DEFAULT });
+
 /** The Offline Store screen: AI salesperson, bargaining limits, ways to pay. */
 export function StoreSettingsForm({ initial, fullAi, onlineAvailable }: { initial: StoreSettingsValue; fullAi: boolean; onlineAvailable: boolean }) {
   const uid = useId();
-  const [v, setV] = useState(initial);
+  const [v, setV] = useState(() => withHours(initial));
   const [cap, setCap] = useState(initial.maxDiscountRupees ? String(initial.maxDiscountRupees) : "");
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
@@ -39,7 +45,7 @@ export function StoreSettingsForm({ initial, fullAi, onlineAvailable }: { initia
     try {
       const capN = cap.trim() ? Number(cap.replace(/\D/g, "")) : null;
       const r = await api<{ settings: StoreSettingsValue }>("/api/vendor/store-settings", { method: "PUT", body: { ...v, maxDiscountRupees: capN || null } });
-      setV(r.settings);
+      setV(withHours(r.settings));
       setMsg({ ok: true, text: "Saved. Reopen the Offline Store screen to use the new settings." });
     } catch (err) {
       setMsg({ ok: false, text: err instanceof ApiFailure ? err.message : "Couldn't save. Please try again." });
@@ -63,6 +69,34 @@ export function StoreSettingsForm({ initial, fullAi, onlineAvailable }: { initia
             onChange={(e) => setV((s) => ({ ...s, screenAddress: e.target.value }))}
           />
           <p className="mt-1 text-xs text-ash">Leave blank to show your pickup address.</p>
+        </div>
+        <div>
+          <label className="label" htmlFor={`${uid}-hours`}>Shop hours on the welcome screen</label>
+          <input
+            id={`${uid}-hours`}
+            className="field"
+            value={v.screenHours ?? ""}
+            maxLength={80}
+            placeholder={SCREEN_HOURS_DEFAULT}
+            onChange={(e) => setV((s) => ({ ...s, screenHours: e.target.value }))}
+          />
+          <p className="mt-1 text-xs text-ash">For example “Mon–Sat 10 am – 8 pm, Sunday closed”. Leave blank for “{SCREEN_HOURS_DEFAULT}”.</p>
+        </div>
+        <div>
+          <label className="label" htmlFor={`${uid}-offer`}>Today&apos;s offer (optional)</label>
+          <textarea
+            id={`${uid}-offer`}
+            className="field min-h-20 py-2"
+            rows={2}
+            value={v.screenOffer ?? ""}
+            maxLength={140}
+            placeholder="e.g. Free fitting with every seat cover today"
+            onChange={(e) => setV((s) => ({ ...s, screenOffer: e.target.value }))}
+          />
+          <p className="mt-1 flex justify-between gap-3 text-xs text-ash">
+            <span>Shown big on the welcome screen. Leave blank to show no offer.</span>
+            <span className="tnum shrink-0">{(v.screenOffer ?? "").length}/140</span>
+          </p>
         </div>
       </section>
 

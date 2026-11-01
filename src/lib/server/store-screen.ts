@@ -4,7 +4,7 @@ import { sql } from "@/lib/db/client";
 import { DEPARTMENT_BY_SLUG, type DepartmentSlug } from "@/lib/data/taxonomy";
 import { BRANDS, findModelBySlug } from "@/lib/data/vehicles";
 import { PART_TYPE_LABELS, type VendorSelf } from "@/lib/vendor/types";
-import type { ScreenFitBrand, ScreenProduct, ScreenStore } from "@/components/vendor/store-screen/types";
+import { SCREEN_HOURS_DEFAULT, type ScreenFitBrand, type ScreenProduct, type ScreenStore } from "@/components/vendor/store-screen/types";
 import type { VendorProductRow } from "./vendor-products";
 
 /**
@@ -21,8 +21,11 @@ function groupName(department: DepartmentSlug, group: string): string {
   return DEPARTMENT_BY_SLUG[department]?.groups.find((g) => g.slug === group)?.name ?? group;
 }
 
-/** `screenAddress`: the seller's own address line from Offline Store settings, if set. */
-export function screenStore(vendor: VendorSelf, screenAddress: string | null = null): ScreenStore {
+/** `settings`: the seller's own address line, hours and today's offer from Offline Store settings, if set. */
+export function screenStore(
+  vendor: VendorSelf,
+  settings: { screenAddress: string | null; screenHours: string | null; screenOffer: string | null } = { screenAddress: null, screenHours: null, screenOffer: null },
+): ScreenStore {
   const store = vendor.onboarding.store;
   const pickup = vendor.onboarding.shipping?.pickup;
   const pickupLine = pickup ? [pickup.line1, pickup.line2, pickup.city].map((s) => s?.trim()).filter(Boolean).join(", ") : "";
@@ -31,7 +34,9 @@ export function screenStore(vendor: VendorSelf, screenAddress: string | null = n
     slug: vendor.slug ?? "",
     logo: store?.logoFileId ?? null,
     city: pickup?.city ?? null,
-    address: screenAddress?.trim() || pickupLine || null,
+    address: settings.screenAddress?.trim() || pickupLine || null,
+    hours: settings.screenHours?.trim() || SCREEN_HOURS_DEFAULT,
+    offer: settings.screenOffer?.trim() || null,
   };
 }
 

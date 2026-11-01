@@ -7,6 +7,7 @@ import { newId, sha256 } from "./security";
 import { audit, notifyVendor } from "./vendors";
 import { newOrderNumber, restoreStock, settleOrderStatus, type PlacedOrderRecord } from "./orders";
 import { onlinePaymentsEnabled } from "./payments";
+import { SCREEN_HOURS_DEFAULT } from "@/components/vendor/store-screen/types";
 
 /**
  * SELLING FROM THE OFFLINE STORE SCREEN
@@ -40,13 +41,27 @@ export type StoreSettings = {
   payAtCounter: boolean;
   /** Shown under the shop name on the screen; null = the pickup address. */
   screenAddress: string | null;
+  /** Opening hours on the welcome screen; null = SCREEN_HOURS_DEFAULT. */
+  screenHours: string | null;
+  /** Today's offer on the welcome screen; null = none. */
+  screenOffer: string | null;
 };
 
-const DEFAULTS: StoreSettings = { aiEnabled: true, bargainEnabled: false, maxDiscountPct: 5, maxDiscountRupees: null, payOnScreen: true, payAtCounter: true, screenAddress: null };
+const DEFAULTS: StoreSettings = {
+  aiEnabled: true,
+  bargainEnabled: false,
+  maxDiscountPct: 5,
+  maxDiscountRupees: null,
+  payOnScreen: true,
+  payAtCounter: true,
+  screenAddress: null,
+  screenHours: null,
+  screenOffer: null,
+};
 
 export async function storeSettings(vendorId: string): Promise<StoreSettings> {
-  const r = await sqlOne<{ ai_enabled: boolean; bargain_enabled: boolean; max_discount_pct: number; max_discount_rupees: number | null; pay_on_screen: boolean; pay_at_counter: boolean; screen_address: string | null }>(
-    "SELECT ai_enabled, bargain_enabled, max_discount_pct, max_discount_rupees, pay_on_screen, pay_at_counter, screen_address FROM store_settings WHERE vendor_id = $1",
+  const r = await sqlOne<{ ai_enabled: boolean; bargain_enabled: boolean; max_discount_pct: number; max_discount_rupees: number | null; pay_on_screen: boolean; pay_at_counter: boolean; screen_address: string | null; screen_hours: string | null; screen_offer: string | null }>(
+    "SELECT ai_enabled, bargain_enabled, max_discount_pct, max_discount_rupees, pay_on_screen, pay_at_counter, screen_address, screen_hours, screen_offer FROM store_settings WHERE vendor_id = $1",
     [vendorId],
   );
   if (!r) return { ...DEFAULTS };
@@ -58,17 +73,24 @@ export async function storeSettings(vendorId: string): Promise<StoreSettings> {
     payOnScreen: r.pay_on_screen,
     payAtCounter: r.pay_at_counter,
     screenAddress: r.screen_address,
+    screenHours: r.screen_hours,
+    screenOffer: r.screen_offer,
   };
 }
 
 export async function saveStoreSettings(vendorId: string, s: StoreSettings, ip: string): Promise<void> {
   if (!s.payOnScreen && !s.payAtCounter) throw new ApiError(400, "invalid", "Keep at least one way to pay.", { payAtCounter: "Keep at least one way to pay" });
+  // The default hours are stored as "not set", so they follow the default if it ever changes.
+  const hours = s.screenHours?.trim();
   await sql(
-    `INSERT INTO store_settings (vendor_id, ai_enabled, bargain_enabled, max_discount_pct, max_discount_rupees, pay_on_screen, pay_at_counter, screen_address)
-     VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
+    `INSERT INTO store_settings (vendor_id, ai_enabled, bargain_enabled, max_discount_pct, max_discount_rupees, pay_on_screen, pay_at_counter, screen_address, screen_hours, screen_offer)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
      ON CONFLICT (vendor_id) DO UPDATE SET ai_enabled = $2, bargain_enabled = $3, max_discount_pct = $4, max_discount_rupees = $5,
-       pay_on_screen = $6, pay_at_counter = $7, screen_address = $8, updated_at = now()`,
-    [vendorId, s.aiEnabled, s.bargainEnabled, s.maxDiscountPct, s.maxDiscountRupees, s.payOnScreen, s.payAtCounter, s.screenAddress?.trim() || null],
+       pay_on_screen = $6, pay_at_counter = $7, screen_address = $8, screen_hours = $9, screen_offer = $10, updated_at = now()`,
+    [
+      vendorId, s.aiEnabled, s.bargainEnabled, s.maxDiscountPct, s.maxDiscountRupees, s.payOnScreen, s.payAtCounter,
+      s.screenAddress?.trim() || null, hours && hours !== SCREEN_HOURS_DEFAULT ? hours : null, s.screenOffer?.trim() || null,
+    ],
   );
   await audit({ type: "vendor", id: vendorId }, "store_screen.settings", { vendorId, ip, detail: { ...s } });
 }

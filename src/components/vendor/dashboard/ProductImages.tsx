@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, ImagePlus, Trash2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Camera, ImagePlus, Trash2 } from "lucide-react";
 import { uploadFile } from "@/lib/vendor/client";
 import { fileHref } from "@/lib/vendor/types";
 import { failureMessage } from "./ui";
@@ -9,6 +9,37 @@ import { failureMessage } from "./ui";
 const MAX_IMAGES = 8;
 const MAX_BYTES = 3 * 1024 * 1024;
 const TYPES = ["image/jpeg", "image/png", "image/webp"];
+/** Longest side of a photo after shrinking: plenty for the shop screen's full-size view. */
+const MAX_SIDE = 2400;
+
+/**
+ * Phone camera photos are often over 3 MB, or HEIC: such a photo is redrawn as a JPEG of at most
+ * MAX_SIDE pixels. Small JPG / PNG / WebP files go up untouched. Null when the browser can't read it.
+ */
+async function fitPhoto(file: File): Promise<File | null> {
+  if (TYPES.includes(file.type) && file.size <= MAX_BYTES) return file;
+  if (file.type && !file.type.startsWith("image/")) return null;
+  try {
+    const bitmap = await createImageBitmap(file);
+    const scale = Math.min(1, MAX_SIDE / Math.max(bitmap.width, bitmap.height));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(bitmap.width * scale);
+    canvas.height = Math.round(bitmap.height * scale);
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return null;
+    ctx.fillStyle = "#fff"; // transparent PNGs get a white background, not black
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    bitmap.close();
+    for (const quality of [0.86, 0.75, 0.6]) {
+      const blob = await new Promise<Blob | null>((done) => canvas.toBlob(done, "image/jpeg", quality));
+      if (blob && blob.size <= MAX_BYTES) return new File([blob], `${file.name.replace(/\.[^.]+$/, "") || "photo"}.jpg`, { type: "image/jpeg" });
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
 
 type Props = {
   value: string[];
@@ -21,6 +52,7 @@ type Props = {
 /** 1–8 product photos; the first is the cover. Uploads one by one with a client-side type and size check. */
 export function ProductImages({ value, onChange, disabled, invalid, describedBy }: Props) {
   const input = useRef<HTMLInputElement>(null);
+  const camera = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
   const [problem, setProblem] = useState<string | null>(null);
 
@@ -33,25 +65,27 @@ export function ProductImages({ value, onChange, disabled, invalid, describedBy 
     if (files.length > room) issues.push(`Only ${MAX_IMAGES} photos are allowed.`);
     setBusy(true);
     const added: string[] = [];
-    for (const file of picked) {
-      if (!TYPES.includes(file.type)) {
-        issues.push(`${file.name}: use a JPG, PNG or WebP image.`);
-        continue;
-      }
-      if (file.size > MAX_BYTES) {
-        issues.push(`${file.name}: images must be 3 MB or smaller.`);
+    for (const original of picked) {
+      const file = await fitPhoto(original);
+      if (!file) {
+        issues.push(
+          TYPES.includes(original.type)
+            ? `${original.name}: couldn't make this photo small enough. Use one of 3 MB or less.`
+            : `${original.name}: use a JPG, PNG or WebP image.`,
+        );
         continue;
       }
       try {
         added.push((await uploadFile("product_image", file)).id);
       } catch (err) {
-        issues.push(`${file.name}: ${failureMessage(err)}`);
+        issues.push(`${original.name}: ${failureMessage(err)}`);
       }
     }
     if (added.length) onChange([...value, ...added]);
     setProblem(issues.length ? issues.join(" ") : null);
     setBusy(false);
     if (input.current) input.current.value = "";
+    if (camera.current) camera.current.value = "";
   }
 
   const move = (i: number, by: -1 | 1) => {
@@ -108,21 +142,21 @@ export function ProductImages({ value, onChange, disabled, invalid, describedBy 
 
       {!disabled && value.length < MAX_IMAGES && (
         <div>
-          <input
-            ref={input}
-            id="product-images-input"
-            type="file"
-            accept="image/jpeg,image/png,image/webp"
-            multiple
-            className="sr-only"
-            onChange={(e) => add(e.target.files)}
-          />
-          <label htmlFor="product-images-input" className={`btn btn-outline btn-sm cursor-pointer ${busy ? "pointer-events-none opacity-60" : ""}`}>
-            <ImagePlus size={16} aria-hidden />
-            {busy ? "Uploading…" : value.length ? "Add more photos" : "Add photos"}
-          </label>
+          {/* Gallery or files (phones also offer the camera here); the camera button opens it straight away. */}
+          <input ref={input} id="product-images-input" type="file" accept="image/*" multiple className="sr-only" onChange={(e) => add(e.target.files)} />
+          <input ref={camera} id="product-images-camera" type="file" accept="image/*" capture="environment" className="sr-only" onChange={(e) => add(e.target.files)} />
+          <div className="flex flex-wrap gap-2">
+            <label htmlFor="product-images-camera" className={`btn btn-primary btn-sm cursor-pointer pointer-fine:hidden ${busy ? "pointer-events-none opacity-60" : ""}`}>
+              <Camera size={16} aria-hidden />
+              Take photo
+            </label>
+            <label htmlFor="product-images-input" className={`btn btn-outline btn-sm cursor-pointer ${busy ? "pointer-events-none opacity-60" : ""}`}>
+              <ImagePlus size={16} aria-hidden />
+              {busy ? "Uploading…" : value.length ? "Add more photos" : "Add photos"}
+            </label>
+          </div>
           <p className="mt-2 text-xs text-dim">
-            JPG, PNG or WebP, up to 3 MB each. {value.length} of {MAX_IMAGES} added. The first photo is the cover.
+            JPG, PNG or WebP. Big phone photos are made smaller for you (3 MB limit). {value.length} of {MAX_IMAGES} added. The first photo is the cover.
           </p>
         </div>
       )}

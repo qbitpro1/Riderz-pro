@@ -822,4 +822,14 @@ ALTER TABLE orders ADD CONSTRAINT orders_payment_method_check CHECK (payment_met
 ALTER TABLE store_settings ADD COLUMN screen_address text CHECK (screen_address IS NULL OR length(screen_address) <= 120);
 `,
   },
+  {
+    // The welcome screen of the Offline Store: the shop's opening hours ("Mon–Sat, 10 am – 8 pm";
+    // empty: "Open all days, 10 am – 8 pm") and today's offer ("Free fitting on seat covers today";
+    // empty: none shown).
+    id: "014_store_screen_hours_offer",
+    sql: `
+ALTER TABLE store_settings ADD COLUMN screen_hours text CHECK (screen_hours IS NULL OR length(screen_hours) <= 80);
+ALTER TABLE store_settings ADD COLUMN screen_offer text CHECK (screen_offer IS NULL OR length(screen_offer) <= 140);
+`,
+  },
 ];

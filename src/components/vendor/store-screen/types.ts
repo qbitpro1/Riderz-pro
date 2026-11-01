@@ -8,7 +8,14 @@ export type ScreenStore = {
   city: string | null;
   /** Under the shop name: the seller's own line ("Autoform Store, Lajpat Nagar, Delhi") or the pickup address. */
   address: string | null;
+  /** Opening hours for the welcome screen (the seller's own, or SCREEN_HOURS_DEFAULT). */
+  hours: string;
+  /** Today's offer for the welcome screen; null = none. */
+  offer: string | null;
 };
+
+/** The hours the welcome screen shows when the seller hasn't set their own. */
+export const SCREEN_HOURS_DEFAULT = "Open all days, 10 am – 8 pm";
 
 export type ScreenProduct = {
   id: string;

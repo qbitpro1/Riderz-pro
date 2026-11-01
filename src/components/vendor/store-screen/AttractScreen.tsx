@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { Armchair, BadgeCheck, Camera, Hand, Lightbulb, Package, Speaker } from "lucide-react";
+import { Armchair, BadgeCheck, BadgePercent, Camera, Clock, Hand, Lightbulb, Package, Speaker } from "lucide-react";
 import { fileHref } from "@/lib/vendor/types";
 import { StoreMark } from "./parts";
 import type { ScreenProduct, ScreenStore } from "./types";
@@ -13,7 +13,7 @@ const SLIDE_MS = 5500;
  * THE ATTRACT SCREEN
  *
  * Shown when the screen opens and after an unattended order resets. A light showroom
- * stage with the store's name and logo, a slow crossfade of featured product photos
+ * stage with the store's name, logo and hours, the seller's offer of the day, a slow crossfade of featured product photos
  * (with a gentle Ken Burns drift), category shortcuts and one big "Touch to explore".
  * Touching anywhere starts; the shortcuts start inside that category.
  */
@@ -91,7 +91,7 @@ export function AttractScreen({
                     fill
                     sizes="(min-width:1024px) 58vw, 100vw"
                     priority={i < 2}
-                    className="object-contain p-[8%] mix-blend-multiply"
+                    className={`object-contain p-[8%] mix-blend-multiply ${store.offer ? "pt-[max(8%,clamp(7rem,19dvh,11rem))]" : ""}`}
                   />
                 </div>
               </div>
@@ -104,27 +104,49 @@ export function AttractScreen({
               ))}
             </div>
           )}
+          {/* The seller's offer of the day: a sign on the stage, above the photos. */}
+          {store.offer && (
+            <div className="ss-rise absolute inset-x-[clamp(0.75rem,3vw,2.5rem)] top-[clamp(0.75rem,3dvh,2.5rem)] flex justify-start [animation-delay:360ms]">
+              <div className="flex max-w-xl items-center gap-[clamp(0.75rem,1.5vw,1.25rem)] rounded-2xl border border-accent/20 bg-void/95 p-[clamp(0.75rem,1.8dvh,1.25rem)] pr-[clamp(1rem,2vw,1.75rem)] shadow-lg backdrop-blur">
+                <span className="grid h-[clamp(2.75rem,6dvh,3.75rem)] w-[clamp(2.75rem,6dvh,3.75rem)] shrink-0 place-items-center rounded-xl bg-accent text-on-accent">
+                  <BadgePercent size={28} aria-hidden />
+                </span>
+                <span className="min-w-0">
+                  <span className="block text-xs font-bold uppercase tracking-[0.16em] text-accent lg:text-sm">Today&apos;s offer</span>
+                  <span className="mt-0.5 line-clamp-3 text-pretty font-display text-[clamp(1.05rem,min(1.8vw,3dvh),1.6rem)] font-bold leading-snug tracking-tight text-chalk">
+                    {store.offer}
+                  </span>
+                </span>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Words: spacing and type follow the screen height too, so "Touch to explore" always fits on screen. */}
-        <div className="ss-hide-bar order-1 flex min-h-0 flex-col justify-between gap-[clamp(0.75rem,3dvh,2rem)] overflow-y-auto p-[clamp(1rem,4dvh,2.5rem)] landscape:lg:order-2 landscape:lg:w-[42%] landscape:lg:px-[clamp(2rem,4vw,5rem)] landscape:lg:py-[clamp(1.25rem,5dvh,5rem)]">
-          <div className="ss-rise flex items-center justify-between gap-4">
-            <div className="flex min-w-0 items-center gap-4">
-              <StoreMark store={store} className="h-14 w-14 lg:h-16 lg:w-16" text="text-2xl" />
-              <div className="min-w-0">
-                <p className="truncate font-display text-xl font-extrabold tracking-tight text-chalk lg:text-2xl">{store.name}</p>
-                <p className="flex min-w-0 items-center gap-1.5 text-sm font-medium leading-snug text-ash lg:text-base">
-                  <span className="min-w-0">{store.address ?? store.city ? `${store.address ?? store.city} · ` : ""}Riderzpro verified seller</span>
-                  <BadgeCheck size={20} aria-label="Verified" className="shrink-0 fill-verified text-on-verified" />
-                </p>
+        <div className="ss-hide-bar order-1 flex min-h-0 flex-col justify-between gap-[clamp(0.75rem,3dvh,2rem)] overflow-y-auto p-[clamp(1rem,4dvh,2.5rem)] landscape:lg:order-2 landscape:lg:w-[max(42%,30rem)] landscape:lg:px-[clamp(2rem,4vw,5rem)] landscape:lg:py-[clamp(1.25rem,5dvh,5rem)]">
+          <div className="ss-rise">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex min-w-0 items-center gap-4">
+                <StoreMark store={store} className="h-14 w-14 lg:h-16 lg:w-16" text="text-2xl" />
+                <div className="min-w-0">
+                  <p className="truncate font-display text-xl font-extrabold tracking-tight text-chalk lg:text-2xl">{store.name}</p>
+                  <p className="flex min-w-0 items-center gap-1.5 text-sm font-medium leading-snug text-ash lg:text-base">
+                    <span className="min-w-0">{store.address ?? store.city ? `${store.address ?? store.city} · ` : ""}Riderzpro verified seller</span>
+                    <BadgeCheck size={20} aria-label="Verified" className="shrink-0 fill-verified text-on-verified" />
+                  </p>
+                </div>
               </div>
+              <div onClick={(e) => e.stopPropagation()}>{seller}</div>
             </div>
-            <div onClick={(e) => e.stopPropagation()}>{seller}</div>
+            <p className="mt-[clamp(0.5rem,1.5dvh,1rem)] flex min-w-0 items-start gap-2 text-sm font-semibold leading-snug text-ash lg:text-base">
+              <Clock size={18} aria-hidden className="mt-[0.1em] shrink-0 text-accent" />
+              <span className="line-clamp-2">{store.hours}</span>
+            </p>
           </div>
 
           <div className="ss-rise [animation-delay:120ms]">
             <p className="mb-[clamp(0.5rem,2dvh,1rem)] text-sm font-bold uppercase tracking-[0.2em] text-accent lg:text-base">Offline Store</p>
-            <h2 className="text-balance font-display text-[clamp(1.9rem,min(5.4vw,8dvh),5.25rem)] font-extrabold leading-[1.02] tracking-[-0.035em] text-chalk">
+            <h2 className="text-balance font-display text-[clamp(1.9rem,min(5.4vw,6.6dvh),5.25rem)] font-extrabold leading-[1.02] tracking-[-0.035em] text-chalk">
               {products.length > 0 ? "Everything in stock." : "Coming soon."}
               <br />
               <span className="text-dim">{products.length > 0 ? "Right at your fingertips." : "Our products will appear here."}</span>
@@ -141,7 +163,7 @@ export function AttractScreen({
                       key={g.slug}
                       type="button"
                       onClick={() => onStart(g.slug)}
-                      className="flex min-h-[clamp(3.5rem,10dvh,6rem)] items-center gap-3 rounded-2xl bg-void px-4 py-2.5 text-left shadow-sm transition-transform duration-200 active:scale-[0.97] lg:px-5"
+                      className="flex min-h-[clamp(3.5rem,9dvh,6rem)] items-center gap-3 rounded-2xl bg-void px-4 py-2.5 text-left shadow-sm transition-transform duration-200 active:scale-[0.97] lg:px-5"
                     >
                       <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-accent/10 text-accent">
                         <Icon size={24} aria-hidden />

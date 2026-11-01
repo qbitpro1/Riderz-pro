@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { ArrowLeft, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, MonitorSmartphone, Plus, Trash2 } from "lucide-react";
 import { api, ApiFailure } from "@/lib/vendor/client";
 import { DEPARTMENTS, type DepartmentSlug } from "@/lib/data/taxonomy";
 import { rupees } from "@/lib/format";
@@ -111,6 +111,18 @@ export function ProductForm({ product: initialProduct, commissionRate, readOnly,
   useEffect(() => {
     if (notice) show("ok", notice);
   }, [notice, show]);
+
+  // Brand suggestions: the seller's own brands, then the catalogue's. Typing anything else still works.
+  const [brandList, setBrandList] = useState<string[]>([]);
+  useEffect(() => {
+    let live = true;
+    api<{ brands: string[] }>("/api/vendor/products/brands")
+      .then((r) => live && setBrandList(r.brands))
+      .catch(() => {});
+    return () => {
+      live = false;
+    };
+  }, []);
 
   const status = product?.status ?? "draft";
   const isNew = !product;
@@ -281,6 +293,14 @@ export function ProductForm({ product: initialProduct, commissionRate, readOnly,
       </div>
 
       {readOnly && <ReadOnlyNotice />}
+      {(isNew || editable) && !readOnly && (
+        <p role="note" className="flex items-start gap-2.5 rounded-[2px] border border-tint/10 bg-steel p-3 text-sm text-ash">
+          <MonitorSmartphone size={18} aria-hidden className="mt-0.5 shrink-0 text-accent" />
+          <span>
+            <strong className="text-chalk">On your Offline Store screen:</strong> this product shows there once Riderzpro approves it and it has stock (more than 0).
+          </span>
+        </p>
+      )}
       {product?.status === "changes_requested" && product.reviewNotes && (
         <p role="note" className="rounded-[2px] border border-gold/30 bg-gold/10 p-3 text-sm text-chalk">
           <strong className="text-gold">Changes requested:</strong> {product.reviewNotes.note}
@@ -320,7 +340,12 @@ export function ProductForm({ product: initialProduct, commissionRate, readOnly,
             <input {...a("title")} className={`field ${invalidCls("title")}`} value={f.title} maxLength={120} onChange={(e) => set("title", e.target.value)} autoComplete="off" />
           </Field>
           <Field error={errors.brand} name="brand" label="Brand">
-            <input {...a("brand")} className={`field ${invalidCls("brand")}`} value={f.brand} maxLength={60} onChange={(e) => set("brand", e.target.value)} autoComplete="off" />
+            <input {...a("brand")} className={`field ${invalidCls("brand")}`} value={f.brand} maxLength={60} onChange={(e) => set("brand", e.target.value)} autoComplete="off" list="brand-suggestions" />
+            <datalist id="brand-suggestions">
+              {brandList.map((b) => (
+                <option key={b} value={b} />
+              ))}
+            </datalist>
           </Field>
           <Field error={errors.partType} name="partType" label="Part type">
             <select {...a("partType")} className="field" value={f.partType} onChange={(e) => set("partType", e.target.value as PartType)}>

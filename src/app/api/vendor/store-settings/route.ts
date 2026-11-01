@@ -13,6 +13,8 @@ const schema = z.object({
   payOnScreen: z.boolean(),
   payAtCounter: z.boolean(),
   screenAddress: z.string().trim().max(120, "Keep the address under 120 characters").nullable().default(null),
+  screenHours: z.string().trim().max(80, "Keep the hours under 80 characters").nullable().default(null),
+  screenOffer: z.string().trim().max(140, "Keep the offer under 140 characters").nullable().default(null),
 });
 
 export const GET = route(async () => {

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { VoiceSearch } from "./VoiceSearch";
-import { BadgeCheck, CarFront, Columns2, Search, ShoppingBag, SearchX, Sparkles, X } from "lucide-react";
+import { BadgeCheck, BadgePercent, CarFront, Columns2, Search, ShoppingBag, SearchX, Sparkles, X } from "lucide-react";
 import { rupees } from "@/lib/format";
 import { api } from "@/lib/vendor/client";
 import { AttractScreen } from "./AttractScreen";
@@ -11,7 +11,24 @@ import { CarPicker } from "./CarPicker";
 import { CompareSheet } from "./CompareSheet";
 import { IdlePrompt, SellerAccess, SellerDialog } from "./Dialogs";
 import { useIdle, useOrder, usePulse, useStillValid } from "./hooks";
-import { COMPARE_MAX, IDLE_MS, SORTS, fitsCar, matchesQuery, sortProducts, ui, type Car, type SortKey } from "./lib";
+import {
+  COMPARE_MAX,
+  IDLE_MS,
+  NO_FACETS,
+  SORTS,
+  fitsCar,
+  matchesFacets,
+  matchesQuery,
+  onSale,
+  priceBands,
+  settleFacets,
+  sortProducts,
+  ui,
+  type Car,
+  type FacetKey,
+  type Facets,
+  type SortKey,
+} from "./lib";
 import { OrderPanel } from "./OrderPanel";
 import { Empty, StoreMark } from "./parts";
 import { ProductSheet } from "./ProductSheet";
@@ -48,8 +65,8 @@ export function StoreScreen({
   sales: { aiEnabled: boolean; pay: PayOptions };
 }) {
   const [attract, setAttract] = useState<"on" | "leaving" | "off">("on");
-  const [group, setGroup] = useState("all");
-  const [brand, setBrand] = useState("all");
+  const [facets, setFacets] = useState<Facets>(NO_FACETS);
+  const { group, brand, price, sale } = facets;
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<SortKey>("featured");
   const [car, setCar] = useState<Car | null>(null);
@@ -104,38 +121,48 @@ export function StoreScreen({
   /* ---- what is shown ---- */
   const base = useMemo(() => products.filter((p) => fitsCar(p, car) && matchesQuery(p, query)), [products, car, query]);
 
-  // Category and brand narrow each other: category counts follow the chosen brand, brand counts
-  // follow the chosen category.
+  // Category, brand, price and "on sale" narrow each other: each filter's counts follow the
+  // other three.
+  const bands = useMemo(() => priceBands(products), [products]);
+  const without = useCallback((k: FacetKey) => base.filter((p) => matchesFacets(p, facets, bands, k)), [base, facets, bands]);
+
   const groups = useMemo(() => {
     const m = new Map<string, { name: string; count: number }>();
     for (const p of products) if (!m.has(p.group)) m.set(p.group, { name: p.groupName, count: 0 });
-    for (const p of base) if (brand === "all" || p.brand === brand) m.get(p.group)!.count++;
+    for (const p of without("group")) m.get(p.group)!.count++;
     return [...m.entries()].map(([slug, g]) => ({ slug, ...g }));
-  }, [products, base, brand]);
+  }, [products, without]);
+  const groupTotal = useMemo(() => without("group").length, [without]);
 
-  const inGroup = useMemo(() => (group === "all" ? base : base.filter((p) => p.group === group)), [base, group]);
-
+  const brandPool = useMemo(() => without("brand"), [without]);
   const brands = useMemo(() => {
     const m = new Map<string, number>();
     for (const p of products) if (p.brand && !m.has(p.brand)) m.set(p.brand, 0);
-    for (const p of inGroup) if (p.brand) m.set(p.brand, (m.get(p.brand) ?? 0) + 1);
+    for (const p of brandPool) if (p.brand) m.set(p.brand, (m.get(p.brand) ?? 0) + 1);
     return [...m.entries()].map(([name, count]) => ({ name, count })).sort((a, b) => a.name.localeCompare(b.name));
-  }, [products, inGroup]);
+  }, [products, brandPool]);
 
-  const shown = useMemo(() => sortProducts(brand === "all" ? inGroup : inGroup.filter((p) => p.brand === brand), sort), [inGroup, brand, sort]);
-  const gridKey = `${group}|${brand}|${query}|${sort}|${car?.slug ?? ""}`;
-  const brandTotal = brand === "all" ? base.length : base.filter((p) => p.brand === brand).length;
+  const pricePool = useMemo(() => without("price"), [without]);
+  const prices = useMemo(
+    () => bands.map((b) => ({ ...b, count: pricePool.filter((p) => p.price >= b.min && (b.max === null || p.price < b.max)).length })),
+    [bands, pricePool],
+  );
 
-  // Picking a category the chosen brand has nothing in (or the other way round) clears the other
-  // filter instead of showing an empty screen.
-  const pickGroup = (g: string) => {
-    setGroup(g);
-    if (brand !== "all" && g !== "all" && !base.some((p) => p.group === g && p.brand === brand)) setBrand("all");
-  };
-  const pickBrand = (b: string) => {
-    setBrand(b);
-    if (group !== "all" && b !== "all" && !base.some((p) => p.group === group && p.brand === b)) setGroup("all");
-  };
+  // "On sale" only when it narrows something: some products are below MRP, not all of them.
+  const saleCount = useMemo(() => without("sale").filter(onSale).length, [without]);
+  const hasSale = products.some(onSale) && !products.every(onSale);
+
+  const shown = useMemo(() => sortProducts(base.filter((p) => matchesFacets(p, facets, bands)), sort), [base, facets, bands, sort]);
+  const gridKey = `${group}|${brand}|${price}|${sale}|${query}|${sort}|${car?.slug ?? ""}`;
+
+  // Picking a value nothing else chosen has products in clears the filters it clashes with,
+  // instead of showing an empty screen.
+  const pick = (k: FacetKey, v: string | boolean) => setFacets((f) => settleFacets(base, { ...f, [k]: v }, k, bands));
+  const pickGroup = (g: string) => pick("group", g);
+  const pickBrand = (b: string) => pick("brand", b);
+  const pickPrice = (key: string) => pick("price", key);
+  const toggleSale = () => pick("sale", !sale);
+  const showFilters = groups.length > 1 || brands.length > 1 || prices.length > 0 || hasSale;
 
   const attractGroups = useMemo(() => {
     const all = new Map<string, { slug: string; name: string; count: number }>();
@@ -149,8 +176,7 @@ export function StoreScreen({
 
   /* ---- actions ---- */
   const resetBrowse = useCallback(() => {
-    setGroup("all");
-    setBrand("all");
+    setFacets(NO_FACETS);
     setQuery("");
     setSort("featured");
     setCar(null);
@@ -183,7 +209,7 @@ export function StoreScreen({
   }, [closeLayers, resetBrowse, order.clear]);
 
   const begin = useCallback((g?: string) => {
-    if (g) setGroup(g);
+    if (g) setFacets({ ...NO_FACETS, group: g });
     setAttract("leaving");
     window.setTimeout(() => setAttract("off"), 520);
   }, []);
@@ -322,7 +348,7 @@ export function StoreScreen({
           {/* Categories on phones and tablets (the rail takes over from lg) */}
           {groups.length > 1 && (
             <nav aria-label="Categories" className="ss-hide-bar flex gap-2 overflow-x-auto px-4 pb-3 lg:hidden md:px-6">
-              <CategoryPill active={group === "all"} onClick={() => setGroup("all")} label="All products" count={brandTotal} />
+              <CategoryPill active={group === "all"} onClick={() => pickGroup("all")} label="All products" count={groupTotal} />
               {groups.map((g) => (
                 <CategoryPill key={g.slug} active={group === g.slug} onClick={() => pickGroup(g.slug)} label={g.name} count={g.count} />
               ))}
@@ -330,9 +356,18 @@ export function StoreScreen({
           )}
           {brands.length > 1 && (
             <nav aria-label="Brands" className="ss-hide-bar flex gap-2 overflow-x-auto px-4 pb-3 lg:hidden md:px-6">
-              <CategoryPill active={brand === "all"} onClick={() => setBrand("all")} label="All brands" count={inGroup.length} />
+              <CategoryPill active={brand === "all"} onClick={() => pickBrand("all")} label="All brands" count={brandPool.length} />
               {brands.map((b) => (
                 <CategoryPill key={b.name} active={brand === b.name} onClick={() => pickBrand(b.name)} label={b.name} count={b.count} />
+              ))}
+            </nav>
+          )}
+          {(prices.length > 0 || hasSale) && (
+            <nav aria-label="Price and offers" className="ss-hide-bar flex gap-2 overflow-x-auto px-4 pb-3 lg:hidden md:px-6">
+              {hasSale && <SalePill active={sale} onClick={toggleSale} count={saleCount} />}
+              {prices.length > 0 && <CategoryPill active={price === "all"} onClick={() => pickPrice("all")} label="Any price" count={pricePool.length} />}
+              {prices.map((b) => (
+                <CategoryPill key={b.key} active={price === b.key} onClick={() => pickPrice(b.key)} label={b.label} count={b.count} />
               ))}
             </nav>
           )}
@@ -340,12 +375,12 @@ export function StoreScreen({
 
         <div className="flex min-h-0 flex-1">
           {/* Category rail */}
-          {(groups.length > 1 || brands.length > 1) && (
-            <nav aria-label="Categories and brands" className="ss-scroll hidden w-60 shrink-0 overflow-y-auto border-r border-tint/10 bg-carbon px-3 py-5 lg:block xl:w-64">
+          {showFilters && (
+            <nav aria-label="Categories, brands and prices" className="ss-scroll hidden w-60 shrink-0 overflow-y-auto border-r border-tint/10 bg-carbon px-3 py-5 lg:block xl:w-64">
               {groups.length > 1 && (
                 <ul className="space-y-1">
                   <li>
-                    <RailItem active={group === "all"} onClick={() => setGroup("all")} label="All products" count={brandTotal} />
+                    <RailItem active={group === "all"} onClick={() => pickGroup("all")} label="All products" count={groupTotal} />
                   </li>
                   {groups.map((g) => (
                     <li key={g.slug}>
@@ -359,11 +394,33 @@ export function StoreScreen({
                   <p className={`px-4 pb-2 text-xs font-bold uppercase tracking-[0.12em] text-dim ${groups.length > 1 ? "mt-6 border-t border-tint/10 pt-5" : ""}`}>Brands</p>
                   <ul className="space-y-1">
                     <li>
-                      <RailItem active={brand === "all"} onClick={() => setBrand("all")} label="All brands" count={inGroup.length} />
+                      <RailItem active={brand === "all"} onClick={() => pickBrand("all")} label="All brands" count={brandPool.length} />
                     </li>
                     {brands.map((b) => (
                       <li key={b.name}>
                         <RailItem active={brand === b.name} onClick={() => pickBrand(b.name)} label={b.name} count={b.count} dim={b.count === 0} />
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
+              {(prices.length > 0 || hasSale) && (
+                <>
+                  <p className={`px-4 pb-2 text-xs font-bold uppercase tracking-[0.12em] text-dim ${groups.length > 1 || brands.length > 1 ? "mt-6 border-t border-tint/10 pt-5" : ""}`}>Price</p>
+                  <ul className="space-y-1">
+                    {hasSale && (
+                      <li className={prices.length > 0 ? "pb-2" : ""}>
+                        <SaleSwitch active={sale} onClick={toggleSale} count={saleCount} />
+                      </li>
+                    )}
+                    {prices.length > 0 && (
+                      <li>
+                        <RailItem active={price === "all"} onClick={() => pickPrice("all")} label="Any price" count={pricePool.length} />
+                      </li>
+                    )}
+                    {prices.map((b) => (
+                      <li key={b.key}>
+                        <RailItem active={price === b.key} onClick={() => pickPrice(b.key)} label={b.label} count={b.count} dim={b.count === 0} />
                       </li>
                     ))}
                   </ul>
@@ -413,7 +470,7 @@ export function StoreScreen({
               </Empty>
             ) : shown.length === 0 ? (
               <Empty title={car ? `Nothing listed for your ${car.name} yet` : "Nothing matches"} icon={<SearchX size={40} aria-hidden />}>
-                <p>{car ? "Universal products show up here too, so ask us at the counter." : "Try a different word, category or brand."}</p>
+                <p>{car ? "Universal products show up here too, so ask us at the counter." : "Try a different word, category, brand or price."}</p>
                 {sales.aiEnabled && (
                   <button type="button" className={`${ui.secondary} mt-5`} onClick={() => askAi(query || (car ? `Parts for my ${car.brand} ${car.name}` : ""))}>
                     <Sparkles size={20} aria-hidden /> Ask Salesman AI
@@ -424,8 +481,7 @@ export function StoreScreen({
                   className={`${ui.primary} mt-5`}
                   onClick={() => {
                     setQuery("");
-                    setGroup("all");
-                    setBrand("all");
+                    setFacets(NO_FACETS);
                     setCar(null);
                   }}
                 >
@@ -652,6 +708,45 @@ function CategoryPill({ active, onClick, label, count }: { active: boolean; onCl
     >
       {label}
       <span className={`tnum text-sm ${active ? "text-on-accent" : "text-dim"}`}>{count}</span>
+    </button>
+  );
+}
+
+/** "On sale" on phones and tablets: a toggle among the price pills. */
+function SalePill({ active, onClick, count }: { active: boolean; onClick: () => void; count: number }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className={`${ui.pill} ${active ? "border-accent bg-accent text-on-accent" : "border-accent/40 text-accent"} ${count === 0 && !active ? "opacity-50" : ""}`}
+    >
+      <BadgePercent size={18} aria-hidden />
+      On sale
+      <span className={`tnum text-sm ${active ? "text-on-accent" : "text-accent/75"}`}>{count}</span>
+    </button>
+  );
+}
+
+/** "On sale" in the rail: an on/off switch above the price ranges. */
+function SaleSwitch({ active, onClick, count }: { active: boolean; onClick: () => void; count: number }) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={active}
+      onClick={onClick}
+      className={`flex min-h-14 w-full items-center gap-3 rounded-xl border px-4 text-left text-base font-semibold transition-colors duration-200 active:scale-[0.98] ${
+        active ? "border-accent bg-accent/10 text-chalk" : "border-tint/15 bg-void text-chalk hover:bg-steel"
+      } ${count === 0 && !active ? "opacity-45" : ""}`}
+    >
+      <BadgePercent size={20} aria-hidden className="shrink-0 text-accent" />
+      <span className="min-w-0 flex-1 leading-tight">
+        On sale <span className="tnum text-sm font-bold text-dim">{count}</span>
+      </span>
+      <span aria-hidden className={`relative h-6 w-10 shrink-0 rounded-full transition-colors ${active ? "bg-accent" : "bg-tint/25"}`}>
+        <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-[left] ${active ? "left-[1.125rem]" : "left-0.5"}`} />
+      </span>
     </button>
   );
 }
