@@ -5,6 +5,7 @@ import { sql } from "@/lib/db/client";
 import { releaseUnpaidOrders } from "./payments";
 import { trackingHousekeeping } from "./tracking";
 import { releaseStaleCounterOrders } from "./store-sales";
+import { sendDailyShopSummaries } from "./store-summary";
 
 /**
  * HOUSEKEEPING
@@ -14,7 +15,9 @@ import { releaseStaleCounterOrders } from "./store-sales";
  *     (stock goes back);
  *   - rider location trails of closed deliveries (tracking.ts retention);
  *   - expired seller, customer, rider and admin sessions; admin links a month past expiry;
- *   - sign-in codes and rate-limit windows older than a day; unused shop offers older than a week.
+ *   - sign-in codes and rate-limit windows older than a day; unused shop offers older than a week;
+ * and, after 20:30 India time, sends each seller with shop screen orders that day their daily
+ * summary (once per day; store-summary.ts).
  *
  * Two ways in:
  *   - the scheduler calls /api/cron/housekeeping (hourly; see docs/DEPLOY.md). This is the one
@@ -38,6 +41,7 @@ const STEPS: Step[] = [
   { name: "sign-in codes", run: () => sql("DELETE FROM vendor_otps WHERE created_at < now() - interval '1 day'") },
   { name: "rate limits", run: () => sql("DELETE FROM rate_limits WHERE window_start < now() - interval '1 day'") },
   { name: "shop offers", run: () => sql("DELETE FROM store_offers WHERE used_order_id IS NULL AND expires_at < now() - interval '7 days'") },
+  { name: "shop screen daily summaries", run: () => sendDailyShopSummaries() },
 ];
 
 /** Runs every step now and reports which failed. Never throws. */

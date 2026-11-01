@@ -252,18 +252,23 @@ export async function placeStoreOrder(vendor: VendorSelf, input: StoreCheckoutIn
        VALUES ($1,$2,$3,'accepted',$4,$5, now(), $6)`,
       [vendorOrderId, orderId, vendor.id, total, rows[0]?.commission_rate == null ? DEFAULT_COMMISSION_RATE : Number(rows[0].commission_rate), input.pay === "counter" ? "seller" : "platform"],
     );
+    const low: { title: string; stock: number }[] = [];
     for (const i of priced) {
       await q(
         `INSERT INTO order_items (id, order_id, vendor_order_id, product_kind, product_ref, title, variant, unit_price, install_price, qty, line_total)
          VALUES ($1,$2,$3,'vendor',$4,$5,NULL,$6,0,$7,$8)`,
         [newId("itm"), orderId, vendorOrderId, i.id, i.title, i.unit, i.qty, i.unit * i.qty],
       );
-      const left = await q("UPDATE vendor_products SET stock = stock - $2, updated_at = now() WHERE id = $1 AND stock >= $2 RETURNING stock", [i.id, i.qty]);
+      const left = await q<{ stock: number; low_stock_at: number }>(
+        "UPDATE vendor_products SET stock = stock - $2, updated_at = now() WHERE id = $1 AND stock >= $2 RETURNING stock, low_stock_at",
+        [i.id, i.qty],
+      );
       if (!left[0]) throw new ApiError(409, "sold_out", `${i.title} just sold out.`);
+      if (left[0].stock <= left[0].low_stock_at) low.push({ title: i.title, stock: left[0].stock });
     }
     if (offerId) await q("UPDATE store_offers SET used_order_id = $2 WHERE id = $1", [offerId, orderId]);
     await audit({ type: "customer", id: sha256(input.customer.mobile).slice(0, 12) }, "order.place_store", { vendorId: vendor.id, ip, detail: { number, total, discount, pay: input.pay } }, q);
-    return { number, total, discount };
+    return { number, total, discount, low };
   });
 
   if (input.pay === "counter") {
@@ -272,6 +277,15 @@ export async function placeStoreOrder(vendor: VendorSelf, input: StoreCheckoutIn
       title: `Shop screen order ${out.number}`,
       body: `Collect ₹${out.total.toLocaleString("en-IN")} at the counter, then hand over and mark it done.`,
       link: `/vendor/dashboard/orders/${vendorOrderId}`,
+    }).catch(() => undefined);
+  }
+  // Same alert as a website sale (orders.ts); a failure here must not undo the order.
+  for (const l of out.low) {
+    await notifyVendor(vendor.id, {
+      type: "stock",
+      title: l.stock === 0 ? `Out of stock: ${l.title}` : `Low stock: ${l.title}`,
+      body: `${l.stock} left.`,
+      link: "/vendor/dashboard/inventory",
     }).catch(() => undefined);
   }
   return { id: orderId, number: out.number, total: out.total, discount: out.discount, pay: input.pay };

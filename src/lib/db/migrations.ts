@@ -832,4 +832,30 @@ ALTER TABLE store_settings ADD COLUMN screen_hours text CHECK (screen_hours IS N
 ALTER TABLE store_settings ADD COLUMN screen_offer text CHECK (screen_offer IS NULL OR length(screen_offer) <= 140);
 `,
   },
+  {
+    // Offline Store follow-ups for the seller (store-receipts.ts, store-summary.ts).
+    //   store_receipts         each receipt a customer asked for after a screen sale: the channel and
+    //                          what happened, never the mobile or email it went to
+    //   store_daily_summaries  the "today at your shop screen" notice, once per seller per India day
+    id: "015_store_receipts_summary",
+    sql: `
+CREATE TABLE store_receipts (
+  id         text PRIMARY KEY,
+  order_id   text NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+  vendor_id  text NOT NULL REFERENCES vendors(id) ON DELETE CASCADE,
+  channel    text NOT NULL CHECK (channel IN ('email','sms')),
+  status     text NOT NULL CHECK (status IN ('sent','dev','skipped','failed')),
+  reason     text,
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX store_receipts_order_idx ON store_receipts (order_id);
+
+CREATE TABLE store_daily_summaries (
+  vendor_id  text NOT NULL REFERENCES vendors(id) ON DELETE CASCADE,
+  day        date NOT NULL,
+  sent_at    timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY (vendor_id, day)
+);
+`,
+  },
 ];

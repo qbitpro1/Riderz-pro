@@ -7,6 +7,7 @@ import { api, ApiFailure } from "@/lib/vendor/client";
 import { openCheckout, type RazorpaySuccess } from "@/lib/payments/checkout";
 import type { OnlinePaymentStart } from "@/lib/payments/types";
 import { CloseButton, Layer } from "./Layer";
+import { ReceiptChoice } from "./ReceiptChoice";
 import { ui } from "./lib";
 import type { OrderLine } from "./hooks";
 import type { ScreenOffer } from "./StoreAssistant";
@@ -116,25 +117,28 @@ export function CheckoutSheet({
   if (placed) {
     return (
       <Layer label="Order placed" onClose={onDone} kind="full">
-        <div className="ss-scroll flex min-h-0 flex-1 flex-col items-center justify-center gap-6 overflow-y-auto px-6 py-10 text-center">
-          <CheckCircle2 size={72} className="text-accent" aria-hidden />
-          <p className="font-display text-3xl font-extrabold text-chalk md:text-4xl">
-            {placed.pay === "counter" ? "Order placed. Please pay at the counter." : placed.paid ? "Paid. Thank you!" : "Payment received. Confirming…"}
-          </p>
-          <div className="rounded-3xl border-2 border-dashed border-accent px-10 py-6">
-            <p className="text-base font-semibold uppercase tracking-[0.14em] text-dim">Order number</p>
-            <p className="tnum font-display text-5xl font-extrabold tracking-[0.06em] text-chalk md:text-6xl">{placed.number}</p>
-            <p className="mt-2 tnum text-2xl font-bold text-chalk">{rupees(placed.total)}</p>
-            {placed.discount > 0 && <p className="text-base text-accent">Special price: you saved {rupees(placed.discount)}</p>}
+        <div className="ss-scroll flex min-h-0 flex-1 flex-col overflow-y-auto px-6 py-10">
+          <div className="m-auto flex flex-col items-center gap-6 text-center">
+            <CheckCircle2 size={72} className="text-accent" aria-hidden />
+            <p className="font-display text-3xl font-extrabold text-chalk md:text-4xl">
+              {placed.pay === "counter" ? "Order placed. Please pay at the counter." : placed.paid ? "Paid. Thank you!" : "Payment received. Confirming…"}
+            </p>
+            <div className="rounded-3xl border-2 border-dashed border-accent px-10 py-6">
+              <p className="text-base font-semibold uppercase tracking-[0.14em] text-dim">Order number</p>
+              <p className="tnum font-display text-5xl font-extrabold tracking-[0.06em] text-chalk md:text-6xl">{placed.number}</p>
+              <p className="mt-2 tnum text-2xl font-bold text-chalk">{rupees(placed.total)}</p>
+              {placed.discount > 0 && <p className="text-base text-accent">Special price: you saved {rupees(placed.discount)}</p>}
+            </div>
+            <p className="max-w-xl text-lg text-ash">
+              {placed.pay === "counter"
+                ? `Show this number at the ${store.name} counter. Pay there and collect your items.`
+                : "Show this number at the counter to collect your items."}
+            </p>
+            <ReceiptChoice number={placed.number} mobile={mobile} />
+            <button type="button" onClick={onDone} className={`${ui.primary} min-h-16 px-10 text-lg`}>
+              Done
+            </button>
           </div>
-          <p className="max-w-xl text-lg text-ash">
-            {placed.pay === "counter"
-              ? `Show this number at the ${store.name} counter. Pay there and collect your items.`
-              : "Show this number at the counter to collect your items."}
-          </p>
-          <button type="button" onClick={onDone} className={`${ui.primary} min-h-16 px-10 text-lg`}>
-            Done
-          </button>
         </div>
       </Layer>
     );
