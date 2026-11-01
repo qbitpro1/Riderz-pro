@@ -12,8 +12,20 @@ import { Mic, MicOff } from "lucide-react";
  * Android TV browsers, Safari). The button is hidden where the browser has no speech
  * recognition. Needs microphone permission and HTTPS (or localhost).
  *
+ * Fast on purpose: the words show while the customer speaks, and as soon as they stop talking
+ * (a final result, or SILENCE_MS without new words) the search is done: we don't wait for the
+ * browser's own end-of-speech timeout, which can take seconds in a noisy shop. `onFinal` gets the
+ * finished words once.
+ *
  * Note: Chrome sends the audio to its speech service to turn it into text.
  */
+
+/** Quiet time after the last heard word that counts as "done speaking". */
+const SILENCE_MS = 1100;
+/** Give up when nothing at all is heard for this long. */
+const NO_SPEECH_MS = 7000;
+/** Hard stop, even in a noisy room. */
+const MAX_MS = 12_000;
 
 type Recognition = {
   lang: string;
@@ -26,6 +38,7 @@ type Recognition = {
   onresult: ((e: { resultIndex: number; results: ArrayLike<ArrayLike<{ transcript: string }> & { isFinal: boolean }> }) => void) | null;
   onerror: ((e: { error: string }) => void) | null;
   onend: (() => void) | null;
+  onaudiostart?: (() => void) | null;
 };
 
 function recognitionCtor(): (new () => Recognition) | null {
@@ -42,13 +55,28 @@ const MESSAGES: Record<string, string> = {
   network: "Voice search needs an internet connection.",
 };
 
-export function VoiceSearch({ onText, onListening }: { onText: (text: string) => void; onListening?: (on: boolean) => void }) {
+export function VoiceSearch({
+  onText,
+  onFinal,
+  onListening,
+}: {
+  /** The words so far, while the customer speaks. */
+  onText: (text: string) => void;
+  /** The finished words, once per tap of the mic (not called when nothing was heard). */
+  onFinal?: (text: string) => void;
+  onListening?: (on: boolean) => void;
+}) {
   const supported = useBrowserValue(() => recognitionCtor() !== null, false);
   const [listening, setListeningState] = useState(false);
+  const [ready, setReady] = useState(false);
+  const [heard, setHeard] = useState("");
   const [note, setNote] = useState<string | null>(null);
   const rec = useRef<Recognition | null>(null);
-  const timer = useRef<number | null>(null);
+  const timers = useRef<number[]>([]);
+  const silence = useRef<number | null>(null);
+  const done = useRef(false);
   const onListeningRef = useLatest(onListening);
+  const onFinalRef = useLatest(onFinal);
 
   /** Tells the parent only when listening actually starts or stops. */
   const setListening = (on: boolean) => {
@@ -56,7 +84,14 @@ export function VoiceSearch({ onText, onListening }: { onText: (text: string) =>
     onListeningRef.current?.(on);
   };
 
-  useEffect(() => () => rec.current?.abort(), []);
+  useEffect(
+    () => () => {
+      for (const t of timers.current) window.clearTimeout(t);
+      if (silence.current) window.clearTimeout(silence.current);
+      rec.current?.abort();
+    },
+    [],
+  );
   useEffect(() => {
     if (!note) return;
     const t = window.setTimeout(() => setNote(null), 4000);
@@ -65,36 +100,78 @@ export function VoiceSearch({ onText, onListening }: { onText: (text: string) =>
 
   if (!supported) return null;
 
+  function clearTimers() {
+    for (const t of timers.current) window.clearTimeout(t);
+    timers.current = [];
+    if (silence.current) window.clearTimeout(silence.current);
+    silence.current = null;
+  }
+
+  /** The customer is done: hand over the words once and stop listening right away. */
+  function finish(text: string) {
+    if (done.current) return;
+    done.current = true;
+    clearTimers();
+    rec.current?.abort();
+    setListening(false);
+    if (text) {
+      onText(text);
+      onFinalRef.current?.(text);
+    }
+  }
+
   function stop() {
-    if (timer.current) window.clearTimeout(timer.current);
-    rec.current?.stop();
+    finish(heard);
   }
 
   function start() {
     const Ctor = recognitionCtor();
     if (!Ctor) return;
+    rec.current?.abort();
     const r = new Ctor();
     r.lang = "en-IN";
     r.interimResults = true;
     r.continuous = false;
     r.maxAlternatives = 1;
+    done.current = false;
+    let latest = "";
+    r.onaudiostart = () => setReady(true);
     r.onresult = (e) => {
       let text = "";
-      for (let i = 0; i < e.results.length; i++) text += e.results[i][0].transcript;
-      onText(text.trim());
+      let final = false;
+      for (let i = 0; i < e.results.length; i++) {
+        text += e.results[i][0].transcript;
+        if (e.results[i].isFinal) final = true;
+      }
+      latest = text.trim();
+      setReady(true);
+      setHeard(latest);
+      onText(latest);
+      if (final) return finish(latest);
+      // No new words for a moment: the customer has finished speaking.
+      if (silence.current) window.clearTimeout(silence.current);
+      silence.current = window.setTimeout(() => finish(latest), SILENCE_MS);
     };
-    r.onerror = (e) => setNote(MESSAGES[e.error] ?? (e.error === "aborted" ? null : "Voice search stopped. Try again."));
-    r.onend = () => {
-      setListening(false);
-      if (timer.current) window.clearTimeout(timer.current);
+    r.onerror = (e) => {
+      if (e.error !== "aborted") setNote(MESSAGES[e.error] ?? "Voice search stopped. Try again.");
     };
+    r.onend = () => finish(latest);
     rec.current = r;
     setNote(null);
+    setHeard("");
+    setReady(false);
     try {
       r.start();
       setListening(true);
-      // Stop listening after 10 seconds even if the room is noisy.
-      timer.current = window.setTimeout(() => r.stop(), 10_000);
+      timers.current.push(
+        window.setTimeout(() => {
+          if (!latest) {
+            setNote(MESSAGES["no-speech"]);
+            finish("");
+          }
+        }, NO_SPEECH_MS),
+        window.setTimeout(() => finish(latest), MAX_MS),
+      );
     } catch {
       setNote("Voice search could not start. Try again.");
     }
@@ -121,7 +198,7 @@ export function VoiceSearch({ onText, onListening }: { onText: (text: string) =>
         // Sized to its text (not the narrow mic slot it sits in) and right-aligned under the mic.
         <div className="ss-pop pointer-events-none absolute right-0 top-full z-20 mt-3 flex w-max max-w-[min(24rem,calc(100vw-2rem))] items-center gap-2.5 rounded-2xl bg-chalk px-5 py-3 text-base font-semibold leading-snug text-void shadow-lg">
           {listening && <span aria-hidden className="h-2.5 w-2.5 shrink-0 animate-pulse rounded-full bg-accent" />}
-          <span>{listening ? "Listening… say a product, brand or car" : note}</span>
+          <span>{listening ? (heard ? `“${heard}”` : ready ? "Listening… say a product, brand or car" : "Starting the mic…") : note}</span>
         </div>
       )}
     </>

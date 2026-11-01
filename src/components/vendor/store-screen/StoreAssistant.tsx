@@ -64,8 +64,6 @@ export function StoreAssistant({
   useEffect(() => {
     turnsRef.current = turns;
   }, [turns]);
-  // Voice fills the box as the customer speaks; the question goes when they stop.
-  const spoken = useRef("");
 
   useEffect(() => {
     end.current?.scrollIntoView({ block: "end", behavior: "smooth" });
@@ -213,20 +211,8 @@ export function StoreAssistant({
             className="h-14 w-full rounded-xl border border-tint/15 bg-void pl-4 pr-14 text-base text-chalk outline-none placeholder:text-dim focus:border-accent"
           />
           <span className="absolute right-1 top-1/2 -translate-y-1/2">
-            <VoiceSearch
-              onText={(t) => {
-                spoken.current = t;
-                setText(t);
-              }}
-              onListening={(on) => {
-                if (on) spoken.current = "";
-                else if (spoken.current) {
-                  const q = spoken.current;
-                  spoken.current = "";
-                  void ask(q);
-                }
-              }}
-            />
+            {/* Voice fills the box as the customer speaks; the question goes the moment they stop. */}
+            <VoiceSearch onText={setText} onFinal={(q) => void ask(q)} />
           </span>
         </label>
         <button type="submit" disabled={busy || !text.trim()} className={`${ui.primary} h-14 px-5`} aria-label="Send">

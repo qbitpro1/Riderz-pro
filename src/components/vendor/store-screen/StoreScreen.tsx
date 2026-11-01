@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { VoiceSearch } from "./VoiceSearch";
 import { BadgeCheck, BadgePercent, CarFront, Columns2, Search, ShoppingBag, SearchX, Sparkles, X } from "lucide-react";
 import { rupees } from "@/lib/format";
+import { useLatest } from "@/lib/client/hooks";
 import { api } from "@/lib/vendor/client";
 import { AttractScreen } from "./AttractScreen";
 import { BrowseGrid, type TileActions } from "./BrowseGrid";
@@ -50,6 +51,9 @@ import type { ScreenFitBrand, ScreenProduct, ScreenStore } from "./types";
  * The screen is always light: product photos sit on white, and a shop looks the same whatever the
  * device theme is. Leaving needs the seller's password (the session is locked to this screen).
  */
+
+/** A typed search with no matches goes to Salesman AI after this pause in typing. */
+const TYPED_NO_MATCH_MS = 2000;
 export function StoreScreen({
   store,
   products,
@@ -230,6 +234,25 @@ export function StoreScreen({
     setAiSeed(q?.trim() ? q.trim() : null);
     setAiOpen(true);
   };
+
+  // Nothing in stock matches the search: Salesman AI takes the question instead of an empty
+  // screen. Spoken: as soon as the customer stops talking. Typed: on Enter, or after a pause.
+  const [listening, setListening] = useState(false);
+  const noMatch = useCallback(
+    (q: string) => q.trim().length >= 3 && !products.some((p) => fitsCar(p, car) && matchesQuery(p, q)),
+    [products, car],
+  );
+  const handToAi = useLatest((q: string) => {
+    if (!sales.aiEnabled || !noMatch(q)) return false;
+    setQuery("");
+    askAi(q);
+    return true;
+  });
+  useEffect(() => {
+    if (!sales.aiEnabled || listening || overlays || !noMatch(query)) return;
+    const t = window.setTimeout(() => handToAi.current(query), TYPED_NO_MATCH_MS);
+    return () => window.clearTimeout(t);
+  }, [query, listening, overlays, noMatch, sales.aiEnabled, handToAi]);
   useIdle(
     () => {
       if (count > 0 || overlays) setIdlePrompt(true);
@@ -302,6 +325,9 @@ export function StoreScreen({
                 type="search"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && handToAi.current(query)) e.preventDefault();
+                }}
                 placeholder="Search or tap the mic: seat covers for Creta…"
                 autoComplete="off"
                 enterKeyHint="search"
@@ -318,7 +344,7 @@ export function StoreScreen({
                     <X size={20} aria-hidden />
                   </button>
                 )}
-                <VoiceSearch onText={setQuery} />
+                <VoiceSearch onText={setQuery} onFinal={(t) => handToAi.current(t)} onListening={setListening} />
               </span>
             </label>
 
