@@ -53,7 +53,7 @@ export function ReviewScreen({
               <StoreMark store={store} className="h-14 w-14 md:h-16 md:w-16" />
               <div className="min-w-0">
                 <p className="truncate font-display text-2xl font-extrabold tracking-tight text-chalk md:text-3xl">{store.name}</p>
-                {store.city && <p className="text-base text-ash">{store.city}</p>}
+                {(store.address ?? store.city) && <p className="text-base text-ash">{store.address ?? store.city}</p>}
               </div>
             </div>
 

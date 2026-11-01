@@ -49,6 +49,7 @@ export function StoreScreen({
 }) {
   const [attract, setAttract] = useState<"on" | "leaving" | "off">("on");
   const [group, setGroup] = useState("all");
+  const [brand, setBrand] = useState("all");
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<SortKey>("featured");
   const [car, setCar] = useState<Car | null>(null);
@@ -103,15 +104,38 @@ export function StoreScreen({
   /* ---- what is shown ---- */
   const base = useMemo(() => products.filter((p) => fitsCar(p, car) && matchesQuery(p, query)), [products, car, query]);
 
+  // Category and brand narrow each other: category counts follow the chosen brand, brand counts
+  // follow the chosen category.
   const groups = useMemo(() => {
     const m = new Map<string, { name: string; count: number }>();
     for (const p of products) if (!m.has(p.group)) m.set(p.group, { name: p.groupName, count: 0 });
-    for (const p of base) m.get(p.group)!.count++;
+    for (const p of base) if (brand === "all" || p.brand === brand) m.get(p.group)!.count++;
     return [...m.entries()].map(([slug, g]) => ({ slug, ...g }));
-  }, [products, base]);
+  }, [products, base, brand]);
 
-  const shown = useMemo(() => sortProducts(group === "all" ? base : base.filter((p) => p.group === group), sort), [base, group, sort]);
-  const gridKey = `${group}|${query}|${sort}|${car?.slug ?? ""}`;
+  const inGroup = useMemo(() => (group === "all" ? base : base.filter((p) => p.group === group)), [base, group]);
+
+  const brands = useMemo(() => {
+    const m = new Map<string, number>();
+    for (const p of products) if (p.brand && !m.has(p.brand)) m.set(p.brand, 0);
+    for (const p of inGroup) if (p.brand) m.set(p.brand, (m.get(p.brand) ?? 0) + 1);
+    return [...m.entries()].map(([name, count]) => ({ name, count })).sort((a, b) => a.name.localeCompare(b.name));
+  }, [products, inGroup]);
+
+  const shown = useMemo(() => sortProducts(brand === "all" ? inGroup : inGroup.filter((p) => p.brand === brand), sort), [inGroup, brand, sort]);
+  const gridKey = `${group}|${brand}|${query}|${sort}|${car?.slug ?? ""}`;
+  const brandTotal = brand === "all" ? base.length : base.filter((p) => p.brand === brand).length;
+
+  // Picking a category the chosen brand has nothing in (or the other way round) clears the other
+  // filter instead of showing an empty screen.
+  const pickGroup = (g: string) => {
+    setGroup(g);
+    if (brand !== "all" && g !== "all" && !base.some((p) => p.group === g && p.brand === brand)) setBrand("all");
+  };
+  const pickBrand = (b: string) => {
+    setBrand(b);
+    if (group !== "all" && b !== "all" && !base.some((p) => p.group === group && p.brand === b)) setGroup("all");
+  };
 
   const attractGroups = useMemo(() => {
     const all = new Map<string, { slug: string; name: string; count: number }>();
@@ -126,6 +150,7 @@ export function StoreScreen({
   /* ---- actions ---- */
   const resetBrowse = useCallback(() => {
     setGroup("all");
+    setBrand("all");
     setQuery("");
     setSort("featured");
     setCar(null);
@@ -240,7 +265,7 @@ export function StoreScreen({
                   <h1 className="truncate font-display text-lg font-extrabold leading-tight tracking-tight text-chalk">{store.name}</h1>
                   <BadgeCheck size={18} aria-label="Riderzpro verified seller" className="shrink-0 fill-verified text-on-verified" />
                 </span>
-                <span className="block text-sm text-dim tnum">{products.length} in stock</span>
+                <span className="line-clamp-2 text-sm leading-snug text-dim tnum" title={store.address ?? undefined}>{store.address ?? `${products.length} in stock`}</span>
               </span>
             </button>
 
@@ -297,9 +322,17 @@ export function StoreScreen({
           {/* Categories on phones and tablets (the rail takes over from lg) */}
           {groups.length > 1 && (
             <nav aria-label="Categories" className="ss-hide-bar flex gap-2 overflow-x-auto px-4 pb-3 lg:hidden md:px-6">
-              <CategoryPill active={group === "all"} onClick={() => setGroup("all")} label="All products" count={base.length} />
+              <CategoryPill active={group === "all"} onClick={() => setGroup("all")} label="All products" count={brandTotal} />
               {groups.map((g) => (
-                <CategoryPill key={g.slug} active={group === g.slug} onClick={() => setGroup(g.slug)} label={g.name} count={g.count} />
+                <CategoryPill key={g.slug} active={group === g.slug} onClick={() => pickGroup(g.slug)} label={g.name} count={g.count} />
+              ))}
+            </nav>
+          )}
+          {brands.length > 1 && (
+            <nav aria-label="Brands" className="ss-hide-bar flex gap-2 overflow-x-auto px-4 pb-3 lg:hidden md:px-6">
+              <CategoryPill active={brand === "all"} onClick={() => setBrand("all")} label="All brands" count={inGroup.length} />
+              {brands.map((b) => (
+                <CategoryPill key={b.name} active={brand === b.name} onClick={() => pickBrand(b.name)} label={b.name} count={b.count} />
               ))}
             </nav>
           )}
@@ -307,18 +340,35 @@ export function StoreScreen({
 
         <div className="flex min-h-0 flex-1">
           {/* Category rail */}
-          {groups.length > 1 && (
-            <nav aria-label="Categories" className="ss-scroll hidden w-60 shrink-0 overflow-y-auto border-r border-tint/10 bg-carbon px-3 py-5 lg:block xl:w-64">
-              <ul className="space-y-1">
-                <li>
-                  <RailItem active={group === "all"} onClick={() => setGroup("all")} label="All products" count={base.length} />
-                </li>
-                {groups.map((g) => (
-                  <li key={g.slug}>
-                    <RailItem active={group === g.slug} onClick={() => setGroup(g.slug)} label={g.name} count={g.count} dim={g.count === 0} />
+          {(groups.length > 1 || brands.length > 1) && (
+            <nav aria-label="Categories and brands" className="ss-scroll hidden w-60 shrink-0 overflow-y-auto border-r border-tint/10 bg-carbon px-3 py-5 lg:block xl:w-64">
+              {groups.length > 1 && (
+                <ul className="space-y-1">
+                  <li>
+                    <RailItem active={group === "all"} onClick={() => setGroup("all")} label="All products" count={brandTotal} />
                   </li>
-                ))}
-              </ul>
+                  {groups.map((g) => (
+                    <li key={g.slug}>
+                      <RailItem active={group === g.slug} onClick={() => pickGroup(g.slug)} label={g.name} count={g.count} dim={g.count === 0} />
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {brands.length > 1 && (
+                <>
+                  <p className={`px-4 pb-2 text-xs font-bold uppercase tracking-[0.12em] text-dim ${groups.length > 1 ? "mt-6 border-t border-tint/10 pt-5" : ""}`}>Brands</p>
+                  <ul className="space-y-1">
+                    <li>
+                      <RailItem active={brand === "all"} onClick={() => setBrand("all")} label="All brands" count={inGroup.length} />
+                    </li>
+                    {brands.map((b) => (
+                      <li key={b.name}>
+                        <RailItem active={brand === b.name} onClick={() => pickBrand(b.name)} label={b.name} count={b.count} dim={b.count === 0} />
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
             </nav>
           )}
 
@@ -363,7 +413,7 @@ export function StoreScreen({
               </Empty>
             ) : shown.length === 0 ? (
               <Empty title={car ? `Nothing listed for your ${car.name} yet` : "Nothing matches"} icon={<SearchX size={40} aria-hidden />}>
-                <p>{car ? "Universal products show up here too, so ask us at the counter." : "Try a different word or category."}</p>
+                <p>{car ? "Universal products show up here too, so ask us at the counter." : "Try a different word, category or brand."}</p>
                 {sales.aiEnabled && (
                   <button type="button" className={`${ui.secondary} mt-5`} onClick={() => askAi(query || (car ? `Parts for my ${car.brand} ${car.name}` : ""))}>
                     <Sparkles size={20} aria-hidden /> Ask Salesman AI
@@ -375,6 +425,7 @@ export function StoreScreen({
                   onClick={() => {
                     setQuery("");
                     setGroup("all");
+                    setBrand("all");
                     setCar(null);
                   }}
                 >

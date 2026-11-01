@@ -30,7 +30,7 @@ export default async function StoreScreenPage({ params }: { params: Promise<{ sl
   const [products, settings] = await Promise.all([screenProducts(vendor.id), storeSettings(vendor.id)]);
   return (
     <StoreScreen
-      store={screenStore(vendor)}
+      store={screenStore(vendor, settings.screenAddress)}
       products={products}
       fitment={screenFitment(products)}
       locked={session.locked}

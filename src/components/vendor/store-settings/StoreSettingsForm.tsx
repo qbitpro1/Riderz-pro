@@ -9,6 +9,7 @@ export type StoreSettingsValue = {
   bargainEnabled: boolean;
   maxDiscountPct: number;
   maxDiscountRupees: number | null;
+  screenAddress: string | null;
   payOnScreen: boolean;
   payAtCounter: boolean;
 };
@@ -49,6 +50,22 @@ export function StoreSettingsForm({ initial, fullAi, onlineAvailable }: { initia
 
   return (
     <form onSubmit={save} className="mt-6 max-w-2xl space-y-6">
+      <section className="space-y-3">
+        <h2 className="eyebrow">Your shop on the screen</h2>
+        <div>
+          <label className="label" htmlFor={`${uid}-address`}>Shop address shown under your shop name</label>
+          <input
+            id={`${uid}-address`}
+            className="field"
+            value={v.screenAddress ?? ""}
+            maxLength={120}
+            placeholder="e.g. Autoform Store, Lajpat Nagar, Delhi"
+            onChange={(e) => setV((s) => ({ ...s, screenAddress: e.target.value }))}
+          />
+          <p className="mt-1 text-xs text-ash">Leave blank to show your pickup address.</p>
+        </div>
+      </section>
+
       <section className="space-y-3">
         <h2 className="eyebrow">Salesman AI</h2>
         {box("aiEnabled", "Show Salesman AI on the screen", "Customers talk or type; it finds your products, compares them, adds them to the order and opens checkout.")}

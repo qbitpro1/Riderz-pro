@@ -21,13 +21,17 @@ function groupName(department: DepartmentSlug, group: string): string {
   return DEPARTMENT_BY_SLUG[department]?.groups.find((g) => g.slug === group)?.name ?? group;
 }
 
-export function screenStore(vendor: VendorSelf): ScreenStore {
+/** `screenAddress`: the seller's own address line from Offline Store settings, if set. */
+export function screenStore(vendor: VendorSelf, screenAddress: string | null = null): ScreenStore {
   const store = vendor.onboarding.store;
+  const pickup = vendor.onboarding.shipping?.pickup;
+  const pickupLine = pickup ? [pickup.line1, pickup.line2, pickup.city].map((s) => s?.trim()).filter(Boolean).join(", ") : "";
   return {
     name: vendor.storeName ?? "Our store",
     slug: vendor.slug ?? "",
     logo: store?.logoFileId ?? null,
-    city: vendor.onboarding.shipping?.pickup.city ?? null,
+    city: pickup?.city ?? null,
+    address: screenAddress?.trim() || pickupLine || null,
   };
 }
 

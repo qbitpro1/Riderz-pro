@@ -89,7 +89,7 @@ const nextConfig: NextConfig = {
       { source: "/vendor/signup", destination: "/vendor/auth?mode=signup", permanent: true },
       { source: "/vendor/sign-up", destination: "/vendor/auth?mode=signup", permanent: true },
       // The old seller dashboard lived at /vendor/{id}; this site's own /vendor/* pages are excluded.
-      { source: "/vendor/:id((?!auth$|dashboard$|onboarding$|pending$)[^/]+)", destination: "/vendor/dashboard", permanent: true },
+      { source: "/vendor/:id((?!auth$|dashboard$|onboarding$|pending$|offline-store$)[^/]+)", destination: "/vendor/dashboard", permanent: true },
       { source: "/admin/login", destination: "/admin", permanent: true },
       { source: "/super-admin", destination: "/admin", permanent: true },
       { source: "/super-admin/:path*", destination: "/admin", permanent: true },

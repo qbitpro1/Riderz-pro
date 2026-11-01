@@ -6,6 +6,8 @@ export type ScreenStore = {
   /** Logo file id (use `fileHref`). */
   logo: string | null;
   city: string | null;
+  /** Under the shop name: the seller's own line ("Autoform Store, Lajpat Nagar, Delhi") or the pickup address. */
+  address: string | null;
 };
 
 export type ScreenProduct = {

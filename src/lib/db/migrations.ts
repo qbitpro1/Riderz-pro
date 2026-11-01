@@ -814,4 +814,12 @@ ALTER TABLE orders DROP CONSTRAINT IF EXISTS orders_payment_method_check;
 ALTER TABLE orders ADD CONSTRAINT orders_payment_method_check CHECK (payment_method IN ('whatsapp','cod','online','counter'));
 `,
   },
+  {
+    // The shop's address on the Offline Store screen, as the seller wants customers to see it
+    // ("Autoform Store, Lajpat Nagar, Delhi"). Empty: the screen shows the pickup address.
+    id: "013_store_screen_address",
+    sql: `
+ALTER TABLE store_settings ADD COLUMN screen_address text CHECK (screen_address IS NULL OR length(screen_address) <= 120);
+`,
+  },
 ];

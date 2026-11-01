@@ -13,7 +13,7 @@ const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
   { title: "Shop by", links: SHOP_BY_LINKS },
   { title: "Services", links: SERVICES_NAV.links },
   { title: "Cars", links: CARS_NAV.links.filter((l) => l.href !== "/partners" && l.href !== "/vendor") },
-  { title: "Partners", links: PARTNERS_NAV.links },
+  { title: "Partners", links: [...PARTNERS_NAV.links, { label: "Offline Store login", href: "/vendor/offline-store" }] },
   {
     title: "Support",
     links: [
