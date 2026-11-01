@@ -4,6 +4,8 @@ import { offlineStoreHref, storeHref } from "@/lib/vendor/types";
 import { vendorPage } from "@/lib/server/session";
 import { vendorOverview } from "@/lib/server/vendor-catalogue";
 import { screenProducts } from "@/lib/server/store-screen";
+import { shopDaySummary } from "@/lib/server/store-summary";
+import { ShopScreenToday } from "@/components/vendor/dashboard/ShopScreenToday";
 import { rupees } from "@/lib/format";
 import { VENDOR_ORDER_LABELS, type VendorOrderStatus } from "@/lib/vendor/types";
 
@@ -13,9 +15,11 @@ const dateFmt = new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "short
 
 export default async function OverviewPage() {
   const vendor = await vendorPage(["approved", "suspended"], "/vendor/dashboard");
-  const [{ kpis, recentOrders, attention }, onScreen] = await Promise.all([
+  const approved = vendor.status === "approved";
+  const [{ kpis, recentOrders, attention }, onScreen, shopToday] = await Promise.all([
     vendorOverview(vendor.id, vendor.commissionRate),
     screenProducts(vendor.id),
+    approved ? shopDaySummary(vendor.id) : null,
   ]);
   const base = "/vendor/dashboard";
 
@@ -96,6 +100,8 @@ export default async function OverviewPage() {
           )}
         </div>
       </section>
+
+      {shopToday && <ShopScreenToday s={shopToday} />}
 
       <section aria-label="Key numbers" className="grid grid-cols-2 gap-3 md:grid-cols-4">
         {tiles.map((t) => {
