@@ -129,10 +129,12 @@ export function AttractScreen({
               <div className="flex min-w-0 items-center gap-4">
                 <StoreMark store={store} className="h-14 w-14 lg:h-16 lg:w-16" text="text-2xl" />
                 <div className="min-w-0">
-                  <p className="truncate font-display text-xl font-extrabold tracking-tight text-chalk lg:text-2xl">{store.name}</p>
-                  <p className="flex min-w-0 items-center gap-1.5 text-sm font-medium leading-snug text-ash lg:text-base">
-                    <span className="min-w-0">{store.address ?? store.city ? `${store.address ?? store.city} · ` : ""}Riderzpro verified seller</span>
-                    <BadgeCheck size={20} aria-label="Verified" className="shrink-0 fill-verified text-on-verified" />
+                  <p className="flex min-w-0 items-center gap-1.5">
+                    <span className="truncate font-display text-xl font-extrabold tracking-tight text-chalk lg:text-2xl">{store.name}</span>
+                    <BadgeCheck size={20} aria-label="Riderzpro verified seller" className="shrink-0 fill-verified text-on-verified" />
+                  </p>
+                  <p className="text-sm font-medium leading-snug text-ash lg:text-base">
+                    {store.address ?? store.city ? `${store.address ?? store.city} · ` : ""}Riderzpro verified seller
                   </p>
                 </div>
               </div>
