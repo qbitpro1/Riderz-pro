@@ -3,7 +3,10 @@ import { ApiError, guardMutation, ok, rateLimit, readJson, route } from "@/lib/s
 import { CAN_SELL, requireVendor } from "@/lib/server/session";
 import { askStoreAssistant, fullSalesmanFor } from "@/lib/server/assistant/store";
 import { askStoreLocal } from "@/lib/server/assistant/store-local";
-import { screenProducts, screenStore } from "@/lib/server/store-screen";
+import { screenCategories, screenProducts, screenStore } from "@/lib/server/store-screen";
+import { isHinglish } from "@/lib/server/assistant/local";
+import { suggestionsFor } from "@/components/vendor/store-screen/lib";
+import type { ScreenProduct } from "@/components/vendor/store-screen/types";
 import { createOffer, liveOffer, nextBargainStep, payOptions, storeSettings } from "@/lib/server/store-sales";
 import { CONVERSATION_ID, logSalesmanTurn } from "@/lib/server/salesman-log";
 import { ASSISTANT_MAX_CHARS, ASSISTANT_MAX_TURNS, assistantRequestSchema } from "@/lib/assistant/types";
@@ -24,6 +27,26 @@ const schema = assistantRequestSchema.extend({
  * set). Otherwise, when its limits are used up, or when Claude doesn't answer, Basic mode
  * (store-local.ts, free) answers instead. Both bargain on the same ladder within the seller's limits.
  */
+type Answer = { text: string; products: string[]; actions: { type: string; id?: string; qty?: number }[] };
+
+/**
+ * After Salesman AI puts something in the order (either mode), it also names a few products that
+ * go well with it, like the screen does: "Car Cover" → mats, car care. Same pairs as the screen.
+ */
+async function withSuggestions<T extends Answer>(r: T, vendorId: string, cart: { id: string; qty: number }[], car: string | null, question: string, known?: ScreenProduct[]): Promise<T> {
+  const added = r.actions.filter((a) => a.type === "add" && a.id).map((a) => ({ id: a.id!, qty: a.qty ?? 1 }));
+  if (!added.length) return r;
+  const [products, categories] = await Promise.all([known ?? screenProducts(vendorId), screenCategories(vendorId)]);
+  const inOrder: Record<string, number> = {};
+  for (const l of [...cart, ...added]) inOrder[l.id] = (inOrder[l.id] ?? 0) + l.qty;
+  const from = added.map((a) => products.find((p) => p.id === a.id)).filter((p): p is ScreenProduct => Boolean(p));
+  const picks = suggestionsFor(from, products, categories, inOrder, car ? { slug: car, name: "", brand: "" } : null, 3);
+  if (!picks.length) return r;
+  const list = picks.map((p) => `${p.title} (₹${p.price.toLocaleString("en-IN")})`).join(", ");
+  const line = isHinglish(question) ? `Iske saath ye bhi achha rahega: ${list}.` : `Goes well with it: ${list}.`;
+  return { ...r, text: `${r.text.trim()}\n\n${line}`, products: [...new Set([...r.products, ...picks.map((p) => p.id)])] };
+}
+
 export const POST = route(async (req: Request) => {
   guardMutation(req);
   const vendor = await requireVendor(CAN_SELL, { whileLocked: true });
@@ -45,7 +68,7 @@ export const POST = route(async (req: Request) => {
     try {
       await rateLimit(`store-assistant:${vendor.id}`, 60, 10 * 60);
       await rateLimit(`store-assistant-day:${vendor.id}`, Number(process.env.STORE_ASSISTANT_DAILY_LIMIT ?? 800), 24 * 60 * 60);
-      const r = await askStoreAssistant(vendor, { messages, cart: body.cart, car, offerId: body.offerId ?? null });
+      const r = await withSuggestions(await askStoreAssistant(vendor, { messages, cart: body.cart, car, offerId: body.offerId ?? null }), vendor.id, body.cart, car, last.content);
       await log("full", r);
       return ok({ reply: r.text, products: r.products, actions: r.actions, mode: "full" });
     } catch (err) {
@@ -61,7 +84,8 @@ export const POST = route(async (req: Request) => {
         make: (percent: number) => createOffer(vendor.id, percent, body.cart, "Basic mode bargaining ladder"),
       }
     : null;
-  const r = await askStoreLocal(products, { messages, cart: body.cart, car, storeName: screenStore(vendor).name, pay: payOptions(settings), bargain });
+  const r0 = await askStoreLocal(products, { messages, cart: body.cart, car, storeName: screenStore(vendor).name, pay: payOptions(settings), bargain });
+  const r = await withSuggestions(r0, vendor.id, body.cart, car, last.content, products);
   await log("basic", r);
   return ok({ reply: r.text, products: r.products, actions: r.actions, mode: "basic" });
 });
