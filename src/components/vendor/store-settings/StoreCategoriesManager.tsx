@@ -117,7 +117,7 @@ export function StoreCategoriesManager({ initial, canEdit }: { initial: StoreCat
                 </ol>
               )}
               {canEdit && addingSub !== c.id && (
-                <button type="button" onClick={() => setAddingSub(c.id)} className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:underline">
+                <button type="button" onClick={() => setAddingSub(c.id)} className="mt-2 inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-accent hover:underline">
                   <Plus size={15} aria-hidden /> Add sub-category
                 </button>
               )}
@@ -157,7 +157,7 @@ function Row({
   onDelete: () => void;
 }) {
   if (editing) return <NameForm label={`Rename ${c.name}`} initial={c.name} busy={busy} autoFocus onCancel={onCancel} onSave={onRename} />;
-  const icon = "grid h-9 w-9 place-items-center rounded-sm text-ash hover:bg-steel hover:text-chalk disabled:opacity-30 disabled:hover:bg-transparent";
+  const icon = "grid h-10 w-10 place-items-center rounded-sm text-ash hover:bg-steel hover:text-chalk disabled:opacity-30 disabled:hover:bg-transparent";
   return (
     <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
       <div className="flex min-w-44 flex-1 items-center gap-2">
@@ -168,8 +168,12 @@ function Row({
         </span>
       </div>
       <div className="flex items-center gap-1">
-        <Link href={`/vendor/dashboard/products/new?shopCategory=${encodeURIComponent(c.id)}`} className="btn btn-outline btn-sm">
-          <Plus size={14} aria-hidden /> Add product
+        <Link
+          href={`/vendor/dashboard/products/new?shopCategory=${encodeURIComponent(c.id)}`}
+          className="btn btn-outline btn-sm px-3 sm:px-4"
+          aria-label={`Add a product in ${c.name}`}
+        >
+          <Plus size={14} aria-hidden /> Add<span className="hidden sm:inline"> product</span>
         </Link>
         {canEdit && (
           <>
@@ -265,10 +269,10 @@ function Extras({
 
   return (
     <div className="mt-3 space-y-2 text-sm">
-      <label className={`inline-flex items-center gap-2 ${canEdit ? "cursor-pointer" : "opacity-60"}`}>
+      <label className={`flex min-h-11 flex-wrap items-center gap-x-2 ${canEdit ? "cursor-pointer" : "opacity-60"}`}>
         <input
           type="checkbox"
-          className="h-4 w-4 accent-[var(--accent)]"
+          className="h-5 w-5 accent-[var(--accent)]"
           checked={c.bestseller}
           disabled={!canEdit || busy}
           onChange={(e) => run({ action: "bestseller", id: c.id, on: e.target.checked }, e.target.checked ? `"${c.name}" is tagged Bestseller.` : `Bestseller tag removed from "${c.name}".`)}
@@ -288,7 +292,7 @@ function Extras({
                 setPick(c.suggestIds.length ? c.suggestIds : now);
                 setPicking(true);
               }}
-              className="ml-2 font-semibold text-accent hover:underline"
+              className="ml-1 inline-flex min-h-11 items-center px-1 font-semibold text-accent hover:underline"
             >
               Change
             </button>

@@ -314,7 +314,7 @@ export function ProductForm({ product: initialProduct, commissionRate, readOnly,
       type="button"
       onClick={() => save(mode)}
       disabled={busy !== null}
-      className={`btn ${primary ? "btn-primary" : "btn-outline"} disabled:opacity-60`}
+      className={`btn ${primary ? "btn-primary" : "btn-outline"} min-w-0 flex-1 whitespace-normal px-3 text-center leading-tight tracking-[0.06em] sm:flex-none sm:px-6 sm:tracking-[0.12em] disabled:opacity-60`}
     >
       {busy === mode ? "Saving…" : label}
     </button>
@@ -566,7 +566,7 @@ export function ProductForm({ product: initialProduct, commissionRate, readOnly,
       </fieldset>
 
       {!readOnly && status !== "archived" && (
-        <div className="fixed inset-x-0 bottom-16 z-40 flex flex-wrap items-center justify-end gap-2 border-t border-tint/10 bg-void/95 p-3 backdrop-blur lg:static lg:z-auto lg:border-0 lg:bg-transparent lg:p-0 lg:backdrop-blur-none">
+        <div className="fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom))] z-40 flex items-center justify-end gap-2 border-t border-tint/10 bg-void/95 p-3 backdrop-blur lg:static lg:z-auto lg:border-0 lg:bg-transparent lg:p-0 lg:backdrop-blur-none">
           {(isNew || editable) && (
             <>
               {primaryBtn("Save draft", "draft", false)}

@@ -69,8 +69,10 @@ export function DashboardShell({ storeName, slug, tier, status, unreadNotificati
     { href: `${base}/settings`, label: "Settings", icon: Settings },
     { href: `${base}/support`, label: "Support", icon: LifeBuoy },
   ];
-  const primary = items.slice(0, 4);
-  const rest = items.slice(4);
+  // Phone bottom bar: Overview, Orders, Products and the Offline Store; the rest sit under "More".
+  const phoneBar = [base, `${base}/orders`, `${base}/products`, `${base}/store-screen`];
+  const primary = phoneBar.map((h) => items.find((i) => i.href === h)!);
+  const rest = items.filter((i) => !phoneBar.includes(i.href));
 
   const isActive = (href: string) => (href === base ? pathname === base : pathname === href || pathname.startsWith(`${href}/`));
   const moreActive = rest.some((i) => isActive(i.href));
@@ -175,7 +177,7 @@ export function DashboardShell({ storeName, slug, tier, status, unreadNotificati
             </div>
             <div className="flex shrink-0 items-center gap-2">
               {tier && (
-                <span className="rounded-full border border-gold/40 bg-gold/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.1em] text-gold">
+                <span className="hidden rounded-full border border-gold/40 bg-gold/10 px-2.5 py-1 min-[400px]:inline text-[10px] font-bold uppercase tracking-[0.1em] text-gold">
                   {tier}
                 </span>
               )}
@@ -237,7 +239,7 @@ export function DashboardShell({ storeName, slug, tier, status, unreadNotificati
                       </span>
                     )}
                   </span>
-                  <span className="font-display text-[10px] font-bold uppercase tracking-[0.08em]">{i.label}</span>
+                  <span className="font-display text-[10px] font-bold uppercase tracking-[0.08em]">{i.href === `${base}/store-screen` ? "My shop" : i.label}</span>
                 </Link>
               </li>
             );

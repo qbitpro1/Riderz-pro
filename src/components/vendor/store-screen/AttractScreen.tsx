@@ -74,7 +74,7 @@ export function AttractScreen({
     >
       <div className="relative flex h-full flex-col landscape:lg:flex-row">
         {/* Photo stage: the product photos are shot on white, so they blend into the backdrop. */}
-        <div className="relative order-2 min-h-[28dvh] flex-1 overflow-hidden bg-[#f3f4f5] landscape:lg:order-1">
+        <div className="relative order-2 min-h-[28dvh] flex-1 overflow-hidden bg-[#f3f4f5] max-sm:hidden landscape:lg:order-1">
           {featured.length === 0 ? (
             <div className="grid h-full place-items-center">
               <StoreMark store={store} className="h-40 w-40" text="text-7xl" />
@@ -95,7 +95,7 @@ export function AttractScreen({
                     fill
                     sizes="(min-width:1024px) 58vw, 100vw"
                     priority={i < 2}
-                    className={`object-contain p-[8%] mix-blend-multiply ${store.offer ? "pt-[max(8%,clamp(7rem,19dvh,11rem))]" : ""}`}
+                    className={`object-contain p-[8%] mix-blend-multiply ${store.offer ? "sm:pt-[max(8%,clamp(7rem,19dvh,11rem))]" : ""}`}
                   />
                 </div>
               </div>
@@ -110,7 +110,7 @@ export function AttractScreen({
           )}
           {/* The seller's offer of the day: a sign on the stage, above the photos. */}
           {store.offer && (
-            <div className="ss-rise absolute inset-x-[clamp(0.75rem,3vw,2.5rem)] top-[clamp(0.75rem,3dvh,2.5rem)] flex justify-start [animation-delay:360ms]">
+            <div className="ss-rise absolute inset-x-[clamp(0.75rem,3vw,2.5rem)] top-[clamp(0.75rem,3dvh,2.5rem)] hidden justify-start [animation-delay:360ms] sm:flex">
               <div className="flex max-w-xl items-center gap-[clamp(0.75rem,1.5vw,1.25rem)] rounded-2xl border border-accent/20 bg-void/95 p-[clamp(0.75rem,1.8dvh,1.25rem)] pr-[clamp(1rem,2vw,1.75rem)] shadow-lg backdrop-blur">
                 <span className="grid h-[clamp(2.75rem,6dvh,3.75rem)] w-[clamp(2.75rem,6dvh,3.75rem)] shrink-0 place-items-center rounded-xl bg-accent text-on-accent">
                   <BadgePercent size={28} aria-hidden />
@@ -127,7 +127,7 @@ export function AttractScreen({
         </div>
 
         {/* Words: spacing and type follow the screen height too, so "Touch to explore" always fits on screen. */}
-        <div className="ss-hide-bar order-1 flex min-h-0 flex-col justify-between gap-[clamp(0.75rem,3dvh,2rem)] overflow-y-auto p-[clamp(1rem,4dvh,2.5rem)] landscape:lg:order-2 landscape:lg:w-[max(42%,30rem)] landscape:lg:px-[clamp(2rem,4vw,5rem)] landscape:lg:py-[clamp(1.25rem,5dvh,5rem)]">
+        <div className="ss-hide-bar order-1 flex min-h-0 flex-col justify-between max-sm:flex-1 gap-[clamp(0.75rem,3dvh,2rem)] overflow-y-auto p-[clamp(1rem,4dvh,2.5rem)] landscape:lg:order-2 landscape:lg:w-[max(42%,30rem)] landscape:lg:px-[clamp(2rem,4vw,5rem)] landscape:lg:py-[clamp(1.25rem,5dvh,5rem)]">
           <div className="ss-rise">
             <div className="flex items-center justify-between gap-4">
               <div className="flex min-w-0 items-center gap-4">
@@ -152,6 +152,15 @@ export function AttractScreen({
               <Clock size={18} aria-hidden className="mt-[0.1em] shrink-0 text-accent" />
               <span className="line-clamp-2">{store.hours}</span>
             </p>
+            {store.offer && (
+              <p className="mt-3 flex items-start gap-2.5 rounded-xl border border-accent/20 bg-void p-3 sm:hidden">
+                <BadgePercent size={22} aria-hidden className="mt-0.5 shrink-0 text-accent" />
+                <span className="min-w-0">
+                  <span className="block text-[11px] font-bold uppercase tracking-[0.16em] text-accent">Today&apos;s offer</span>
+                  <span className="line-clamp-3 text-base font-bold leading-snug text-chalk">{store.offer}</span>
+                </span>
+              </p>
+            )}
           </div>
 
           <div className="ss-rise [animation-delay:120ms]">
@@ -173,13 +182,13 @@ export function AttractScreen({
                       key={g.slug}
                       type="button"
                       onClick={() => onStart(g.slug)}
-                      className="flex min-h-[clamp(3.5rem,9dvh,6rem)] items-center gap-3 rounded-2xl bg-void px-4 py-2.5 text-left shadow-sm transition-transform duration-200 active:scale-[0.97] lg:px-5"
+                      className="flex min-h-[clamp(3.5rem,9dvh,6rem)] flex-col items-start gap-1.5 rounded-2xl bg-void px-3 py-2.5 text-left sm:flex-row sm:items-center sm:gap-3 sm:px-4 shadow-sm transition-transform duration-200 active:scale-[0.97] lg:px-5"
                     >
-                      <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-accent/10 text-accent">
-                        <Icon size={24} aria-hidden />
+                      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-accent/10 text-accent sm:h-12 sm:w-12">
+                        <Icon size={22} aria-hidden />
                       </span>
-                      <span className="min-w-0">
-                        <span className="block truncate text-lg font-bold text-chalk">{g.name}</span>
+                      <span className="w-full min-w-0">
+                        <span className="line-clamp-2 block text-base font-bold leading-tight text-chalk sm:truncate sm:text-lg">{g.name}</span>
                         <span className="tnum text-sm text-ash">{g.count} in store</span>
                       </span>
                     </button>

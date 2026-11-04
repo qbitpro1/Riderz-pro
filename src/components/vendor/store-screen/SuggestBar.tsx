@@ -41,8 +41,8 @@ export function SuggestBar({
           <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-accent text-on-accent">
             <Check size={20} aria-hidden />
           </span>
-          <p className="min-w-0 flex-1 truncate text-base font-bold text-chalk">{added}</p>
-          <button type="button" onClick={onViewOrder} className={`${ui.primary} h-12 shrink-0 px-4 text-base`}>
+          <p className="line-clamp-2 min-w-0 flex-1 text-sm font-bold leading-snug text-chalk sm:text-base">{added}</p>
+          <button type="button" onClick={onViewOrder} className={`${ui.primary} h-12 shrink-0 px-3 text-sm sm:px-4 sm:text-base`}>
             View order
           </button>
           <button type="button" onClick={onClose} aria-label="Close suggestions" className="grid h-12 w-12 shrink-0 place-items-center rounded-full text-dim hover:bg-steel hover:text-chalk">
@@ -54,7 +54,7 @@ export function SuggestBar({
             <p className="mt-4 text-sm font-bold uppercase tracking-[0.14em] text-accent">Goes well with it</p>
             <ul className="ss-hide-bar mt-2 flex gap-3 overflow-x-auto pb-1">
               {items.map((p) => (
-                <li key={p.id} className="w-40 shrink-0 overflow-hidden rounded-2xl border border-tint/10 bg-carbon md:w-44">
+                <li key={p.id} className="w-32 shrink-0 overflow-hidden rounded-2xl border border-tint/10 bg-carbon sm:w-40 md:w-44">
                   <button type="button" onClick={() => onOpen(p)} className="block w-full text-left">
                     <span className="relative block">
                       <Photo id={p.images[0]} alt="" sizes="176px" className="aspect-square" pad="p-2" />

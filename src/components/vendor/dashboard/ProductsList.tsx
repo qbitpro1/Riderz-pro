@@ -241,12 +241,12 @@ export function ProductsList({ initial, readOnly, initialStatus }: Props) {
                   </div>
                 </div>
                 {notes(p)}
-                <div className="mt-3 flex items-center justify-between gap-2 text-sm">
+                <div className="mt-3 flex flex-wrap items-center justify-between gap-x-3 gap-y-2 text-sm">
                   <div className="flex items-center gap-3 text-ash">
                     {priceCell(p)}
                     <span className="flex items-center gap-1 text-xs">Stock {stockPill(p)}</span>
                   </div>
-                  {actions(p)}
+                  <div className="ml-auto">{actions(p)}</div>
                 </div>
               </li>
             ))}

@@ -373,7 +373,7 @@ export function StoreScreen({
       {/* Browse (stays mounted under the attract screen, so the first touch is instant) */}
       <div className="flex min-h-0 flex-1 flex-col" inert={attract === "on"} aria-hidden={attract === "on"}>
         <header className="z-20 shrink-0 border-b border-tint/10 bg-void">
-          <div className="flex items-center gap-3 px-4 py-3 md:gap-4 md:px-6">
+          <div className="flex flex-wrap items-center gap-3 px-4 py-3 sm:flex-nowrap md:gap-4 md:px-6">
             <button
               type="button"
               onClick={() => {
@@ -381,7 +381,7 @@ export function StoreScreen({
                 scroller.current?.scrollTo({ top: 0 });
               }}
               aria-label={`${store.name}. Show all products`}
-              className="hidden min-w-0 shrink-0 items-center gap-3 rounded-2xl text-left transition-transform duration-200 active:scale-[0.97] sm:flex lg:w-60 xl:w-64"
+              className="flex min-w-0 shrink-0 items-center gap-3 rounded-2xl text-left transition-transform duration-200 active:scale-[0.97] max-sm:mr-auto lg:w-60 xl:w-64"
             >
               <StoreMark store={store} className="h-12 w-12 md:h-14 md:w-14" text="text-xl" />
               <span className="hidden min-w-0 lg:block">
@@ -393,7 +393,7 @@ export function StoreScreen({
               </span>
             </button>
 
-            <label className="relative min-w-0 flex-1">
+            <label className="relative order-last min-w-0 basis-full sm:order-none sm:basis-auto sm:flex-1">
               <span className="sr-only">Search products</span>
               <Search size={20} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-dim" aria-hidden />
               <input
@@ -406,7 +406,7 @@ export function StoreScreen({
                 placeholder="Search or tap the mic: seat covers for Creta…"
                 autoComplete="off"
                 enterKeyHint="search"
-                className="h-14 w-full rounded-xl border border-tint/15 bg-carbon pl-12 pr-28 text-base text-chalk outline-none transition-colors placeholder:text-dim focus:border-accent [&::-webkit-search-cancel-button]:hidden"
+                className={`h-14 w-full rounded-xl border border-tint/15 bg-carbon pl-12 ${query ? "pr-28" : "pr-14"} text-base text-chalk outline-none transition-colors placeholder:text-dim focus:border-accent [&::-webkit-search-cancel-button]:hidden`}
               />
               <span className="absolute right-1 top-1/2 flex -translate-y-1/2 items-center">
                 {query && (
