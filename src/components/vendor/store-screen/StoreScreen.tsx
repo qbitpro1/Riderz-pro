@@ -24,6 +24,7 @@ import {
   priceBands,
   settleFacets,
   sortProducts,
+  suggestionsFor,
   ui,
   type Car,
   type FacetKey,
@@ -37,15 +38,16 @@ import { ReviewScreen } from "./ReviewScreen";
 import { Styles } from "./Styles";
 import { StoreAssistant, type AssistantTurn, type ScreenOffer } from "./StoreAssistant";
 import { CheckoutSheet, type PayOptions } from "./CheckoutSheet";
+import { SuggestBar } from "./SuggestBar";
 
 const newChatId = () => `sc_${crypto.randomUUID().replaceAll("-", "")}`;
-import type { ScreenFitBrand, ScreenProduct, ScreenStore } from "./types";
+import type { ScreenCategory, ScreenFitBrand, ScreenProduct, ScreenStore } from "./types";
 
 /**
  * THE OFFLINE STORE SCREEN (client)
  *
  * A showroom touch screen for customers in the seller's own shop. It opens on an attract screen,
- * then lets the customer browse every approved, in-stock product, narrow by category or "Find for
+ * then lets the customer browse every in-stock product the seller has saved, narrow by category or "Find for
  * my car", open products, compare up to three, build an order and show it at the counter.
  * Nothing is saved or paid here: the order lives in this screen only and clears itself when a
  * customer walks away (IDLE_MS, then a short "Still there?" countdown).
@@ -56,20 +58,54 @@ import type { ScreenFitBrand, ScreenProduct, ScreenStore } from "./types";
 
 /** A typed search with no matches goes to Salesman AI after this pause in typing. */
 const TYPED_NO_MATCH_MS = 2000;
+/** How often the open screen checks for products the seller just added or changed. */
+const PRODUCTS_REFRESH_MS = 15_000;
+
 export function StoreScreen({
   store,
-  products,
-  fitment,
+  products: firstProducts,
+  categories: firstCategories,
+  fitment: firstFitment,
   locked,
   sales,
 }: {
   store: ScreenStore;
   products: ScreenProduct[];
+  /** The seller's main shop categories: shown even before they have products. */
+  categories: ScreenCategory[];
   fitment: ScreenFitBrand[];
   locked: boolean;
   /** Selling from the screen: the AI salesperson and the ways to pay (the seller's store settings). */
   sales: { aiEnabled: boolean; pay: PayOptions };
 }) {
+  // The seller controls this screen: what they save in the seller portal shows here within seconds.
+  const [catalogue, setCatalogue] = useState({ products: firstProducts, categories: firstCategories, fitment: firstFitment });
+  const { products, categories, fitment } = catalogue;
+  const catalogueSig = useRef(JSON.stringify([firstProducts, firstCategories]));
+  useEffect(() => {
+    let stop = false;
+    async function refresh() {
+      if (document.hidden) return;
+      try {
+        const r = await api<{ products: ScreenProduct[]; categories: ScreenCategory[]; fitment: ScreenFitBrand[] }>("/api/vendor/store-screen/products");
+        const sig = JSON.stringify([r.products, r.categories]);
+        if (!stop && sig !== catalogueSig.current) {
+          catalogueSig.current = sig;
+          setCatalogue({ products: r.products, categories: r.categories, fitment: r.fitment });
+        }
+      } catch {
+        /* offline for a moment: keep showing what we have */
+      }
+    }
+    const t = window.setInterval(refresh, PRODUCTS_REFRESH_MS);
+    document.addEventListener("visibilitychange", refresh);
+    return () => {
+      stop = true;
+      window.clearInterval(t);
+      document.removeEventListener("visibilitychange", refresh);
+    };
+  }, []);
+
   const [attract, setAttract] = useState<"on" | "leaving" | "off">("on");
   const [facets, setFacets] = useState<Facets>(NO_FACETS);
   const { group, sub, brand, price, sale } = facets;
@@ -85,7 +121,8 @@ export function StoreScreen({
   const [carOpen, setCarOpen] = useState(false);
   const [sellerOpen, setSellerOpen] = useState(false);
   const [idlePrompt, setIdlePrompt] = useState(false);
-  const [notice, setNotice] = useState<string | null>(null);
+  // "Added …" after something goes into the order, with what goes well with it.
+  const [notice, setNotice] = useState<{ text: string; items: ScreenProduct[] } | null>(null);
   const [aiOpen, setAiOpen] = useState(false);
   const [aiSeed, setAiSeed] = useState<string | null>(null);
   const [aiTurns, setAiTurns] = useState<AssistantTurn[]>([]);
@@ -122,7 +159,7 @@ export function StoreScreen({
   // Short messages ("Added to order") fade after a moment.
   useEffect(() => {
     if (!notice) return;
-    const t = window.setTimeout(() => setNotice(null), 2600);
+    const t = window.setTimeout(() => setNotice(null), notice.items.length ? 15_000 : 2600);
     return () => window.clearTimeout(t);
   }, [notice]);
 
@@ -137,19 +174,21 @@ export function StoreScreen({
   // The seller's shop categories first, in their order; then the rest as they come.
   const groups = useMemo(() => {
     const m = new Map<string, { name: string; pos: number; count: number }>();
+    for (const c of categories) m.set(c.id, { name: c.name, pos: c.pos, count: 0 });
     for (const p of products) if (!m.has(p.group)) m.set(p.group, { name: p.groupName, pos: p.groupPos, count: 0 });
     for (const p of without("group")) m.get(p.group)!.count++;
     return [...m.entries()].map(([slug, g]) => ({ slug, ...g })).sort((a, b) => a.pos - b.pos);
-  }, [products, without]);
+  }, [products, categories, without]);
 
   // Sub-categories of the chosen category ("Autoform", "GFX Pro" inside Mats), when it has any.
   const subs = useMemo(() => {
     if (group === "all") return [];
     const m = new Map<string, { name: string; pos: number; count: number }>();
+    for (const x of categories.find((c) => c.id === group)?.subs ?? []) m.set(x.id, { name: x.name, pos: x.pos, count: 0 });
     for (const p of products) if (p.group === group && p.sub && !m.has(p.sub)) m.set(p.sub, { name: p.subName ?? "", pos: p.subPos, count: 0 });
     for (const p of without("sub")) if (p.sub && m.has(p.sub)) m.get(p.sub)!.count++;
     return [...m.entries()].map(([slug, g]) => ({ slug, ...g })).sort((a, b) => a.pos - b.pos);
-  }, [products, without, group]);
+  }, [products, categories, without, group]);
   const subTotal = useMemo(() => without("sub").length, [without]);
   const groupTotal = useMemo(() => without("group").length, [without]);
 
@@ -280,14 +319,32 @@ export function StoreScreen({
     attract === "on" || idlePrompt || sellerOpen,
   );
 
+  /** "Added …" plus a few products that go well with it. */
+  const announce = (p: ScreenProduct, qty = 1) => {
+    const name = p.title.length > 34 ? `${p.title.slice(0, 33)}…` : p.title;
+    const inOrder = { ...order.qtys, [p.id]: (order.qtys[p.id] ?? 0) + qty };
+    setNotice({ text: `Added ${qty > 1 ? `${qty} × ` : ""}${name}`, items: suggestionsFor([p], products, categories, inOrder, car) });
+  };
+
   const actions: TileActions = {
     car,
     qtys: order.qtys,
     compare,
     onOpen: (p) => setOpenId(p.id),
-    onSetQty: setQty,
+    onSetQty: (id, n) => {
+      const before = order.qtys[id] ?? 0;
+      setQty(id, n);
+      const p = byId.get(id);
+      if (p && before === 0 && n > 0) announce(p, n);
+    },
     onToggleCompare: toggleCompare,
   };
+
+  // "You may also need" in the order panel: what goes with everything already in it.
+  const orderSuggestions = useMemo(
+    () => (lines.length ? suggestionsFor(lines.map((l) => l.product), products, categories, order.qtys, car, 4) : []),
+    [lines, products, categories, order.qtys, car],
+  );
 
   const compareProducts = compare.map((id) => byId.get(id)).filter((p): p is ScreenProduct => Boolean(p));
   const dockBottom = count > 0 || compare.length > 0;
@@ -527,7 +584,14 @@ export function StoreScreen({
 
             {products.length === 0 ? (
               <Empty title="No products to show yet">
-                Approved products with stock appear here. Add products and stock from your seller dashboard.
+                Products with stock appear here as soon as you save them in your seller dashboard.
+              </Empty>
+            ) : shown.length === 0 && group !== "all" && !products.some((p) => p.group === group) ? (
+              <Empty title={`${groups.find((g) => g.slug === group)?.name ?? "This category"}: coming soon`}>
+                <p>Nothing on the screen here yet. Ask our staff, they can help you at the counter.</p>
+                <button type="button" className={`${ui.secondary} mt-5`} onClick={() => pickGroup("all")}>
+                  See all products
+                </button>
               </Empty>
             ) : shown.length === 0 ? (
               <Empty title={car ? `Nothing listed for your ${car.name} yet` : "Nothing matches"} icon={<SearchX size={40} aria-hidden />}>
@@ -586,14 +650,23 @@ export function StoreScreen({
 
       {/* Added-to-order message */}
       {notice && (
-        <div role="status" className="ss-pop pointer-events-none fixed inset-x-0 bottom-24 z-[70] flex justify-center px-4 md:bottom-8">
-          <div className="pointer-events-auto flex items-center gap-4 rounded-2xl bg-chalk py-2 pl-5 pr-2 text-void shadow-xl">
-            <span className="text-base font-semibold">{notice}</span>
-            <button type="button" onClick={() => { setNotice(null); setDrawer(true); }} className="min-h-12 rounded-xl bg-void px-4 text-base font-bold text-chalk active:scale-95">
-              View order
-            </button>
-          </div>
-        </div>
+        <SuggestBar
+          added={notice.text}
+          items={notice.items}
+          onAdd={(p) => {
+            setQty(p.id, (order.qtys[p.id] ?? 0) + 1);
+            announce(p);
+          }}
+          onOpen={(p) => {
+            setNotice(null);
+            setOpenId(p.id);
+          }}
+          onViewOrder={() => {
+            setNotice(null);
+            setDrawer(true);
+          }}
+          onClose={() => setNotice(null)}
+        />
       )}
 
       {/* Layers, bottom to top */}
@@ -617,7 +690,7 @@ export function StoreScreen({
           onAdd={(qty) => {
             setQty(open.id, (order.qtys[open.id] ?? 0) + qty);
             setOpenId(null);
-            setNotice(`Added ${qty > 1 ? `${qty} × ` : ""}${open.title.length > 34 ? `${open.title.slice(0, 33)}…` : open.title}`);
+            announce(open, qty);
           }}
         />
       )}
@@ -639,6 +712,8 @@ export function StoreScreen({
       {drawer && (
         <OrderPanel
           lines={lines}
+          suggestions={orderSuggestions}
+          onAddSuggestion={(p) => setQty(p.id, (order.qtys[p.id] ?? 0) + 1)}
           count={count}
           total={total}
           savings={savings}
@@ -680,7 +755,8 @@ export function StoreScreen({
             const p = byId.get(id);
             if (!p) return;
             setQty(id, (order.qtys[id] ?? 0) + qty);
-            setNotice(`Added ${p.title.length > 34 ? `${p.title.slice(0, 33)}…` : p.title}`);
+            // A short note only: suggestions would cover the chat (Salesman AI suggests in the chat itself).
+            setNotice({ text: `Added ${p.title.length > 34 ? `${p.title.slice(0, 33)}…` : p.title}`, items: [] });
           }}
           onOffer={setOffer}
           onCheckout={() => {

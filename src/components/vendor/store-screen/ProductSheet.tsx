@@ -8,6 +8,7 @@ import { Gallery } from "./Gallery";
 import { Layer } from "./Layer";
 import { COMPARE_MAX, LOW_STOCK, maxFor, ui, type Car } from "./lib";
 import { Price, Stepper, highlightIcon } from "./parts";
+import { BestsellerTag } from "./SuggestBar";
 import type { ScreenProduct } from "./types";
 
 function Row({ label, value }: { label: string; value: string }) {
@@ -109,6 +110,7 @@ export function ProductSheet({
 
             <div className="min-w-0 space-y-6">
               <div>
+                {p.bestseller && <BestsellerTag className="mb-2" />}
                 <p className="text-base font-semibold text-accent">
                   {p.brand} <span className="text-dim">/ {p.subName ? `${p.groupName} / ${p.subName}` : p.groupName}</span>
                 </p>

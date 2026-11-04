@@ -4,20 +4,28 @@ import { sql } from "@/lib/db/client";
 import { DEPARTMENT_BY_SLUG, type DepartmentSlug } from "@/lib/data/taxonomy";
 import { BRANDS, findModelBySlug } from "@/lib/data/vehicles";
 import { PART_TYPE_LABELS, type VendorSelf } from "@/lib/vendor/types";
-import { SCREEN_HOURS_DEFAULT, type ScreenFitBrand, type ScreenProduct, type ScreenStore } from "@/components/vendor/store-screen/types";
+import { SCREEN_HOURS_DEFAULT, type ScreenCategory, type ScreenFitBrand, type ScreenProduct, type ScreenStore } from "@/components/vendor/store-screen/types";
+import { categoryTree, suggestedCategoryIds } from "@/lib/vendor/store-categories";
+import { listStoreCategories } from "./store-categories";
 import type { VendorProductRow } from "./vendor-products";
 
 /**
  * THE OFFLINE STORE SCREEN
  *
- * What a seller shows customers in their own shop, on a signed-in tablet or TV:
- * their admin-approved (`live`) products that have stock. Seller products are not
- * on the main Riderzpro website; this screen is the only place they appear.
+ * What a seller shows customers in their own shop, on a signed-in tablet or TV.
+ * The shop owner controls it: every product they have saved (any status but archived)
+ * that has stock shows straight away, with no Riderzpro review, and edits waiting for
+ * review on a live product show in their new form. Seller products are not on the main
+ * Riderzpro website; this screen is the only place they appear.
  *
  * Public product fields only: no SKU, HSN, review notes, dealer prices or vendor data.
  */
 
+/** A draft may not have a category yet: it shows under "Other products". */
+const NO_GROUP = { slug: "other", name: "Other products" };
+
 function groupName(department: DepartmentSlug, group: string): string {
+  if (!group) return NO_GROUP.name;
   return DEPARTMENT_BY_SLUG[department]?.groups.find((g) => g.slug === group)?.name ?? group;
 }
 
@@ -40,9 +48,34 @@ export function screenStore(
   };
 }
 
+function revisionColumns(c: NonNullable<VendorProductRow["pending_revision"]>): Partial<VendorProductRow> {
+  return {
+    title: c.title,
+    brand: c.brand,
+    department: c.department,
+    group_slug: c.groupSlug,
+    part_type: c.partType,
+    warranty_months: c.warrantyMonths,
+    summary: c.summary,
+    highlights: c.highlights,
+    specs: c.specs,
+    fitment: c.fitment,
+    images: c.images,
+  };
+}
+
 const offFraction = (p: { mrp: number; price: number }) => (p.mrp > p.price ? (p.mrp - p.price) / p.mrp : 0);
 
-/** Live, in-stock products of one approved seller, most showable first (has photos, then biggest saving). */
+/**
+ * Which of a seller's products are for sale on their own screen (aliases p = vendor_products,
+ * v = vendors). Used for showing, pricing and placing screen orders alike.
+ */
+export const SCREEN_PRODUCT_WHERE = "p.status <> 'archived' AND v.status = 'approved'";
+
+/** The seller's latest wording of a product: an edit waiting for review on a live product, else the row. */
+export const SCREEN_TITLE_SQL = "coalesce(p.pending_revision->>'title', p.title)";
+
+/** In-stock products of one approved seller (see SCREEN_PRODUCT_WHERE), most showable first (has photos, then biggest saving). */
 export async function screenProducts(vendorId: string): Promise<ScreenProduct[]> {
   // The seller's own shop category, when set, decides where a product shows (top-level + sub-category).
   type Row = VendorProductRow & {
@@ -52,19 +85,23 @@ export async function screenProducts(vendorId: string): Promise<ScreenProduct[]>
     top_id: string | null;
     top_name: string | null;
     top_pos: number | null;
+    best: boolean | null;
   };
   const rows = await sql<Row>(
     `SELECT p.*, sc.id AS sc_id, sc.name AS sc_name, sc.position AS sc_pos,
-            top.id AS top_id, top.name AS top_name, top.position AS top_pos
+            top.id AS top_id, top.name AS top_name, top.position AS top_pos,
+            (coalesce(sc.bestseller, false) OR coalesce(top.bestseller, false)) AS best
        FROM vendor_products p JOIN vendors v ON v.id = p.vendor_id
        LEFT JOIN store_categories sc ON sc.id = p.store_category_id
        LEFT JOIN store_categories top ON top.id = coalesce(sc.parent_id, sc.id)
-      WHERE p.vendor_id = $1 AND p.status = 'live' AND v.status = 'approved' AND p.stock > 0
+      WHERE p.vendor_id = $1 AND ${SCREEN_PRODUCT_WHERE} AND p.stock > 0
       ORDER BY p.department, p.group_slug, p.title
       LIMIT 1000`,
     [vendorId],
   );
-  const products = rows.map((r): ScreenProduct => {
+  const products = rows.map((row): ScreenProduct => {
+    // The seller's own latest version: an edit of a live product waiting for review shows at once.
+    const r = row.status === "live" && row.pending_revision ? { ...row, ...revisionColumns(row.pending_revision) } : row;
     const fitment = r.fitment ?? [];
     const fitSlugs = fitment.filter((s) => s !== "universal");
     const isSub = Boolean(r.sc_id && r.top_id && r.sc_id !== r.top_id);
@@ -73,7 +110,7 @@ export async function screenProducts(vendorId: string): Promise<ScreenProduct[]>
       title: r.title,
       brand: r.brand,
       department: r.department,
-      group: r.top_id ?? r.group_slug,
+      group: r.top_id ?? (r.group_slug || NO_GROUP.slug),
       groupName: r.top_name ?? groupName(r.department, r.group_slug),
       // Shop categories first, in the seller's order; marketplace groups after them.
       groupPos: r.top_pos ?? 10_000,
@@ -81,6 +118,7 @@ export async function screenProducts(vendorId: string): Promise<ScreenProduct[]>
       subName: isSub ? r.sc_name : null,
       subPos: isSub ? (r.sc_pos ?? 0) : 0,
       typeName: groupName(r.department, r.group_slug),
+      bestseller: Boolean(row.best),
       mrp: r.mrp,
       price: r.price,
       stock: r.stock,
@@ -101,6 +139,19 @@ export async function screenProducts(vendorId: string): Promise<ScreenProduct[]>
   const score = (p: ScreenProduct) =>
     (p.images.length > 0 ? 1000 : 0) + Math.round(offFraction(p) * 100) * 10 + Math.min(p.images.length, 5);
   return products.sort((a, b) => score(b) - score(a) || a.title.localeCompare(b.title));
+}
+
+/** The seller's main shop categories with their sub-categories and suggestion pairs, for the screen. */
+export async function screenCategories(vendorId: string): Promise<ScreenCategory[]> {
+  const tree = categoryTree(await listStoreCategories(vendorId));
+  return tree.map((c) => ({
+    id: c.id,
+    name: c.name,
+    pos: c.position,
+    bestseller: c.bestseller,
+    suggest: suggestedCategoryIds(c, tree),
+    subs: c.subs.map((s) => ({ id: s.id, name: s.name, pos: s.position })),
+  }));
 }
 
 /**

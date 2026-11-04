@@ -33,6 +33,8 @@ export type ScreenProduct = {
   subPos: number;
   /** The marketplace group name ("Cameras"), kept for search when a shop category renames it. */
   typeName: string;
+  /** In a shop category the seller tagged "Bestseller". */
+  bestseller: boolean;
   mrp: number;
   price: number;
   stock: number;
@@ -50,6 +52,19 @@ export type ScreenProduct = {
   specs: { label: string; value: string }[];
   /** Image file ids, in display order. */
   images: string[];
+};
+
+/**
+ * One of the seller's main shop categories, shown on the screen even before it has products.
+ * `suggest`: the main categories whose products are suggested after an add from this one.
+ */
+export type ScreenCategory = {
+  id: string;
+  name: string;
+  pos: number;
+  bestseller: boolean;
+  suggest: string[];
+  subs: { id: string; name: string; pos: number }[];
 };
 
 /** One car model in the "Find for my car" picker. `n` = products listed for this exact model. */

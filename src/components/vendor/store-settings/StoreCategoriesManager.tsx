@@ -4,13 +4,15 @@ import Link from "next/link";
 import { useMemo, useState, type FormEvent } from "react";
 import { ArrowDown, ArrowUp, Check, CornerDownRight, Pencil, Plus, Trash2, X } from "lucide-react";
 import { api, ApiFailure } from "@/lib/vendor/client";
-import { STORE_CATEGORY_NAME_MAX, categoryTree, type StoreCategory } from "@/lib/vendor/store-categories";
+import { STORE_CATEGORY_NAME_MAX, STORE_SUGGEST_MAX, categoryTree, suggestedCategoryIds, type StoreCategory, type StoreCategoryTree } from "@/lib/vendor/store-categories";
 
 type Action =
   | { action: "create"; name: string; parentId: string | null }
   | { action: "rename"; id: string; name: string }
   | { action: "move"; id: string; dir: "up" | "down" }
-  | { action: "delete"; id: string };
+  | { action: "delete"; id: string }
+  | { action: "bestseller"; id: string; on: boolean }
+  | { action: "suggest"; id: string; ids: string[] };
 
 /**
  * The seller's own shop categories for the Offline Store screen: add main categories and
@@ -79,6 +81,7 @@ export function StoreCategoriesManager({ initial, canEdit }: { initial: StoreCat
                 onMove={(dir) => run({ action: "move", id: c.id, dir })}
                 onDelete={() => remove(c)}
               />
+              <Extras c={c} tree={tree} canEdit={canEdit} busy={busy} run={run} />
               {(c.subs.length > 0 || addingSub === c.id) && (
                 <ol className="mt-3 space-y-2 border-l-2 border-tint/10 pl-4">
                   {c.subs.map((s, j) => (
@@ -157,7 +160,7 @@ function Row({
   const icon = "grid h-9 w-9 place-items-center rounded-sm text-ash hover:bg-steel hover:text-chalk disabled:opacity-30 disabled:hover:bg-transparent";
   return (
     <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-      <div className="flex min-w-0 flex-1 items-center gap-2">
+      <div className="flex min-w-44 flex-1 items-center gap-2">
         {sub && <CornerDownRight size={15} aria-hidden className="shrink-0 text-dim" />}
         <span className={`truncate ${sub ? "text-sm" : "text-base"} font-semibold text-chalk`}>{c.name}</span>
         <span className="shrink-0 text-xs text-dim tnum">
@@ -237,5 +240,107 @@ function NameForm({
         </button>
       )}
     </form>
+  );
+}
+
+/** Under a main category: the Bestseller switch and which categories to suggest alongside it. */
+function Extras({
+  c,
+  tree,
+  canEdit,
+  busy,
+  run,
+}: {
+  c: StoreCategoryTree;
+  tree: StoreCategoryTree[];
+  canEdit: boolean;
+  busy: boolean;
+  run: (a: Action, done?: string) => Promise<boolean>;
+}) {
+  const [picking, setPicking] = useState(false);
+  const [pick, setPick] = useState<string[]>(c.suggestIds);
+  const now = suggestedCategoryIds(c, tree);
+  const names = (ids: string[]) => ids.map((id) => tree.find((t) => t.id === id)?.name).filter(Boolean).join(", ");
+  const others = tree.filter((t) => t.id !== c.id);
+
+  return (
+    <div className="mt-3 space-y-2 text-sm">
+      <label className={`inline-flex items-center gap-2 ${canEdit ? "cursor-pointer" : "opacity-60"}`}>
+        <input
+          type="checkbox"
+          className="h-4 w-4 accent-[var(--accent)]"
+          checked={c.bestseller}
+          disabled={!canEdit || busy}
+          onChange={(e) => run({ action: "bestseller", id: c.id, on: e.target.checked }, e.target.checked ? `"${c.name}" is tagged Bestseller.` : `Bestseller tag removed from "${c.name}".`)}
+        />
+        <span className="font-semibold text-chalk">★ Bestseller</span>
+        <span className="text-dim">tag on every product in it</span>
+      </label>
+
+      {!picking ? (
+        <p className="text-ash">
+          <span className="text-dim">Suggests:</span> {now.length ? names(now) : "nothing yet"}
+          {now.length > 0 && c.suggestIds.length === 0 && <span className="text-dim"> (automatic)</span>}
+          {canEdit && others.length > 0 && (
+            <button
+              type="button"
+              onClick={() => {
+                setPick(c.suggestIds.length ? c.suggestIds : now);
+                setPicking(true);
+              }}
+              className="ml-2 font-semibold text-accent hover:underline"
+            >
+              Change
+            </button>
+          )}
+        </p>
+      ) : (
+        <div className="rounded-sm border border-tint/15 p-3">
+          <p className="text-ash">
+            When a customer adds something from <strong className="text-chalk">{c.name}</strong>, suggest products from (up to {STORE_SUGGEST_MAX}):
+          </p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {others.map((o) => {
+              const on = pick.includes(o.id);
+              return (
+                <button
+                  key={o.id}
+                  type="button"
+                  aria-pressed={on}
+                  disabled={!on && pick.length >= STORE_SUGGEST_MAX}
+                  onClick={() => setPick((p) => (on ? p.filter((x) => x !== o.id) : [...p, o.id]))}
+                  className={`min-h-9 rounded-full border px-3 text-sm font-semibold transition-colors disabled:opacity-40 ${
+                    on ? "border-accent bg-accent text-on-accent" : "border-tint/15 text-ash hover:text-chalk"
+                  }`}
+                >
+                  {o.name}
+                </button>
+              );
+            })}
+          </div>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <button
+              type="button"
+              disabled={busy}
+              className="btn btn-primary btn-sm"
+              onClick={async () => (await run({ action: "suggest", id: c.id, ids: pick }, "Suggestions saved.")) && setPicking(false)}
+            >
+              Save
+            </button>
+            <button
+              type="button"
+              disabled={busy}
+              className="btn btn-outline btn-sm"
+              onClick={async () => (await run({ action: "suggest", id: c.id, ids: [] }, "Back to automatic suggestions.")) && setPicking(false)}
+            >
+              Use automatic
+            </button>
+            <button type="button" className="btn btn-outline btn-sm" onClick={() => setPicking(false)}>
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }

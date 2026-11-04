@@ -17,7 +17,7 @@ export default async function StoreScreenSettingsPage() {
       <h1 className="display-3">OFFLINE STORE</h1>
       <p className="mt-2 max-w-2xl text-sm text-ash">Sell from the screen in your shop: your products and categories, Salesman AI, special prices and how customers pay.</p>
       <OfflineStoreNav current="settings" slug={vendor.slug} />
-      <p className="mt-3 max-w-2xl text-xs text-dim">New products show on the screen once Riderzpro approves them and they have stock.</p>
+      <p className="mt-3 max-w-2xl text-xs text-dim">Products show on your screen within seconds of saving them, if they have stock. No Riderzpro review is needed for your own shop screen; the Riderzpro website shows them after review.</p>
       <StoreSettingsForm initial={settings} fullAi={fullSalesmanFor(vendor.slug)} onlineAvailable={onlinePaymentsEnabled()} />
     </>
   );

@@ -949,4 +949,58 @@ UPDATE vendor_products p SET store_category_id = 'sc_indus_mats_' || CASE WHEN l
    AND (lower(p.brand) LIKE 'gfx%' OR lower(p.brand) LIKE 'autoform%');
 `,
   },
+  {
+    // Shop categories: a "Bestseller" tag and the categories to suggest alongside (empty = automatic).
+    // Also makes sure Indus Enterprises has its categories wherever its slug differs, and adds Car Cover.
+    id: "017_store_category_extras",
+    sql: `
+ALTER TABLE store_categories ADD COLUMN bestseller boolean NOT NULL DEFAULT false;
+ALTER TABLE store_categories ADD COLUMN suggest_ids text[] NOT NULL DEFAULT '{}';
+
+CREATE TEMP TABLE indus_shops ON COMMIT DROP AS
+  SELECT id FROM vendors WHERE slug = 'indus-enterprises' OR lower(trim(store_name)) LIKE 'indus enterprises%';
+
+INSERT INTO store_categories (id, vendor_id, parent_id, name, position)
+SELECT 'sc_' || substr(md5(v.id || c.key), 1, 20), v.id, NULL, c.name, c.pos
+  FROM indus_shops v,
+       (VALUES ('seat_cover','Seat Cover',1), ('mats','Mats',2), ('speaker','Speaker',3), ('stereo','Stereo',4),
+               ('dashcam','Dashcam',5), ('ortho_cushion','Orthopedic Cushion',6), ('fog_lamp','Fog Lamp',7),
+               ('head_lamp','Head Lamp',8), ('lights','Lights',9), ('steering_cover','Steering Cover',10),
+               ('protection_guard','Protection Guard',11), ('window_film','Window Film',12), ('car_care','Car Care',13))
+         AS c(key, name, pos)
+ WHERE NOT EXISTS (SELECT 1 FROM store_categories x WHERE x.vendor_id = v.id)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO store_categories (id, vendor_id, parent_id, name, position)
+SELECT 'sc_' || substr(md5(v.id || 'mats_' || c.key), 1, 20), v.id, m.id, c.name, c.pos
+  FROM indus_shops v
+  JOIN store_categories m ON m.vendor_id = v.id AND m.parent_id IS NULL AND lower(m.name) = 'mats',
+       (VALUES ('autoform','Autoform',1), ('gfx_pro','GFX Pro',2)) AS c(key, name, pos)
+ON CONFLICT DO NOTHING;
+
+-- Car Cover, tagged Bestseller, as the owner asked.
+INSERT INTO store_categories (id, vendor_id, parent_id, name, position, bestseller)
+SELECT 'sc_' || substr(md5(v.id || 'car_cover'), 1, 20), v.id, NULL, 'Car Cover',
+       (SELECT coalesce(max(position), 0) + 1 FROM store_categories x WHERE x.vendor_id = v.id AND x.parent_id IS NULL), true
+  FROM indus_shops v
+ON CONFLICT DO NOTHING;
+UPDATE store_categories c SET bestseller = true
+  FROM indus_shops v WHERE c.vendor_id = v.id AND c.parent_id IS NULL AND lower(c.name) = 'car cover';
+
+-- File Indus products that have no shop category yet, by their marketplace group.
+UPDATE vendor_products p SET store_category_id = c.id
+  FROM indus_shops v, store_categories c
+ WHERE p.vendor_id = v.id AND p.store_category_id IS NULL AND c.vendor_id = v.id AND c.parent_id IS NULL
+   AND lower(c.name) = CASE p.group_slug
+    WHEN 'seat-covers' THEN 'seat cover' WHEN 'floor-mats' THEN 'mats'
+    WHEN 'speakers' THEN 'speaker' WHEN 'subwoofers' THEN 'speaker' WHEN 'amplifiers' THEN 'speaker'
+    WHEN 'displays' THEN 'stereo' WHEN 'cameras' THEN 'dashcam' WHEN 'comfort' THEN 'orthopedic cushion'
+    WHEN 'fog-drl' THEN 'fog lamp' WHEN 'headlamps' THEN 'head lamp'
+    WHEN 'led-bulbs' THEN 'lights' WHEN 'ambient-lighting' THEN 'lights' WHEN 'auxiliary' THEN 'lights'
+    WHEN 'steering-covers' THEN 'steering cover' WHEN 'car-care' THEN 'car care'
+    WHEN 'armour' THEN 'protection guard'
+    WHEN 'exterior' THEN CASE WHEN p.department = 'covers-guards' AND p.title ILIKE '%car cover%' THEN 'car cover' ELSE 'protection guard' END
+  END;
+`,
+  },
 ];

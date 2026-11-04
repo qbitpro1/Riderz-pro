@@ -420,14 +420,27 @@ export async function unarchiveProduct(vendorId: string, id: string): Promise<Ve
   });
 }
 
-export async function deleteDraft(vendorId: string, id: string): Promise<void> {
+/**
+ * Deletes one of the seller's products for good, in any status: the shop owner manages their
+ * own catalogue. Past orders keep their own copy of the title and price (order_items), so they
+ * are untouched. Its photos go too, unless another of the seller's products still uses them.
+ */
+export async function deleteProduct(vendorId: string, id: string): Promise<void> {
   await transaction(async (q) => {
     const row = await mustOwn(q, vendorId, id);
-    if (row.status !== "draft" || row.approved_at) {
-      throw new ApiError(409, "not_deletable", "Only drafts that were never live can be deleted. Archive this product instead.");
-    }
+    const photos = [...new Set([...(row.images ?? []), ...(row.pending_revision?.images ?? [])])];
     await q("DELETE FROM vendor_products WHERE id = $1 AND vendor_id = $2", [id, vendorId]);
-    await audit({ type: "vendor", id: vendorId }, "product.delete", { vendorId, detail: { productId: id, sku: row.sku } }, q);
+    if (photos.length) {
+      await q(
+        `DELETE FROM files f
+          WHERE f.id = ANY($1) AND f.vendor_id = $2 AND f.kind = 'product_image'
+            AND NOT EXISTS (
+              SELECT 1 FROM vendor_products p
+               WHERE p.vendor_id = $2 AND (p.images ? f.id OR coalesce(p.pending_revision->'images', '[]'::jsonb) ? f.id))`,
+        [photos, vendorId],
+      );
+    }
+    await audit({ type: "vendor", id: vendorId }, "product.delete", { vendorId, detail: { productId: id, sku: row.sku, status: row.status } }, q);
   });
 }
 

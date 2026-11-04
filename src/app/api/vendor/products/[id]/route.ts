@@ -1,6 +1,6 @@
 import { ApiError, guardMutation, ok, readJson, route } from "@/lib/server/http";
 import { CAN_SELL, requireVendor } from "@/lib/server/session";
-import { deleteDraft, getProduct, updateProduct, updateProductSchema } from "@/lib/server/vendor-catalogue";
+import { deleteProduct, getProduct, updateProduct, updateProductSchema } from "@/lib/server/vendor-catalogue";
 
 export const dynamic = "force-dynamic";
 
@@ -22,10 +22,10 @@ export const PATCH = route(async (req: Request, { params }: Ctx) => {
   return ok({ product: await updateProduct(vendor.id, (await params).id, body) });
 });
 
-/** DELETE → { deleted: true } — drafts that never went live only. */
+/** DELETE → { deleted: true } — any of the seller's own products, for good. */
 export const DELETE = route(async (req: Request, { params }: Ctx) => {
   guardMutation(req);
   const vendor = await requireVendor(CAN_SELL);
-  await deleteDraft(vendor.id, (await params).id);
+  await deleteProduct(vendor.id, (await params).id);
   return ok({ deleted: true });
 });

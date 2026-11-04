@@ -1,4 +1,4 @@
-import type { ScreenProduct } from "./types";
+import type { ScreenCategory, ScreenProduct } from "./types";
 
 export const IDLE_MS = 120_000;
 export const COUNTDOWN_S = 20;
@@ -157,3 +157,38 @@ export const ui = {
   icon: "grid h-12 w-12 shrink-0 place-items-center rounded-xl border border-tint/15 bg-void text-chalk transition-[transform,background-color] duration-200 active:scale-95 hover:bg-carbon disabled:opacity-40",
   pill: "inline-flex min-h-12 shrink-0 items-center gap-2 rounded-full border px-5 text-[15px] font-semibold transition-colors duration-200",
 } as const;
+
+/**
+ * "Goes well with": products to suggest after `from` went into the order. From the categories its
+ * shop category pairs with (the seller's choice or the automatic pairs), in that order, a few from
+ * each, Bestsellers first. Products already in the order are left out. With no pairs, other
+ * kinds from the same department.
+ */
+export function suggestionsFor(
+  from: ScreenProduct[],
+  products: ScreenProduct[],
+  categories: ScreenCategory[],
+  inOrder: Record<string, number>,
+  car: Car | null,
+  max = 4,
+): ScreenProduct[] {
+  const fromIds = new Set(from.map((p) => p.id));
+  const fromGroups = new Set(from.map((p) => p.group));
+  const usable = products.filter((p) => !fromIds.has(p.id) && !(inOrder[p.id] > 0) && p.stock > 0 && fitsCar(p, car));
+  const best = (a: ScreenProduct, b: ScreenProduct) => Number(b.bestseller) - Number(a.bestseller);
+
+  const pairs: string[] = [];
+  for (const p of from) for (const g of categories.find((c) => c.id === p.group)?.suggest ?? []) if (!fromGroups.has(g) && !pairs.includes(g)) pairs.push(g);
+
+  let lists = pairs.map((g) => usable.filter((p) => p.group === g).sort(best));
+  if (!lists.some((l) => l.length)) {
+    const depts = new Set(from.map((p) => p.department));
+    lists = [usable.filter((p) => depts.has(p.department) && !fromGroups.has(p.group)).sort(best)];
+  }
+  // Round-robin across the paired categories, so one big category doesn't fill every slot.
+  const out: ScreenProduct[] = [];
+  for (let i = 0; out.length < max && lists.some((l) => l.length > i); i++) {
+    for (const l of lists) if (l[i] && out.length < max) out.push(l[i]);
+  }
+  return out;
+}

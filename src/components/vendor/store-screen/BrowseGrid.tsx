@@ -2,6 +2,7 @@
 
 import { Check, Columns2, Plus } from "lucide-react";
 import { COMPARE_MAX, LOW_STOCK, fitChip, maxFor, offPct, type Car } from "./lib";
+import { BestsellerTag } from "./SuggestBar";
 import { Photo, Price, Stepper } from "./parts";
 import type { ScreenProduct } from "./types";
 
@@ -53,8 +54,11 @@ export function ProductTile({
             className={compact ? "aspect-[4/3] w-full" : "aspect-[5/4] w-full"}
             pad="p-4"
           />
-          {off > 0 && (
-            <span className="absolute left-3 top-3 rounded-full bg-accent px-3 py-1 text-sm font-bold text-on-accent tnum">{off}% off</span>
+          {(off > 0 || p.bestseller) && (
+            <span className="absolute left-3 top-3 flex flex-col items-start gap-1.5">
+              {off > 0 && <span className="rounded-full bg-accent px-3 py-1 text-sm font-bold text-on-accent tnum">{off}% off</span>}
+              {p.bestseller && <BestsellerTag />}
+            </span>
           )}
           {low && (
             <span className="absolute right-3 top-3 rounded-full bg-gold/15 px-3 py-1 text-sm font-bold text-gold">

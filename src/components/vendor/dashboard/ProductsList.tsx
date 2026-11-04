@@ -35,14 +35,18 @@ export function ProductsList({ initial, readOnly, initialStatus }: Props) {
   }, [products, status, q]);
 
   async function act(p: VendorProduct, action: "archive" | "unarchive" | "duplicate" | "delete") {
-    if (action === "delete" && !window.confirm(`Delete the draft “${p.title || p.sku}”? This cannot be undone.`)) return;
+    if (
+      action === "delete" &&
+      !window.confirm(`Delete “${p.title || p.sku}” for good? It leaves your shop screen and the Riderzpro website straight away. Past orders keep their details. This can't be undone.`)
+    )
+      return;
     if (action === "archive" && !window.confirm(`Archive “${p.title}”? It will leave the shop and you can restore it later.`)) return;
     setBusy(p.id);
     try {
       if (action === "delete") {
         await api(`/api/vendor/products/${p.id}`, { method: "DELETE" });
         setProducts((list) => list.filter((x) => x.id !== p.id));
-        show("ok", "Draft deleted.");
+        show("ok", "Product deleted.");
       } else {
         const res = await api<{ product: VendorProduct }>(`/api/vendor/products/${p.id}/${action}`, { method: "POST", body: {} });
         setProducts((list) => (action === "duplicate" ? [res.product, ...list] : list.map((x) => (x.id === p.id ? res.product : x))));
@@ -58,7 +62,6 @@ export function ProductsList({ initial, readOnly, initialStatus }: Props) {
   const actions = (p: VendorProduct) => {
     const dis = readOnly || busy === p.id;
     const btn = "grid h-10 w-10 place-items-center rounded-[2px] border border-tint/10 text-ash hover:border-accent hover:text-accent disabled:pointer-events-none disabled:opacity-40";
-    const canDelete = p.status === "draft" && !p.approvedAt;
     const canArchive = ["live", "draft", "rejected", "changes_requested"].includes(p.status);
     return (
       <div className="flex items-center gap-1.5">
@@ -79,11 +82,9 @@ export function ProductsList({ initial, readOnly, initialStatus }: Props) {
             </button>
           )
         )}
-        {canDelete && (
-          <button type="button" className={`${btn} hover:!border-danger hover:!text-danger`} disabled={dis} onClick={() => act(p, "delete")} aria-label={`Delete draft ${p.title || p.sku}`} title="Delete draft">
-            <Trash2 size={16} aria-hidden />
-          </button>
-        )}
+        <button type="button" className={`${btn} hover:!border-danger hover:!text-danger`} disabled={dis} onClick={() => act(p, "delete")} aria-label={`Delete ${p.title || p.sku}`} title="Delete">
+          <Trash2 size={16} aria-hidden />
+        </button>
       </div>
     );
   };
@@ -167,7 +168,7 @@ export function ProductsList({ initial, readOnly, initialStatus }: Props) {
       {shown.length === 0 ? (
         products.length === 0 ? (
           <EmptyState title="No products yet">
-            Add your first product. After a quick review by the Riderzpro team it goes live on the Riderzpro website and on your Offline Store screen.
+            Add your first product. It shows on your Offline Store screen as soon as you save it with stock; after a quick review by the Riderzpro team it also goes live on the Riderzpro website.
             {!readOnly && (
               <div className="mt-4">
                 <Link href={`${base}/new`} className="btn btn-primary btn-sm">

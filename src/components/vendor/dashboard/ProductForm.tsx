@@ -268,7 +268,22 @@ export function ProductForm({ product: initialProduct, commissionRate, readOnly,
     }
   }
 
-  /* ---- numbers for the preview ---- */
+  async function removeProduct() {
+    if (!product) return;
+    const name = product.title || product.sku;
+    if (!window.confirm(`Delete “${name}” for good? It leaves your shop screen and the Riderzpro website straight away. Past orders keep their details. This can't be undone.`)) return;
+    setBusy("delete");
+    try {
+      await api(`/api/vendor/products/${product.id}`, { method: "DELETE" });
+      router.replace(base);
+      router.refresh();
+    } catch (err) {
+      show("error", failureMessage(err));
+      setBusy(null);
+    }
+  }
+
+    /* ---- numbers for the preview ---- */
   const mrpN = toInt(f.mrp);
   const priceN = toInt(f.price);
   const rate = commissionRate ?? DEFAULT_COMMISSION_RATE;
@@ -312,15 +327,21 @@ export function ProductForm({ product: initialProduct, commissionRate, readOnly,
         <div className="mt-1 flex flex-wrap items-center gap-3">
           <h1 className="display-3">{isNew ? "Add a product" : f.title || "Edit product"}</h1>
           {product && <StatusBadge product={product} />}
+          {product && !readOnly && (
+            <button type="button" onClick={removeProduct} disabled={busy !== null} className="btn btn-outline btn-sm ml-auto hover:!border-danger hover:!text-danger">
+              <Trash2 size={15} aria-hidden /> Delete product
+            </button>
+          )}
         </div>
       </div>
 
       {readOnly && <ReadOnlyNotice />}
-      {(isNew || editable) && !readOnly && (
+      {!readOnly && status !== "archived" && (
         <p role="note" className="flex items-start gap-2.5 rounded-[2px] border border-tint/10 bg-steel p-3 text-sm text-ash">
           <MonitorSmartphone size={18} aria-hidden className="mt-0.5 shrink-0 text-accent" />
           <span>
-            <strong className="text-chalk">On your Offline Store screen:</strong> this product shows there once Riderzpro approves it and it has stock (more than 0).
+            <strong className="text-chalk">On your Offline Store screen:</strong> shows within seconds of saving, as long as stock is more than 0. No review needed for
+            your own shop. The Riderzpro website shows it (and later edits) after Riderzpro review.
           </span>
         </p>
       )}

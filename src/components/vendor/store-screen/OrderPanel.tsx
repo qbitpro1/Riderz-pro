@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { ShoppingBag, Trash2 } from "lucide-react";
+import { Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { rupees } from "@/lib/format";
 import { CloseButton, Layer } from "./Layer";
 import { maxFor, ui } from "./lib";
 import type { OrderLine } from "./hooks";
 import { Photo, Stepper } from "./parts";
+import type { ScreenProduct } from "./types";
 
 export function Totals({ count, total, savings }: { count: number; total: number; savings: number }) {
   return (
@@ -40,6 +41,8 @@ export function Totals({ count, total, savings }: { count: number; total: number
  */
 export function OrderPanel({
   lines,
+  suggestions = [],
+  onAddSuggestion,
   count,
   total,
   savings,
@@ -51,6 +54,9 @@ export function OrderPanel({
   specialOff = 0,
 }: {
   lines: OrderLine[];
+  /** "You may also need": products that go well with what is in the order. */
+  suggestions?: ScreenProduct[];
+  onAddSuggestion?: (p: ScreenProduct) => void;
   count: number;
   total: number;
   savings: number;
@@ -118,6 +124,29 @@ export function OrderPanel({
               </li>
             ))}
           </ul>
+        )}
+        {count > 0 && suggestions.length > 0 && onAddSuggestion && (
+          <section aria-label="You may also need" className="border-t border-tint/10 py-4">
+            <p className="text-sm font-bold uppercase tracking-[0.14em] text-accent">You may also need</p>
+            <ul className="mt-3 space-y-3">
+              {suggestions.map((p) => (
+                <li key={p.id} className="flex items-center gap-3">
+                  <Photo id={p.images[0]} alt="" sizes="64px" className="h-16 w-16 shrink-0 rounded-xl" pad="p-1" />
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-xs font-semibold text-dim">
+                      {p.groupName}
+                      {p.bestseller && <span className="ml-1.5 font-extrabold text-gold">★ Bestseller</span>}
+                    </p>
+                    <p className="line-clamp-1 text-base font-semibold text-chalk">{p.title}</p>
+                    <p className="tnum text-sm font-bold text-chalk">{rupees(p.price)}</p>
+                  </div>
+                  <button type="button" onClick={() => onAddSuggestion(p)} className={`${ui.secondary} min-h-11 shrink-0 px-3 text-sm`} aria-label={`Add ${p.title}`}>
+                    <Plus size={16} aria-hidden /> Add
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </section>
         )}
       </div>
 

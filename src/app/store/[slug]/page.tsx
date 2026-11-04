@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { currentSession } from "@/lib/server/session";
-import { screenFitment, screenProducts, screenStore } from "@/lib/server/store-screen";
+import { screenCategories, screenFitment, screenProducts, screenStore } from "@/lib/server/store-screen";
 import { vendorHome } from "@/lib/vendor/types";
 import { StoreScreen } from "@/components/vendor/store-screen/StoreScreen";
 import { payOptions, storeSettings } from "@/lib/server/store-sales";
@@ -27,11 +27,12 @@ export default async function StoreScreenPage({ params }: { params: Promise<{ sl
   if (vendor.status !== "approved" || !vendor.slug) redirect(vendorHome(vendor.status));
   if (vendor.slug !== slug) redirect(`/store/${vendor.slug}`);
 
-  const [products, settings] = await Promise.all([screenProducts(vendor.id), storeSettings(vendor.id)]);
+  const [products, categories, settings] = await Promise.all([screenProducts(vendor.id), screenCategories(vendor.id), storeSettings(vendor.id)]);
   return (
     <StoreScreen
       store={screenStore(vendor, settings)}
       products={products}
+      categories={categories}
       fitment={screenFitment(products)}
       locked={session.locked}
       sales={{ aiEnabled: settings.aiEnabled, pay: payOptions(settings) }}

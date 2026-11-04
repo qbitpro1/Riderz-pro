@@ -8,6 +8,7 @@ import { audit, notifyVendor } from "./vendors";
 import { newOrderNumber, restoreStock, settleOrderStatus, type PlacedOrderRecord } from "./orders";
 import { onlinePaymentsEnabled } from "./payments";
 import { SCREEN_HOURS_DEFAULT } from "@/components/vendor/store-screen/types";
+import { SCREEN_PRODUCT_WHERE, SCREEN_TITLE_SQL } from "./store-screen";
 
 /**
  * SELLING FROM THE OFFLINE STORE SCREEN
@@ -105,13 +106,13 @@ export function payOptions(s: StoreSettings) {
 type CartLine = { id: string; qty: number };
 type Priced = { id: string; title: string; price: number; qty: number; stock: number };
 
-/** Prices the screen's cart from the database (live, in-stock products of this seller only). */
+/** Prices the screen's cart from the database (this seller's own screen products only). */
 export async function priceStoreCart(vendorId: string, lines: CartLine[]): Promise<{ items: Priced[]; subtotal: number }> {
   if (lines.length === 0) throw new ApiError(400, "empty", "The order is empty.");
   const ids = [...new Set(lines.map((l) => l.id))];
   const rows = await sql<{ id: string; title: string; price: number; stock: number }>(
-    `SELECT p.id, p.title, p.price, p.stock FROM vendor_products p JOIN vendors v ON v.id = p.vendor_id
-      WHERE p.id = ANY($1) AND p.vendor_id = $2 AND p.status = 'live' AND v.status = 'approved'`,
+    `SELECT p.id, ${SCREEN_TITLE_SQL} AS title, p.price, p.stock FROM vendor_products p JOIN vendors v ON v.id = p.vendor_id
+      WHERE p.id = ANY($1) AND p.vendor_id = $2 AND ${SCREEN_PRODUCT_WHERE}`,
     [ids, vendorId],
   );
   const items = lines.map((l) => {
@@ -213,8 +214,8 @@ export async function placeStoreOrder(vendor: VendorSelf, input: StoreCheckoutIn
     // Lock and price every product (stock is taken below; a lost race rolls everything back).
     const ids = [...new Set(input.lines.map((l) => l.id))];
     const rows = await q<{ id: string; title: string; price: number; stock: number; commission_rate: string | null }>(
-      `SELECT p.id, p.title, p.price, p.stock, v.commission_rate FROM vendor_products p JOIN vendors v ON v.id = p.vendor_id
-        WHERE p.id = ANY($1) AND p.vendor_id = $2 AND p.status = 'live' AND v.status = 'approved' ORDER BY p.id FOR UPDATE OF p`,
+      `SELECT p.id, ${SCREEN_TITLE_SQL} AS title, p.price, p.stock, v.commission_rate FROM vendor_products p JOIN vendors v ON v.id = p.vendor_id
+        WHERE p.id = ANY($1) AND p.vendor_id = $2 AND ${SCREEN_PRODUCT_WHERE} ORDER BY p.id FOR UPDATE OF p`,
       [ids, vendor.id],
     );
     const items = input.lines.map((l) => {

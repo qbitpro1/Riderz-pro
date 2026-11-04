@@ -15,7 +15,7 @@ export default async function StoreCategoriesPage() {
       <h1 className="display-3">SHOP CATEGORIES</h1>
       <p className="mt-2 max-w-2xl text-sm text-ash">
         How customers browse your Offline Store screen. Make main categories, like Mats, and sub-categories inside them, like Autoform and GFX Pro.
-        Then pick one on each product. A category shows on the screen once it has a live product with stock.
+        Then pick one on each product. All of them show on your shop screen; empty ones are greyed out until they have a product with stock.
       </p>
       <OfflineStoreNav current="categories" slug={vendor.status === "approved" ? vendor.slug : null} />
       <StoreCategoriesManager initial={categories} canEdit={vendor.status === "approved"} />

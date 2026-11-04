@@ -2,7 +2,7 @@ import "server-only";
 
 import { z } from "zod";
 import { sql, transaction, type Query } from "@/lib/db/client";
-import { STORE_CATEGORIES_MAX, STORE_CATEGORY_NAME_MAX, type StoreCategory } from "@/lib/vendor/store-categories";
+import { STORE_CATEGORIES_MAX, STORE_CATEGORY_NAME_MAX, STORE_SUGGEST_MAX, type StoreCategory } from "@/lib/vendor/store-categories";
 import { ApiError } from "./http";
 import { newId } from "./security";
 import { audit } from "./vendors";
@@ -24,20 +24,38 @@ export const storeCategoryActionSchema = z.discriminatedUnion("action", [
   z.object({ action: z.literal("rename"), id, name }),
   z.object({ action: z.literal("move"), id, dir: z.enum(["up", "down"]) }),
   z.object({ action: z.literal("delete"), id }),
+  z.object({ action: z.literal("bestseller"), id, on: z.boolean() }),
+  z.object({ action: z.literal("suggest"), id, ids: z.array(id).max(STORE_SUGGEST_MAX, `Pick up to ${STORE_SUGGEST_MAX}`) }),
 ]);
 
-type Row = { id: string; name: string; parent_id: string | null; position: number; products: number };
+type Row = {
+  id: string;
+  name: string;
+  parent_id: string | null;
+  position: number;
+  products: number;
+  bestseller: boolean;
+  suggest_ids: string[] | null;
+};
 
 export async function listStoreCategories(vendorId: string, q: Query = sql): Promise<StoreCategory[]> {
   const rows = await q<Row>(
-    `SELECT c.id, c.name, c.parent_id, c.position,
+    `SELECT c.id, c.name, c.parent_id, c.position, c.bestseller, c.suggest_ids,
             (SELECT count(*)::int FROM vendor_products p WHERE p.store_category_id = c.id AND p.status <> 'archived') AS products
        FROM store_categories c
       WHERE c.vendor_id = $1
       ORDER BY c.position, lower(c.name)`,
     [vendorId],
   );
-  return rows.map((r) => ({ id: r.id, name: r.name, parentId: r.parent_id, position: r.position, products: r.products }));
+  return rows.map((r) => ({
+    id: r.id,
+    name: r.name,
+    parentId: r.parent_id,
+    position: r.position,
+    products: r.products,
+    bestseller: Boolean(r.bestseller),
+    suggestIds: r.suggest_ids ?? [],
+  }));
 }
 
 async function own(q: Query, vendorId: string, categoryId: string) {
@@ -96,6 +114,16 @@ export async function storeCategoryAction(vendorId: string, input: z.infer<typeo
       const row = await own(q, vendorId, input.id);
       if (input.action === "rename") {
         await q("UPDATE store_categories SET name = $1 WHERE id = $2", [input.name, row.id]);
+      } else if (input.action === "bestseller") {
+        await q("UPDATE store_categories SET bestseller = $1 WHERE id = $2", [input.on, row.id]);
+      } else if (input.action === "suggest") {
+        // Only this seller's other main categories.
+        const mains = await q<{ id: string }>(
+          "SELECT id FROM store_categories WHERE vendor_id = $1 AND parent_id IS NULL AND id = ANY($2) AND id <> $3",
+          [vendorId, input.ids, row.id],
+        );
+        const ok = new Set(mains.map((m) => m.id));
+        await q("UPDATE store_categories SET suggest_ids = $1 WHERE id = $2", [input.ids.filter((x) => ok.has(x)), row.id]);
       } else if (input.action === "delete") {
         // Products in it (or in its sub-categories) simply leave the category (ON DELETE SET NULL).
         await q("DELETE FROM store_categories WHERE id = $1", [row.id]);
