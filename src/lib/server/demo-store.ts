@@ -10,6 +10,7 @@ import { DEFAULT_COMMISSION_RATE, type VendorOnboarding } from "@/lib/vendor/typ
 import { emailSchema, mobileSchema } from "@/lib/vendor/validators";
 import { DASHCAM_DEPARTMENT, DASHCAM_GROUP, DEMO_DASHCAMS } from "./demo-dashcams";
 import { saveFile } from "./files";
+import { ensureStarterCategories } from "./starter-categories";
 import { ApiError } from "./http";
 import { hashPassword, newId } from "./security";
 import { newSlug } from "./vendor-catalogue";
@@ -292,6 +293,8 @@ export async function seedDemoStore(input: z.infer<typeof demoStoreSchema>, by: 
     if (row.images?.length) await sql("DELETE FROM files WHERE vendor_id = $1 AND id = ANY($2)", [vendor.id, row.images]);
   }
 
+  // Its shop categories (Seat Cover, Mats › Autoform / GFX Pro, … Car Cover) if it has none yet.
+  await ensureStarterCategories(vendor.id, by);
   await audit(by, "demo_store.seed", { vendorId: vendor.id, ip, detail: { action, products, photos } });
   return { vendorId: vendor.id, slug: DEMO_SLUG, action, products, photos };
 }
