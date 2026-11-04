@@ -1,7 +1,8 @@
 # Work update
 
 Older audits (`docs/AUDIT.md`, `docs/AUDIT_V0.4.md`) and the V0.4 plan (`docs/MIGRATION_PLAN_V0.4.md`) mentioned
-below were removed on 18 Oct 2026 (they are in git history); the current audit is `docs/AUDIT_V0.5.md`.
+below were removed on 18 Oct 2026, and `docs/AUDIT_V0.5.md` and `docs/NEXT_SESSION.md` on 5 Nov 2026
+(all in git history). Current status and the go-live list are in `README.md`.
 
 ## 18 Oct 2026: code-quality pass, full audit, launch readiness (on V0.4)
 

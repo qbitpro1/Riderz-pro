@@ -17,3 +17,7 @@ next-env.d.ts
 
 # Claude Code local permission overrides — personal, not shared.
 .claude/settings.local.json
+
+# Written by `next dev` / local agent notes; never committed.
+/AGENTS.md
+/CLAUDE.md
