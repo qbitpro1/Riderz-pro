@@ -36,6 +36,24 @@ type Answer = { text: string; products: string[]; actions: { type: string; id?: 
 async function withSuggestions<T extends Answer>(r: T, vendorId: string, cart: { id: string; qty: number }[], car: string | null, question: string, known?: ScreenProduct[]): Promise<T> {
   const added = r.actions.filter((a) => a.type === "add" && a.id).map((a) => ({ id: a.id!, qty: a.qty ?? 1 }));
   if (!added.length) return r;
+  try {
+    return await addSuggestions(r, added, vendorId, cart, car, question, known);
+  } catch (err) {
+    // Suggestions are extra: the answer goes out without them.
+    console.error("[store-assistant] suggestions skipped:", err instanceof Error ? err.message : err);
+    return r;
+  }
+}
+
+async function addSuggestions<T extends Answer>(
+  r: T,
+  added: { id: string; qty: number }[],
+  vendorId: string,
+  cart: { id: string; qty: number }[],
+  car: string | null,
+  question: string,
+  known?: ScreenProduct[],
+): Promise<T> {
   const [products, categories] = await Promise.all([known ?? screenProducts(vendorId), screenCategories(vendorId)]);
   const inOrder: Record<string, number> = {};
   for (const l of [...cart, ...added]) inOrder[l.id] = (inOrder[l.id] ?? 0) + l.qty;

@@ -103,8 +103,16 @@ export async function readJson<S extends z.ZodTypeAny>(req: Request, schema: S, 
   return parsed.data;
 }
 
+/**
+ * The visitor's IP for rate limits. Headers the host sets come first (Vercel: x-vercel-forwarded-for;
+ * nginx and most proxies: x-real-ip). Failing those, the LAST x-forwarded-for entry: the one the
+ * nearest proxy added. The first entry is whatever the visitor sent, so it can't be trusted.
+ */
 export function clientIp(req: Request): string {
-  return (req.headers.get("x-forwarded-for") ?? "").split(",")[0].trim() || req.headers.get("x-real-ip") || "unknown";
+  const h = req.headers;
+  const first = (v: string | null) => (v ?? "").split(",")[0].trim();
+  const last = (v: string | null) => (v ?? "").split(",").map((x) => x.trim()).filter(Boolean).pop() ?? "";
+  return first(h.get("x-vercel-forwarded-for")) || first(h.get("x-real-ip")) || last(h.get("x-forwarded-for")) || "unknown";
 }
 
 /**

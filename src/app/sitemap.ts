@@ -77,7 +77,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...LANDING_MODELS.map((m) => entry(`/accessories/${m.slug}`, 0.8)),
     ...CARS.map((c) => entry(`/cars/${c.slug}`, 0.7, "daily")),
     ...BUILDS.map((b) => entry(`/builds/${b.slug}`, 0.6)),
-    entry("/vendor", 0.6, "monthly"),
     ...market.map((m) => ({
       url: url(m.path),
       lastModified: m.lastModified ?? now,

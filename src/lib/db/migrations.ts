@@ -957,12 +957,11 @@ UPDATE vendor_products p SET store_category_id = 'sc_indus_mats_' || CASE WHEN l
 ALTER TABLE store_categories ADD COLUMN bestseller boolean NOT NULL DEFAULT false;
 ALTER TABLE store_categories ADD COLUMN suggest_ids text[] NOT NULL DEFAULT '{}';
 
-CREATE TEMP TABLE indus_shops ON COMMIT DROP AS
-  SELECT id FROM vendors WHERE slug = 'indus-enterprises' OR lower(trim(store_name)) LIKE 'indus enterprises%';
+-- Indus Enterprises, by slug or by name (no temporary table: some hosted roles can't make one).
 
 INSERT INTO store_categories (id, vendor_id, parent_id, name, position)
 SELECT 'sc_' || substr(md5(v.id || c.key), 1, 20), v.id, NULL, c.name, c.pos
-  FROM indus_shops v,
+  FROM (SELECT id FROM vendors WHERE slug = 'indus-enterprises' OR lower(trim(store_name)) LIKE 'indus enterprises%') v,
        (VALUES ('seat_cover','Seat Cover',1), ('mats','Mats',2), ('speaker','Speaker',3), ('stereo','Stereo',4),
                ('dashcam','Dashcam',5), ('ortho_cushion','Orthopedic Cushion',6), ('fog_lamp','Fog Lamp',7),
                ('head_lamp','Head Lamp',8), ('lights','Lights',9), ('steering_cover','Steering Cover',10),
@@ -973,7 +972,7 @@ ON CONFLICT DO NOTHING;
 
 INSERT INTO store_categories (id, vendor_id, parent_id, name, position)
 SELECT 'sc_' || substr(md5(v.id || 'mats_' || c.key), 1, 20), v.id, m.id, c.name, c.pos
-  FROM indus_shops v
+  FROM (SELECT id FROM vendors WHERE slug = 'indus-enterprises' OR lower(trim(store_name)) LIKE 'indus enterprises%') v
   JOIN store_categories m ON m.vendor_id = v.id AND m.parent_id IS NULL AND lower(m.name) = 'mats',
        (VALUES ('autoform','Autoform',1), ('gfx_pro','GFX Pro',2)) AS c(key, name, pos)
 ON CONFLICT DO NOTHING;
@@ -982,14 +981,14 @@ ON CONFLICT DO NOTHING;
 INSERT INTO store_categories (id, vendor_id, parent_id, name, position, bestseller)
 SELECT 'sc_' || substr(md5(v.id || 'car_cover'), 1, 20), v.id, NULL, 'Car Cover',
        (SELECT coalesce(max(position), 0) + 1 FROM store_categories x WHERE x.vendor_id = v.id AND x.parent_id IS NULL), true
-  FROM indus_shops v
+  FROM (SELECT id FROM vendors WHERE slug = 'indus-enterprises' OR lower(trim(store_name)) LIKE 'indus enterprises%') v
 ON CONFLICT DO NOTHING;
 UPDATE store_categories c SET bestseller = true
-  FROM indus_shops v WHERE c.vendor_id = v.id AND c.parent_id IS NULL AND lower(c.name) = 'car cover';
+  FROM (SELECT id FROM vendors WHERE slug = 'indus-enterprises' OR lower(trim(store_name)) LIKE 'indus enterprises%') v WHERE c.vendor_id = v.id AND c.parent_id IS NULL AND lower(c.name) = 'car cover';
 
 -- File Indus products that have no shop category yet, by their marketplace group.
 UPDATE vendor_products p SET store_category_id = c.id
-  FROM indus_shops v, store_categories c
+  FROM (SELECT id FROM vendors WHERE slug = 'indus-enterprises' OR lower(trim(store_name)) LIKE 'indus enterprises%') v, store_categories c
  WHERE p.vendor_id = v.id AND p.store_category_id IS NULL AND c.vendor_id = v.id AND c.parent_id IS NULL
    AND lower(c.name) = CASE p.group_slug
     WHEN 'seat-covers' THEN 'seat cover' WHEN 'floor-mats' THEN 'mats'
@@ -1001,6 +1000,19 @@ UPDATE vendor_products p SET store_category_id = c.id
     WHEN 'armour' THEN 'protection guard'
     WHEN 'exterior' THEN CASE WHEN p.department = 'covers-guards' AND p.title ILIKE '%car cover%' THEN 'car cover' ELSE 'protection guard' END
   END;
+`,
+  },
+  {
+    // An order line keeps the tax and warranty facts it was sold with, so a seller editing or
+    // deleting the product later can't change past invoices or receipts. Backfilled from the products.
+    id: "018_order_item_tax_snapshot",
+    sql: `
+ALTER TABLE order_items ADD COLUMN hsn text;
+ALTER TABLE order_items ADD COLUMN gst_rate integer;
+ALTER TABLE order_items ADD COLUMN warranty_months integer;
+UPDATE order_items i SET hsn = p.hsn, gst_rate = p.gst_rate, warranty_months = p.warranty_months
+  FROM vendor_products p
+ WHERE i.product_kind = 'vendor' AND p.id = i.product_ref;
 `,
   },
 ];

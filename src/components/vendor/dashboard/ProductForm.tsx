@@ -243,12 +243,19 @@ export function ProductForm({ product: initialProduct, commissionRate, readOnly,
         router.refresh();
         return;
       }
+      // stockWas: the stock this page loaded, so a sale made while it was open isn't overwritten.
+      const stockWas = product!.stock;
       const body =
-        mode === "commercial" ? { commercial } : mode === "submit" ? { content, commercial, submit: true } : { content, commercial };
+        mode === "commercial"
+          ? { commercial, stockWas }
+          : mode === "submit"
+            ? { content, commercial, submit: true, stockWas }
+            : { content, commercial, stockWas };
       const res = await api<{ product: VendorProduct }>(`/api/vendor/products/${product!.id}`, { method: "PATCH", body });
       saved = res.product;
       setProduct(saved);
       if (mode !== "commercial") setF(initialState(saved));
+      else setF((x) => ({ ...x, stock: String(saved.stock) }));
       router.refresh();
       show(
         "ok",

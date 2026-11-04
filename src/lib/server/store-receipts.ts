@@ -72,7 +72,7 @@ export async function loadReceipt(vendor: VendorSelf, number: string): Promise<R
   );
   if (!order || order.status === "cancelled") throw new ApiError(404, "not_found", "A receipt can't be sent for this order from the screen. Please ask the staff.");
   const items = await sql<ReceiptItem>(
-    `SELECT i.title, i.qty, i.unit_price, i.line_total, p.warranty_months
+    `SELECT i.title, i.qty, i.unit_price, i.line_total, coalesce(i.warranty_months, p.warranty_months) AS warranty_months
        FROM order_items i LEFT JOIN vendor_products p ON i.product_kind = 'vendor' AND p.id = i.product_ref
       WHERE i.order_id = $1 ORDER BY i.id`,
     [order.id],

@@ -49,7 +49,7 @@ export default async function AdminHub({ searchParams }: { searchParams: Promise
     { href: "/admin/vendors", perm: "sellers", title: "Seller KYC", text: "Applications, documents, approve or reject.", icon: Users, count: counts?.kyc },
     { href: "/admin/vendor-products", perm: "sellers", title: "Seller products", text: "Approve new products and edits to live ones.", icon: PackageCheck, count: counts?.products },
     { href: "/admin/change-requests", perm: "sellers", title: "Bank changes", text: "Verify and approve payout account changes.", icon: Landmark, count: counts?.changeRequests },
-    { href: "/admin/orders", perm: "orders.view", title: "Seller orders", text: "Orders split by seller, cancellations, returns.", icon: ShoppingBag },
+    { href: "/admin/orders", perm: "orders.view", title: "Seller orders", text: "Orders split by seller, cancellations, returns. The count is paid orders a seller cancelled that still need a refund.", icon: ShoppingBag, count: counts?.refunds },
     { href: "/admin/payouts", perm: "payouts", title: "Payouts", text: "Settlements due and payments made to sellers.", icon: Banknote },
     { href: "/admin/support", perm: "support", title: "Seller support", text: "Tickets raised from the seller portal.", icon: LifeBuoy, count: counts?.tickets },
     { href: "/admin/customers", perm: "customers", title: "Customers", text: "Accounts, their orders, addresses and messages.", icon: Contact },

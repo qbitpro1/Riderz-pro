@@ -25,20 +25,21 @@ export const STORE_SUGGEST_MAX = 6;
  * chosen any for a category. Each rule: a category name pattern → names it pairs with.
  */
 const AUTO_PAIRS: [RegExp, RegExp[]][] = [
-  [/car ?cover|body ?cover/, [/mat/, /car ?care|clean|polish/, /guard|protect/]],
-  [/seat/, [/mat/, /steering/, /cushion|ortho|comfort/]],
-  [/mat/, [/seat/, /car ?care|clean/, /car ?cover/]],
-  [/steering/, [/seat/, /mat/]],
-  [/cushion|ortho|comfort/, [/seat/, /steering/]],
-  [/speaker|sub ?woofer|amp/, [/stereo|head ?unit|display/, /speaker|sub ?woofer|amp/]],
-  [/stereo|head ?unit|display|android/, [/speaker/, /dash ?cam|camera/]],
-  [/dash ?cam|camera/, [/stereo|display/, /light|lamp/]],
-  [/fog/, [/head ?lamp/, /light/]],
-  [/head ?lamp/, [/fog/, /light/]],
-  [/light|led|bulb/, [/fog/, /head ?lamp/]],
-  [/guard|protect/, [/car ?cover/, /window|film/]],
-  [/window|film/, [/guard|protect/, /car ?care/]],
-  [/car ?care|clean|polish|wash/, [/mat/, /car ?cover/]],
+  // Most specific first; whole words only, so "lamp" never reads as "amp" and "installed" never as "led".
+  [/\b(car|body) ?covers?\b/, [/\bmats?\b/, /\bcar ?care\b|\bclean|\bpolish/, /\bguards?\b|\bprotect/]],
+  [/\bseat/, [/\bmats?\b/, /\bsteering\b/, /\bcushions?\b|\bortho|\bcomfort\b/]],
+  [/\bmats?\b/, [/\bseat/, /\bcar ?care\b|\bclean/, /\bcar ?covers?\b/]],
+  [/\bsteering\b/, [/\bseat/, /\bmats?\b/]],
+  [/\bcushions?\b|\bortho|\bcomfort\b/, [/\bseat/, /\bsteering\b/]],
+  [/\bfog\b/, [/\bhead ?lamps?\b/, /\blights?\b|\bled\b|\bbulbs?\b/]],
+  [/\bhead ?lamps?\b/, [/\bfog\b/, /\blights?\b|\bled\b|\bbulbs?\b/]],
+  [/\blights?\b|\bled\b|\bbulbs?\b/, [/\bfog\b/, /\bhead ?lamps?\b/]],
+  [/\bdash ?cams?\b|\bcameras?\b/, [/\bstereos?\b|\bdisplays?\b|\bhead ?units?\b/, /\blights?\b|\blamps?\b/]],
+  [/\bstereos?\b|\bhead ?units?\b|\bdisplays?\b|\bandroid\b/, [/\bspeakers?\b/, /\bdash ?cams?\b|\bcameras?\b/]],
+  [/\bspeakers?\b|\bsub ?woofers?\b|\bamp(lifier)?s?\b/, [/\bstereos?\b|\bhead ?units?\b|\bdisplays?\b/, /\bsub ?woofers?\b|\bamp(lifier)?s?\b/]],
+  [/\bguards?\b|\bprotect/, [/\bcar ?covers?\b/, /\bwindow\b|\bfilms?\b/]],
+  [/\bwindow\b|\bfilms?\b/, [/\bguards?\b|\bprotect/, /\bcar ?care\b/]],
+  [/\bcar ?care\b|\bclean|\bpolish|\bwash/, [/\bmats?\b/, /\bcar ?covers?\b/]],
 ];
 
 /** The main categories to suggest alongside `cat`: the seller's own choice, else the automatic pairs. */

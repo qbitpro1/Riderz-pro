@@ -43,9 +43,12 @@ export const POST = route(async (req: Request) => {
 
   // Any status may unlock (a store suspended while its screen was open must still get out).
   const vendor = await requireVendor(undefined, { whileLocked: true });
-  await rateLimit(`store-screen-unlock:${vendor.id}`, 10, 15 * 60);
+  // Per device first (a customer guessing at the tablet), then per shop (the seller can still unlock elsewhere).
+  await rateLimit(`store-screen-unlock-ip:${vendor.id}:${ip}`, 6, 15 * 60);
+  await rateLimit(`store-screen-unlock:${vendor.id}`, 20, 15 * 60);
   const row = await sqlOne<{ password_hash: string }>("SELECT password_hash FROM vendors WHERE id = $1", [vendor.id]);
   if (!row || !(await verifyPassword(body.password, row.password_hash))) {
+    await audit({ type: "vendor", id: vendor.id }, "store_screen.unlock_failed", { vendorId: vendor.id, ip });
     throw new ApiError(400, "bad_password", "That password is not right.", { password: "That password is not right." });
   }
   await setStoreScreenLock(false);

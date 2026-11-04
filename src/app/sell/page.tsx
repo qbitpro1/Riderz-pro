@@ -8,14 +8,14 @@ import { whatsapp } from "@/lib/data/site";
 import { pageMeta } from "@/lib/data/seo";
 
 export const metadata: Metadata = pageMeta({
-  title: "Sell Your Car — Free Valuation & Same-Day Payment",
+  title: "Sell Your Car — Free Valuation",
   description:
     "Sell your used car to Riderzpro. Free valuation, free 200-point inspection at your home, payment before RC transfer, and full documentation support.",
   path: "/sell",
 });
 
 const STEPS = [
-  { n: "01", title: "Enter registration number", body: "We pull make, model, variant and year from VAHAN." },
+  { n: "01", title: "Enter registration number", body: "Tell us the registration number and a few details about the car." },
   { n: "02", title: "Select your vehicle", body: "Confirm the variant — it can be worth up to 18% of the price." },
   { n: "03", title: "Upload photos", body: "Four exteriors, the odometer, and the interior is enough to start." },
   { n: "04", title: "Enter kilometres", body: "Honest numbers get honest offers. We verify against the OBD anyway." },

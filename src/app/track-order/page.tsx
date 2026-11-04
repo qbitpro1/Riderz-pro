@@ -8,7 +8,7 @@ import { pageMeta } from "@/lib/data/seo";
 export const metadata: Metadata = pageMeta({
   title: "Track Your Order",
   description:
-    "Orders are confirmed on WhatsApp and tracking details are sent there. Ask where your Riderzpro order is.",
+    "See where your Riderzpro order is: live tracking in your account, and updates by SMS and email.",
   path: "/track-order",
 });
 
@@ -18,7 +18,7 @@ export default function TrackOrderPage() {
       <PageHero
         eyebrow="Customer support"
         title="WHERE IS MY ORDER?"
-        blurb="Orders are confirmed on WhatsApp, and tracking details are sent to you there."
+        blurb="Follow your order live in your account. We also send updates by SMS and email."
         media="mechanicEngine"
         size="sm"
       />
@@ -27,8 +27,8 @@ export default function TrackOrderPage() {
           <div className="space-y-4 text-sm leading-relaxed text-ash">
             <h2 className="display-3">HOW TRACKING WORKS</h2>
             <p>
-              You receive a tracking link on WhatsApp when your consignment is picked up, and again when it is out for
-              delivery. If a consignment stalls for more than 48 hours, we chase the carrier ourselves.
+              We send you an update by SMS and email when your order is confirmed, picked up and out for delivery. If an
+              order stalls for more than 48 hours, we chase it ourselves.
             </p>
             <p>
               Have a Riderzpro account?{" "}
@@ -38,7 +38,7 @@ export default function TrackOrderPage() {
               with each seller&apos;s progress and courier tracking number.
             </p>
             <p>
-              Cannot find the message? Send us your order reference or phone number and we will reply on WhatsApp.
+              Can&apos;t find an update? Send us your order reference or phone number and we will get back to you.
             </p>
             <p>
               Or reach us directly: <a className="text-accent underline underline-offset-4" href={SITE.phoneHref}>{SITE.phone}</a>

@@ -117,9 +117,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     ...(detail.summary ? { description: detail.summary } : {}),
     ...(detail.images.length ? { image: detail.images.map(imageUrl) } : {}),
     ...(offers ? { offers } : {}),
-    ...(detail.rating !== null && detail.reviews !== null
-      ? { aggregateRating: { "@type": "AggregateRating", ratingValue: detail.rating, reviewCount: detail.reviews } }
-      : {}),
+    // No aggregateRating: there is no review system yet, so the catalogue's star counts can't be
+    // offered to search engines as real reviews. Add it back once reviews are collected.
   };
 
   return (

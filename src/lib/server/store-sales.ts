@@ -281,8 +281,10 @@ export async function placeStoreOrder(vendor: VendorSelf, input: StoreCheckoutIn
     const low: { title: string; stock: number }[] = [];
     for (const i of priced) {
       await q(
-        `INSERT INTO order_items (id, order_id, vendor_order_id, product_kind, product_ref, title, variant, unit_price, install_price, qty, line_total)
-         VALUES ($1,$2,$3,'vendor',$4,$5,NULL,$6,0,$7,$8)`,
+        `INSERT INTO order_items (id, order_id, vendor_order_id, product_kind, product_ref, title, variant, unit_price, install_price, qty, line_total,
+                                  hsn, gst_rate, warranty_months)
+         SELECT $1,$2,$3,'vendor',$4,$5,NULL,$6,0,$7,$8, p.hsn, p.gst_rate, p.warranty_months
+           FROM vendor_products p WHERE p.id = $4`,
         [newId("itm"), orderId, vendorOrderId, i.id, i.title, i.unit, i.qty, i.unit * i.qty],
       );
       const left = await q<{ stock: number; low_stock_at: number }>(

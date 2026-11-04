@@ -86,6 +86,8 @@ export const updateProductSchema = z.object({
   commercial: productCommercialSchema.optional(),
   submit: z.boolean().optional(),
   storeCategoryId: z.string().min(1).max(80).nullable().optional(),
+  /** The stock the form was showing when it loaded, so a sale made meanwhile isn't overwritten. */
+  stockWas: z.number().int().min(0).max(100_000).optional(),
 });
 
 export const bulkCommercialSchema = z.object({
@@ -98,6 +100,8 @@ export const bulkCommercialSchema = z.object({
           lowStockAt: z.number().int().min(0).max(10_000).optional(),
           price: z.number().int().min(1).max(10_000_000).optional(),
           mrp: z.number().int().min(1).max(10_000_000).optional(),
+          /** The stock the table loaded (see stockAfterEdit). */
+          stockWas: z.number().int().min(0).max(100_000).optional(),
         })
         .strict(),
     )
@@ -242,8 +246,10 @@ async function updateRow(q: Query, vendorId: string, id: string, set: Record<str
   return rows[0];
 }
 
-async function mustOwn(q: Query, vendorId: string, id: string): Promise<VendorProductRow> {
-  const row = await ownProduct(vendorId, id, q);
+async function mustOwn(q: Query, vendorId: string, id: string, lock = false): Promise<VendorProductRow> {
+  const row = lock
+    ? ((await q<VendorProductRow>("SELECT * FROM vendor_products WHERE id = $1 AND vendor_id = $2 FOR UPDATE", [id, vendorId]))[0] ?? null)
+    : await ownProduct(vendorId, id, q);
   if (!row) throw new ApiError(404, "not_found", "Product not found.");
   return row;
 }
@@ -331,7 +337,7 @@ export async function updateProduct(
 
   try {
     return await transaction(async (q) => {
-      const row = await mustOwn(q, vendorId, id);
+      const row = await mustOwn(q, vendorId, id, true);
       const set: Record<string, unknown> = {};
       let action = "update";
 
@@ -346,7 +352,9 @@ export async function updateProduct(
       if (input.commercial) {
         const c = input.commercial;
         if (c.sku.toLowerCase() !== row.sku.toLowerCase()) await assertSkuFree(q, vendorId, c.sku, row.id);
-        Object.assign(set, { sku: c.sku, mrp: c.mrp, price: c.price, stock: c.stock, lowStockAt: c.lowStockAt });
+        Object.assign(set, { sku: c.sku, mrp: c.mrp, price: c.price, lowStockAt: c.lowStockAt });
+        const stock = stockAfterEdit(row, c.stock, input.stockWas, "stock");
+        if (stock !== row.stock) set.stock = stock;
       }
       // The shop category only arranges the seller's own screen, so it changes straight away, in any status.
       if (input.storeCategoryId !== undefined && input.storeCategoryId !== row.store_category_id) {
@@ -422,8 +430,8 @@ export async function unarchiveProduct(vendorId: string, id: string): Promise<Ve
 
 /**
  * Deletes one of the seller's products for good, in any status: the shop owner manages their
- * own catalogue. Past orders keep their own copy of the title and price (order_items), so they
- * are untouched. Its photos go too, unless another of the seller's products still uses them.
+ * own catalogue. Past orders keep their own copy of the title, price, HSN, GST rate and warranty
+ * (order_items, migration 018), so their invoices and receipts are untouched. Its photos go too, unless another of the seller's products still uses them.
  */
 export async function deleteProduct(vendorId: string, id: string): Promise<void> {
   await transaction(async (q) => {
@@ -473,6 +481,21 @@ export async function duplicateProduct(vendorId: string, id: string): Promise<Ve
 
 /* ------------------------------------------------------------------- bulk */
 
+/**
+ * The stock to save when a seller's form says `wanted`. Sales on the shop screen or the website can
+ * change stock while the form is open, so with `was` (what the form loaded): an untouched stock
+ * box keeps today's stock, and a changed one is refused if stock moved underneath it.
+ */
+function stockAfterEdit(row: VendorProductRow, wanted: number, was: number | undefined, field: string): number {
+  if (was === undefined) return wanted;
+  if (wanted === was) return row.stock;
+  if (row.stock !== was) {
+    const msg = `Stock changed to ${row.stock} (a sale or another edit) since you opened this. Check it and save again.`;
+    throw new ApiError(409, "stock_changed", msg, { stock: msg, [field]: msg });
+  }
+  return wanted;
+}
+
 export async function bulkCommercial(
   vendorId: string,
   items: z.infer<typeof bulkCommercialSchema>["items"],
@@ -480,7 +503,7 @@ export async function bulkCommercial(
   return transaction(async (q) => {
     const out: VendorProduct[] = [];
     for (const item of items) {
-      const row = await mustOwn(q, vendorId, item.id);
+      const row = await mustOwn(q, vendorId, item.id, true);
       if (row.status === "archived") {
         throw new ApiError(409, "archived", "Archived products cannot be changed.", { [item.id]: "This product is archived." });
       }
@@ -492,7 +515,10 @@ export async function bulkCommercial(
       const set: Record<string, unknown> = {};
       if (item.mrp !== undefined) set.mrp = mrp;
       if (item.price !== undefined) set.price = price;
-      if (item.stock !== undefined) set.stock = item.stock;
+      if (item.stock !== undefined) {
+        const stock = stockAfterEdit(row, item.stock, item.stockWas, item.id);
+        if (stock !== row.stock) set.stock = stock;
+      }
       if (item.lowStockAt !== undefined) set.lowStockAt = item.lowStockAt;
       if (Object.keys(set).length === 0) {
         out.push(toVendorProduct(row));

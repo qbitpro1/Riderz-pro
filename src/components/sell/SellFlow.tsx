@@ -117,7 +117,7 @@ export function SellFlow() {
         {step === 0 && (
           <Panel
             title="Enter your registration number"
-            hint="We pull the make, model, variant and registration year from VAHAN so you don't have to type them."
+            hint="We use it to look up your car's details when we call you back."
           >
             <input
               className="field uppercase tracking-[0.14em]"

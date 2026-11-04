@@ -1034,16 +1034,21 @@ export async function actOnTicket(id: string, input: z.infer<typeof ticketAction
 /* ================================================================== hub */
 
 /** Queue sizes for the /admin hub. Null when the database is not reachable. */
-export async function adminCounts(): Promise<{ kyc: number; products: number; changeRequests: number; tickets: number } | null> {
+export async function adminCounts(): Promise<{ kyc: number; products: number; changeRequests: number; tickets: number; refunds: number } | null> {
   try {
-    const r = await sqlOne<{ kyc: string; products: string; changes: string; tickets: string }>(
+    const r = await sqlOne<{ kyc: string; products: string; changes: string; tickets: string; refunds: string }>(
       `SELECT
          (SELECT count(*) FROM vendors WHERE status IN ('submitted','under_review')) AS kyc,
          (SELECT count(*) FROM vendor_products WHERE status = 'pending_review' OR (status = 'live' AND pending_revision IS NOT NULL)) AS products,
          (SELECT count(*) FROM vendor_change_requests WHERE status = 'pending') AS changes,
-         (SELECT count(*) FROM support_tickets WHERE status = 'open') AS tickets`,
+         (SELECT count(*) FROM support_tickets WHERE status = 'open') AS tickets,
+         -- Paid online, a seller has cancelled their part, and no refund has been started yet.
+         (SELECT count(*) FROM orders o
+           WHERE o.payment_status = 'paid'
+             AND EXISTS (SELECT 1 FROM vendor_orders vo WHERE vo.order_id = o.id AND vo.status = 'cancelled')
+             AND NOT EXISTS (SELECT 1 FROM refunds rf WHERE rf.order_id = o.id)) AS refunds`,
     );
-    return r ? { kyc: Number(r.kyc), products: Number(r.products), changeRequests: Number(r.changes), tickets: Number(r.tickets) } : null;
+    return r ? { kyc: Number(r.kyc), products: Number(r.products), changeRequests: Number(r.changes), tickets: Number(r.tickets), refunds: Number(r.refunds) } : null;
   } catch {
     return null;
   }

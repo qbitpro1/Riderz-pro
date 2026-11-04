@@ -278,8 +278,10 @@ export const riderActionSchema = z.discriminatedUnion("action", [
 /** A rider moves their own job. Returns the new status. */
 export async function riderAct(rider: RiderSelf, jobId: string, input: z.infer<typeof riderActionSchema>): Promise<JobStatus> {
   const who = `rider:${rider.id}`;
-  // A wrong code must count even though the move is refused, so it is recorded outside the main transaction.
+  // A wrong code must count even though the move is refused: it is counted inside the transaction,
+  // under the job's row lock, so parallel guesses can't all slip in before the count rises.
   let wrongCode = false;
+  let attempts = 0;
   const result = await transaction(async (q) => {
     const j = (await q<JobRow>(`SELECT ${JOB_COLS} FROM rider_jobs j JOIN orders o ON o.id = j.order_id WHERE j.id = $1 AND j.rider_id = $2 FOR UPDATE OF j`, [jobId, rider.id]))[0];
     if (!j) throw new ApiError(404, "not_found", "Job not found.");
@@ -310,6 +312,11 @@ export async function riderAct(rider: RiderSelf, jobId: string, input: z.infer<t
         }
         if (input.code !== j.delivery_code) {
           wrongCode = true;
+          const c = await q<{ code_attempts: number }>(
+            "UPDATE rider_jobs SET code_attempts = code_attempts + 1, updated_at = now() WHERE id = $1 RETURNING code_attempts",
+            [j.id],
+          );
+          attempts = c[0]?.code_attempts ?? CODE_TRIES;
           return null;
         }
         if (j.vendor_order_id) await riderMovePart(q, j.vendor_order_id, "delivered", shortRef(j.id), rider.id);
@@ -321,11 +328,7 @@ export async function riderAct(rider: RiderSelf, jobId: string, input: z.infer<t
     }
   });
   if (wrongCode) {
-    const r = await sqlOne<{ code_attempts: number }>(
-      "UPDATE rider_jobs SET code_attempts = code_attempts + 1, updated_at = now() WHERE id = $1 RETURNING code_attempts",
-      [jobId],
-    );
-    const left = CODE_TRIES - (r?.code_attempts ?? CODE_TRIES);
+    const left = CODE_TRIES - attempts;
     throw new ApiError(
       400,
       "code_wrong",

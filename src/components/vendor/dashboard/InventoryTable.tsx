@@ -45,14 +45,14 @@ export function InventoryTable({ initial, readOnly }: { initial: VendorProduct[]
   const bump = (r: Row, by: number) => patch(r.p.id, { stock: String(Math.min(100_000, (toInt(r.stock) ?? 0) + by)) });
 
   async function save() {
-    const items: { id: string; stock: number; lowStockAt: number }[] = [];
+    const items: { id: string; stock: number; lowStockAt: number; stockWas: number }[] = [];
     const errs: Record<string, string> = {};
     for (const r of changed) {
       const stock = toInt(r.stock);
       const low = toInt(r.low);
       if (stock === null || stock < 0 || stock > 100_000) errs[r.p.id] = "Stock must be a whole number from 0 to 100,000.";
       else if (low === null || low < 0 || low > 10_000) errs[r.p.id] = "Low-stock alert must be a whole number from 0 to 10,000.";
-      else items.push({ id: r.p.id, stock, lowStockAt: low });
+      else items.push({ id: r.p.id, stock, lowStockAt: low, stockWas: r.p.stock });
     }
     if (Object.keys(errs).length) {
       setRowErrors(errs);

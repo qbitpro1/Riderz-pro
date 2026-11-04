@@ -220,8 +220,13 @@ export async function placeOrder(
 
     for (const i of items) {
       await q(
-        `INSERT INTO order_items (id, order_id, vendor_order_id, product_kind, product_ref, title, variant, unit_price, install_price, qty, line_total)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`,
+        // Tax and warranty are copied from the product now, so later edits or a delete can't change this invoice.
+        `INSERT INTO order_items (id, order_id, vendor_order_id, product_kind, product_ref, title, variant, unit_price, install_price, qty, line_total,
+                                  hsn, gst_rate, warranty_months)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,
+                 (SELECT hsn FROM vendor_products WHERE id = $5::text AND $4::text = 'vendor'),
+                 (SELECT gst_rate FROM vendor_products WHERE id = $5::text AND $4::text = 'vendor'),
+                 (SELECT warranty_months FROM vendor_products WHERE id = $5::text AND $4::text = 'vendor'))`,
         [
           newId("itm"), orderId, i.vendorId ? parts.get(i.vendorId)!.id : null, i.kind, i.ref, i.title, i.variant,
           i.unit, i.install, i.qty, (i.unit + i.install) * i.qty,
@@ -470,7 +475,7 @@ export async function vendorOrderDetail(vendorId: string, id: string): Promise<V
   if (!r) return null;
   const items = await sql<ItemRow>(
     `SELECT i.id, i.vendor_order_id, i.product_kind, i.product_ref, i.title, i.variant, i.unit_price, i.install_price, i.qty, i.line_total,
-            p.hsn, p.gst_rate
+            coalesce(i.hsn, p.hsn) AS hsn, coalesce(i.gst_rate, p.gst_rate) AS gst_rate
        FROM order_items i LEFT JOIN vendor_products p ON p.id = i.product_ref AND i.product_kind = 'vendor'
       WHERE i.vendor_order_id = $1 ORDER BY i.title, i.variant`,
     [id],

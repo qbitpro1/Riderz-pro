@@ -8,6 +8,8 @@ other team files. Do it on **staging first**, then production.
 - Node.js 20+, a host that runs Next.js 16 (Vercel recommended: `vercel.json` already schedules the
   hourly job).
 - PostgreSQL 14+ (16 recommended), new and empty, with a pooled connection string (`Vamsi_work.md`).
+  The connection is encrypted automatically for Neon and Supabase. For any other host (RDS, Render,
+  DigitalOcean …) add `?sslmode=require` to the end of `DATABASE_URL`, or it connects without TLS.
   Tables are created and upgraded **automatically** on first start (`src/lib/db/migrations.ts`);
   nothing to run by hand.
 - HTTPS on the domain (needed for "Detect my location" and rider tracking).
@@ -23,13 +25,20 @@ other team files. Do it on **staging first**, then production.
 | `NEXT_PUBLIC_SITE_URL` (`https://riderzpro.com`; staging its own address) | yes | Hema |
 | `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET` | for online payment | Sathwik |
 | `RESEND_API_KEY`, `OTP_EMAIL_FROM`, `ORDERS_EMAIL_FROM` | for email codes and order emails | Amrutha |
-| `MSG91_AUTH_KEY`, `MSG91_OTP_TEMPLATE_ID`, `MSG91_TEMPLATE_*` (or `TWILIO_*`) | for SMS | Amrutha |
+| `MSG91_AUTH_KEY`, `MSG91_OTP_TEMPLATE_ID`, `MSG91_TEMPLATE_*` incl. `MSG91_TEMPLATE_STORE_RECEIPT` (or `TWILIO_*`) | for SMS | Amrutha |
 | `ANTHROPIC_API_KEY` | optional: Salesman AI Full mode; Ask AI and Basic mode need no key | Owner (`Owner_work.md`) |
 | `SALESMAN_FULL_AI_SHOPS` | optional: shop slugs that get Full mode (pilot: `indus-enterprises`); empty = all | Owner |
 | `WEB_ASSISTANT_ENGINE` | optional: `claude` to answer Ask AI with Claude (needs the key) | Owner |
 | `NEXT_PUBLIC_MAP_TILES_URL`, `ROUTING_BASE_URL` | optional (free defaults) | Viswanath |
 
+**Sign-in needs email or SMS.** Customers, riders and new sellers sign in with a one-time code. With
+neither `RESEND_API_KEY` nor an SMS provider set, those sign-ins answer "not switched on yet" (the
+start-up log warns). Set at least one before launch.
+
 Never set on a server: `OTP_SEND_IN_DEV`, `RAZORPAY_API_BASE`, `ANTHROPIC_API_BASE` (local tests only).
+
+Rate limits read the visitor's address from `x-vercel-forwarded-for` / `x-real-ip`, else the last
+`x-forwarded-for` entry. On a host that is not Vercel, make sure its proxy sets `x-real-ip`.
 
 ## 3. First deploy
 
@@ -46,7 +55,10 @@ Never set on a server: `OTP_SEND_IN_DEV`, `RAZORPAY_API_BASE`, `ANTHROPIC_API_BA
    ```
 4. **Scheduled job.** Call `GET /api/cron/housekeeping` hourly with
    `Authorization: Bearer <CRON_SECRET>`.
-   - On Vercel this is automatic (`vercel.json`).
+   - On Vercel this is automatic (`vercel.json`), but an **hourly** cron needs the Pro plan; Hobby only
+     allows daily jobs and refuses the deploy. On Hobby, change `vercel.json` to `0 3 * * *` and call
+     the hourly job from an uptime service instead (the 30-minute release of unpaid online orders and
+     the 20:30 IST shop summary depend on it).
    - Elsewhere, use the host's cron or any uptime service that can send a header.
    - It releases unpaid and uncollected orders, deletes rider trails on time, and clears expired
      sessions.
