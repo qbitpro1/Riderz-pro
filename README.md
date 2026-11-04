@@ -122,9 +122,13 @@ re-entered and nothing is wiped.
   - save it in the password manager;
   - never change it (it locks sellers' bank details and PAN).
 - [ ] Never reset this database. For experiments, use a separate throwaway database or a local copy.
-- [ ] Set up Indus Enterprises in `/admin/vendors` with its real email and mobile and a strong
-  password (not the local test password). The client enters their real business, KYC and bank details
-  in the portal.
+- [ ] Indus Enterprises signs up as a normal seller with its real details, and an admin approves
+  it. On approval it gets its shop categories automatically:
+  - Seat Cover, Mats (with Autoform and GFX Pro), Speaker and the rest;
+  - Car Cover, tagged Bestseller.
+
+  The `/admin/vendors` demo setup does the same, but it names the account "(demo)" and fills in
+  placeholder KYC details, so use it only for demos.
 - [ ] Remove or archive the starter demo products the client doesn't sell (SKUs starting `DEMO-`).
 - [ ] Orders placed with Razorpay test keys stay in the order history. Mark them clearly or cancel them
   before going live.
@@ -151,9 +155,6 @@ re-entered and nothing is wiped.
 ### Code still to do
 
 - [ ] Keep search engines off the test site. Today `robots.txt` allows everything on every address.
-- [ ] Indus Enterprises' 13 shop categories are only created if the seller already exists when the
-  site first starts. On the new database the seller is added later, so setting up Indus must also
-  create its categories (code change), or the client makes them in the portal.
 - [ ] Owner decisions on content that isn't real yet:
   - testimonials, figures ("12,400+ builds", "4.8/5") and garage locations in Bengaluru, Hyderabad
     and Pune;
@@ -249,6 +250,11 @@ Tests (scripted, no real money or messages):
 
 - `main` is what goes live. New work goes on its own branch and is merged when the owner says it's
   ready.
+- `old-deploy`: a frozen copy of `main` as it was on 5 Nov 2026, before the test site.
+  - Never delete it or push to it.
+  - Tag `old-deploy-2026-11-05` marks the same commit.
+  - A copy of the development database from that day is kept locally in `.data/pglite-old-deploy`
+    (not in git).
 - Open branch: `chore/zod-4` (zod 4 upgrade, not merged yet).
 - Versions are tagged:
   - `v0.2`: Riderzpro rebrand and accessories store;

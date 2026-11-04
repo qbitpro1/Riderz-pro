@@ -23,6 +23,7 @@ import {
   type VendorStatus,
 } from "@/lib/vendor/types";
 import { gstinProblem, panFromGstin, productContentSchema, requiredDocuments } from "@/lib/vendor/validators";
+import { ensureStarterCategories } from "./starter-categories";
 
 /**
  * Admin-side logic for the seller marketplace: the KYC queue and decisions,
@@ -348,6 +349,8 @@ export async function decideVendor(vendorId: string, input: VendorDecision, acto
           [input.commissionRate, input.tier, actor],
         );
         await audit(by, "kyc.approve", { vendorId, ip, detail: { commissionRate: input.commissionRate, tier: input.tier } }, q);
+        // Sellers the owner set up a starter category list for (Indus Enterprises) get it now.
+        await ensureStarterCategories(vendorId, by, q);
         await notifyVendor(
           vendorId,
           {
