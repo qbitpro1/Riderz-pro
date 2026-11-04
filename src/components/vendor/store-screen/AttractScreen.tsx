@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { Armchair, BadgeCheck, BadgePercent, Camera, Clock, Hand, Lightbulb, Package, Speaker } from "lucide-react";
+import { Armchair, BadgeCheck, BadgePercent, Camera, Clock, Hand, Lightbulb, Package, Shield, Speaker, SprayCan } from "lucide-react";
 import { fileHref } from "@/lib/vendor/types";
 import { StoreMark } from "./parts";
 import type { ScreenProduct, ScreenStore } from "./types";
@@ -167,7 +167,7 @@ export function AttractScreen({
             {shortcuts.length > 0 && (
               <div className="grid grid-cols-2 gap-3 lg:gap-4" onClick={(e) => e.stopPropagation()}>
                 {shortcuts.map((g) => {
-                  const Icon = groupIcon(g.slug);
+                  const Icon = groupIcon(`${g.slug} ${g.name}`.toLowerCase());
                   return (
                     <button
                       key={g.slug}
@@ -207,11 +207,13 @@ export function AttractScreen({
   );
 }
 
-/** An icon for a category shortcut, by its group slug. */
-function groupIcon(slug: string) {
-  if (/seat|cushion|mat|steering/.test(slug)) return Armchair;
-  if (/camera|dash/.test(slug)) return Camera;
-  if (/speaker|sub|amp|processor|display|installation/.test(slug)) return Speaker;
-  if (/light|lamp|led|fog/.test(slug)) return Lightbulb;
+/** An icon for a category shortcut, by its group slug and name (lower case). */
+function groupIcon(key: string) {
+  if (/seat|cushion|mat|steering|ortho/.test(key)) return Armchair;
+  if (/camera|dash/.test(key)) return Camera;
+  if (/speaker|stereo|sub|amp|processor|display|installation|audio/.test(key)) return Speaker;
+  if (/light|lamp|led|fog/.test(key)) return Lightbulb;
+  if (/guard|protect|film|cover/.test(key)) return Shield;
+  if (/care|clean|polish|wash/.test(key)) return SprayCan;
   return Package;
 }

@@ -52,7 +52,7 @@ export function matchesQuery(p: ScreenProduct, query: string): boolean {
     .filter((w) => w && !FILLER.has(w))
     .map(stem);
   if (words.length === 0) return true;
-  const hay = `${p.title} ${p.brand} ${p.groupName} ${p.fitLabels.join(" ")}`.toLowerCase();
+  const hay = `${p.title} ${p.brand} ${p.groupName} ${p.subName ?? ""} ${p.typeName} ${p.fitLabels.join(" ")}`.toLowerCase();
   return words.every((w) => hay.includes(w));
 }
 
@@ -101,15 +101,16 @@ export function priceBands(products: ScreenProduct[]): PriceBand[] {
 export const onSale = (p: { mrp: number; price: number }) => p.price < p.mrp;
 
 /** What the customer narrowed the shop to, besides car and search. "all" / false = not narrowed. */
-export type Facets = { group: string; brand: string; price: string; sale: boolean };
+export type Facets = { group: string; sub: string; brand: string; price: string; sale: boolean };
 export type FacetKey = keyof Facets;
-export const NO_FACETS: Facets = { group: "all", brand: "all", price: "all", sale: false };
+export const NO_FACETS: Facets = { group: "all", sub: "all", brand: "all", price: "all", sale: false };
 
 const isSet = (f: Facets, k: FacetKey) => (k === "sale" ? f.sale : f[k] !== "all");
 
 /** Whether `p` passes every chosen filter, leaving out `skip` (for that filter's own counts). */
 export function matchesFacets(p: ScreenProduct, f: Facets, bands: PriceBand[], skip?: FacetKey): boolean {
   if (skip !== "group" && f.group !== "all" && p.group !== f.group) return false;
+  if (skip !== "sub" && skip !== "group" && f.sub !== "all" && p.sub !== f.sub) return false;
   if (skip !== "brand" && f.brand !== "all" && p.brand !== f.brand) return false;
   if (skip !== "sale" && f.sale && !onSale(p)) return false;
   if (skip !== "price" && f.price !== "all") {
@@ -127,13 +128,15 @@ export function matchesFacets(p: ScreenProduct, f: Facets, bands: PriceBand[], s
 export function settleFacets(list: ScreenProduct[], next: Facets, changed: FacetKey, bands: PriceBand[]): Facets {
   if (!isSet(next, changed) || list.some((p) => matchesFacets(p, next, bands))) return next;
   const out = { ...next };
-  const others = (Object.keys(NO_FACETS) as FacetKey[]).filter((k) => k !== changed && isSet(next, k));
+  // A sub-category lives inside its category: the two stay together.
+  const keep: Partial<Facets> = changed === "sub" ? { group: next.group } : {};
+  const others = (Object.keys(NO_FACETS) as FacetKey[]).filter((k) => k !== changed && !(k in keep) && isSet(next, k));
   for (const k of others) {
-    const pair = { ...NO_FACETS, [changed]: next[changed], [k]: next[k] };
+    const pair = { ...NO_FACETS, ...keep, [changed]: next[changed], [k]: next[k] };
     if (!list.some((p) => matchesFacets(p, pair, bands))) Object.assign(out, { [k]: NO_FACETS[k] });
   }
   if (list.some((p) => matchesFacets(p, out, bands))) return out;
-  return { ...NO_FACETS, [changed]: next[changed] };
+  return { ...NO_FACETS, ...keep, [changed]: next[changed] };
 }
 
 /** The short "fits" chip for a tile. */

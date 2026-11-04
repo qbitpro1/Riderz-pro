@@ -47,6 +47,8 @@ export function SellerDialog({ onClose, onWelcome }: { onClose: () => void; onWe
     }
   }
 
+  const [to, setTo] = useState<"dashboard" | "add-product" | "products" | "categories">("dashboard");
+
   async function submit(e: FormEvent) {
     e.preventDefault();
     if (!password) {
@@ -56,7 +58,7 @@ export function SellerDialog({ onClose, onWelcome }: { onClose: () => void; onWe
     setBusy(true);
     setError(null);
     try {
-      const res = await api<{ next: string }>("/api/vendor/store-screen", { body: { action: "unlock", password } });
+      const res = await api<{ next: string }>("/api/vendor/store-screen", { body: { action: "unlock", password, to } });
       if (document.fullscreenElement) await document.exitFullscreen().catch(() => {});
       window.location.href = res.next;
     } catch (err) {
@@ -72,7 +74,7 @@ export function SellerDialog({ onClose, onWelcome }: { onClose: () => void; onWe
         <div className="flex items-start justify-between gap-3">
           <div>
             <h2 className="font-display text-2xl font-extrabold tracking-tight text-chalk">Seller only</h2>
-            <p className="mt-1 text-base text-ash">Enter your seller password to close the store screen and go back to your dashboard.</p>
+            <p className="mt-1 text-base text-ash">Enter your seller password to close the store screen and go to your dashboard or your products.</p>
           </div>
           <CloseButton onClick={onClose} />
         </div>
@@ -85,6 +87,32 @@ export function SellerDialog({ onClose, onWelcome }: { onClose: () => void; onWe
         <button type="button" onClick={onWelcome} className={`${ui.secondary} mt-3 min-h-12 w-full`}>
           <RotateCcw size={18} aria-hidden /> Clear the order and show the welcome screen
         </button>
+
+        <fieldset className="mt-5">
+          <legend className="label">Go to</legend>
+          <div className="grid grid-cols-2 gap-2">
+            {(
+              [
+                ["add-product", "Add a product"],
+                ["products", "Your products"],
+                ["categories", "Categories"],
+                ["dashboard", "Dashboard"],
+              ] as const
+            ).map(([key, label]) => (
+              <button
+                key={key}
+                type="button"
+                aria-pressed={to === key}
+                onClick={() => setTo(key)}
+                className={`min-h-12 rounded-xl border px-3 text-base font-semibold transition-colors ${
+                  to === key ? "border-accent bg-accent text-on-accent" : "border-tint/15 text-chalk hover:bg-steel"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </fieldset>
 
         <label htmlFor="screen-password" className="label mt-5">
           Seller password
@@ -110,7 +138,7 @@ export function SellerDialog({ onClose, onWelcome }: { onClose: () => void; onWe
             Cancel
           </button>
           <button type="submit" disabled={busy} className={ui.primary}>
-            {busy ? "Checking…" : "Exit to dashboard"}
+            {busy ? "Checking…" : to === "dashboard" ? "Exit to dashboard" : "Unlock and go"}
           </button>
         </div>
       </form>

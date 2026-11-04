@@ -7,6 +7,7 @@ import { ApiError } from "./http";
 import { assertOwnFiles } from "./files";
 import { newId } from "./security";
 import { audit } from "./vendors";
+import { assertOwnStoreCategory } from "./store-categories";
 import { AWAITING_PAYMENT_SQL } from "./orders";
 import {
   ownProduct,
@@ -76,12 +77,15 @@ export const createProductSchema = z.object({
   content: contentPatchSchema,
   commercial: productCommercialSchema,
   submit: z.boolean().default(false),
+  /** The seller's own shop category (Offline Store screen). Not part of the reviewed content. */
+  storeCategoryId: z.string().min(1).max(80).nullable().optional(),
 });
 
 export const updateProductSchema = z.object({
   content: contentPatchSchema.optional(),
   commercial: productCommercialSchema.optional(),
   submit: z.boolean().optional(),
+  storeCategoryId: z.string().min(1).max(80).nullable().optional(),
 });
 
 export const bulkCommercialSchema = z.object({
@@ -216,6 +220,7 @@ const COLUMN: Record<string, { col: string; json?: boolean }> = {
   reviewNotes: { col: "review_notes", json: true },
   rejectionReason: { col: "rejection_reason" },
   submittedAt: { col: "submitted_at" },
+  storeCategoryId: { col: "store_category_id" },
 };
 
 async function updateRow(q: Query, vendorId: string, id: string, set: Record<string, unknown>): Promise<VendorProductRow> {
@@ -278,6 +283,7 @@ export async function createProduct(
   if (!draft.success) invalid(draft.error);
   checkFitment(input.content.fitment);
   if (input.content.images?.length) await assertOwnFiles(vendorId, input.content.images, ["product_image"]);
+  await assertOwnStoreCategory(vendorId, input.storeCategoryId);
 
   const content: VendorProductContent = { ...DEFAULT_CONTENT, ...input.content } as VendorProductContent;
   const finalContent = input.submit ? requireComplete(content) : content;
@@ -291,16 +297,16 @@ export async function createProduct(
       const rows = await q<VendorProductRow>(
         `INSERT INTO vendor_products
            (id, vendor_id, slug, status, title, brand, department, group_slug, sku, hsn, gst_rate, mrp, price, stock,
-            low_stock_at, part_type, warranty_months, summary, highlights, specs, fitment, images, submitted_at)
+            low_stock_at, part_type, warranty_months, summary, highlights, specs, fitment, images, submitted_at, store_category_id)
          VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19::jsonb,$20::jsonb,$21::jsonb,$22::jsonb,
-                 CASE WHEN $4 = 'pending_review' THEN now() ELSE NULL END)
+                 CASE WHEN $4 = 'pending_review' THEN now() ELSE NULL END, $23)
          RETURNING *`,
         [
           id, vendorId, slug, input.submit ? "pending_review" : "draft", finalContent.title, finalContent.brand,
           finalContent.department, finalContent.groupSlug, c.sku, finalContent.hsn, finalContent.gstRate, c.mrp, c.price,
           c.stock, c.lowStockAt, finalContent.partType, finalContent.warrantyMonths, finalContent.summary,
           JSON.stringify(finalContent.highlights), JSON.stringify(finalContent.specs),
-          JSON.stringify(finalContent.fitment), JSON.stringify(finalContent.images),
+          JSON.stringify(finalContent.fitment), JSON.stringify(finalContent.images), input.storeCategoryId ?? null,
         ],
       );
       await audit({ type: "vendor", id: vendorId }, input.submit ? "product.submit" : "product.create", { vendorId, detail: { productId: id } }, q);
@@ -321,6 +327,7 @@ export async function updateProduct(
 ): Promise<VendorProduct> {
   checkFitment(input.content?.fitment);
   if (input.content?.images?.length) await assertOwnFiles(vendorId, input.content.images, ["product_image"]);
+  await assertOwnStoreCategory(vendorId, input.storeCategoryId);
 
   try {
     return await transaction(async (q) => {
@@ -340,6 +347,10 @@ export async function updateProduct(
         const c = input.commercial;
         if (c.sku.toLowerCase() !== row.sku.toLowerCase()) await assertSkuFree(q, vendorId, c.sku, row.id);
         Object.assign(set, { sku: c.sku, mrp: c.mrp, price: c.price, stock: c.stock, lowStockAt: c.lowStockAt });
+      }
+      // The shop category only arranges the seller's own screen, so it changes straight away, in any status.
+      if (input.storeCategoryId !== undefined && input.storeCategoryId !== row.store_category_id) {
+        set.storeCategoryId = input.storeCategoryId;
       }
 
       if (row.status === "pending_review") {
@@ -433,13 +444,13 @@ export async function duplicateProduct(vendorId: string, id: string): Promise<Ve
     const rows = await q<VendorProductRow>(
       `INSERT INTO vendor_products
          (id, vendor_id, slug, status, title, brand, department, group_slug, sku, hsn, gst_rate, mrp, price, stock,
-          low_stock_at, part_type, warranty_months, summary, highlights, specs, fitment, images)
-       VALUES ($1,$2,$3,'draft',$4,$5,$6,$7,$8,$9,$10,$11,$12,0,$13,$14,$15,$16,$17::jsonb,$18::jsonb,$19::jsonb,$20::jsonb)
+          low_stock_at, part_type, warranty_months, summary, highlights, specs, fitment, images, store_category_id)
+       VALUES ($1,$2,$3,'draft',$4,$5,$6,$7,$8,$9,$10,$11,$12,0,$13,$14,$15,$16,$17::jsonb,$18::jsonb,$19::jsonb,$20::jsonb,$21)
        RETURNING *`,
       [
         copyId, vendorId, slug, c.title, c.brand, c.department, c.groupSlug, sku, c.hsn, c.gstRate, row.mrp, row.price,
         row.low_stock_at, c.partType, c.warrantyMonths, c.summary, JSON.stringify(c.highlights), JSON.stringify(c.specs),
-        JSON.stringify(c.fitment), JSON.stringify(c.images),
+        JSON.stringify(c.fitment), JSON.stringify(c.images), row.store_category_id,
       ],
     );
     await audit({ type: "vendor", id: vendorId }, "product.duplicate", { vendorId, detail: { productId: copyId, from: id } }, q);

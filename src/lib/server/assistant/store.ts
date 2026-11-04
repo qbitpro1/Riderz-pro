@@ -42,7 +42,7 @@ function brief(p: ScreenProduct, car: string | null) {
     id: p.id,
     title: p.title,
     brand: p.brand,
-    category: p.groupName,
+    category: p.subName ? `${p.groupName} / ${p.subName}` : p.groupName,
     price: p.price,
     mrp: p.mrp > p.price ? p.mrp : undefined,
     youSave: p.mrp > p.price ? p.mrp - p.price : undefined,
@@ -93,7 +93,7 @@ export async function askStoreAssistant(
         const ranked = products
           .map((p) => ({
             p,
-            s: score({ title: p.title, brand: p.brand, category: `${p.department} ${p.groupName}`, extra: `${p.summary ?? ""} ${p.highlights.join(" ")}`, fitment: p.universal ? ["universal"] : p.fitSlugs, price: p.price }, ws),
+            s: score({ title: p.title, brand: p.brand, category: `${p.department} ${p.groupName} ${p.subName ?? ""} ${p.typeName}`, extra: `${p.summary ?? ""} ${p.highlights.join(" ")}`, fitment: p.universal ? ["universal"] : p.fitSlugs, price: p.price }, ws),
           }))
           .filter(({ p, s }) => s > 0 && (max === null || p.price <= max) && fits(p.universal ? ["universal"] : p.fitSlugs, carIn) !== false)
           .sort((a, b) => b.s - a.s);

@@ -66,7 +66,7 @@ export function ProductSheet({
 
   const facts = [
     { label: "Brand", value: p.brand },
-    { label: "Category", value: p.groupName },
+    { label: "Category", value: p.subName ? `${p.groupName} / ${p.subName}` : p.groupName },
     { label: "Part type", value: p.partType },
     ...(p.warrantyMonths ? [{ label: "Warranty", value: `${p.warrantyMonths} months` }] : []),
   ];
@@ -110,7 +110,7 @@ export function ProductSheet({
             <div className="min-w-0 space-y-6">
               <div>
                 <p className="text-base font-semibold text-accent">
-                  {p.brand} <span className="text-dim">/ {p.groupName}</span>
+                  {p.brand} <span className="text-dim">/ {p.subName ? `${p.groupName} / ${p.subName}` : p.groupName}</span>
                 </p>
                 <h2 className="mt-2 text-balance font-display text-[clamp(1.75rem,3.4vw,3rem)] font-extrabold leading-[1.02] tracking-[-0.035em] text-chalk">
                   {p.title}

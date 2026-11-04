@@ -19,6 +19,7 @@ import {
 } from "@/lib/vendor/types";
 import { productCommercialSchema, productContentSchema, productDraftSchema } from "@/lib/vendor/validators";
 import { FitmentPicker } from "./FitmentPicker";
+import { StoreCategoryField } from "./StoreCategoryField";
 import { ProductImages } from "./ProductImages";
 import { ReadOnlyNotice, StatusBadge, failureMessage, fieldErrors, toInt, useFlash } from "./ui";
 
@@ -49,6 +50,8 @@ type Props = {
   readOnly: boolean;
   /** One-off message shown on arrival (e.g. after creating a draft). */
   notice?: string;
+  /** New product only: the shop category to start with ("Add product" from a category). */
+  initialShopCategory?: string | null;
 };
 
 const base = "/vendor/dashboard/products";
@@ -100,13 +103,16 @@ function Field({ name, label, hint, error, children, className }: { name: string
   );
 }
 
-export function ProductForm({ product: initialProduct, commissionRate, readOnly, notice }: Props) {
+export function ProductForm({ product: initialProduct, commissionRate, readOnly, notice, initialShopCategory = null }: Props) {
   const router = useRouter();
   const [product, setProduct] = useState(initialProduct);
   const [f, setF] = useState<FormState>(() => initialState(initialProduct));
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState<string | null>(null);
   const { show, node } = useFlash();
+  // Shop category (Offline Store screen): sent with a new product; saved at once on an existing one.
+  const [shopCat, setShopCat] = useState<string | null>(initialProduct ? initialProduct.storeCategoryId : initialShopCategory);
+  const [shopCatSaving, setShopCatSaving] = useState(false);
 
   useEffect(() => {
     if (notice) show("ok", notice);
@@ -135,6 +141,23 @@ export function ProductForm({ product: initialProduct, commissionRate, readOnly,
     setF((s) => ({ ...s, [key]: value }));
     if (errors[key as string]) setErrors((e) => ({ ...e, [key]: "" }));
   };
+
+  async function pickShopCat(id: string | null) {
+    const before = shopCat;
+    setShopCat(id);
+    if (!product) return;
+    setShopCatSaving(true);
+    try {
+      const res = await api<{ product: VendorProduct }>(`/api/vendor/products/${product.id}`, { method: "PATCH", body: { storeCategoryId: id } });
+      setProduct(res.product);
+      show("ok", "Shop category saved.");
+    } catch (err) {
+      setShopCat(before);
+      show("error", failureMessage(err));
+    } finally {
+      setShopCatSaving(false);
+    }
+  }
 
   const groups = useMemo(() => DEPARTMENTS.find((d) => d.slug === f.department)?.groups ?? [], [f.department]);
 
@@ -213,7 +236,7 @@ export function ProductForm({ product: initialProduct, commissionRate, readOnly,
       if (isNew) {
         const res = await api<{ product: VendorProduct }>("/api/vendor/products", {
           method: "POST",
-          body: { content, commercial, submit: mode === "submit" },
+          body: { content, commercial, submit: mode === "submit", storeCategoryId: shopCat },
         });
         saved = res.product;
         router.replace(`${base}/${saved.id}?${mode === "submit" ? "submitted" : "created"}=1`);
@@ -380,6 +403,7 @@ export function ProductForm({ product: initialProduct, commissionRate, readOnly,
               ))}
             </select>
           </Field>
+          <StoreCategoryField value={shopCat} onChange={pickShopCat} disabled={commercialLocked || shopCatSaving} saving={shopCatSaving} />
           <Field error={errors.summary} name="summary" label="Description" hint="What it is, what it is made of, what is in the box." className="md:col-span-2">
             <textarea {...a("summary")} className={`field min-h-32 py-3 ${invalidCls("summary")}`} value={f.summary} maxLength={1500} onChange={(e) => set("summary", e.target.value)} />
             <p className="mt-1 text-right text-xs text-dim tnum">{f.summary.length}/1500</p>

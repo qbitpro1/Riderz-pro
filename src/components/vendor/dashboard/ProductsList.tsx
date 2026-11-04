@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { Archive, ArchiveRestore, Copy, Pencil, Plus, Search, Trash2 } from "lucide-react";
+import { Archive, ArchiveRestore, Copy, FolderTree, Pencil, Plus, Search, Trash2 } from "lucide-react";
 import { api } from "@/lib/vendor/client";
 import { PRODUCT_STATUSES, type VendorProduct, type VendorProductStatus } from "@/lib/vendor/types";
 import { rupees } from "@/lib/format";
@@ -120,15 +120,20 @@ export function ProductsList({ initial, readOnly, initialStatus }: Props) {
           <p className="eyebrow">Catalogue</p>
           <h1 className="display-3 mt-1">Products</h1>
         </div>
-        {readOnly ? (
-          <span className="btn btn-primary pointer-events-none opacity-40" aria-disabled>
-            <Plus size={16} aria-hidden /> Add product
-          </span>
-        ) : (
-          <Link href={`${base}/new`} className="btn btn-primary">
-            <Plus size={16} aria-hidden /> Add product
+        <div className="flex flex-wrap gap-2">
+          <Link href="/vendor/dashboard/store-screen/categories" className="btn btn-outline">
+            <FolderTree size={16} aria-hidden /> Shop categories
           </Link>
-        )}
+          {readOnly ? (
+            <span className="btn btn-primary pointer-events-none opacity-40" aria-disabled>
+              <Plus size={16} aria-hidden /> Add product
+            </span>
+          ) : (
+            <Link href={`${base}/new`} className="btn btn-primary">
+              <Plus size={16} aria-hidden /> Add product
+            </Link>
+          )}
+        </div>
       </div>
 
       {readOnly && <ReadOnlyNotice />}

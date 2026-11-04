@@ -72,7 +72,7 @@ export function StoreScreen({
 }) {
   const [attract, setAttract] = useState<"on" | "leaving" | "off">("on");
   const [facets, setFacets] = useState<Facets>(NO_FACETS);
-  const { group, brand, price, sale } = facets;
+  const { group, sub, brand, price, sale } = facets;
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<SortKey>("featured");
   const [car, setCar] = useState<Car | null>(null);
@@ -134,12 +134,23 @@ export function StoreScreen({
   const bands = useMemo(() => priceBands(products), [products]);
   const without = useCallback((k: FacetKey) => base.filter((p) => matchesFacets(p, facets, bands, k)), [base, facets, bands]);
 
+  // The seller's shop categories first, in their order; then the rest as they come.
   const groups = useMemo(() => {
-    const m = new Map<string, { name: string; count: number }>();
-    for (const p of products) if (!m.has(p.group)) m.set(p.group, { name: p.groupName, count: 0 });
+    const m = new Map<string, { name: string; pos: number; count: number }>();
+    for (const p of products) if (!m.has(p.group)) m.set(p.group, { name: p.groupName, pos: p.groupPos, count: 0 });
     for (const p of without("group")) m.get(p.group)!.count++;
-    return [...m.entries()].map(([slug, g]) => ({ slug, ...g }));
+    return [...m.entries()].map(([slug, g]) => ({ slug, ...g })).sort((a, b) => a.pos - b.pos);
   }, [products, without]);
+
+  // Sub-categories of the chosen category ("Autoform", "GFX Pro" inside Mats), when it has any.
+  const subs = useMemo(() => {
+    if (group === "all") return [];
+    const m = new Map<string, { name: string; pos: number; count: number }>();
+    for (const p of products) if (p.group === group && p.sub && !m.has(p.sub)) m.set(p.sub, { name: p.subName ?? "", pos: p.subPos, count: 0 });
+    for (const p of without("sub")) if (p.sub && m.has(p.sub)) m.get(p.sub)!.count++;
+    return [...m.entries()].map(([slug, g]) => ({ slug, ...g })).sort((a, b) => a.pos - b.pos);
+  }, [products, without, group]);
+  const subTotal = useMemo(() => without("sub").length, [without]);
   const groupTotal = useMemo(() => without("group").length, [without]);
 
   const brandPool = useMemo(() => without("brand"), [without]);
@@ -161,25 +172,27 @@ export function StoreScreen({
   const hasSale = products.some(onSale) && !products.every(onSale);
 
   const shown = useMemo(() => sortProducts(base.filter((p) => matchesFacets(p, facets, bands)), sort), [base, facets, bands, sort]);
-  const gridKey = `${group}|${brand}|${price}|${sale}|${query}|${sort}|${car?.slug ?? ""}`;
+  const gridKey = `${group}|${sub}|${brand}|${price}|${sale}|${query}|${sort}|${car?.slug ?? ""}`;
 
   // Picking a value nothing else chosen has products in clears the filters it clashes with,
   // instead of showing an empty screen.
   const pick = (k: FacetKey, v: string | boolean) => setFacets((f) => settleFacets(base, { ...f, [k]: v }, k, bands));
-  const pickGroup = (g: string) => pick("group", g);
+  const pickGroup = (g: string) => setFacets((f) => settleFacets(base, { ...f, group: g, sub: "all" }, "group", bands));
+  const pickSub = (v: string) => pick("sub", v);
   const pickBrand = (b: string) => pick("brand", b);
   const pickPrice = (key: string) => pick("price", key);
   const toggleSale = () => pick("sale", !sale);
   const showFilters = groups.length > 1 || brands.length > 1 || prices.length > 0 || hasSale;
 
   const attractGroups = useMemo(() => {
-    const all = new Map<string, { slug: string; name: string; count: number }>();
+    const all = new Map<string, { slug: string; name: string; pos: number; count: number }>();
     for (const p of products) {
-      const g = all.get(p.group) ?? { slug: p.group, name: p.groupName, count: 0 };
+      const g = all.get(p.group) ?? { slug: p.group, name: p.groupName, pos: p.groupPos, count: 0 };
       g.count++;
       all.set(p.group, g);
     }
-    return [...all.values()].sort((a, b) => b.count - a.count);
+    // The seller's own category order first, then the biggest.
+    return [...all.values()].sort((a, b) => a.pos - b.pos || b.count - a.count);
   }, [products]);
 
   /* ---- actions ---- */
@@ -385,6 +398,14 @@ export function StoreScreen({
               ))}
             </nav>
           )}
+          {subs.length > 0 && (
+            <nav aria-label="Sub-categories" className="ss-hide-bar flex gap-2 overflow-x-auto px-4 pb-3 lg:hidden md:px-6">
+              <CategoryPill active={sub === "all"} onClick={() => pickSub("all")} label={`All ${groups.find((g) => g.slug === group)?.name ?? ""}`} count={subTotal} />
+              {subs.map((x) => (
+                <CategoryPill key={x.slug} active={sub === x.slug} onClick={() => pickSub(x.slug)} label={x.name} count={x.count} />
+              ))}
+            </nav>
+          )}
           {brands.length > 1 && (
             <nav aria-label="Brands" className="ss-hide-bar flex gap-2 overflow-x-auto px-4 pb-3 lg:hidden md:px-6">
               <CategoryPill active={brand === "all"} onClick={() => pickBrand("all")} label="All brands" count={brandPool.length} />
@@ -415,7 +436,16 @@ export function StoreScreen({
                   </li>
                   {groups.map((g) => (
                     <li key={g.slug}>
-                      <RailItem active={group === g.slug} onClick={() => pickGroup(g.slug)} label={g.name} count={g.count} dim={g.count === 0} />
+                      <RailItem active={group === g.slug && sub === "all"} onClick={() => pickGroup(g.slug)} label={g.name} count={g.count} dim={g.count === 0} />
+                      {group === g.slug && subs.length > 0 && (
+                        <ul aria-label={`${g.name} sub-categories`} className="mt-1 space-y-1 border-l-2 border-accent/30 pl-2 ml-4">
+                          {subs.map((x) => (
+                            <li key={x.slug}>
+                              <RailItem active={sub === x.slug} onClick={() => pickSub(x.slug)} label={x.name} count={x.count} dim={x.count === 0} small />
+                            </li>
+                          ))}
+                        </ul>
+                      )}
                     </li>
                   ))}
                 </ul>
@@ -785,13 +815,27 @@ function SaleSwitch({ active, onClick, count }: { active: boolean; onClick: () =
   );
 }
 
-function RailItem({ active, onClick, label, count, dim = false }: { active: boolean; onClick: () => void; label: string; count: number; dim?: boolean }) {
+function RailItem({
+  active,
+  onClick,
+  label,
+  count,
+  dim = false,
+  small = false,
+}: {
+  active: boolean;
+  onClick: () => void;
+  label: string;
+  count: number;
+  dim?: boolean;
+  small?: boolean;
+}) {
   return (
     <button
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`flex min-h-14 w-full items-center justify-between gap-3 rounded-xl px-4 text-left text-base font-semibold transition-colors duration-200 active:scale-[0.98] ${
+      className={`flex ${small ? "min-h-12 text-[15px]" : "min-h-14 text-base"} w-full items-center justify-between gap-3 rounded-xl px-4 text-left font-semibold transition-colors duration-200 active:scale-[0.98] ${
         active ? "bg-accent text-on-accent shadow-sm" : "text-chalk hover:bg-steel"
       } ${dim && !active ? "opacity-45" : ""}`}
     >

@@ -23,6 +23,7 @@ export type VendorProductRow = {
   brand: string;
   department: VendorProduct["department"];
   group_slug: string;
+  store_category_id: string | null;
   sku: string;
   hsn: string | null;
   gst_rate: VendorProduct["gstRate"];
@@ -59,6 +60,7 @@ export function toVendorProduct(r: VendorProductRow): VendorProduct {
     brand: r.brand,
     department: r.department,
     groupSlug: r.group_slug,
+    storeCategoryId: r.store_category_id ?? null,
     sku: r.sku,
     hsn: r.hsn,
     gstRate: r.gst_rate,

@@ -24,7 +24,7 @@ const candidate = (p: ScreenProduct): Item => ({
   id: p.id,
   title: p.title,
   brand: p.brand,
-  category: `${p.department} ${p.groupName}`,
+  category: `${p.department} ${p.groupName} ${p.subName ?? ""} ${p.typeName}`,
   extra: `${p.summary ?? ""} ${p.highlights.join(" ")}`,
   fitment: p.universal ? ["universal"] : p.fitSlugs,
   price: p.price,

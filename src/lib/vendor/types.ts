@@ -186,6 +186,8 @@ export type VendorProduct = VendorProductContent &
   VendorProductCommercial & {
     id: string;
     vendorId: string;
+    /** The seller's own shop category for the Offline Store screen (not reviewed; see store-categories). */
+    storeCategoryId: string | null;
     slug: string;
     status: VendorProductStatus;
     /** Content edits to a live product, waiting for review. The live content stays on sale meanwhile. */

@@ -44,8 +44,21 @@ const offFraction = (p: { mrp: number; price: number }) => (p.mrp > p.price ? (p
 
 /** Live, in-stock products of one approved seller, most showable first (has photos, then biggest saving). */
 export async function screenProducts(vendorId: string): Promise<ScreenProduct[]> {
-  const rows = await sql<VendorProductRow>(
-    `SELECT p.* FROM vendor_products p JOIN vendors v ON v.id = p.vendor_id
+  // The seller's own shop category, when set, decides where a product shows (top-level + sub-category).
+  type Row = VendorProductRow & {
+    sc_id: string | null;
+    sc_name: string | null;
+    sc_pos: number | null;
+    top_id: string | null;
+    top_name: string | null;
+    top_pos: number | null;
+  };
+  const rows = await sql<Row>(
+    `SELECT p.*, sc.id AS sc_id, sc.name AS sc_name, sc.position AS sc_pos,
+            top.id AS top_id, top.name AS top_name, top.position AS top_pos
+       FROM vendor_products p JOIN vendors v ON v.id = p.vendor_id
+       LEFT JOIN store_categories sc ON sc.id = p.store_category_id
+       LEFT JOIN store_categories top ON top.id = coalesce(sc.parent_id, sc.id)
       WHERE p.vendor_id = $1 AND p.status = 'live' AND v.status = 'approved' AND p.stock > 0
       ORDER BY p.department, p.group_slug, p.title
       LIMIT 1000`,
@@ -54,13 +67,20 @@ export async function screenProducts(vendorId: string): Promise<ScreenProduct[]>
   const products = rows.map((r): ScreenProduct => {
     const fitment = r.fitment ?? [];
     const fitSlugs = fitment.filter((s) => s !== "universal");
+    const isSub = Boolean(r.sc_id && r.top_id && r.sc_id !== r.top_id);
     return {
       id: r.id,
       title: r.title,
       brand: r.brand,
       department: r.department,
-      group: r.group_slug,
-      groupName: groupName(r.department, r.group_slug),
+      group: r.top_id ?? r.group_slug,
+      groupName: r.top_name ?? groupName(r.department, r.group_slug),
+      // Shop categories first, in the seller's order; marketplace groups after them.
+      groupPos: r.top_pos ?? 10_000,
+      sub: isSub ? r.sc_id : null,
+      subName: isSub ? r.sc_name : null,
+      subPos: isSub ? (r.sc_pos ?? 0) : 0,
+      typeName: groupName(r.department, r.group_slug),
       mrp: r.mrp,
       price: r.price,
       stock: r.stock,

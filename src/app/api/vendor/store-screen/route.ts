@@ -9,8 +9,20 @@ export const dynamic = "force-dynamic";
 
 const schema = z.discriminatedUnion("action", [
   z.object({ action: z.literal("lock") }),
-  z.object({ action: z.literal("unlock"), password: z.string().min(1, "Enter your password").max(128) }),
+  z.object({
+    action: z.literal("unlock"),
+    password: z.string().min(1, "Enter your password").max(128),
+    /** Where to go once unlocked: the dashboard, or straight to adding / managing products. */
+    to: z.enum(["dashboard", "add-product", "products", "categories"]).default("dashboard"),
+  }),
 ]);
+
+const UNLOCK_TO = {
+  dashboard: "/vendor/dashboard",
+  "add-product": "/vendor/dashboard/products/new",
+  products: "/vendor/dashboard/products",
+  categories: "/vendor/dashboard/store-screen/categories",
+} as const;
 
 /**
  * The offline store screen lock (see src/lib/server/session.ts).
@@ -38,5 +50,5 @@ export const POST = route(async (req: Request) => {
   }
   await setStoreScreenLock(false);
   await audit({ type: "vendor", id: vendor.id }, "store_screen.close", { vendorId: vendor.id, ip });
-  return ok({ locked: false, next: "/vendor/dashboard" });
+  return ok({ locked: false, next: UNLOCK_TO[body.to] });
 });

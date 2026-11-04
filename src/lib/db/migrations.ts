@@ -886,4 +886,67 @@ CREATE TABLE store_daily_summaries (
 );
 `,
   },
+  {
+    // A seller's own shop categories (and sub-categories one level down) for the Offline Store
+    // screen. A product may sit in one; the marketplace department/group stays as it is.
+    id: "016_store_categories",
+    sql: `
+CREATE TABLE store_categories (
+  id         text PRIMARY KEY,
+  vendor_id  text NOT NULL REFERENCES vendors(id) ON DELETE CASCADE,
+  parent_id  text REFERENCES store_categories(id) ON DELETE CASCADE,
+  name       text NOT NULL,
+  position   integer NOT NULL DEFAULT 0,
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX store_categories_vendor_idx ON store_categories (vendor_id, parent_id, position);
+CREATE UNIQUE INDEX store_categories_name_key ON store_categories (vendor_id, coalesce(parent_id, ''), lower(name));
+
+ALTER TABLE vendor_products ADD COLUMN store_category_id text REFERENCES store_categories(id) ON DELETE SET NULL;
+
+-- Indus Enterprises' shop categories, as the owner asked (only where that shop exists).
+INSERT INTO store_categories (id, vendor_id, parent_id, name, position)
+SELECT 'sc_indus_' || c.key, v.id, NULL, c.name, c.pos
+  FROM vendors v,
+       (VALUES ('seat_cover','Seat Cover',1), ('mats','Mats',2), ('speaker','Speaker',3), ('stereo','Stereo',4),
+               ('dashcam','Dashcam',5), ('ortho_cushion','Orthopedic Cushion',6), ('fog_lamp','Fog Lamp',7),
+               ('head_lamp','Head Lamp',8), ('lights','Lights',9), ('steering_cover','Steering Cover',10),
+               ('protection_guard','Protection Guard',11), ('window_film','Window Film',12), ('car_care','Car Care',13))
+         AS c(key, name, pos)
+ WHERE v.slug = 'indus-enterprises';
+INSERT INTO store_categories (id, vendor_id, parent_id, name, position)
+SELECT 'sc_indus_mats_' || c.key, v.id, 'sc_indus_mats', c.name, c.pos
+  FROM vendors v, (VALUES ('autoform','Autoform',1), ('gfx_pro','GFX Pro',2)) AS c(key, name, pos)
+ WHERE v.slug = 'indus-enterprises';
+
+-- Put Indus' existing products in the matching shop category.
+UPDATE vendor_products p SET store_category_id = 'sc_indus_' || CASE p.group_slug
+    WHEN 'seat-covers' THEN 'seat_cover'
+    WHEN 'floor-mats' THEN 'mats'
+    WHEN 'speakers' THEN 'speaker'
+    WHEN 'subwoofers' THEN 'speaker'
+    WHEN 'amplifiers' THEN 'speaker'
+    WHEN 'displays' THEN 'stereo'
+    WHEN 'cameras' THEN 'dashcam'
+    WHEN 'comfort' THEN 'ortho_cushion'
+    WHEN 'fog-drl' THEN 'fog_lamp'
+    WHEN 'headlamps' THEN 'head_lamp'
+    WHEN 'led-bulbs' THEN 'lights'
+    WHEN 'ambient-lighting' THEN 'lights'
+    WHEN 'auxiliary' THEN 'lights'
+    WHEN 'steering-covers' THEN 'steering_cover'
+    WHEN 'car-care' THEN 'car_care'
+    WHEN 'exterior' THEN 'protection_guard'
+    WHEN 'armour' THEN 'protection_guard'
+  END
+  FROM vendors v
+ WHERE v.id = p.vendor_id AND v.slug = 'indus-enterprises'
+   AND p.group_slug IN ('seat-covers','floor-mats','speakers','subwoofers','amplifiers','displays','cameras','comfort',
+                        'fog-drl','headlamps','led-bulbs','ambient-lighting','auxiliary','steering-covers','car-care','exterior','armour');
+UPDATE vendor_products p SET store_category_id = 'sc_indus_mats_' || CASE WHEN lower(p.brand) LIKE 'gfx%' THEN 'gfx_pro' ELSE 'autoform' END
+  FROM vendors v
+ WHERE v.id = p.vendor_id AND v.slug = 'indus-enterprises' AND p.group_slug = 'floor-mats'
+   AND (lower(p.brand) LIKE 'gfx%' OR lower(p.brand) LIKE 'autoform%');
+`,
+  },
 ];

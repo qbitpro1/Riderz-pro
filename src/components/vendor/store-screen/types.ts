@@ -22,8 +22,17 @@ export type ScreenProduct = {
   title: string;
   brand: string;
   department: string;
+  /** The seller's shop category id, or (when it has none) its marketplace group slug. */
   group: string;
   groupName: string;
+  /** Display order of the group: shop categories in the seller's order, then the rest. */
+  groupPos: number;
+  /** The shop sub-category inside `group` ("GFX Pro" in Mats), if any. */
+  sub: string | null;
+  subName: string | null;
+  subPos: number;
+  /** The marketplace group name ("Cameras"), kept for search when a shop category renames it. */
+  typeName: string;
   mrp: number;
   price: number;
   stock: number;
