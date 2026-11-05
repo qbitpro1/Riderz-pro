@@ -40,7 +40,9 @@ import { StoreAssistant, type AssistantTurn, type ScreenOffer } from "./StoreAss
 import { CheckoutSheet, type PayOptions } from "./CheckoutSheet";
 import { SuggestBar } from "./SuggestBar";
 
-const newChatId = () => `sc_${crypto.randomUUID().replaceAll("-", "")}`;
+// getRandomValues, not randomUUID: randomUUID exists only on https/localhost, and a shop TV may
+// open the screen over plain http on the local network.
+const newChatId = () => `sc_${Array.from(crypto.getRandomValues(new Uint8Array(16)), (b) => b.toString(16).padStart(2, "0")).join("")}`;
 import type { ScreenCategory, ScreenFitBrand, ScreenProduct, ScreenStore } from "./types";
 
 /**
