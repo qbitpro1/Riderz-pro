@@ -110,6 +110,13 @@ export function StoreScreen({
   const [facets, setFacets] = useState<Facets>(NO_FACETS);
   const { group, sub, brand, price, sale } = facets;
   const [query, setQuery] = useState("");
+  // A new search looks in every category: starting to type (or speak) clears the chosen category,
+  // so "speaker" typed while Seat Cover is open still finds the speakers. The customer can narrow
+  // the results by category afterwards.
+  const search = (text: string) => {
+    if (!query.trim() && text.trim()) setFacets((f) => (f.group === "all" && f.sub === "all" ? f : { ...f, group: "all", sub: "all" }));
+    setQuery(text);
+  };
   const [sort, setSort] = useState<SortKey>("featured");
   const [car, setCar] = useState<Car | null>(null);
   const [compare, setCompare] = useState<string[]>([]);
@@ -399,7 +406,7 @@ export function StoreScreen({
               <input
                 type="search"
                 value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                onChange={(e) => search(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && handToAi.current(query)) e.preventDefault();
                 }}
@@ -419,7 +426,7 @@ export function StoreScreen({
                     <X size={20} aria-hidden />
                   </button>
                 )}
-                <VoiceSearch onText={setQuery} onFinal={(t) => handToAi.current(t)} onListening={setListening} />
+                <VoiceSearch onText={search} onFinal={(t) => handToAi.current(t)} onListening={setListening} />
               </span>
             </label>
 
