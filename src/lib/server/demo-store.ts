@@ -55,13 +55,7 @@ type Pick = { detail: ProductDetail; department: "interior" | "multimedia"; grou
 
 /** Seat covers and speakers with a fixed price and a real product photo. */
 function demoProducts(): Pick[] {
-  const ok = (d: ProductDetail) =>
-    d.price !== null && d.availability !== "coming-soon" && d.images.some((i) => i.kind === "remote");
-  const take = (dept: "interior" | "multimedia", group: string) =>
-    PRODUCT_DETAILS.filter((d) => d.department === dept && d.group === group && ok(d))
-      .slice(0, PER_GROUP)
-      .map((detail) => ({ detail, department: dept, group }));
-  return [...take("interior", "seat-covers"), ...take("multimedia", "speakers")];
+  return [];
 }
 
 async function imageBytes(src: string): Promise<Uint8Array<ArrayBuffer> | null> {
@@ -263,28 +257,7 @@ export async function seedDemoStore(input: z.infer<typeof demoStoreSchema>, by: 
     products++;
   };
 
-  const picks = demoProducts();
-  for (const [i, { detail: d, department, group }] of picks.entries()) {
-    const price = d.price!;
-    const mrp = Math.max(d.mrp ?? price, price);
-    const fitment = d.fitment.length && !d.fitment.includes("universal") ? d.fitment.slice(0, 60) : ["universal"];
-    // Model codes tell similar products apart (the shop shows "SAM65 — L-1 Series …").
-    const { highlights, specs, summary } = tidy(d);
-    const title = d.code && !d.title.toLowerCase().includes(d.code.toLowerCase()) ? `${d.code} — ${d.title}` : d.title;
-    await insert(i + 1, {
-      title, brand: d.brandName, department, group, mrp, price, summary, highlights, specs, fitment,
-      imageSources: d.images.filter((img) => img.kind === "remote").map((img) => img.src),
-    });
-  }
-
-  // Qubo dashcams: SKUs continue after the catalogue picks; fitment is universal.
-  for (const [i, c] of DEMO_DASHCAMS.entries()) {
-    await insert(picks.length + i + 1, {
-      title: c.title, brand: c.brand, department: DASHCAM_DEPARTMENT, group: DASHCAM_GROUP,
-      mrp: Math.max(c.mrp, c.price), price: c.price, summary: c.summary, highlights: c.highlights, specs: c.specs,
-      fitment: ["universal"], imageSources: c.images,
-    });
-  }
+  // Demo products are removed. Kept is empty so any existing DEMO- products are deleted below.
 
   // Demo products that are no longer part of the demo set go, with their photos.
   for (const [sku, row] of existing) {

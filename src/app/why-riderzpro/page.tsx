@@ -53,14 +53,16 @@ export default function WhyPage() {
         media="garageHeadlights"
         size="sm"
       >
-        <dl className="mt-8 grid max-w-2xl grid-cols-2 gap-x-6 gap-y-5 border-t border-tint/12 pt-6 md:grid-cols-4">
-          {STATS.map((s) => (
-            <div key={s.label}>
-              <dd className="font-display text-2xl font-extrabold tnum">{s.value}</dd>
-              <dt className="mt-1 text-[11px] uppercase tracking-[0.14em] text-dim">{s.label}</dt>
-            </div>
-          ))}
-        </dl>
+        {STATS.length > 0 && (
+          <dl className="mt-8 grid max-w-2xl grid-cols-2 gap-x-6 gap-y-5 border-t border-tint/12 pt-6 md:grid-cols-4">
+            {STATS.map((s) => (
+              <div key={s.label}>
+                <dd className="font-display text-2xl font-extrabold tnum">{s.value}</dd>
+                <dt className="mt-1 text-[11px] uppercase tracking-[0.14em] text-dim">{s.label}</dt>
+              </div>
+            ))}
+          </dl>
+        )}
       </PageHero>
 
       <section className="section">
@@ -102,41 +104,47 @@ export default function WhyPage() {
         </div>
       </section>
 
-      <section className="section">
-        <div className="shell">
-          <SectionHead eyebrow="Customers" title="JUDGE US ON THIS." />
-          <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {REVIEWS.map((r) => (
-              <li key={r.name}>
-                <ReviewCard review={r} />
-              </li>
-            ))}
-          </ul>
+        {REVIEWS.length > 0 && (
+          <section className="section">
+            <div className="shell">
+              <SectionHead eyebrow="Customers" title="JUDGE US ON THIS." />
+              <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {REVIEWS.map((r) => (
+                  <li key={r.name}>
+                    <ReviewCard review={r} />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </section>
+        )}
 
-          <div className="card mt-8 flex flex-col items-start justify-between gap-4 p-6 md:flex-row md:items-center">
-            <div>
-              <p className="font-display text-lg font-extrabold uppercase">Start somewhere</p>
-              <p className="mt-1 text-sm text-ash">
-                A ₹899 steering cover or a ₹6 lakh overland build — both get the same workshop.
-              </p>
+        <section className="section pt-0">
+          <div className="shell">
+              <div className="card flex flex-col items-start justify-between gap-4 p-6 md:flex-row md:items-center">
+                <div>
+                  <p className="font-display text-lg font-extrabold uppercase">Start somewhere</p>
+                  <p className="mt-1 text-sm text-ash">
+                    A ₹899 steering cover or a ₹6 lakh overland build — both get the same workshop.
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-3">
+                  <Link href="/shop" className="btn btn-primary btn-sm">
+                    Shop accessories
+                  </Link>
+                  <a
+                    href={whatsapp("Hi Riderzpro, I'd like to talk about my car.")}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className="btn btn-whatsapp btn-sm"
+                  >
+                    <Icon name="whatsapp" size={15} />
+                    Ask us anything
+                  </a>
+                </div>
+              </div>
             </div>
-            <div className="flex flex-wrap gap-3">
-              <Link href="/shop" className="btn btn-primary btn-sm">
-                Shop accessories
-              </Link>
-              <a
-                href={whatsapp("Hi Riderzpro, I'd like to talk about my car.")}
-                target="_blank"
-                rel="noreferrer noopener"
-                className="btn btn-whatsapp btn-sm"
-              >
-                <Icon name="whatsapp" size={15} />
-                Ask us anything
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-    </>
-  );
+        </section>
+      </>
+      );
 }

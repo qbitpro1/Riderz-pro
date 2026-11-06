@@ -39,6 +39,14 @@ export async function ensureIndusStore(): Promise<void> {
   const existing = await sqlOne<{ id: string }>("SELECT id FROM vendors WHERE slug = $1", [DEMO_SLUG]);
   if (existing) {
     await ensureStarterCategories(existing.id, SYSTEM);
+    const demoRows = await sql<{ id: string; images: string[] }>(
+      "SELECT id, images FROM vendor_products WHERE vendor_id = $1 AND sku LIKE 'DEMO-%'",
+      [existing.id],
+    );
+    for (const r of demoRows) {
+      await sql("DELETE FROM vendor_products WHERE id = $1", [r.id]);
+      if (r.images?.length) await sql("DELETE FROM files WHERE vendor_id = $1 AND id = ANY($2)", [existing.id, r.images]);
+    }
     return;
   }
   // Someone else already uses this login: leave everything as it is.

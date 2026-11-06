@@ -65,18 +65,20 @@ export default function BuildsPage() {
         </div>
       </section>
 
-      <section className="section border-t border-tint/8 bg-carbon">
-        <div className="shell">
-          <SectionHead eyebrow="Owners" title="WHAT THEY SAY AFTER." />
-          <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {REVIEWS.map((r) => (
-              <li key={r.name}>
-                <ReviewCard review={r} />
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
+      {REVIEWS.length > 0 && (
+        <section className="section border-t border-tint/8 bg-carbon">
+          <div className="shell">
+            <SectionHead eyebrow="Owners" title="WHAT THEY SAY AFTER." />
+            <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {REVIEWS.map((r) => (
+                <li key={r.name}>
+                  <ReviewCard review={r} />
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
     </>
   );
 }

@@ -10,7 +10,7 @@ import { itemsBySlug } from "@/components/shop/catalogLookup";
 import { BuildCard } from "@/components/community/Cards";
 import { Accordion } from "@/components/ui/Accordion";
 import { OFFROAD_GROUPS } from "@/lib/data/services";
-import { productsIn } from "@/lib/data/products";
+import { CATALOG } from "@/lib/catalog";
 import { BUILDS } from "@/lib/data/community";
 import { rupees } from "@/lib/format";
 import { whatsapp } from "@/lib/data/site";
@@ -55,7 +55,7 @@ const FAQ = [
 ];
 
 export default function OffRoadPage() {
-  const offroadProducts = itemsBySlug(productsIn("off-roading").map((p) => p.slug));
+  const offroadProducts = CATALOG.filter((i) => i.category === "off-roading");
   const offroadBuilds = BUILDS.filter((b) => b.tag === "Off-Road");
 
   return (
@@ -115,24 +115,26 @@ export default function OffRoadPage() {
       </section>
 
       {/* gear store ------------------------------------------------ */}
-      <section className="section border-y border-tint/8 bg-carbon">
-        <div className="shell">
-          <SectionHead
-            eyebrow="Off-road store"
-            title="RATED GEAR ONLY."
-            href="/shop/off-roading"
-            hrefLabel="All off-road"
-            blurb="Everything here carries a working load rating and a warranty. Nothing decorative, nothing untested."
-          />
-          <ul className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
-            {offroadProducts.slice(0, 8).map((p) => (
-              <li key={p.slug}>
-                <CatalogCard item={p} />
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
+      {offroadProducts.length > 0 && (
+        <section className="section border-y border-tint/8 bg-carbon">
+          <div className="shell">
+            <SectionHead
+              eyebrow="Off-road store"
+              title="RATED GEAR ONLY."
+              href="/shop/off-roading"
+              hrefLabel="All off-road"
+              blurb="Everything here carries a working load rating and a warranty. Nothing decorative, nothing untested."
+            />
+            <ul className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
+              {offroadProducts.slice(0, 8).map((p) => (
+                <li key={p.slug}>
+                  <CatalogCard item={p} />
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
 
       {/* builds ---------------------------------------------------- */}
       <section className="section">

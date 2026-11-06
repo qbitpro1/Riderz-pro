@@ -119,18 +119,20 @@ export default function PerformancePage() {
         </div>
       </section>
 
-      <section className="section">
-        <div className="shell">
-          <SectionHead eyebrow="Performance store" title="PARTS WE FIT." href={groupHref("accessories", "performance")} hrefLabel="All performance" />
-          <ul className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-6">
-            {perfProducts.map((p) => (
-              <li key={p.slug}>
-                <CatalogCard item={p} sizes="(min-width:1024px) 16vw, (min-width:768px) 33vw, 46vw" />
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
+      {perfProducts.length > 0 && (
+        <section className="section">
+          <div className="shell">
+            <SectionHead eyebrow="Performance store" title="PARTS WE FIT." href={groupHref("accessories", "performance")} hrefLabel="All performance" />
+            <ul className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-6">
+              {perfProducts.map((p) => (
+                <li key={p.slug}>
+                  <CatalogCard item={p} sizes="(min-width:1024px) 16vw, (min-width:768px) 33vw, 46vw" />
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
 
       {/* compliance ------------------------------------------------ */}
       <section className="section border-y border-tint/8 bg-carbon">

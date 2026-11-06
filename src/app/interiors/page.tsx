@@ -122,22 +122,24 @@ export default function InteriorsPage() {
       </section>
 
       <section className="section">
-        <div className="shell grid gap-10 lg:grid-cols-2 lg:items-start">
-          <div>
-            <SectionHead eyebrow="Questions" title="INTERIOR FAQs." />
-            <Accordion items={FAQ} />
+          <div className={`shell ${interiorReviews.length > 0 ? "grid gap-10 lg:grid-cols-2 lg:items-start" : "max-w-3xl"}`}>
+            <div>
+              <SectionHead eyebrow="Questions" title="INTERIOR FAQs." />
+              <Accordion items={FAQ} />
+            </div>
+            {interiorReviews.length > 0 && (
+              <div>
+                <SectionHead eyebrow="Owners" title="AFTER THE REBUILD." />
+                <ul className="grid gap-4">
+                  {interiorReviews.map((r) => (
+                    <li key={r.name}>
+                      <ReviewCard review={r} />
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
-          <div>
-            <SectionHead eyebrow="Owners" title="AFTER THE REBUILD." />
-            <ul className="grid gap-4">
-              {interiorReviews.map((r) => (
-                <li key={r.name}>
-                  <ReviewCard review={r} />
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
       </section>
     </>
   );

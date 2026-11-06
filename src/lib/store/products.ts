@@ -109,8 +109,8 @@ function houseDetail(p: HouseProduct): ProductDetail {
     installation: p.installation ? { price: p.installPrice ?? null, time: p.installTime ?? null } : null,
     warranty: p.warranty || null,
     delivery: p.delivery || null,
-    rating: p.rating,
-    reviews: p.reviews,
+    rating: null,
+    reviews: null,
     source: null,
     indexable: true,
   };

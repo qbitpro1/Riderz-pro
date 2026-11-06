@@ -37,7 +37,7 @@ export const BUILDS: Build[] = [
       { group: "Expedition", items: ["Platform roof rack", "Hard-shell roof tent", "270° awning", "40L drawer system", "Dual battery with 200 W solar"] },
       { group: "Lighting", items: ["22\" LED bar", "Dual pod lights", "Rear work light"] },
     ],
-    shop: ["2-inch-lift-kit", "recovery-boards-pair", "12000lb-winch-synthetic", "expedition-roof-rack-platform"],
+    shop: [],
     tag: "Off-Road",
   },
   {
@@ -58,7 +58,7 @@ export const BUILDS: Build[] = [
       { group: "Interior", items: ["Nappa leather with diamond stitch", "Captain seats with electric recline", "Automatic footrests", "Alcantara roof lining", "64-colour ambient lighting"] },
       { group: "Audio", items: ["3-way active front stage", "8-channel DSP amplifier", "Sealed 10\" subwoofer", "Full-cabin deadening"] },
     ],
-    shop: ["riderzpro-signature-component-set", "8-channel-dsp-amplifier", "custom-fit-seat-covers-leatherette"],
+    shop: [],
     tag: "Luxury",
   },
   {
@@ -80,7 +80,7 @@ export const BUILDS: Build[] = [
       { group: "Wheels", items: ["16\" flow-formed alloys", "195/50 R16 performance tyres"] },
       { group: "Audio", items: ["Component front stage", "300 W 4-channel amplifier", "Four-door deadening"] },
     ],
-    shop: ["stage-1-ecu-remap", "cold-air-intake-system", "cat-back-exhaust-system", "coilover-suspension-kit"],
+    shop: [],
     tag: "Performance",
   },
   {
@@ -102,7 +102,7 @@ export const BUILDS: Build[] = [
       { group: "Electrical", items: ["Big three upgrade", "Second battery with isolator", "Distribution block and 70 mm² runs"] },
       { group: "Acoustics", items: ["Full-cabin butyl deadening", "Closed-cell foam decoupler", "Boot floor treatment"] },
     ],
-    shop: ["riderzpro-signature-component-set", "8-channel-dsp-amplifier", "sound-deadening-kit-4-door"],
+    shop: [],
     tag: "Audio",
   },
   {
@@ -124,7 +124,7 @@ export const BUILDS: Build[] = [
       { group: "Interior", items: ["12.3\" Android head unit", "Ambient lighting", "9D floor mats"] },
       { group: "Protection", items: ["Front-end PPF", "9H ceramic coating"] },
     ],
-    shop: ["12-inch-android-head-unit", "riderzpro-9d-floor-mats", "suv-ambient-lighting-kit"],
+    shop: [],
     tag: "Street",
   },
   {
@@ -146,7 +146,7 @@ export const BUILDS: Build[] = [
       { group: "Expedition", items: ["Roof rack with jerry-can mounts", "20L water tank", "Fridge slide", "Dual battery"] },
       { group: "Lighting", items: ["Dual 5\" pod lights", "Rear work light", "Rock lights"] },
     ],
-    shop: ["raised-air-intake-snorkel", "expedition-roof-rack-platform", "portable-air-compressor", "all-terrain-tyre-set"],
+    shop: [],
     tag: "Off-Road",
   },
 ];
@@ -166,72 +166,6 @@ export type Review = {
   image: MediaKey;
 };
 
-export const REVIEWS: Review[] = [
-  {
-    name: "Aditya Rao",
-    vehicle: "Mahindra Thar LX 4x4",
-    service: "Off-road build",
-    rating: 5,
-    city: "Bengaluru",
-    date: "March 2026",
-    body: "Got my Thar completely transformed. Five weeks, daily photo updates on WhatsApp, and every invoice handed over at delivery. Took it to Spiti three weeks later — nothing loosened, nothing rattled.",
-    image: "defenderSaltFlat",
-  },
-  {
-    name: "Rehan Ahmed",
-    vehicle: "Mahindra Scorpio N Z8L",
-    service: "Signature audio",
-    rating: 5,
-    city: "Chennai",
-    date: "January 2026",
-    body: "Best audio installation I've experienced. They measured before and after, showed me the RTA plots, and made me sit through two tuning sessions until I was happy. No one else offered that.",
-    image: "steeringNight",
-  },
-  {
-    name: "Sneha Kulkarni",
-    vehicle: "Hyundai Creta SX(O) Turbo",
-    service: "Certified purchase",
-    rating: 5,
-    city: "Pune",
-    date: "February 2026",
-    body: "Bought my first car through Riderzpro. The inspection report flagged two things they then fixed before delivery. RC transfer was done in eleven days without me visiting the RTO once.",
-    image: "crossoverTeal",
-  },
-  {
-    name: "Vikram Sethi",
-    vehicle: "BMW 330i M Sport",
-    service: "PPF & ceramic",
-    rating: 5,
-    city: "Mumbai",
-    date: "December 2025",
-    body: "Excellent PPF quality. Edges wrapped, no visible film line anywhere, and they showed me the paint depth readings before and after correction. Two monsoons in and it still beads.",
-    image: "sportSaloonBlue",
-  },
-  {
-    name: "Meera Nair",
-    vehicle: "Toyota Fortuner Legender",
-    service: "Custom interiors",
-    rating: 5,
-    city: "Kochi",
-    date: "November 2025",
-    body: "The second row is now better than my living room. Captain seats, footrests, ambient lighting — and they kept every factory function working, including the airbags.",
-    image: "cockpitScreen",
-  },
-  {
-    name: "Nikhil Menon",
-    vehicle: "Volkswagen Polo GT TSI",
-    service: "Stage 1 remap",
-    rating: 4,
-    city: "Pune",
-    date: "October 2025",
-    body: "Honest tuning. They refused a Stage 2 map on my stock clutch and explained exactly why. Dyno sheet before and after, stock map saved. Car is genuinely quicker and still starts every morning.",
-    image: "engineBay",
-  },
-];
+export const REVIEWS: Review[] = [];
 
-export const STATS = [
-  { value: "12,400+", label: "Builds delivered" },
-  { value: "38,000+", label: "Cars fitted" },
-  { value: "4.8 / 5", label: "Average rating" },
-  { value: "26", label: "Bays across 3 cities" },
-];
+export const STATS: { value: string; label: string }[] = [];

@@ -25,19 +25,21 @@ export default function GaragePage() {
     <>
       <PageHero
         eyebrow="Riderzpro Garage"
-        title="26 BAYS. ONE STANDARD."
+        title="PROFESSIONAL BAYS. ONE STANDARD."
         blurb="Everything happens under one roof — trim shop, paint room, audio bay, dyno, welding and lifts. No sending your car to three different markets and hoping."
         media="mechanicEngine"
         actions={[{ href: "#book", label: "Book an appointment", variant: "primary" }]}
       >
-        <dl className="mt-8 grid max-w-2xl grid-cols-2 gap-x-6 gap-y-5 border-t border-tint/12 pt-6 md:grid-cols-4">
-          {STATS.map((s) => (
-            <div key={s.label}>
-              <dd className="font-display text-2xl font-extrabold tnum">{s.value}</dd>
-              <dt className="mt-1 text-[11px] uppercase tracking-[0.14em] text-dim">{s.label}</dt>
-            </div>
-          ))}
-        </dl>
+        {STATS.length > 0 && (
+          <dl className="mt-8 grid max-w-2xl grid-cols-2 gap-x-6 gap-y-5 border-t border-tint/12 pt-6 md:grid-cols-4">
+            {STATS.map((s) => (
+              <div key={s.label}>
+                <dd className="font-display text-2xl font-extrabold tnum">{s.value}</dd>
+                <dt className="mt-1 text-[11px] uppercase tracking-[0.14em] text-dim">{s.label}</dt>
+              </div>
+            ))}
+          </dl>
+        )}
       </PageHero>
 
       <section className="section">

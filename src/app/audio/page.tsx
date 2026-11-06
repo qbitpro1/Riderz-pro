@@ -10,7 +10,7 @@ import { itemsBySlug } from "@/components/shop/catalogLookup";
 import { ReviewCard } from "@/components/community/Cards";
 import { Accordion } from "@/components/ui/Accordion";
 import { AUDIO_PACKAGES } from "@/lib/data/services";
-import { productsIn } from "@/lib/data/products";
+import { CATALOG } from "@/lib/catalog";
 import { REVIEWS } from "@/lib/data/community";
 import { rupees } from "@/lib/format";
 import { whatsapp } from "@/lib/data/site";
@@ -43,7 +43,7 @@ const FAQ = [
 ];
 
 export default function AudioPage() {
-  const audioProducts = itemsBySlug(productsIn("multimedia").map((p) => p.slug));
+  const audioProducts = CATALOG.filter((i) => i.category === "multimedia");
   const audioReviews = REVIEWS.filter((r) => r.service.toLowerCase().includes("audio"));
 
   return (
@@ -72,9 +72,8 @@ export default function AudioPage() {
               <li key={p.slug} id={p.slug} className="scroll-mt-24">
                 <Reveal delay={i * 70} className="h-full">
                   <div
-                    className={`card flex h-full flex-col p-5 ${
-                      p.highlight ? "border-accent/45 bg-accent/6" : ""
-                    }`}
+                    className={`card flex h-full flex-col p-5 ${p.highlight ? "border-accent/45 bg-accent/6" : ""
+                      }`}
                   >
                     {p.highlight && (
                       <span className="verified mb-3 self-start">Most popular</span>
@@ -184,22 +183,24 @@ export default function AudioPage() {
       </section>
 
       <section className="section">
-        <div className="shell grid gap-10 lg:grid-cols-2 lg:items-start">
-          <div>
-            <SectionHead eyebrow="Questions" title="AUDIO FAQs." />
-            <Accordion items={FAQ} />
+          <div className={`shell ${audioReviews.length > 0 ? "grid gap-10 lg:grid-cols-2 lg:items-start" : "max-w-3xl"}`}>
+            <div>
+              <SectionHead eyebrow="Questions" title="AUDIO FAQs." />
+              <Accordion items={FAQ} />
+            </div>
+            {audioReviews.length > 0 && (
+              <div>
+                <SectionHead eyebrow="Owners" title="AFTER THE BUILD." />
+                <ul className="grid gap-4">
+                  {audioReviews.map((r) => (
+                    <li key={r.name}>
+                      <ReviewCard review={r} />
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
-          <div>
-            <SectionHead eyebrow="Owners" title="AFTER THE BUILD." />
-            <ul className="grid gap-4">
-              {audioReviews.map((r) => (
-                <li key={r.name}>
-                  <ReviewCard review={r} />
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
       </section>
     </>
   );
