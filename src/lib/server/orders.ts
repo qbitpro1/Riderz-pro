@@ -156,10 +156,10 @@ export async function priceCart(lines: PlaceOrderInput["lines"]) {
 export async function placeOrder(
   input: PlaceOrderInput,
   customerId: string | null = null,
-  opts: { method?: "whatsapp" | "online" } = {},
+  opts: { method?: "online" } = {},
 ): Promise<PlacedOrderRecord> {
   const { customer } = input;
-  const method = opts.method ?? "whatsapp";
+  const method = "online";
 
   /* ---- 1. price every line from the server's own data ---- */
   const { items, commissions, subtotal, shipping: listShipping, houseItems } = await priceCart(input.lines);
@@ -191,7 +191,7 @@ export async function placeOrder(
         [
           orderId, candidate, customer.name, customer.mobile, customer.email, customer.address, customer.city,
           customer.state, customer.pincode, customer.notes, subtotal, shipping, total, customerId,
-          method, method === "online" ? "online" : "whatsapp",
+          method, "online",
           // "Detect my location" at checkout; without it the address is geocoded when a rider accepts.
           input.deliveryPoint?.lat ?? null, input.deliveryPoint?.lng ?? null, input.deliveryPoint ? "device" : null,
           discount, coupon?.code ?? null,
@@ -274,7 +274,7 @@ export async function placeOrder(
     await audit({ type: "customer", id: sha256(customer.mobile).slice(0, 12) }, "order.place", {
       detail: { number, total, vendorParts: placed.length, paymentMethod: method, ...(input.couponCode ? { coupon: input.couponCode, discount } : {}) },
     });
-    if (method !== "online") await onOrderConfirmed(orderId, "whatsapp_placed");
+    // Online orders are confirmed when the Razorpay payment captures (via webhook/verify onOrderConfirmed)
   } catch (err) {
     console.error("[orders] post-commit step failed", err instanceof Error ? err.message : err);
   }

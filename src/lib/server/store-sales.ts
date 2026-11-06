@@ -276,7 +276,7 @@ export async function placeStoreOrder(vendor: VendorSelf, input: StoreCheckoutIn
     await q(
       `INSERT INTO vendor_orders (id, order_id, vendor_id, status, subtotal, commission_rate, accepted_at, collected_by)
        VALUES ($1,$2,$3,'accepted',$4,$5, now(), $6)`,
-      [vendorOrderId, orderId, vendor.id, total, rows[0]?.commission_rate == null ? DEFAULT_COMMISSION_RATE : Number(rows[0].commission_rate), input.pay === "counter" ? "seller" : "platform"],
+      [vendorOrderId, orderId, vendor.id, total, 0, input.pay === "counter" ? "seller" : "platform"], // 0% commission on Offline Store sales
     );
     const low: { title: string; stock: number }[] = [];
     for (const i of priced) {

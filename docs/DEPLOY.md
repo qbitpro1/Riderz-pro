@@ -92,3 +92,62 @@ Rate limits read the visitor's address from `x-vercel-forwarded-for` / `x-real-i
   the next start (they never edit an old one).
 - Watch the host's logs for `[error]` lines (one per server error, without personal data) and for
   `[config]` warnings after each deploy.
+
+## 6. Server Redeploy Runbook (old-deploy)
+
+To update the live server with latest `old-deploy` changes:
+
+```bash
+cd /path/to/riderzpro
+git fetch origin
+git checkout old-deploy
+git pull origin old-deploy
+
+# Install dependencies and build production app
+npm install --legacy-peer-deps
+npm run build
+
+# Restart the application process
+pm2 restart riderzpro || sudo systemctl restart riderzpro
+
+# Check logs to ensure Indus bootstrap completed:
+# You must see: "[indus] Indus Enterprises set up ..."
+pm2 logs riderzpro --lines 50 || journalctl -u riderzpro -n 50 --no-pager
+
+# Verify server health:
+curl -s http://localhost:3000/api/health
+```
+
+## 7. Nginx Real IP Configuration
+
+In your `/etc/nginx/sites-available/riderzpro.com` server block:
+
+```nginx
+location / {
+    proxy_pass http://127.0.0.1:3000;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection 'upgrade';
+    proxy_set_header Host $host;
+    proxy_cache_bypass $http_upgrade;
+
+    # Pass visitor real IP for rate limiting and fraud protection
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+}
+```
+
+Reload Nginx:
+```bash
+sudo nginx -t && sudo systemctl reload nginx
+```
+
+## 8. Hourly Cleanup Cron Setup
+
+On the server, add an hourly crontab entry for housekeeping (releases unpaid holds, cleans rider location trails, purges expired sessions):
+
+```bash
+# Add to crontab via: crontab -e
+0 * * * * curl -s -H "Authorization: Bearer YOUR_CRON_SECRET" https://riderzpro.com/api/cron/housekeeping > /dev/null 2>&1
+```
