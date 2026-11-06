@@ -44,8 +44,8 @@ export const placeOrderSchema = z.object({
     )
     .min(1)
     .max(50),
-  /** Online payment only via Razorpay. */
-  paymentMethod: z.enum(["online"]).default("online"),
+  /** Online payment (Razorpay) is the only way to order. Required, so an out-of-date page that doesn't send it is refused. */
+  paymentMethod: z.literal("online"),
   /** The customer's GPS point from "Detect my location", for the rider map and arrival alerts. */
   deliveryPoint: pointSchema.optional(),
   /** A coupon code; the server checks it and works out the discount. */

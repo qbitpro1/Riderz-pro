@@ -30,7 +30,7 @@ export const POST = route(async (req: Request) => {
   housekeeping();
 
   const me = await currentCustomer();
-  const order = await placeOrder(input, me?.id ?? null, { method: "online" });
+  const order = await placeOrder(input, me?.id ?? null);
   const summary = { number: order.number, total: order.total };
   const payment = await startOnlinePayment(order);
   return ok({ order: summary, payment }, 201);

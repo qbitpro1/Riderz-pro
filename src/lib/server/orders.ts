@@ -12,7 +12,6 @@ import { ApiError } from "./http";
 import { newId, sha256 } from "./security";
 import { LIVE_PRODUCT_WHERE } from "./vendor-products";
 import { audit, notifyVendor, type Actor } from "./vendors";
-import { onOrderConfirmed } from "./payments-hooks";
 import { applyCoupon, recordRedemption } from "./coupons";
 import { onOrderConfirmedMessages } from "./order-emails";
 import type { PaymentMethod, PaymentStatus } from "@/lib/payments/types";
@@ -149,14 +148,13 @@ export async function priceCart(lines: PlaceOrderInput["lines"]) {
 /**
  * `customerId` comes from the session (never the request body); null for guest checkout.
  *
- * `method: "online"`: the order waits for its Razorpay payment (payments.ts). Stock is taken now and
+ * The order waits for its Razorpay payment (payments.ts). Stock is taken now and
  * held; sellers are told and see the order only once it is paid; unpaid orders are cancelled and
  * their stock released after UNPAID_HOLD_MINUTES (releaseUnpaidOrders).
  */
 export async function placeOrder(
   input: PlaceOrderInput,
   customerId: string | null = null,
-  opts: { method?: "online" } = {},
 ): Promise<PlacedOrderRecord> {
   const { customer } = input;
   const method = "online";

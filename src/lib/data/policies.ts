@@ -215,8 +215,7 @@ export const SUPPORT_POLICIES: Policy[] = [
         id: "how-to-pay",
         heading: "How to pay",
         body: [
-          "Pay online at checkout: choose Pay online and complete the payment securely with Razorpay. Your order is confirmed as soon as the payment goes through, and your tax invoice is in My orders.",
-          "Or choose Confirm order on WhatsApp. We check fitment against your variant, confirm the total, and tell you how to pay in that conversation before anything is dispatched.",
+          "Pay online at checkout: complete the payment securely with Razorpay. Your order is confirmed as soon as the payment goes through, and your tax invoice is in My orders.",
           "If an online payment isn't completed within 30 minutes, the order is cancelled and nothing is charged. If money left your account anyway, it is refunded.",
         ],
       },
