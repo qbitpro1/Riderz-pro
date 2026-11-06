@@ -33,7 +33,7 @@ export function Gallery({ images, title, brand }: { images: string[]; title: str
 
   if (images.length === 0) {
     return (
-      <div className="grid aspect-square w-full place-items-center rounded-3xl bg-[#f3f4f5] text-center text-dim lg:aspect-auto lg:h-[calc(100dvh-17rem)]">
+      <div className="grid aspect-square w-full place-items-center rounded-3xl bg-[#f3f4f5] text-center text-dim wide:aspect-auto wide:h-[calc(100dvh-17rem)]">
         <div>
           <ImageOff size={36} className="mx-auto" aria-hidden />
           <p className="mt-2 text-base font-semibold text-ash">{brand}</p>
@@ -52,7 +52,7 @@ export function Gallery({ images, title, brand }: { images: string[]; title: str
           role="group"
           aria-roledescription="carousel"
           aria-label={`${title}, photos`}
-          className="ss-hide-bar flex aspect-square w-full snap-x snap-mandatory overflow-x-auto overscroll-x-contain rounded-3xl bg-[#f3f4f5] lg:aspect-auto lg:h-[calc(100dvh-17rem)] lg:min-h-[300px]"
+          className="ss-hide-bar flex aspect-square w-full snap-x snap-mandatory overflow-x-auto overscroll-x-contain rounded-3xl bg-[#f3f4f5] wide:aspect-auto wide:h-[calc(100dvh-17rem)] wide:min-h-[300px]"
         >
           {images.map((id, i) => (
             <button

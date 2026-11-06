@@ -72,9 +72,9 @@ export function AttractScreen({
       role="region"
       aria-label={`${store.name}, welcome`}
     >
-      <div className="relative flex h-full flex-col landscape:lg:flex-row">
+      <div className="relative flex h-full flex-col landscape:wide:flex-row">
         {/* Photo stage: the product photos are shot on white, so they blend into the backdrop. */}
-        <div className="relative order-2 min-h-[28dvh] flex-1 overflow-hidden bg-[#f3f4f5] max-sm:hidden landscape:lg:order-1">
+        <div className="relative order-2 min-h-[28dvh] flex-1 overflow-hidden bg-[#f3f4f5] max-sm:hidden landscape:wide:order-1">
           {featured.length === 0 ? (
             <div className="grid h-full place-items-center">
               <StoreMark store={store} className="h-40 w-40" text="text-7xl" />
@@ -116,7 +116,7 @@ export function AttractScreen({
                   <BadgePercent size={28} aria-hidden />
                 </span>
                 <span className="min-w-0">
-                  <span className="block text-xs font-bold uppercase tracking-[0.16em] text-accent lg:text-sm">Today&apos;s offer</span>
+                  <span className="block text-xs font-bold uppercase tracking-[0.16em] text-accent wide:text-sm">Today&apos;s offer</span>
                   <span className="mt-0.5 line-clamp-3 text-pretty font-display text-[clamp(1.05rem,min(1.8vw,3dvh),1.6rem)] font-bold leading-snug tracking-tight text-chalk">
                     {store.offer}
                   </span>
@@ -127,13 +127,13 @@ export function AttractScreen({
         </div>
 
         {/* Words: spacing and type follow the screen height too, so "Touch to explore" always fits on screen. */}
-        <div className="ss-hide-bar order-1 flex min-h-0 flex-col justify-between max-sm:flex-1 gap-[clamp(0.75rem,3dvh,2rem)] overflow-y-auto p-[clamp(1rem,4dvh,2.5rem)] landscape:lg:order-2 landscape:lg:w-[max(42%,30rem)] landscape:lg:px-[clamp(2rem,4vw,5rem)] landscape:lg:py-[clamp(1.25rem,5dvh,5rem)]">
+        <div className="ss-hide-bar order-1 flex min-h-0 flex-col justify-between max-sm:flex-1 gap-[clamp(0.75rem,3dvh,2rem)] overflow-y-auto p-[clamp(1rem,4dvh,2.5rem)] landscape:wide:order-2 landscape:wide:w-[54%] landscape:lg:w-[max(42%,30rem)] landscape:wide:px-[clamp(2rem,4vw,5rem)] landscape:wide:py-[clamp(1.25rem,5dvh,5rem)]">
           <div className="ss-rise">
             <div className="flex items-center justify-between gap-4">
               <div className="flex min-w-0 items-center gap-4">
-                <StoreMark store={store} className="h-14 w-14 lg:h-16 lg:w-16" text="text-2xl" />
+                <StoreMark store={store} className="h-14 w-14 wide:h-16 wide:w-16" text="text-2xl" />
                 <div className="min-w-0">
-                  <p className="font-display text-xl font-extrabold leading-tight tracking-tight text-chalk lg:text-2xl">
+                  <p className="font-display text-xl font-extrabold leading-tight tracking-tight text-chalk wide:text-2xl">
                     {nameHead}
                     {/* The tick stays with the last word, so it never wraps onto a line of its own. */}
                     <span className="whitespace-nowrap">
@@ -141,14 +141,14 @@ export function AttractScreen({
                       <BadgeCheck size={20} aria-label="Riderzpro verified seller" className="ml-1.5 inline-block fill-verified align-[-2px] text-on-verified" />
                     </span>
                   </p>
-                  <p className="text-sm font-medium leading-snug text-ash lg:text-base">
+                  <p className="text-sm font-medium leading-snug text-ash wide:text-base">
                     {store.address ?? store.city ? `${store.address ?? store.city} · ` : ""}Riderzpro verified seller
                   </p>
                 </div>
               </div>
               <div onClick={(e) => e.stopPropagation()}>{seller}</div>
             </div>
-            <p className="mt-[clamp(0.5rem,1.5dvh,1rem)] flex min-w-0 items-start gap-2 text-sm font-semibold leading-snug text-ash lg:text-base">
+            <p className="mt-[clamp(0.5rem,1.5dvh,1rem)] flex min-w-0 items-start gap-2 text-sm font-semibold leading-snug text-ash wide:text-base">
               <Clock size={18} aria-hidden className="mt-[0.1em] shrink-0 text-accent" />
               <span className="line-clamp-2">{store.hours}</span>
             </p>
@@ -164,7 +164,7 @@ export function AttractScreen({
           </div>
 
           <div className="ss-rise [animation-delay:120ms]">
-            <p className="mb-[clamp(0.5rem,2dvh,1rem)] text-sm font-bold uppercase tracking-[0.2em] text-accent lg:text-base">Offline Store</p>
+            <p className="mb-[clamp(0.5rem,2dvh,1rem)] text-sm font-bold uppercase tracking-[0.2em] text-accent wide:text-base">Offline Store</p>
             <h2 className="text-balance font-display text-[clamp(1.9rem,min(5.4vw,6.6dvh),5.25rem)] font-extrabold leading-[1.02] tracking-[-0.035em] text-chalk">
               {products.length > 0 ? "Everything in stock." : "Coming soon."}
               <br />
@@ -174,7 +174,7 @@ export function AttractScreen({
 
           <div className="ss-rise space-y-[clamp(0.75rem,2.5dvh,1.25rem)] [animation-delay:240ms]">
             {shortcuts.length > 0 && (
-              <div className="grid grid-cols-2 gap-3 lg:gap-4" onClick={(e) => e.stopPropagation()}>
+              <div className="grid grid-cols-2 gap-3 wide:gap-4" onClick={(e) => e.stopPropagation()}>
                 {shortcuts.map((g) => {
                   const Icon = groupIcon(`${g.slug} ${g.name}`.toLowerCase());
                   return (
@@ -182,13 +182,13 @@ export function AttractScreen({
                       key={g.slug}
                       type="button"
                       onClick={() => onStart(g.slug)}
-                      className="flex min-h-[clamp(3.5rem,9dvh,6rem)] flex-col items-start gap-1.5 rounded-2xl bg-void px-3 py-2.5 text-left sm:flex-row sm:items-center sm:gap-3 sm:px-4 shadow-sm transition-transform duration-200 active:scale-[0.97] lg:px-5"
+                      className="flex min-h-[clamp(3.5rem,9dvh,6rem)] flex-col items-start gap-1.5 rounded-2xl bg-void px-3 py-2.5 text-left sm:flex-row sm:items-center sm:gap-3 sm:px-4 shadow-sm transition-transform duration-200 active:scale-[0.97] wide:px-5"
                     >
                       <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-accent/10 text-accent sm:h-12 sm:w-12">
                         <Icon size={22} aria-hidden />
                       </span>
                       <span className="w-full min-w-0">
-                        <span className="line-clamp-2 block text-base font-bold leading-tight text-chalk sm:truncate sm:text-lg">{g.name}</span>
+                        <span className="line-clamp-2 block text-base font-bold leading-tight text-chalk sm:text-lg">{g.name}</span>
                         <span className="tnum text-sm text-ash">{g.count} in store</span>
                       </span>
                     </button>
@@ -203,7 +203,7 @@ export function AttractScreen({
                 e.stopPropagation();
                 onStart();
               }}
-              className="relative flex h-[clamp(3.75rem,11dvh,6rem)] w-full shrink-0 items-center justify-center gap-3 rounded-full bg-accent font-display text-xl font-extrabold tracking-tight text-on-accent shadow-lg transition-transform duration-200 active:scale-[0.98] lg:text-2xl"
+              className="relative flex h-[clamp(3.75rem,11dvh,6rem)] w-full shrink-0 items-center justify-center gap-3 rounded-full bg-accent font-display text-xl font-extrabold tracking-tight text-on-accent shadow-lg transition-transform duration-200 active:scale-[0.98] wide:text-2xl"
             >
               <span aria-hidden className="ss-breathe absolute inset-0 rounded-full bg-accent" />
               <Hand size={28} aria-hidden className="relative" />

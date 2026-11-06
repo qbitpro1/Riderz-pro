@@ -41,6 +41,17 @@
   --color-on-verified: var(--on-verified);
 }
 
+/* Offline Store screen: "wide" = a laptop/desktop (1024px+) OR any landscape screen from 768px,
+   such as a shop TV whose browser reports 960x540. The shop screen uses wide: instead of lg:. */
+@custom-variant wide {
+  @media (min-width: 64rem) {
+    @slot;
+  }
+  @media (orientation: landscape) and (min-width: 48rem) {
+    @slot;
+  }
+}
+
 @theme {
   --font-display: var(--font-archivo), "Arial Black", system-ui, sans-serif;
   --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;

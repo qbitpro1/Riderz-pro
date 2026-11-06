@@ -103,8 +103,8 @@ export function ProductSheet({
 
       <div className="ss-scroll min-h-0 flex-1 overflow-y-auto">
         <div className="mx-auto max-w-[1500px] px-4 py-6 md:px-8 md:py-8">
-          <div className="grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-12">
-            <div className="min-w-0 lg:sticky lg:top-0 lg:self-start">
+          <div className="grid gap-8 wide:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] wide:gap-12">
+            <div className="min-w-0 wide:sticky wide:top-0 wide:self-start">
               <Gallery images={p.images} title={p.title} brand={p.brand} />
             </div>
 
@@ -183,7 +183,7 @@ export function ProductSheet({
             </div>
           </div>
 
-          <div className="mt-12 grid gap-10 border-t border-tint/10 pt-10 lg:grid-cols-2 lg:gap-14">
+          <div className="mt-12 grid gap-10 border-t border-tint/10 pt-10 wide:grid-cols-2 wide:gap-14">
             <div className="min-w-0 space-y-9">
               {p.summary && (
                 <section>
