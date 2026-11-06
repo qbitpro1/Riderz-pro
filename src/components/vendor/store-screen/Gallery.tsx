@@ -33,7 +33,7 @@ export function Gallery({ images, title, brand }: { images: string[]; title: str
 
   if (images.length === 0) {
     return (
-      <div className="grid aspect-square w-full place-items-center rounded-3xl bg-[#f3f4f5] text-center text-dim wide:aspect-auto wide:h-[calc(100dvh-17rem)]">
+      <div className="grid aspect-square w-full place-items-center rounded-3xl bg-[#f3f4f5] text-center text-dim wide:aspect-auto wide:h-[calc(100dvh-17rem)] wide:short:h-[calc(100dvh-14rem)]">
         <div>
           <ImageOff size={36} className="mx-auto" aria-hidden />
           <p className="mt-2 text-base font-semibold text-ash">{brand}</p>
@@ -44,7 +44,7 @@ export function Gallery({ images, title, brand }: { images: string[]; title: str
   }
 
   return (
-    <div className="flex min-w-0 flex-col gap-3">
+    <div className="flex min-w-0 flex-col gap-3 short:gap-2">
       <div className="relative">
         <div
           ref={track}
@@ -52,7 +52,7 @@ export function Gallery({ images, title, brand }: { images: string[]; title: str
           role="group"
           aria-roledescription="carousel"
           aria-label={`${title}, photos`}
-          className="ss-hide-bar flex aspect-square w-full snap-x snap-mandatory overflow-x-auto overscroll-x-contain rounded-3xl bg-[#f3f4f5] wide:aspect-auto wide:h-[calc(100dvh-17rem)] wide:min-h-[300px]"
+          className="ss-hide-bar flex aspect-square w-full snap-x snap-mandatory overflow-x-auto overscroll-x-contain rounded-3xl bg-[#f3f4f5] wide:aspect-auto wide:h-[calc(100dvh-17rem)] wide:min-h-[300px] wide:short:h-[calc(100dvh-14rem)] wide:short:min-h-[240px]"
         >
           {images.map((id, i) => (
             <button
@@ -102,7 +102,7 @@ export function Gallery({ images, title, brand }: { images: string[]; title: str
       </div>
 
       {many && (
-        <ul className="ss-hide-bar flex gap-2.5 overflow-x-auto pb-1" aria-label="Choose photo">
+        <ul className="ss-hide-bar flex gap-2.5 overflow-x-auto pb-1 short:gap-2 short:pb-0" aria-label="Choose photo">
           {images.map((id, i) => (
             <li key={id} className="shrink-0">
               <button
@@ -110,7 +110,7 @@ export function Gallery({ images, title, brand }: { images: string[]; title: str
                 onClick={() => go(i)}
                 aria-label={`Show photo ${i + 1}`}
                 aria-current={i === index}
-                className={`block h-[4.5rem] w-[4.5rem] overflow-hidden rounded-2xl border-2 transition-colors ${
+                className={`block h-[4.5rem] w-[4.5rem] overflow-hidden short:h-14 short:w-14 short:rounded-xl rounded-2xl border-2 transition-colors ${
                   i === index ? "border-accent" : "border-transparent hover:border-tint/25"
                 }`}
               >
@@ -157,7 +157,7 @@ function Viewer({ images, start, title, onClose }: { images: string[]; start: nu
 
   return (
     <Layer label={`${title}, photo ${i + 1} of ${images.length}`} onClose={onClose} kind="full">
-      <div className="flex items-center justify-between gap-3 px-4 py-3">
+      <div className="flex items-center justify-between gap-3 px-4 py-3 short:py-2">
         <p className="min-w-0 truncate text-base font-semibold text-ash">
           {title} <span className="tnum text-dim">{i + 1}/{images.length}</span>
         </p>
@@ -165,7 +165,7 @@ function Viewer({ images, start, title, onClose }: { images: string[]; start: nu
           type="button"
           onClick={onClose}
           data-autofocus
-          className="inline-flex min-h-12 items-center gap-2 rounded-full bg-carbon px-5 text-base font-semibold text-chalk active:scale-95"
+          className="inline-flex min-h-12 items-center gap-2 rounded-full bg-carbon px-5 text-base font-semibold text-chalk active:scale-95 short:min-h-11"
         >
           <X size={20} aria-hidden /> Close
         </button>
@@ -190,7 +190,7 @@ function Viewer({ images, start, title, onClose }: { images: string[]; start: nu
         />
       </div>
       {images.length > 1 && !zoom && (
-        <div className="flex justify-center gap-3 p-3">
+        <div className="flex justify-center gap-3 p-3 short:p-2">
           <button type="button" onClick={() => setI((n) => (n - 1 + images.length) % images.length)} className="grid h-14 w-14 place-items-center rounded-full bg-carbon" aria-label="Previous photo">
             <ChevronLeft size={24} aria-hidden />
           </button>
