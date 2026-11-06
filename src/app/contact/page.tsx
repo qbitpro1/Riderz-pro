@@ -5,24 +5,24 @@ import { BookingForm } from "@/components/garage/BookingForm";
 import { HelpForm } from "@/components/account/HelpForm";
 import { SectionHead } from "@/components/ui/Section";
 import { Icon } from "@/components/ui/Icon";
-import { LOCATIONS, SITE, whatsapp } from "@/lib/data/site";
+import { LOCATIONS, SITE } from "@/lib/data/site";
 import { pageMeta } from "@/lib/data/seo";
 
 export const metadata: Metadata = pageMeta({
   title: "Contact Riderzpro",
   description:
-    "Talk to Riderzpro on WhatsApp or by phone about cars, accessories, builds, audio, PPF, off-road work and workshop bookings across Bengaluru, Hyderabad and Pune.",
+    "Talk to Riderzpro by message, phone or email about accessories, fitment, orders, audio, PPF, off-road work and installation bookings.",
   path: "/contact",
 });
 
 const CHANNELS = [
   {
-    title: "WhatsApp",
-    body: "Fastest route to a human. Fitment questions, quotes, order updates, build photos.",
-    action: "Message us",
-    href: whatsapp("Hi Riderzpro, "),
-    icon: "whatsapp" as const,
-    external: true,
+    title: "Message",
+    body: "Fitment questions, quotes and order updates. We reply within one working day.",
+    action: "Send a message",
+    href: "#message",
+    icon: "spark" as const,
+    external: false,
   },
   {
     title: "Phone",
@@ -33,12 +33,12 @@ const CHANNELS = [
     external: true,
   },
   {
-    title: "Visit a garage",
-    body: "Three workshops, 26 bays. Walk in and look at what's on the lifts.",
-    action: "See locations",
-    href: "/locations",
-    icon: "map" as const,
-    external: false,
+    title: "Email",
+    body: SITE.email,
+    action: "Write to us",
+    href: `mailto:${SITE.email}`,
+    icon: "mail" as const,
+    external: true,
   },
 ];
 
@@ -63,7 +63,7 @@ export default function ContactPage() {
       <PageHero
         eyebrow="Contact"
         title="TALK TO A HUMAN."
-        blurb="No ticket queues, no chatbots. Message us and someone who works in the garage replies — usually inside twenty minutes during business hours."
+        blurb="No ticket queues, no chatbots. Message us and someone from our team replies — usually inside twenty minutes during business hours."
         media="mechanicEngine"
         size="sm"
       />
@@ -112,7 +112,7 @@ export default function ContactPage() {
             <SectionHead
               eyebrow="Support"
               title="EVERYTHING ELSE."
-              blurb={`Registered office: No. 14, Hosur Main Road, Kudlu Gate, Bengaluru 560068. GSTIN ${SITE.gstin}.`}
+              blurb={`${SITE.legalName}${SITE.registeredOffice ? ` Registered office: ${SITE.registeredOffice}.` : ""} GSTIN ${SITE.gstin}.`}
             />
             <ul className="space-y-2.5">
               {QUICK_LINKS.map((l) => (
@@ -125,22 +125,28 @@ export default function ContactPage() {
               ))}
             </ul>
 
-            <p className="mt-8 label">Our garages</p>
-            <ul className="space-y-3">
-              {LOCATIONS.map((l) => (
-                <li key={l.slug} className="text-sm text-ash">
-                  <span className="font-display text-xs font-bold uppercase tracking-[0.14em] text-chalk">
-                    {l.city}
-                  </span>
-                  <br />
-                  {l.address}
-                </li>
-              ))}
-            </ul>
+            {LOCATIONS.length > 0 && (
+              <>
+                <p className="mt-8 label">Our garages</p>
+                <ul className="space-y-3">
+                  {LOCATIONS.map((l) => (
+                    <li key={l.slug} className="text-sm text-ash">
+                      <span className="font-display text-xs font-bold uppercase tracking-[0.14em] text-chalk">
+                        {l.city}
+                      </span>
+                      <br />
+                      {l.address}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
           </div>
 
           <div className="space-y-6">
-            <HelpForm />
+            <div id="message" className="scroll-mt-28">
+              <HelpForm />
+            </div>
             <BookingForm />
           </div>
         </div>

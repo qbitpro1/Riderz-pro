@@ -1,14 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { PageHero, Breadcrumbs } from "@/components/layout/PageHero";
 import { CatalogBrowser } from "@/components/catalog/CatalogBrowser";
-import { FitmentPicker } from "@/components/fitment/FitmentPicker";
 import { SectionHead } from "@/components/ui/Section";
 import { Icon } from "@/components/ui/Icon";
 import { CATEGORIES, getCategory, type CategorySlug } from "@/lib/data/products";
-import { DEPARTMENT_BY_SLUG, groupHref, oeHref } from "@/lib/data/taxonomy";
-import { BRANDS, CATALOG, filtersFromQuery, sortItems, type CatalogQuery } from "@/lib/catalog";
+import { CATALOG, filtersFromQuery, sortItems, type CatalogQuery } from "@/lib/catalog";
 import { breadcrumbLd, itemListLd, ldJson, pageMeta } from "@/lib/data/seo";
 import { liveVendorItems } from "@/lib/server/marketplace";
 
@@ -44,16 +41,9 @@ export default async function CategoryPage({
   if (!cat) notFound();
 
   const slug = cat.slug as CategorySlug;
-  const dept = DEPARTMENT_BY_SLUG[slug];
   const items = [...CATALOG.filter((i) => i.category === slug), ...(await liveVendorItems({ department: slug }))];
   // The category is the page; everything else stays a filter the visitor owns.
   const filters = { ...filtersFromQuery(await searchParams), categories: [slug] };
-  const groupCounts = new Map<string, number>();
-  for (const i of items) groupCounts.set(i.group, (groupCounts.get(i.group) ?? 0) + 1);
-  const oeCount = items.filter((i) => i.oe).length;
-
-  // Only brands that actually sell into this category get a shortcut.
-  const brands = BRANDS.filter((b) => items.some((i) => i.brand === b.slug));
 
   // Types we have listed, then the rest of the category's range, deduplicated.
   const counts = new Map<string, number>();
@@ -71,80 +61,26 @@ export default async function CategoryPage({
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: ldJson(breadcrumbLd([{ name: "Home", path: "/" }, { name: "Shop", path: "/shop" }, { name: cat.name, path: `/shop/${cat.slug}` }])) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: ldJson(itemListLd("Products", sortItems(items, "popular").slice(0, 24).map((i) => ({ name: i.title, path: i.href })))) }} />
-      <PageHero eyebrow={`${cat.name} accessories`} title={cat.tagline.toUpperCase()} blurb={cat.blurb} media={cat.image} size="sm" />
-
-      <section className="section">
-        <div className="shell">
-          <Breadcrumbs
-            items={[
-              { label: "Home", href: "/" },
-              { label: "Shop", href: "/shop" },
-              { label: cat.name },
-            ]}
-          />
-
-          {/* Keeps the outline h1 → h2 → h3 (product cards) without changing the layout. */}
-          <h2 className="sr-only">{cat.name} products</h2>
-          <div className="mb-6 flex flex-wrap items-center gap-2">
-            <span className="text-[11px] uppercase tracking-[0.14em] text-dim">Shop by group</span>
-            <Link
-              href={`/shop/${cat.slug}`}
-              className={`chip ${filters.groups.length === 0 && !filters.oe ? "chip-active" : "hover:border-accent hover:text-accent"}`}
-            >
-              All
-              <span className="opacity-60 tnum">{items.length}</span>
-            </Link>
-            {dept.groups
-              .filter((g) => groupCounts.has(g.slug))
-              .map((g) => (
-                <Link
-                  key={g.slug}
-                  href={groupHref(slug, g.slug)}
-                  className={`chip ${filters.groups.includes(g.slug) ? "chip-active" : "hover:border-accent hover:text-accent"}`}
-                >
-                  {g.name}
-                  <span className="opacity-60 tnum">{groupCounts.get(g.slug)}</span>
-                </Link>
-              ))}
-            <Link
-              href={oeHref(slug)}
-              className={`chip ${filters.oe ? "chip-active" : "hover:border-accent hover:text-accent"}`}
-            >
-              OE
-              <span className="opacity-60 tnum">{oeCount}</span>
-            </Link>
-          </div>
-
-          {brands.length > 1 && (
-            <div className="mb-6 flex flex-wrap items-center gap-2">
-              <span className="text-[11px] uppercase tracking-[0.14em] text-dim">Brands here</span>
-              {brands.map((b) => (
-                <Link
-                  key={b.slug}
-                  href={`/shop/${cat.slug}?brand=${b.slug}`}
-                  className="chip hover:border-accent hover:text-accent"
-                >
-                  {b.name}
-                  <span className="opacity-60 tnum">{items.filter((i) => i.brand === b.slug).length}</span>
-                </Link>
-              ))}
-            </div>
-          )}
-
-          <div className="mb-8">
-            <FitmentPicker compact />
-          </div>
-
-          <CatalogBrowser items={items} initial={filters} locked={["categories"]} />
-        </div>
-      </section>
+      <CatalogBrowser
+        items={items}
+        initial={filters}
+        locked={["categories"]}
+        vehicleBar
+        header={{
+          crumbs: [
+            { label: "Home", href: "/" },
+            { label: cat.name, href: `/shop/${cat.slug}` },
+          ],
+          title: cat.name,
+        }}
+      />
 
       <section className="section border-t border-tint/8 bg-carbon">
         <div className="shell">
           <SectionHead
             eyebrow={`${cat.name} range`}
             title="EVERYTHING IN THIS CATEGORY."
-            blurb="Listed online or not, we stock or source all of it. Ask on WhatsApp for anything you can't find here."
+            blurb="Listed online or not, we stock or source all of it. Ask us for anything you can't find here."
           />
           {/* A type we actually have listed links into the filtered grid. One we
               stock but haven't listed stays a plain chip rather than a link to

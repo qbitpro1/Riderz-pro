@@ -25,14 +25,15 @@ export type PpfLanding = {
   points: string[];
 };
 
-/** Cities we can honestly claim to serve: our own studios, plus Delhi NCR. */
+/**
+ * Cities we can honestly claim to serve: Delhi NCR and Bengaluru. Hyderabad and Pune were dropped with
+ * the demo garage locations; add a city back here once there is a studio in LOCATIONS.
+ */
 const CITY_TARGETS = [
   { name: "Delhi", state: "Delhi", nearby: "Delhi NCR" },
   { name: "Gurugram", state: "Haryana", nearby: "Delhi NCR" },
   { name: "Noida", state: "Uttar Pradesh", nearby: "Delhi NCR" },
   { name: "Bengaluru", state: "Karnataka", nearby: null },
-  { name: "Hyderabad", state: "Telangana", nearby: null },
-  { name: "Pune", state: "Maharashtra", nearby: null },
 ];
 
 /** Models with enough search demand to deserve their own page. */
@@ -66,7 +67,7 @@ function cityLanding(target: (typeof CITY_TARGETS)[number]): PpfLanding {
     )}, full front from ₹${fullFront.low.toLocaleString("en-IN")}. Plotter-cut patterns, dust-controlled installation, manufacturer warranty passed through.`,
     intro: studio
       ? `Our ${target.name} studio has a dedicated dust-controlled room for film work. Book an inspection and we read the paint before quoting — the number on the website is an estimate until we have seen the car.`
-      : `We install paint protection film for customers across ${target.nearby ?? target.name}. Bring the car to the nearest Riderzpro studio and we will read the paint, quote properly and book you in.`,
+      : `We install paint protection film for customers across ${target.nearby ?? target.name}. Tell us about the car and we will read the paint, quote properly and arrange the installation.`,
     sizeClass: "mid-suv",
     vehicle: null,
     city: { name: target.name, state: target.state, address: studio?.address ?? null },

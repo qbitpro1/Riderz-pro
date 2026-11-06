@@ -131,7 +131,7 @@ export function CatalogCard({
   );
 }
 
-function wishlistItem(item: ShopItem): WishlistInput {
+export function wishlistItem(item: ShopItem): WishlistInput {
   const img = item.image;
   return {
     slug: item.slug,

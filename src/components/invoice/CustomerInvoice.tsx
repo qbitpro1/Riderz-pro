@@ -75,7 +75,7 @@ export function CustomerInvoice({ inv }: { inv: CustomerInvoiceSnapshot }) {
           <h2 className="eyebrow mb-2">Sold by</h2>
           <p className="font-semibold">{s.legalName}</p>
           <p className="text-ash">Trading as {s.tradeName}</p>
-          <p className="mt-1 text-ash">{s.address}</p>
+          {s.address && <p className="mt-1 text-ash">{s.address}</p>}
           <p className="mt-1 text-xs">GSTIN <span className="font-bold tnum">{s.gstin}</span> · State {s.state} ({s.stateCode})</p>
           <p className="mt-1 text-xs text-ash">{s.email} · {s.phone}</p>
         </div>

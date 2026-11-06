@@ -24,7 +24,7 @@ export const POST = route(async (req: Request) => {
   guardMutation(req);
   await rateLimit(`order:${clientIp(req)}`, 10, 10 * 60);
   const input = await readJson(req, placeOrderSchema, 32 * 1024);
-  // Pay-later (WhatsApp) orders hold seller stock until someone cancels them, so they get tighter
+  // Pay-later orders (method "whatsapp" in the database) hold seller stock until someone cancels them, so they get tighter
   // limits than paid ones: per mobile number as well as per IP, and a cap on quantities.
   await rateLimit(`order-mobile:${input.customer.mobile}`, 5, 60 * 60);
   if (input.paymentMethod !== "online") {
@@ -33,14 +33,14 @@ export const POST = route(async (req: Request) => {
       throw new ApiError(
         400,
         "too_many_units",
-        `For orders paid on WhatsApp, please keep it to ${WHATSAPP_MAX_QTY} of an item and ${WHATSAPP_MAX_UNITS} items in all, or pay online. For bigger orders, message us.`,
+        `For pay-later orders, please keep it to ${WHATSAPP_MAX_QTY} of an item and ${WHATSAPP_MAX_UNITS} items in all, or pay online. For bigger orders, contact us.`,
       );
     }
   }
   releaseUnpaidOrdersSoon();
   housekeeping();
   if (input.paymentMethod === "online" && !onlinePaymentsEnabled()) {
-    throw new ApiError(409, "payments_unavailable", "Online payment isn't available right now. Please order on WhatsApp.");
+    throw new ApiError(409, "payments_unavailable", "Online payment isn't available right now. You can place the order and pay later.");
   }
   const me = await currentCustomer();
   const order = await placeOrder(input, me?.id ?? null, { method: input.paymentMethod });

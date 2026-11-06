@@ -9,6 +9,7 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
+    "test": "vitest run",
     "sync:recoil": "node scripts/sync-recoil-manufacturer.mjs",
     "verify:recoil": "node scripts/verify-price-list.mjs",
     "import:recoil": "node scripts/import-recoil.mjs",
@@ -36,9 +37,10 @@
     "@types/react": "19.1.13",
     "@types/react-dom": "19.1.9",
     "eslint": "9.39.5",
-    "eslint-config-next": "16.4.3",
+    "eslint-config-next": "^16.4.3",
     "pdfjs-dist": "^6.2.108",
     "tailwindcss": "4.1.13",
-    "typescript": "5.9.2"
+    "typescript": "5.9.2",
+    "vitest": "^3.2.4"
   }
 }

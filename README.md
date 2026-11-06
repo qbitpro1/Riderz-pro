@@ -49,7 +49,8 @@ screen in their own shop.
 | --- | --- | --- |
 | Shop | House catalogue, marketplace items, fitment by car (My Garage), wishlist, collections, search | `/shop`, `/products/[slug]`, `/sellers/[slug]` |
 | Ask AI | Free shopping help over our own catalogue (Claude optional) | `/assistant` |
-| Checkout | Server-priced orders; pay online (Razorpay) or order on WhatsApp; coupons; "Detect my location" | `/cart`, `/api/orders` |
+| Checkout | Server-priced orders; pay online (Razorpay) or place the order and pay later (the team calls to confirm); coupons; "Detect my location" | `/cart`, `/api/orders` |
+| Enquiries | No WhatsApp on the shopper site: quote, booking, fitment and "ask us" buttons save a help-desk ticket (`src/components/enquiry/Enquiry.tsx`), answered in admin → Customer support | `/api/support/tickets` |
 | Customer accounts | Sign-in with a mobile/email code, orders with live tracking, GST invoices, addresses, help desk | `/account` |
 | Sellers | Sign-up, KYC onboarding, products, stock, pricing, orders, invoices, payouts, notifications | `/vendor` |
 | Offline Store | Shop-floor screen per seller: shop categories, Bestseller tags, suggestions, Salesman AI with seller-limited bargaining, pay on the screen or at the counter, receipts by SMS | `/store/[slug]`, set up in `/vendor/dashboard/store-screen` |
@@ -155,17 +156,21 @@ re-entered and nothing is wiped.
 ### Code still to do
 
 - [ ] Keep search engines off the test site. Today `robots.txt` allows everything on every address.
+- [x] Demo content removed (Nov 2026): testimonials, figures ("12,400+ builds", "4.8/5"), the
+  Bengaluru/Hyderabad/Pune garage locations (`/locations` now redirects to `/contact`), the 8 customer
+  builds and the 16 hard-coded used cars. The data arrays in `src/lib/data/community.ts`, `cars.ts`
+  and `site.ts` (`LOCATIONS`) are empty, and their pages hide the section or show an empty state;
+  adding real entries brings them back.
+- [ ] Registered office address for GST invoices and the Contact page: `SITE.registeredOffice` in
+  `src/lib/data/site.ts` (empty, so invoices print no address yet).
 - [ ] Owner decisions on content that isn't real yet:
-  - testimonials, figures ("12,400+ builds", "4.8/5") and garage locations in Bengaluru, Hyderabad
-    and Pune;
-  - star ratings shown on house products;
-  - 16 hard-coded used cars;
+  - star ratings shown on house products (kept for now);
   - the dealer form on `/partners`, which doesn't save anything yet.
 - [ ] Replace the Unsplash stock photos on the home page with our own.
 - [ ] Merge `chore/zod-4` (zod 4 upgrade; clears the last high-severity `npm audit` item).
 - [ ] Add a Content-Security-Policy header.
 - [ ] Decide:
-  - auto-cancelling old unpaid WhatsApp orders (today only quantity limits);
+  - auto-cancelling old unpaid pay-later orders (today only quantity limits);
   - whether products rejected by admin should leave the shop screen.
 - [ ] Not built yet, waiting on the owner:
   - header "Deliver to" picker;

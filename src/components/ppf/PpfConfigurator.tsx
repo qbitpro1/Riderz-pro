@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { rupees } from "@/lib/format";
-import { whatsapp } from "@/lib/data/site";
 import { BRANDS } from "@/lib/data/vehicles";
 import {
   AREA_GROUP_LABEL,
@@ -21,6 +20,7 @@ import {
   type SizeClass,
 } from "@/lib/ppf/coverage";
 import type { FilmFinish, FilmTier } from "@/lib/ppf/films";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 
 type PublishedFilm = {
   slug: string;
@@ -391,23 +391,12 @@ export function PpfConfigurator({ films }: { films: PublishedFilm[] }) {
 
           {vehicleLabel && <p className="mt-4 text-xs text-ash">{vehicleLabel}</p>}
 
-          <a
-            href={whatsapp(message)}
-            target="_blank"
-            rel="noreferrer noopener"
-            className={`btn btn-block mt-5 ${nothingSelected ? "btn-outline pointer-events-none opacity-40" : "btn-accent"}`}
-          >
-            <Icon name="whatsapp" size={16} />
+          <EnquiryButton topic="installation" message={message} className={`btn btn-block mt-5 ${nothingSelected ? "btn-outline pointer-events-none opacity-40" : "btn-accent"}`}>
             Get final quote
-          </a>
-          <a
-            href={whatsapp(`${message}\n\nI'd also like to book the installation.`)}
-            target="_blank"
-            rel="noreferrer noopener"
-            className={`btn btn-outline btn-block mt-3 ${nothingSelected ? "pointer-events-none opacity-40" : ""}`}
-          >
+          </EnquiryButton>
+          <EnquiryButton topic="installation" message={`${message}\n\nI'd also like to book the installation.`} className={`btn btn-outline btn-block mt-3 ${nothingSelected ? "pointer-events-none opacity-40" : ""}`}>
             Book installation
-          </a>
+          </EnquiryButton>
 
           <button
             type="button"

@@ -6,7 +6,7 @@ import { useCart } from "@/components/cart/CartContext";
 import { Icon } from "@/components/ui/Icon";
 import { Stars } from "@/components/ui/Section";
 import { WishlistButton } from "@/components/wishlist/WishlistButton";
-import { whatsapp } from "@/lib/data/site";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 import { rupees } from "@/lib/format";
 import { FREE_SHIPPING_OVER } from "@/lib/store/shipping";
 import { cartLineId, productHref, type ProductDetail } from "@/lib/store/types";
@@ -63,10 +63,10 @@ export function BuyBox({ detail }: { detail: ProductDetail }) {
     .filter(Boolean)
     .join(" · ");
 
-  const askLink = whatsapp(
+  const askMessage = (
     `Hi Riderzpro, I'm interested in ${detail.title}${detail.code ? ` (${detail.code})` : ""}${
       variant ? `, ${variant}` : ""
-    }. Could you share the price and availability?`,
+    }. Could you share the price and availability?`
   );
 
   const line = () => ({
@@ -202,7 +202,7 @@ export function BuyBox({ detail }: { detail: ProductDetail }) {
             className="mt-0.5 h-5 w-5 shrink-0 accent-accent"
           />
           <span className="text-sm">
-            <span className="font-semibold">Add installation at our garage</span>
+            <span className="font-semibold">Add installation</span>
             <span className="ml-1.5 text-ash tnum">+ {rupees(installPrice)}</span>
             {detail.installation.time && <span className="block text-xs text-dim">Takes about {detail.installation.time}</span>}
           </span>
@@ -248,10 +248,9 @@ export function BuyBox({ detail }: { detail: ProductDetail }) {
             </div>
           </>
         ) : (
-          <a href={askLink} target="_blank" rel="noopener noreferrer" className="btn btn-whatsapp btn-block">
-            <Icon name="whatsapp" size={16} />
-            Ask on WhatsApp
-          </a>
+          <EnquiryButton topic="product" title="Ask about this product" message={askMessage} className="btn btn-primary btn-block">
+            Ask for price and availability
+          </EnquiryButton>
         )}
       </div>
 
@@ -273,7 +272,7 @@ export function BuyBox({ detail }: { detail: ProductDetail }) {
         <TrustItem icon="check" text={`Free shipping on orders over ${rupees(FREE_SHIPPING_OVER)}`} />
         {detail.delivery && <TrustItem icon="arrow" text={detail.delivery} />}
         {detail.warranty && <TrustItem icon="shield" text={detail.warranty} />}
-        {detail.installation && <TrustItem icon="wrench" text="Fitted at our garages" />}
+        {detail.installation && <TrustItem icon="wrench" text="Installation available" />}
       </ul>
 
       {/* Phone-only sticky bar */}
@@ -295,15 +294,9 @@ export function BuyBox({ detail }: { detail: ProductDetail }) {
               Add to cart
             </button>
           ) : (
-            <a
-              href={askLink}
-              tabIndex={showBar ? 0 : -1}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-whatsapp shrink-0"
-            >
-              Ask on WhatsApp
-            </a>
+            <EnquiryButton topic="product" title="Ask about this product" message={askMessage} tabIndex={showBar ? 0 : -1} className="btn btn-primary shrink-0">
+              Ask us
+            </EnquiryButton>
           )}
         </div>
       </div>

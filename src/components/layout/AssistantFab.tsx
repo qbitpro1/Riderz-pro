@@ -6,6 +6,7 @@ import Link from "next/link";
 import { STICKY_BAR_VAR } from "./useStickyBarOffset";
 import { Icon } from "@/components/ui/Icon";
 import { AssistantChat } from "@/components/assistant/AssistantChat";
+import { OPEN_ASSISTANT_EVENT } from "@/components/catalog/FilterSidebar";
 
 /**
  * The chat button at the bottom right of every shopper page. It opens a small window with the AI
@@ -50,6 +51,13 @@ export function AssistantFab() {
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
+  // "Ask AI" elsewhere on the page (the listing filters) opens this window.
+  useEffect(() => {
+    const onOpen = () => setOpen(true);
+    window.addEventListener(OPEN_ASSISTANT_EVENT, onOpen);
+    return () => window.removeEventListener(OPEN_ASSISTANT_EVENT, onOpen);
+  }, []);
+
   // The full-page assistant is already on screen there.
   if (pathname === "/assistant") return null;
 
@@ -83,6 +91,7 @@ export function AssistantFab() {
                 type="button"
                 onClick={() => {
                   setOpen(false);
+                  // On a desktop listing the floating button is hidden; focus it only when it shows.
                   button.current?.focus();
                 }}
                 aria-label="Close the assistant"
@@ -105,7 +114,7 @@ export function AssistantFab() {
         aria-expanded={open}
         aria-controls="assistant-window"
         aria-label={open ? "Close the AI assistant" : "Ask our AI assistant"}
-        className={`fixed right-4 z-50 flex h-13 items-center gap-2 rounded-full bg-accent py-3 pl-3.5 pr-4 font-display text-xs font-bold uppercase tracking-[0.12em] text-on-accent shadow-[0_14px_40px_-12px_rgba(0,0,0,0.8)] transition-transform hover:-translate-y-0.5 lg:right-6 ${bottom} ${open ? "max-md:hidden" : ""}`}
+        className={`assistant-fab fixed right-4 z-50 flex h-13 items-center gap-2 rounded-full bg-accent py-3 pl-3.5 pr-4 font-display text-xs font-bold uppercase tracking-[0.12em] text-on-accent shadow-[0_14px_40px_-12px_rgba(0,0,0,0.8)] transition-transform hover:-translate-y-0.5 lg:right-6 ${bottom} ${open ? "max-md:hidden" : ""}`}
       >
         <Icon name={open ? "close" : "spark"} size={19} />
         <span className="hidden xs:inline">{open ? "Close" : "Ask AI"}</span>

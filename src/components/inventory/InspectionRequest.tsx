@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Icon } from "@/components/ui/Icon";
-import { whatsapp } from "@/lib/data/site";
+import { EnquiryStatus, useEnquiry } from "@/components/enquiry/Enquiry";
 
 /**
  * REQUEST RIDERZPRO INSPECTION.
@@ -17,6 +17,7 @@ export function InspectionRequest({ vehicle, city }: { vehicle: string; city: st
   const [location, setLocation] = useState(city);
   const [date, setDate] = useState("");
 
+  const enquiry = useEnquiry();
   const ready = name.trim().length > 1 && phone.trim().length >= 10;
 
   const message = [
@@ -42,7 +43,7 @@ export function InspectionRequest({ vehicle, city }: { vehicle: string; city: st
       className="border border-tint/10 bg-tint/3 p-4"
       onSubmit={(e) => {
         e.preventDefault();
-        if (ready) window.open(whatsapp(message), "_blank", "noopener,noreferrer");
+        if (ready && !enquiry.sending) void enquiry.send({ name: name, mobile: phone, topic: "other", message });
       }}
     >
       <div className="flex items-start justify-between gap-3">
@@ -94,12 +95,14 @@ export function InspectionRequest({ vehicle, city }: { vehicle: string; city: st
 
       <button
         type="submit"
-        disabled={!ready}
-        className={`btn btn-block mt-4 ${ready ? "btn-whatsapp" : "btn-outline cursor-not-allowed opacity-40"}`}
+        disabled={!ready || enquiry.sending}
+        aria-busy={enquiry.sending}
+        className={`btn btn-block mt-4 ${ready ? "btn-primary" : "btn-outline cursor-not-allowed opacity-40"}`}
       >
-        <Icon name="whatsapp" size={16} />
-        Send inspection request
+        <Icon name="check" size={16} />
+        {enquiry.sending ? "Sending…" : "Send inspection request"}
       </button>
+      <EnquiryStatus status={enquiry.status} error={enquiry.error} />
       <p className="mt-3 text-[11px] leading-relaxed text-dim">
         Vehicle: {vehicle}. Requesting an inspection does not mark this car as verified — the badge is
         only added after our engineer has physically checked it.

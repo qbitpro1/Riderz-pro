@@ -8,7 +8,6 @@ import { HeroCarousel } from "@/components/home/HeroCarousel";
 import { CatalogCard } from "@/components/catalog/CatalogCard";
 import { BrandStrip } from "@/components/catalog/BrandStrip";
 import { FitmentPicker } from "@/components/fitment/FitmentPicker";
-import { ReviewCard } from "@/components/community/Cards";
 import { CATALOG, sortItems } from "@/lib/catalog";
 import { COLLECTIONS } from "@/lib/data/collections";
 import {
@@ -19,9 +18,8 @@ import {
   oeHref,
   type DepartmentSlug,
 } from "@/lib/data/taxonomy";
-import { REVIEWS, STATS } from "@/lib/data/community";
 import { LANDING_MODELS } from "@/lib/data/vehicles";
-import { LOCATIONS, SITE } from "@/lib/data/site";
+import { SITE } from "@/lib/data/site";
 import { rupees } from "@/lib/format";
 import type { MediaKey } from "@/lib/media";
 import { pageMeta } from "@/lib/data/seo";
@@ -29,7 +27,7 @@ import { pageMeta } from "@/lib/data/seo";
 export const metadata: Metadata = pageMeta({
   title: "Riderzpro — Car Accessories, Fitted Right",
   description:
-    "Seat covers, floor mats, multimedia, lighting, covers and guards, and off-roading gear. Made by Riderzpro, fitment-checked for your model and fitted in Bengaluru, Hyderabad and Pune.",
+    "Seat covers, floor mats, multimedia, lighting, covers and guards, and off-roading gear. Made by Riderzpro, fitment-checked for your model, with installation available.",
   path: "/",
 });
 
@@ -94,7 +92,7 @@ const WHY = [
   },
   {
     title: "Fitted by people who know them",
-    body: "Installation is available at our garages for the products marked with the wrench.",
+    body: "Installation is available for the products marked with the wrench.",
   },
   {
     title: "Help whenever you ask",
@@ -136,6 +134,8 @@ export default function HomePage() {
   ).slice(0, 12);
 
   const collections = COLLECTIONS.map((c) => ({ c, count: CATALOG.filter(c.match).length })).filter((x) => x.count > 0);
+  // Full rows only: 3 across when the count divides by 3 but not 4 (6 collections → 2 rows), else 4.
+  const threeUp = collections.length % 3 === 0 && collections.length % 4 !== 0;
 
   const models = LANDING_MODELS.slice(0, 12);
 
@@ -165,17 +165,11 @@ export default function HomePage() {
       {/* 2 — TRUST STRIP --------------------------------------------------- */}
       <section className="bg-carbon py-6 md:py-8" aria-label="Why shop with us">
         <div className="shell">
-          <ul className="grid grid-cols-2 gap-x-4 gap-y-5 md:grid-cols-4 lg:grid-cols-8">
-            {STATS.map((s) => (
-              <li key={s.label}>
-                <p className="font-display text-xl font-extrabold tnum">{s.value}</p>
-                <p className="text-[11px] text-dim">{s.label}</p>
-              </li>
-            ))}
+          <ul className="grid gap-x-4 gap-y-3 sm:grid-cols-3">
             {[
               "Fitment-checked for your car",
               `Free shipping over ${rupees(FREE_SHIPPING_OVER)}`,
-              "Installation at our garages",
+              "Installation available",
             ].map((t) => (
               <li key={t} className="flex items-start gap-2 text-xs text-ash">
                 <Icon name="check" size={14} className="mt-0.5 shrink-0 text-accent" />
@@ -288,14 +282,14 @@ export default function HomePage() {
       <section className="section bg-void">
         <div className="shell">
           <SectionHead eyebrow="Collections" title="Shop by price and offer" href="/collections" />
-          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 md:gap-4">
+          <ul className={`grid gap-3 sm:grid-cols-2 md:gap-4 ${threeUp ? "lg:grid-cols-3" : "lg:grid-cols-4"}`}>
             {collections.map(({ c, count }, i) => (
               <li key={c.slug}>
                 <Reveal delay={i * 55} className="h-full">
                   <Link
                     data-theme="dark"
                     href={`/collections/${c.slug}`}
-                    className="card card-hover relative flex aspect-[16/10] flex-col justify-end overflow-hidden bg-graphite lg:aspect-[4/5]"
+                    className={`card card-hover relative flex aspect-[16/10] flex-col justify-end overflow-hidden bg-graphite ${threeUp ? "lg:aspect-[4/3]" : "lg:aspect-[4/5]"}`}
                   >
                     <Photo media={c.image} sizes="(min-width:1024px) 24vw, (min-width:640px) 48vw, 92vw" className="zoom opacity-75" />
                     <div className="absolute inset-0 scrim-soft" />
@@ -357,7 +351,6 @@ export default function HomePage() {
             <h2 className="display-2">We fit what we sell</h2>
             <ul className="mt-5 space-y-3 text-sm text-ash md:text-base">
               {[
-                "Fitting at our garages in Bengaluru, Hyderabad and Pune.",
                 "Look for the wrench on a product: installation is available for it.",
                 "Book a slot and we confirm fitment before we start.",
               ].map((t) => (
@@ -369,7 +362,7 @@ export default function HomePage() {
             </ul>
             <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
               <Link href="/garage" className="btn btn-primary">
-                Visit the garage
+                Book installation
                 <Icon name="arrow" size={16} />
               </Link>
               {SERVICES.map((s) => (
@@ -390,61 +383,14 @@ export default function HomePage() {
       <section className="section bg-void">
         <div className="shell">
           <SectionHead eyebrow="Why Riderzpro" title="Made, fitted and backed by us" />
-          <div className="grid gap-8 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-14">
-            <ul className="grid gap-4 sm:grid-cols-2">
-              {WHY.map((w) => (
-                <li key={w.title} className="card p-5">
-                  <h3 className="font-display text-base font-bold">{w.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-ash">{w.body}</p>
-                </li>
-              ))}
-            </ul>
-            <dl className="grid grid-cols-2 content-start gap-x-4 gap-y-6">
-              {STATS.map((s) => (
-                <div key={s.label} className="border-t border-tint/15 pt-3">
-                  <dd className="font-display text-3xl font-extrabold tnum">{s.value}</dd>
-                  <dt className="mt-1 text-xs text-dim">{s.label}</dt>
-                </div>
-              ))}
-            </dl>
-          </div>
-        </div>
-      </section>
-
-      {/* 12 — REVIEWS ------------------------------------------------------ */}
-      <section className="section bg-carbon">
-        <div className="shell">
-          <SectionHead eyebrow="Reviews" title="What customers say" />
-          <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {REVIEWS.slice(0, 6).map((r) => (
-              <li key={r.name}>
-                <ReviewCard review={r} />
+          <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {WHY.map((w) => (
+              <li key={w.title} className="card p-5">
+                <h3 className="font-display text-base font-bold">{w.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-ash">{w.body}</p>
               </li>
             ))}
           </ul>
-        </div>
-      </section>
-
-      {/* 13 — STORES ------------------------------------------------------- */}
-      <section className="section bg-void">
-        <div className="shell">
-          <SectionHead eyebrow="Visit us" title="Our garages" href="/locations" hrefLabel="All locations" />
-          <ul className="grid gap-3 md:grid-cols-3 md:gap-4">
-            {LOCATIONS.map((l) => (
-              <li key={l.slug}>
-                <Link href="/locations" className="card card-hover flex h-full min-h-[44px] flex-col p-5">
-                  <span className="font-display text-lg font-bold">{l.city}</span>
-                  <span className="mt-1 text-sm text-ash">{l.name}</span>
-                  <span className="mt-2 text-xs leading-relaxed text-dim">{l.address}</span>
-                  <span className="mt-4 inline-flex items-center gap-1 text-xs text-accent">
-                    Hours and directions
-                    <Icon name="arrow" size={12} />
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-          <SectionFootLink href="/locations" label="All locations" />
         </div>
       </section>
 

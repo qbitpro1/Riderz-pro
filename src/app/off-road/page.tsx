@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHero } from "@/components/layout/PageHero";
 import { SectionHead } from "@/components/ui/Section";
-import { Icon } from "@/components/ui/Icon";
 import { Photo } from "@/components/ui/Photo";
 import { Reveal } from "@/components/ui/Reveal";
 import { CatalogCard } from "@/components/catalog/CatalogCard";
@@ -13,8 +12,8 @@ import { OFFROAD_GROUPS } from "@/lib/data/services";
 import { productsIn } from "@/lib/data/products";
 import { BUILDS } from "@/lib/data/community";
 import { rupees } from "@/lib/format";
-import { whatsapp } from "@/lib/data/site";
 import { pageMeta } from "@/lib/data/seo";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 
 export const metadata: Metadata = pageMeta({
   title: "Off-Road Accessories & 4x4 Builds — Lift Kits & Recovery",
@@ -135,18 +134,20 @@ export default function OffRoadPage() {
       </section>
 
       {/* builds ---------------------------------------------------- */}
-      <section className="section">
-        <div className="shell">
-          <SectionHead eyebrow="Finished rigs" title="BUILT AND PROVEN." href="/builds" hrefLabel="All builds" />
-          <ul className="grid gap-4 md:grid-cols-2">
-            {offroadBuilds.map((b) => (
-              <li key={b.slug}>
-                <BuildCard build={b} sizes="(min-width:768px) 50vw, 92vw" />
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
+      {offroadBuilds.length > 0 && (
+        <section className="section">
+          <div className="shell">
+            <SectionHead eyebrow="Finished rigs" title="BUILT AND PROVEN." href="/builds" hrefLabel="All builds" />
+            <ul className="grid gap-4 md:grid-cols-2">
+              {offroadBuilds.map((b) => (
+                <li key={b.slug}>
+                  <BuildCard build={b} sizes="(min-width:768px) 50vw, 92vw" />
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
 
       <section className="section border-t border-tint/8 bg-carbon">
         <div className="shell grid gap-8 lg:grid-cols-2 lg:items-start">
@@ -160,15 +161,9 @@ export default function OffRoadPage() {
               Spiti in June is a different build from Rann in December, and both are different from
               weekend trails outside the city. Tell us the trip and we&apos;ll spec the truck for it.
             </p>
-            <a
-              href={whatsapp("Hi Riderzpro, I want to build my off-road SUV. My vehicle is:  and I mostly drive: ")}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="btn btn-whatsapp btn-block mt-5"
-            >
-              <Icon name="whatsapp" size={16} />
+            <EnquiryButton topic="installation" message={"Hi Riderzpro, I want to build my off-road SUV. My vehicle is:  and I mostly drive: "} className="btn btn-primary btn-block mt-5">
               Build my off-road SUV
-            </a>
+            </EnquiryButton>
             <Link href="/build" className="btn btn-outline btn-block mt-3">
               Configure it yourself
             </Link>

@@ -2,9 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { Icon } from "@/components/ui/Icon";
 import { useStickyBarOffset } from "@/components/layout/useStickyBarOffset";
-import { whatsapp } from "@/lib/data/site";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 
 /**
  * Mobile sticky CTA. PPF customers browse on a phone and decide on a phone, so
@@ -39,18 +38,12 @@ export function StickyPpfCta({ vehicle }: { vehicle?: string }) {
         <Link href="/ppf/quote" className="btn btn-accent btn-sm">
           Get quote
         </Link>
-        <a href={whatsapp(message)} target="_blank" rel="noreferrer noopener" className="btn btn-whatsapp btn-sm">
-          <Icon name="whatsapp" size={14} />
-          WhatsApp
-        </a>
-        <a
-          href={whatsapp(`${message} I'd like to book installation.`)}
-          target="_blank"
-          rel="noreferrer noopener"
-          className="btn btn-outline btn-sm"
-        >
+        <EnquiryButton topic="installation" message={message} className="btn btn-primary btn-sm">
+          Message
+        </EnquiryButton>
+        <EnquiryButton topic="installation" message={`${message} I'd like to book installation.`} className="btn btn-outline btn-sm">
           Book now
-        </a>
+        </EnquiryButton>
       </div>
     </div>
   );

@@ -53,7 +53,7 @@ async function topicReply(intent: Intent, onlinePay: boolean): Promise<string | 
     case "delivery":
       return `Delivery is free on orders of ${inr(FREE_SHIPPING_OVER)} or more; below that it's a flat ${inr(SHIPPING_FEE)}. In-stock items ordered before 2 PM on a working day leave the same day. Metro cities take 2–3 working days, other cities 3–6. Made-to-order items show their lead time on the product page.`;
     case "installation":
-      return "Products marked with the wrench can be fitted at our garages; the fitting price and time show on the product page, and you can add fitting in the cart. Workmanship at a Riderzpro garage has a 12-month warranty.";
+      return "Products marked with the wrench can be fitted for you; the fitting price and time show on the product page, and you can add fitting in the cart. Fitting done by Riderzpro has a 12-month workmanship warranty.";
     case "payment":
       return onlinePay
         ? "Pay online at checkout with UPI, card or net banking. Your order is confirmed as soon as the payment goes through."
@@ -61,9 +61,9 @@ async function topicReply(intent: Intent, onlinePay: boolean): Promise<string | 
     case "order_status":
       return "To see your order, sign in under Account → My orders, or use Track your order with your order number and mobile.";
     case "warranty":
-      return "Each product's warranty is on its product page (it comes from the maker). Installation done at a Riderzpro garage has our own 12-month workmanship warranty. Tell me a product and I'll find it.";
+      return "Each product's warranty is on its product page (it comes from the maker). Fitting done by Riderzpro has our own 12-month workmanship warranty. Tell me a product and I'll find it.";
     case "contact":
-      return `You can call us on ${SITE.phone} (${SITE.hours}) or email ${SITE.email}. The Contact page has all our garages.`;
+      return `You can call us on ${SITE.phone} (${SITE.hours}) or email ${SITE.email}. The Contact page has every way to reach us.`;
     case "bargain":
       return "Online prices are fixed, but coupon codes often take more off Riderzpro's own products. Ask me “any offers?” to see the codes running now.";
     case "offers": {

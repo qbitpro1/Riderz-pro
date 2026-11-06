@@ -52,9 +52,9 @@ export function SectionFootLink({ href, label }: { href: string; label: string }
   );
 }
 
-export function Stars({ rating, size = 13 }: { rating: number; size?: number }) {
+export function Stars({ rating, size = 13, className = "text-accent" }: { rating: number; size?: number; className?: string }) {
   return (
-    <span className="inline-flex items-center gap-0.5 text-accent" aria-label={`${rating} out of 5`}>
+    <span className={`inline-flex items-center gap-0.5 ${className}`} aria-label={`${rating} out of 5`}>
       {[1, 2, 3, 4, 5].map((i) => (
         <Icon
           key={i}

@@ -5,7 +5,7 @@
  */
 import { invoiceLines, sameState, type InvoiceLine } from "@/components/vendor/orders/invoice";
 import type { OrderItemView } from "@/components/vendor/orders/types";
-import { LOCATIONS, SITE } from "@/lib/data/site";
+import { SITE } from "@/lib/data/site";
 
 /* ------------------------------------------------------------ the supplier */
 
@@ -22,17 +22,15 @@ export const GST_STATE_CODES: Record<string, string> = {
 
 export const stateForCode = (code: string) => Object.keys(GST_STATE_CODES).find((s) => GST_STATE_CODES[s] === code) ?? null;
 
-const HQ = LOCATIONS.find((l) => l.flagship) ?? LOCATIONS[0];
-
 /**
- * Who issues the invoice. The address is the Bengaluru garage until the registered office address is
- * confirmed (docs/team/Sathwik_work.md §5). The state comes from the GSTIN.
+ * Who issues the invoice. The address is SITE.registeredOffice, empty until the registered office
+ * address is confirmed (docs/team/Sathwik_work.md §5). The state comes from the GSTIN.
  */
 export const SUPPLIER = {
   legalName: SITE.legalName,
   tradeName: SITE.name,
   gstin: SITE.gstin,
-  address: HQ.address,
+  address: SITE.registeredOffice as string,
   stateCode: SITE.gstin.slice(0, 2),
   state: stateForCode(SITE.gstin.slice(0, 2)) ?? "Karnataka",
   email: SITE.email,

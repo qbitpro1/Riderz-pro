@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Icon } from "@/components/ui/Icon";
-import { whatsapp } from "@/lib/data/site";
+import { EnquiryStatus, useEnquiry } from "@/components/enquiry/Enquiry";
 import { DEALER_TARGET_REGIONS } from "@/lib/inventory/network";
 
 const CITIES = DEALER_TARGET_REGIONS.flatMap((r) => r.cities);
@@ -37,6 +37,7 @@ export function PartnerSignup() {
   const [system, setSystem] = useState(INVENTORY_SYSTEMS[0]);
   const [agreed, setAgreed] = useState(false);
 
+  const enquiry = useEnquiry();
   const ready = business.trim() && contact.trim() && phone.trim().length >= 10 && city && agreed;
 
   const message = [
@@ -63,7 +64,7 @@ export function PartnerSignup() {
       className="card scroll-mt-24 p-5 md:p-6"
       onSubmit={(e) => {
         e.preventDefault();
-        if (ready) window.open(whatsapp(message), "_blank", "noopener,noreferrer");
+        if (ready && !enquiry.sending) void enquiry.send({ name: contact, mobile: phone, email: email, topic: "other", message });
       }}
     >
       <p className="eyebrow mb-1">Become a partner</p>
@@ -165,12 +166,14 @@ export function PartnerSignup() {
 
       <button
         type="submit"
-        disabled={!ready}
-        className={`btn btn-block mt-5 ${ready ? "btn-whatsapp" : "btn-outline cursor-not-allowed opacity-40"}`}
+        disabled={!ready || enquiry.sending}
+        aria-busy={enquiry.sending}
+        className={`btn btn-block mt-5 ${ready ? "btn-primary" : "btn-outline cursor-not-allowed opacity-40"}`}
       >
-        <Icon name="whatsapp" size={16} />
-        List my inventory
+        <Icon name="check" size={16} />
+        {enquiry.sending ? "Sending…" : "List my inventory"}
       </button>
+      <EnquiryStatus status={enquiry.status} error={enquiry.error} />
     </form>
   );
 }

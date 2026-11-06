@@ -6,7 +6,7 @@ import { useBe6Build } from "./BuildState";
 import { ProvenanceTag, StageTag, ValidationNotice } from "./Label";
 import { Icon } from "@/components/ui/Icon";
 import { lakh, rupees } from "@/lib/format";
-import { whatsapp } from "@/lib/data/site";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 import {
   STAGE_COPY,
   UPGRADE_GROUPS,
@@ -195,17 +195,9 @@ export function Builder() {
             <button type="button" className="btn btn-accent btn-block" onClick={() => saveBuild(build)}>
               SAVE MY BUILD
             </button>
-            <a
-              href={whatsapp(
-                `Hi Riderzpro — I'd like a quote on a BE 6 SPORTEQ ${selected.variant.name} (${selected.battery.label}) with ${selected.upgrades.length} Riderzpro upgrade(s). Estimated build value ${lakh(total)}.`,
-              )}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-whatsapp btn-block"
-            >
-              <Icon name="whatsapp" size={16} />
+            <EnquiryButton topic="other" message={`Hi Riderzpro — I'd like a quote on a BE 6 SPORTEQ ${selected.variant.name} (${selected.battery.label}) with ${selected.upgrades.length} Riderzpro upgrade(s). Estimated build value ${lakh(total)}.`} className="btn btn-primary btn-block">
               REQUEST QUOTE
-            </a>
+            </EnquiryButton>
             <Link href="/contact" className="btn btn-outline btn-block">
               BOOK CONSULTATION
             </Link>

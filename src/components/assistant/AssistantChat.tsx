@@ -8,8 +8,8 @@ import { useGarage } from "@/lib/client/garage";
 import { useHydrated } from "@/lib/client/hooks";
 import { ASSISTANT_MAX_CHARS, WEB_STARTERS, type AssistantMessage } from "@/lib/assistant/types";
 import type { ShopItem } from "@/lib/catalog/types";
-import { whatsapp } from "@/lib/data/site";
 import { rupees } from "@/lib/format";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 
 type Turn = AssistantMessage & { items?: ShopItem[] };
 const KEY = "riderzpro.assistant.v1";
@@ -113,10 +113,10 @@ function Chat({ initialQuestion, compact }: { initialQuestion?: string; compact:
   if (enabled === false) {
     return (
       <div className="card p-6 text-sm text-ash">
-        <p>The AI assistant isn&apos;t switched on yet. Search the shop, or ask us on WhatsApp and a person will help.</p>
+        <p>The AI assistant isn&apos;t switched on yet. Search the shop, or send us a message and a person will help.</p>
         <div className="mt-4 flex flex-wrap gap-2">
           <Link href="/shop" className="btn btn-outline btn-sm">Shop accessories</Link>
-          <a href={whatsapp("Hi Riderzpro, I need help choosing a part.")} target="_blank" rel="noreferrer noopener" className="btn btn-whatsapp btn-sm">WhatsApp us</a>
+          <EnquiryButton topic="product" message={"Hi Riderzpro, I need help choosing a part."} className="btn btn-primary btn-sm">Message us</EnquiryButton>
         </div>
       </div>
     );

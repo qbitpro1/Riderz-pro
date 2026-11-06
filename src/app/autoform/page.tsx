@@ -22,8 +22,8 @@ import {
   priceFor,
 } from "@/lib/autoform/catalog";
 import { rupees } from "@/lib/format";
-import { whatsapp } from "@/lib/data/site";
 import { pageMeta } from "@/lib/data/seo";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 
 export const metadata: Metadata = pageMeta({
   title: "Autoform Seat Covers — Car-Specific Designs & Prices",
@@ -63,10 +63,9 @@ export default function AutoformPage() {
         actions={[
           { href: "#designs", label: "Browse designs", variant: "primary" },
           {
-            href: whatsapp("Hi Riderzpro, I want Autoform seat covers for my "),
+            href: "#enquire",
             label: "Get a quote",
             variant: "outline",
-            external: true,
           },
         ]}
       />
@@ -282,15 +281,9 @@ export default function AutoformPage() {
               Autoform sets are made to order for your car. We take the order, confirm the pattern for
               your exact variant, and fit it at the workshop — usually about two hours.
             </p>
-            <a
-              href={whatsapp("Hi Riderzpro, I want to book Autoform seat cover fitting. My car is: ")}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="btn btn-whatsapp btn-block mt-5"
-            >
-              <Icon name="whatsapp" size={16} />
+            <EnquiryButton id="enquire" topic="installation" message={"Hi Riderzpro, I want to book Autoform seat cover fitting. My car is: "} className="btn btn-primary btn-block mt-5">
               Book Autoform installation
-            </a>
+            </EnquiryButton>
             <Link href="/garage" className="btn btn-outline btn-block mt-3">
               Workshop and locations
             </Link>

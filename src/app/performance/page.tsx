@@ -11,8 +11,8 @@ import { PERFORMANCE_DISCLAIMER, PERFORMANCE_SERVICES } from "@/lib/data/service
 import { PRODUCTS } from "@/lib/data/products";
 import { groupHref, placeSub } from "@/lib/data/taxonomy";
 import { rupees } from "@/lib/format";
-import { whatsapp } from "@/lib/data/site";
 import { pageMeta } from "@/lib/data/seo";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 
 export const metadata: Metadata = pageMeta({
   title: "Performance Tuning — ECU Remap, Exhaust, Intake & Brakes",
@@ -54,7 +54,7 @@ export default function PerformancePage() {
         media="engineBay"
         actions={[
           { href: "#services", label: "See what we do", variant: "primary" },
-          { href: whatsapp("Hi Riderzpro, I want more power from my "), label: "Talk to the tuner", variant: "outline", external: true },
+          { href: "#enquire", label: "Talk to the tuner", variant: "outline" },
         ]}
       />
 
@@ -157,15 +157,9 @@ export default function PerformancePage() {
               Come in for a baseline run before you decide anything. You leave with a printed sheet and
               an honest opinion about whether your car is worth tuning at all.
             </p>
-            <a
-              href={whatsapp("Hi Riderzpro, I'd like to book a dyno session. My car is: ")}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="btn btn-whatsapp btn-block mt-5"
-            >
-              <Icon name="whatsapp" size={16} />
+            <EnquiryButton id="enquire" topic="installation" message={"Hi Riderzpro, I'd like to book a dyno session. My car is: "} className="btn btn-primary btn-block mt-5">
               Book the dyno
-            </a>
+            </EnquiryButton>
           </div>
         </div>
       </section>

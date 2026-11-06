@@ -120,7 +120,7 @@ export const SEO_LANDINGS: SeoLanding[] = [
     h1: "USED CARS, WITHOUT THE ASTERISKS.",
     title: "Used Cars for Sale in India — Riderzpro Certified",
     description:
-      "Buy used cars in Bengaluru, Hyderabad and Pune with a 200-point inspection, RC and insurance verification, transparent pricing and a 5-day return window.",
+      "Buy used cars with a 200-point inspection, RC and insurance verification, transparent pricing and a 5-day return window.",
     intro:
       "Most used-car problems are not mechanical, they are informational. You cannot see the accident history, the odometer truth or the pending loan — so you overpay for risk. Riderzpro publishes all of it before you call.",
     media: "luxurySaloonMotion",
@@ -161,9 +161,9 @@ export const SEO_LANDINGS: SeoLanding[] = [
     h1: "CAR MODIFICATION, DONE PROPERLY.",
     title: "Car Modification Near Me — Body Kits, Audio & Off-Road",
     description:
-      "Car modification in Bengaluru, Hyderabad and Pune: body kits, facelifts, custom interiors, car audio, PPF, off-road builds and performance tuning at Riderzpro.",
+      "Car modification with Riderzpro: body kits, facelifts, custom interiors, car audio, PPF, off-road builds and performance tuning.",
     intro:
-      "Modification goes wrong for three reasons: parts that do not fit, work that cannot be undone, and nobody taking responsibility afterwards. We fix all three by doing everything in one workshop and documenting all of it.",
+      "Modification goes wrong for three reasons: parts that do not fit, work that cannot be undone, and nobody taking responsibility afterwards. We fix all three by checking fitment first, keeping work reversible and documenting all of it.",
     media: "garageSpotlit",
     cta: { href: "/build", label: "Configure your build" },
     secondary: { href: "/garage", label: "Book the garage" },
@@ -173,8 +173,8 @@ export const SEO_LANDINGS: SeoLanding[] = [
         body: "Use the configurator to pick exterior, wheels, interior, audio and performance items and watch a live estimate build up — parts, labour and GST included, filtered to your platform.",
       },
       {
-        heading: "Everything in one workshop",
-        body: "Trim shop, paint room, audio bay, dyno, welding and lifts across 26 bays in three cities. Your car does not tour four markets and come back with four opinions.",
+        heading: "One team, one point of contact",
+        body: "Exterior, interior, audio, PPF, off-road and performance work planned by one team. Your car does not tour four markets and come back with four opinions.",
       },
       {
         heading: "Reversible where it matters",
@@ -204,7 +204,7 @@ export const SEO_LANDINGS: SeoLanding[] = [
     h1: "CAR ACCESSORIES THAT ACTUALLY FIT.",
     title: "Car Accessories Online India — Seat Covers, Mats & Multimedia",
     description:
-      "Buy car accessories online in India: seat covers, floor mats, speakers, lighting, covers and guards, utilities and off-roading gear. Made by Riderzpro, fitted at our garages.",
+      "Buy car accessories online in India: seat covers, floor mats, speakers, lighting, covers and guards, utilities and off-roading gear. Made by Riderzpro, with installation available.",
     intro:
       "Riderzpro makes and sells car accessories. Pick your car once and the shop shows what fits it: seat covers cut to your seat pattern, mats cut to your floor, lighting and audio matched to your model.",
     media: "tailLightBokeh",
@@ -225,8 +225,8 @@ export const SEO_LANDINGS: SeoLanding[] = [
         body: "The Riderzpro house range sits next to RECOIL and Blaupunkt car audio and Autoform seat covers. Filter across all of them by brand, department, price and fitment, and check out once.",
       },
       {
-        heading: "Fitted at our garages",
-        body: "Anything bought here can be fitted at a Riderzpro garage in Bengaluru, Hyderabad or Pune, with a 12-month workmanship warranty on the fitting.",
+        heading: "Installation available",
+        body: "Products marked with the wrench can be fitted for you, with a 12-month workmanship warranty on the fitting.",
       },
       {
         heading: "Savings only where they are real",

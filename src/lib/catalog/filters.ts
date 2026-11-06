@@ -10,6 +10,7 @@ import type { CategorySlug, PriceTier } from "@/lib/data/products";
 import { DEPARTMENTS, DEPARTMENT_BY_SLUG } from "@/lib/data/taxonomy";
 import { BRANDS, type BrandSlug } from "./brands";
 import { TIER_BOUNDS, type ShopAvailability, type MarketplaceBrandKey, type ShopItem } from "./types";
+import { SPEAKER_SIZES, SPEAKER_SIZE_LABELS, isSpeakerSize, itemSpeakerSize, type SpeakerSize } from "./speaker-size";
 
 export type BrandKey = BrandSlug | MarketplaceBrandKey;
 
@@ -22,7 +23,7 @@ export const SORTS: { key: SortKey; label: string }[] = [
   { key: "price-asc", label: "Price: low to high" },
   { key: "price-desc", label: "Price: high to low" },
   { key: "rating", label: "Highest rated" },
-  { key: "discount", label: "Biggest saving" },
+  { key: "discount", label: "Biggest discount" },
 ];
 
 export const AVAILABILITY_LABELS: Record<ShopAvailability, string> = {
@@ -39,8 +40,12 @@ export type CatalogFilters = {
   groups: string[];
   subs: string[];
   tiers: PriceTier[];
+  /** Price floor in rupees: items with a price at or over it. */
+  minPrice: number | null;
   /** Price ceiling in rupees: items with a price at or under it. */
   maxPrice: number | null;
+  /** Speaker sizes, read from the product title / code (see speaker-size.ts). */
+  sizes: SpeakerSize[];
   availability: ShopAvailability[];
   /** Original Equipment parts only. */
   oe: boolean;
@@ -57,7 +62,9 @@ export const EMPTY_FILTERS: CatalogFilters = {
   groups: [],
   subs: [],
   tiers: [],
+  minPrice: null,
   maxPrice: null,
+  sizes: [],
   availability: [],
   oe: false,
   fits: null,
@@ -74,7 +81,9 @@ export function activeFilterCount(f: CatalogFilters): number {
     f.groups.length +
     f.subs.length +
     f.tiers.length +
+    (f.minPrice !== null ? 1 : 0) +
     (f.maxPrice !== null ? 1 : 0) +
+    f.sizes.length +
     f.availability.length +
     (f.fits ? 1 : 0) +
     (f.installation ? 1 : 0) +
@@ -102,7 +111,12 @@ function matches(item: ShopItem, f: CatalogFilters, except?: Dimension): boolean
   if (except !== "oe" && f.oe && !item.oe) return false;
   if (except !== "subs" && f.subs.length && !f.subs.includes(item.sub)) return false;
   if (except !== "tiers" && f.tiers.length && (item.tier === null || !item.buyable || !f.tiers.includes(item.tier))) return false;
+  if (except !== "minPrice" && f.minPrice !== null && (item.price === null || !item.buyable || item.price < f.minPrice)) return false;
   if (except !== "maxPrice" && f.maxPrice !== null && (item.price === null || !item.buyable || item.price > f.maxPrice)) return false;
+  if (except !== "sizes" && f.sizes.length) {
+    const size = itemSpeakerSize(item);
+    if (size === null || !f.sizes.includes(size)) return false;
+  }
   if (except !== "availability" && f.availability.length && !f.availability.includes(item.availability)) return false;
   if (except !== "fits" && f.fits && !itemFits(item, f.fits)) return false;
   if (except !== "installation" && f.installation && !item.installation) return false;
@@ -172,6 +186,8 @@ export type CatalogFacets = {
   subs: Facet<string>[];
   tiers: Facet<PriceTier>[];
   availability: Facet<ShopAvailability>[];
+  /** Speaker sizes stated by the items in view, in the standard order. */
+  sizes: Facet<SpeakerSize>[];
   installation: number;
   /** Original Equipment items in the current view. */
   oe: number;
@@ -251,6 +267,7 @@ export function facetsFor(items: ShopItem[], f: CatalogFilters): CatalogFacets {
       (v) => AVAILABILITY_LABELS[v],
       ["in-stock", "made-to-order", "coming-soon", "out-of-stock"],
     ),
+    sizes: count<SpeakerSize>(items, f, "sizes", itemSpeakerSize, (v) => SPEAKER_SIZE_LABELS[v], [...SPEAKER_SIZES]),
     installation: items.filter((i) => i.installation && matches(i, f, "installation")).length,
     oe: items.filter((i) => i.oe && matches(i, f, "oe")).length,
     fits: f.fits ? items.filter((i) => itemFits(i, f.fits!) && matches(i, f, "fits")).length : 0,
@@ -287,7 +304,9 @@ export function filtersFromQuery(query: CatalogQuery): CatalogFilters {
     groups: list(query.group),
     subs: list(query.sub),
     tiers: list(query.tier).filter((t): t is PriceTier => t === "value" || t === "mid" || t === "premium"),
+    minPrice: parseMax(query.min),
     maxPrice: parseMax(query.max),
+    sizes: list(query.size).filter(isSpeakerSize),
     availability: list(query.stock).filter(
       (a): a is ShopAvailability => a === "in-stock" || a === "made-to-order" || a === "coming-soon" || a === "out-of-stock",
     ),
@@ -307,7 +326,9 @@ export function queryFromFilters(f: CatalogFilters): string {
   if (f.oe) p.set("oe", "1");
   if (f.subs.length) p.set("sub", f.subs.join(","));
   if (f.tiers.length) p.set("tier", f.tiers.join(","));
+  if (f.minPrice !== null) p.set("min", String(f.minPrice));
   if (f.maxPrice !== null) p.set("max", String(f.maxPrice));
+  if (f.sizes.length) p.set("size", f.sizes.join(","));
   if (f.availability.length) p.set("stock", f.availability.join(","));
   if (f.fits) p.set("fits", f.fits);
   if (f.installation) p.set("install", "1");

@@ -72,7 +72,7 @@ export async function POST(req: Request) {
       return bad("qty must be an integer from 1 to 99");
     }
     // Marketplace items live in our database, not Shopify.
-    if (isVendorLineSlug(id)) return bad("Marketplace items are ordered on WhatsApp");
+    if (isVendorLineSlug(id)) return bad("Marketplace items are ordered through the cart");
     // Option order must not make two copies of one line look different.
     const canonical = canonicalLineId(id);
     if (!canonical) return bad("Invalid line id");
@@ -115,7 +115,7 @@ export async function POST(req: Request) {
     // Log the kind and message only: ShopifyError never contains the token.
     console.error("[checkout]", e instanceof ShopifyError ? `${e.kind}: ${e.message}` : "unexpected error");
     return NextResponse.json(
-      { error: "Checkout is temporarily unavailable. Please order on WhatsApp." },
+      { error: "Checkout is temporarily unavailable. Please place the order from the cart and pay later." },
       { status: 502 },
     );
   }

@@ -6,13 +6,13 @@ import { SectionHead } from "@/components/ui/Section";
 import { Icon } from "@/components/ui/Icon";
 import { Reveal } from "@/components/ui/Reveal";
 import { BUILDS, REVIEWS } from "@/lib/data/community";
-import { whatsapp } from "@/lib/data/site";
 import { pageMeta } from "@/lib/data/seo";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 
 export const metadata: Metadata = pageMeta({
-  title: "Riderzpro Builds — Modified Cars, Full Spec & Real Build Costs",
+  title: "Riderzpro Builds — Modified Cars, Full Spec & Build Costs",
   description:
-    "Every Riderzpro build with the full modification list and what it actually cost. Off-road rigs, street builds, audio installs, luxury interiors and performance cars.",
+    "Riderzpro builds with the full modification list and what they cost: off-road rigs, street builds, audio installs, interiors and performance cars.",
   path: "/builds",
 });
 
@@ -21,27 +21,36 @@ export default function BuildsPage() {
     <>
       <PageHero
         eyebrow="Riderzpro builds"
-        title="BUILT BY US. DRIVEN BY THEM."
-        blurb="Real cars, real invoices, real owners. Every build lists exactly what went into it and what it cost — because that is the number nobody else publishes."
+        title="RIDERZPRO BUILDS."
+        blurb="Every build we publish lists exactly what went into it and what it cost. Builds appear here once their owners agree to share them."
         media="garageSpotlit"
         size="sm"
       />
 
       <section className="section">
         <div className="shell">
-          <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {BUILDS.map((b, i) => (
-              <li key={b.slug}>
-                <Reveal delay={(i % 3) * 70} className="h-full">
-                  <BuildCard build={b} />
-                </Reveal>
-              </li>
-            ))}
-          </ul>
+          {BUILDS.length === 0 ? (
+            <div className="card p-10 text-center">
+              <p className="font-display text-xl uppercase">No builds published yet</p>
+              <p className="mx-auto mt-2 max-w-md text-sm text-ash">
+                The first customer builds go up here soon. Planning your own? Send us a reference and a budget.
+              </p>
+            </div>
+          ) : (
+            <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {BUILDS.map((b, i) => (
+                <li key={b.slug}>
+                  <Reveal delay={(i % 3) * 70} className="h-full">
+                    <BuildCard build={b} />
+                  </Reveal>
+                </li>
+              ))}
+            </ul>
+          )}
 
           <div className="card mt-8 flex flex-col items-start justify-between gap-4 p-6 md:flex-row md:items-center">
             <div>
-              <p className="font-display text-lg font-extrabold uppercase">Build something like this</p>
+              <p className="font-display text-lg font-extrabold uppercase">Plan your build</p>
               <p className="mt-1 text-sm text-ash">
                 Send us a reference and a budget. We&apos;ll come back with a spec sheet and a schedule.
               </p>
@@ -51,32 +60,28 @@ export default function BuildsPage() {
                 Open the configurator
                 <Icon name="arrow" size={14} />
               </Link>
-              <a
-                href={whatsapp("Hi Riderzpro, I want to build something like one of your builds. My car is: ")}
-                target="_blank"
-                rel="noreferrer noopener"
-                className="btn btn-whatsapp btn-sm"
-              >
-                <Icon name="whatsapp" size={15} />
+              <EnquiryButton topic="installation" message={"Hi Riderzpro, I'd like to plan a build. My car is: "} className="btn btn-primary btn-sm">
                 Send a reference
-              </a>
+              </EnquiryButton>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="section border-t border-tint/8 bg-carbon">
-        <div className="shell">
-          <SectionHead eyebrow="Owners" title="WHAT THEY SAY AFTER." />
-          <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {REVIEWS.map((r) => (
-              <li key={r.name}>
-                <ReviewCard review={r} />
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
+      {REVIEWS.length > 0 && (
+        <section className="section border-t border-tint/8 bg-carbon">
+          <div className="shell">
+            <SectionHead eyebrow="Owners" title="WHAT THEY SAY AFTER." />
+            <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {REVIEWS.map((r) => (
+                <li key={r.name}>
+                  <ReviewCard review={r} />
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
     </>
   );
 }

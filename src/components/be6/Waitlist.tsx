@@ -2,20 +2,19 @@
 
 import { useState } from "react";
 import { Icon } from "@/components/ui/Icon";
-import { whatsapp } from "@/lib/data/site";
+import { EnquiryStatus, useEnquiry } from "@/components/enquiry/Enquiry";
 import { WAITLIST_BUDGETS } from "@/lib/data/be6/limited-edition";
 
 /**
  * BE FIRST — the Limited Edition waitlist.
  *
- * There is no leads endpoint on this site yet, so the form does not pretend to
- * post to one. It composes the enquiry and hands it to WhatsApp, which is
- * where Riderzpro enquiries actually land today. When a leads API exists this
- * component gets a submit handler and nothing else changes.
+ * The entry is sent as a help-desk ticket (components/enquiry), which the team
+ * sees in admin → Customer support.
  */
 
 export function Waitlist() {
   const [sent, setSent] = useState(false);
+  const enquiry = useEnquiry();
   const [form, setForm] = useState({
     name: "",
     phone: "",
@@ -32,9 +31,9 @@ export function Waitlist() {
 
   const ready = form.name.trim().length > 1 && form.phone.trim().length >= 10;
 
-  function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!ready) return;
+    if (!ready || enquiry.sending) return;
     const lines = [
       "RIDERZPRO BE 6 WAITLIST",
       `Name: ${form.name}`,
@@ -46,8 +45,8 @@ export function Waitlist() {
       form.wantsEdition && `Interested in the RIDERZPRO Edition: ${form.wantsEdition}`,
       form.budget && `Budget: ${form.budget}`,
     ].filter(Boolean);
-    window.open(whatsapp(lines.join("\n")), "_blank", "noopener,noreferrer");
-    setSent(true);
+    const ok = await enquiry.send({ name: form.name, mobile: form.phone, email: form.email, topic: "other", message: lines.join("\n") });
+    if (ok) setSent(true);
   }
 
   if (sent) {
@@ -56,8 +55,7 @@ export function Waitlist() {
         <Icon name="check" size={28} className="mx-auto text-accent" />
         <h3 className="display-3 mt-3">YOU&apos;RE ON THE LIST.</h3>
         <p className="mx-auto mt-2 max-w-md text-sm text-ash">
-          Your details opened in WhatsApp — send the message and we have you. We will come back when the Limited
-          Edition has a date, and not before.
+          We have your details. We will come back when the Limited Edition has a date, and not before.
         </p>
         <button type="button" onClick={() => setSent(false)} className="btn btn-outline btn-sm mt-4">
           ADD ANOTHER
@@ -122,9 +120,10 @@ export function Waitlist() {
         </Field>
       </div>
 
-      <button type="submit" disabled={!ready} className="btn btn-accent btn-block mt-5 disabled:opacity-40">
+      <button type="submit" disabled={!ready || enquiry.sending} aria-busy={enquiry.sending} className="btn btn-accent btn-block mt-5 disabled:opacity-40">
         JOIN THE RIDERZPRO BE 6 WAITLIST
       </button>
+      <EnquiryStatus status={enquiry.status} error={enquiry.error} />
 
       <p className="mt-3 text-[0.625rem] leading-relaxed text-dim">
         Joining the waitlist is not an order and holds no vehicle. The RIDERZPRO Limited Edition is a concept with no

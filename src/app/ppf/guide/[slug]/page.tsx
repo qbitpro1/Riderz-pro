@@ -6,7 +6,7 @@ import { Breadcrumbs } from "@/components/layout/PageHero";
 import { StickyPpfCta } from "@/components/ppf/StickyPpfCta";
 import { Icon } from "@/components/ui/Icon";
 import { GUIDE, getArticle } from "@/lib/ppf/guide";
-import { whatsapp } from "@/lib/data/site";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 
 export function generateStaticParams() {
   return GUIDE.map((a) => ({ slug: a.slug }));
@@ -99,15 +99,9 @@ export default async function PpfGuideArticlePage({ params }: { params: Promise<
                 Get PPF quote
                 <Icon name="arrow" size={14} />
               </Link>
-              <a
-                href={whatsapp("Hi Riderzpro, I have a PPF question: ")}
-                target="_blank"
-                rel="noreferrer noopener"
-                className="btn btn-whatsapp btn-sm"
-              >
-                <Icon name="whatsapp" size={15} />
+              <EnquiryButton topic="installation" message={"Hi Riderzpro, I have a PPF question: "} className="btn btn-primary btn-sm">
                 Ask us
-              </a>
+              </EnquiryButton>
             </div>
           </div>
         </div>

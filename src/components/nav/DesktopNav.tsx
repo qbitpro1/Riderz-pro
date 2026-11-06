@@ -276,7 +276,7 @@ function Dropdown({ id, label, href, active, open, show, hide, panelClassName, r
       <div
         ref={panel}
         id={panelId}
-        className={`absolute top-full z-50 border border-tint/10 bg-void p-2 shadow-2xl shadow-tint/10 transition-[opacity,transform,visibility] duration-150 ${panelClassName} ${
+        className={`nav-glass-panel absolute top-full z-50 mt-1.5 p-2 transition-[opacity,transform,visibility] duration-150 ${panelClassName} ${
           open ? "visible translate-y-0 opacity-100" : "pointer-events-none invisible -translate-y-1 opacity-0"
         }`}
       >

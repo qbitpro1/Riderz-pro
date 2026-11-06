@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const title = d.code && !d.title.includes(d.code) ? `${d.title} (${d.code})` : d.title;
   const description =
     d.summary ??
-    `${d.title} by ${d.brandName}${d.code ? `, model ${d.code}` : ""}. Available from Riderzpro with installation at our garages.`;
+    `${d.title} by ${d.brandName}${d.code ? `, model ${d.code}` : ""}. Available from Riderzpro with installation.`;
   return {
     title,
     description,

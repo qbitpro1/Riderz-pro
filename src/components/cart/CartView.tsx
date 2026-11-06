@@ -6,7 +6,7 @@ import { Icon } from "@/components/ui/Icon";
 import { useCart } from "./CartContext";
 import { useAccount } from "@/components/account/AccountContext";
 import { rupees } from "@/lib/format";
-import { whatsapp } from "@/lib/data/site";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 import { FREE_SHIPPING_OVER, shippingFor } from "@/lib/store/shipping";
 import { CartThumb } from "./CartThumb";
 import { CheckoutButton } from "./CheckoutButton";
@@ -72,33 +72,26 @@ export function CartView() {
           {placed.payment === "refund_due" && (
             <>
               Your payment of {rupees(placed.total)} arrived after this order had expired, so its items may no longer be held for you.
-              We&apos;ll refund it in full, or contact us on WhatsApp to place the order again.
+              We&apos;ll refund it in full, or contact us to place the order again.
             </>
           )}
-          {placed.payment === "whatsapp" && (
+          {placed.payment === "later" && (
             <>
-              Total {rupees(placed.total)}, inclusive of GST. We&apos;ve opened WhatsApp so you can send us the order and we&apos;ll confirm
-              fitment and payment there.
+              Total {rupees(placed.total)}, inclusive of GST. We&apos;ll call you on the number you gave to confirm fitment and arrange
+              payment.
             </>
           )}
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
-          {placed.whatsappHref && (
-            <a href={placed.whatsappHref} target="_blank" rel="noreferrer noopener" className="btn btn-whatsapp btn-sm">
-              <Icon name="whatsapp" size={16} />
-              Open WhatsApp
-            </a>
-          )}
           {(placed.payment === "refund_due" || placed.payment === "confirming") && (
-            <a
-              href={whatsapp(`Hi Riderzpro, about my online payment for order ${placed.number}.`)}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="btn btn-whatsapp btn-sm"
+            <EnquiryButton
+              topic="order"
+              title="About your payment"
+              className="btn btn-primary btn-sm"
+              message={`Hi Riderzpro, about my online payment for order ${placed.number}.`}
             >
-              <Icon name="whatsapp" size={16} />
-              Ask us on WhatsApp
-            </a>
+              Ask us about it
+            </EnquiryButton>
           )}
           {customer && (
             <Link href={`/account/orders/${placed.number}`} className="btn btn-outline btn-sm">
@@ -228,7 +221,7 @@ export function CartView() {
           <CheckoutForm lines={lines} totals={{ subtotal, installTotal, shipping, total, discount, couponCode: coupon?.code }} onPlaced={setPlaced} />
         </div>
         <p className="mt-3 text-[11px] leading-relaxed text-dim">
-          Pay online now, or order on WhatsApp and we confirm fitment against your variant before you pay. See the{" "}
+          Pay online now, or place the order and pay later: we call to confirm fitment against your variant before you pay. See the{" "}
           <Link href="/support/payments" className="underline hover:text-accent">
             payments page
           </Link>{" "}

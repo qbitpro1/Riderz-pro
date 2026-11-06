@@ -9,8 +9,8 @@ import { ReviewCard } from "@/components/community/Cards";
 import { INTERIOR_SERVICES } from "@/lib/data/services";
 import { REVIEWS } from "@/lib/data/community";
 import { rupees } from "@/lib/format";
-import { whatsapp } from "@/lib/data/site";
 import { pageMeta } from "@/lib/data/seo";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 
 export const metadata: Metadata = pageMeta({
   title: "Custom Car Interiors — Leather, Alcantara & Captain Seats",
@@ -108,35 +108,31 @@ export default function InteriorsPage() {
                 </li>
               ))}
             </ul>
-            <a
-              href={whatsapp("Hi Riderzpro, I want a luxury interior conversion. My car is: ")}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="btn btn-accent mt-7"
-            >
-              <Icon name="whatsapp" size={16} />
+            <EnquiryButton topic="installation" message={"Hi Riderzpro, I want a luxury interior conversion. My car is: "} className="btn btn-accent mt-7">
               Design my interior
-            </a>
+            </EnquiryButton>
           </Reveal>
         </div>
       </section>
 
       <section className="section">
-        <div className="shell grid gap-10 lg:grid-cols-2 lg:items-start">
+        <div className={`shell grid gap-10 lg:items-start ${interiorReviews.length > 0 ? "lg:grid-cols-2" : ""}`}>
           <div>
             <SectionHead eyebrow="Questions" title="INTERIOR FAQs." />
             <Accordion items={FAQ} />
           </div>
-          <div>
-            <SectionHead eyebrow="Owners" title="AFTER THE REBUILD." />
-            <ul className="grid gap-4">
-              {interiorReviews.map((r) => (
-                <li key={r.name}>
-                  <ReviewCard review={r} />
-                </li>
-              ))}
-            </ul>
-          </div>
+          {interiorReviews.length > 0 && (
+            <div>
+              <SectionHead eyebrow="Owners" title="AFTER THE REBUILD." />
+              <ul className="grid gap-4">
+                {interiorReviews.map((r) => (
+                  <li key={r.name}>
+                    <ReviewCard review={r} />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       </section>
     </>

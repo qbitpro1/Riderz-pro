@@ -11,8 +11,8 @@ import { itemsBySlug } from "@/components/shop/catalogLookup";
 import { BuildCard } from "@/components/community/Cards";
 import { BUILDS, getBuild } from "@/lib/data/community";
 import { rupees } from "@/lib/format";
-import { whatsapp } from "@/lib/data/site";
 import { MEDIA } from "@/lib/media";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 
 export function generateStaticParams() {
   return BUILDS.map((b) => ({ slug: b.slug }));
@@ -121,15 +121,9 @@ export default async function BuildDetailPage({ params }: { params: Promise<{ sl
                   Build something like this
                   <Icon name="arrow" size={15} />
                 </Link>
-                <a
-                  href={whatsapp(`Hi Riderzpro, I want a build like ${build.title} (${build.vehicle}). My car is: `)}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  className="btn btn-whatsapp btn-block mt-3"
-                >
-                  <Icon name="whatsapp" size={16} />
+                <EnquiryButton topic="installation" message={`Hi Riderzpro, I want a build like ${build.title} (${build.vehicle}). My car is: `} className="btn btn-primary btn-block mt-3">
                   Ask about this build
-                </a>
+                </EnquiryButton>
               </div>
             </aside>
           </div>

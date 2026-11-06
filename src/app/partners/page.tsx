@@ -29,7 +29,7 @@ const STEPS = [
   { n: "02", t: "Upload inventory", b: "Whatever your system exports — CSV, Excel, XML, JSON, or a Google Sheet link." },
   { n: "03", t: "We validate", b: "Every row normalised and checked. You see exactly what was accepted and why." },
   { n: "04", t: "Cars go live", b: "Listings appear on the marketplace with your dealership named." },
-  { n: "05", t: "Receive leads", b: "Buyer enquiries come to you on WhatsApp, with the vehicle attached." },
+  { n: "05", t: "Receive leads", b: "Buyer enquiries come to you with the vehicle attached." },
   { n: "06", t: "Keep it current", b: "Mark a car SOLD and it comes off the site. Stop updating and we hide your stock." },
 ];
 

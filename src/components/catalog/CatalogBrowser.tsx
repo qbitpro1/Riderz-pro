@@ -1,11 +1,15 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { CatalogCard } from "./CatalogCard";
+import { ListingCard } from "./ListingCard";
+import { FilterSections, type LockedDimension, type PriceBounds, type ToggleFn, type ToggleKey } from "./FilterSidebar";
+import { Sheet, SortSheet } from "./MobileSheets";
+import { VehicleBar } from "./VehicleBar";
+import { carTitle } from "./vehicleBarState";
 import { Icon } from "@/components/ui/Icon";
-import { whatsapp } from "@/lib/data/site";
 import { DEPARTMENT_BY_SLUG } from "@/lib/data/taxonomy";
+import { BRANDS as VEHICLE_BRANDS } from "@/lib/data/vehicles";
 import { useGarage } from "@/lib/client/garage";
 import {
   activeFilterCount,
@@ -14,42 +18,63 @@ import {
   categoryName,
   facetsFor,
   filterCatalog,
-  priceCeilingLabel,
+  itemFits,
   queryFromFilters,
   SORTS,
   TIER_LABELS,
   type CatalogFilters,
   type SortKey,
 } from "@/lib/catalog/filters";
+import { SPEAKER_SIZE_LABELS } from "@/lib/catalog/speaker-size";
 import type { ShopItem } from "@/lib/catalog/types";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
+
+export type { LockedDimension } from "./FilterSidebar";
 
 const PAGE = 24;
+const LISTING_ATTR = "data-listing";
 
-/** Dimensions the page itself owns — a brand page locks `brands`, and so on. */
-export type LockedDimension = "brands" | "categories";
+/** The page header a listing can carry: breadcrumb and title, plus the brand pills. */
+export type ListingHeader = {
+  crumbs: { label: string; href?: string }[];
+  /** Fallback title; a department page shows its one active group's name instead. */
+  title: string;
+};
 
+/**
+ * THE PRODUCT LISTING. Used by every catalogue page (shop, departments, brands, collections, seller
+ * stores, car pages). Filtering, facets and the URL are the filter engine's (lib/catalog/filters);
+ * this is the layout around them.
+ *
+ *   header       the page header (breadcrumb, H1, brand pills) — department pages
+ *   vehicleBar   "What do you drive?" — with a saved car, results are filtered to parts that fit
+ */
 export function CatalogBrowser({
   items,
   initial,
   locked = [],
   showBrandOnCards = true,
+  header,
+  vehicleBar = false,
 }: {
   items: ShopItem[];
   initial: CatalogFilters;
   locked?: LockedDimension[];
   showBrandOnCards?: boolean;
+  header?: ListingHeader;
+  vehicleBar?: boolean;
 }) {
   const [filters, setFilters] = useState<CatalogFilters>(initial);
   const [visible, setVisible] = useState(PAGE);
-  const [panelOpen, setPanelOpen] = useState(false);
+  const [sheet, setSheet] = useState<"filters" | "sort" | null>(null);
   const countRef = useRef<HTMLParagraphElement>(null);
   const garage = useGarage();
+  const searchId = useId();
+  const sortId = useId();
 
-  /* A client-side navigation to the same route with different query params —
-     "Autoform" from the category page's brand rail, say — re-renders this
-     component rather than remounting it, so the incoming filters have to be
-     adopted explicitly. Our own in-page filtering only ever calls
-     replaceState, which leaves `initial` untouched, so this can't loop. */
+  /* A client-side navigation to the same route with different query params re-renders this
+     component rather than remounting it, so the incoming filters are adopted explicitly. Our own
+     filtering only calls replaceState, which leaves `initial` untouched, so this can't loop. */
   const incoming = queryFromFilters(initial);
   const [adopted, setAdopted] = useState(incoming);
   if (incoming !== adopted) {
@@ -57,30 +82,38 @@ export function CatalogBrowser({
     setFilters(initial);
   }
 
-  /* The filtered view is a real URL, so it can be shared, bookmarked and linked
-     to from the brand pages and search. Replace rather than push — filtering is
-     not a navigation step you want to walk back through one tick at a time. */
+  /* The filtered view is a real URL (shareable, bookmarkable). Replace rather than push. */
   useEffect(() => {
     const qs = queryFromFilters(filters);
-    const url = qs ? `${window.location.pathname}?${qs}` : window.location.pathname;
-    window.history.replaceState(null, "", url);
+    window.history.replaceState(null, "", qs ? `${window.location.pathname}?${qs}` : window.location.pathname);
   }, [filters]);
 
+  /* Tells the floating AI button to step aside on listing pages (see AssistantFab / globals.css). */
+  useEffect(() => {
+    document.documentElement.setAttribute(LISTING_ATTR, "");
+    return () => document.documentElement.removeAttribute(LISTING_ATTR);
+  }, []);
+
+  /* With the vehicle bar, the saved car filters the results (it is not written into the URL: it is
+     the shopper's own setting, kept in this browser). */
+  const autoFit = vehicleBar && garage ? garage.modelSlug : null;
+  const effective = useMemo(() => (autoFit ? { ...filters, fits: autoFit } : filters), [filters, autoFit]);
+  const fitsModel = garage ? carTitle(VEHICLE_BRANDS, garage).model : null;
+
   const labelOf = useMemo(() => brandLabel(items), [items]);
-  const results = useMemo(() => filterCatalog(items, filters), [items, filters]);
-  const facets = useMemo(() => facetsFor(items, filters), [items, filters]);
+  const results = useMemo(() => filterCatalog(items, effective), [items, effective]);
+  const facets = useMemo(() => facetsFor(items, effective), [items, effective]);
 
   // New filters start from the first page again (adjusting state while rendering, not in an effect).
-  const [pagedFor, setPagedFor] = useState(filters);
-  if (pagedFor !== filters) {
-    setPagedFor(filters);
+  const [pagedFor, setPagedFor] = useState(effective);
+  if (pagedFor !== effective) {
+    setPagedFor(effective);
     setVisible(PAGE);
   }
 
   const patch = useCallback((next: Partial<CatalogFilters>) => setFilters((f) => ({ ...f, ...next })), []);
-
-  const toggle = useCallback(
-    <K extends "brands" | "categories" | "groups" | "subs" | "tiers" | "availability">(key: K, value: CatalogFilters[K][number]) =>
+  const toggle: ToggleFn = useCallback(
+    <K extends ToggleKey>(key: K, value: CatalogFilters[K][number]) =>
       setFilters((f) => {
         const current = f[key] as CatalogFilters[K][number][];
         const has = current.includes(value);
@@ -93,14 +126,15 @@ export function CatalogBrowser({
     () =>
       setFilters((f) => ({
         ...f,
-        // Locked dimensions belong to the page, not the user's filter set.
         brands: locked.includes("brands") ? f.brands : [],
         categories: locked.includes("categories") ? f.categories : [],
         groups: [],
         oe: false,
         subs: [],
         tiers: [],
+        minPrice: null,
         maxPrice: null,
+        sizes: [],
         availability: [],
         fits: null,
         installation: false,
@@ -110,470 +144,237 @@ export function CatalogBrowser({
   );
 
   const lockedCount =
-    (locked.includes("brands") ? filters.brands.length : 0) +
-    (locked.includes("categories") ? filters.categories.length : 0);
-  const oeDepartment =
-    filters.categories.length === 1 ? categoryName(filters.categories[0]) : "these departments";
+    (locked.includes("brands") ? filters.brands.length : 0) + (locked.includes("categories") ? filters.categories.length : 0);
   const active = activeFilterCount(filters) - lockedCount;
+  const oeDepartment = filters.categories.length === 1 ? categoryName(filters.categories[0]) : "these departments";
 
-  const panel = (
-    <FilterPanel
-      filters={filters}
-      facets={facets}
-      locked={locked}
-      garage={garage}
-      onToggle={toggle}
-      onPatch={patch}
-    />
+  // A department page titles itself after its one active group (SPEAKERS), else the department.
+  const dept = filters.categories.length === 1 ? DEPARTMENT_BY_SLUG[filters.categories[0]] : undefined;
+  const group = dept && filters.groups.length === 1 ? dept.groups.find((g) => g.slug === filters.groups[0]) : undefined;
+  const title = group?.name ?? header?.title ?? "";
+  const crumbs = header ? (group ? [...header.crumbs.map((c, i, a) => (i === a.length - 1 ? { ...c, href: c.href ?? `/shop/${dept!.slug}` } : c)), { label: group.name }] : header.crumbs) : [];
+
+  // The slider's ends: the cheapest and dearest buyable item in this listing, rounded outwards.
+  const priceBounds: PriceBounds = useMemo(() => {
+    const prices = items.filter((i) => i.buyable && i.price !== null).map((i) => i.price as number);
+    if (prices.length < 2) return null;
+    return { min: Math.floor(Math.min(...prices) / 100) * 100, max: Math.ceil(Math.max(...prices) / 100) * 100 };
+  }, [items]);
+
+  const sections = <FilterSections filters={filters} facets={facets} locked={locked} priceBounds={priceBounds} onToggle={toggle} onPatch={patch} />;
+  const applied = (
+    <ActiveChips inPanel filters={filters} locked={locked} onToggle={toggle} onPatch={patch} brandOf={labelOf} onClear={clearAll} onEmpty={() => countRef.current?.focus()} />
   );
+  const shownCount = results.length;
 
-  return (
-    <div className="lg:flex lg:gap-8">
-      {/* desktop rail ------------------------------------------------- */}
-      <aside className="hidden w-64 shrink-0 lg:block">
-        <div className="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto pr-1">
-          <div className="mb-4 flex items-center justify-between">
-            <p className="eyebrow">Filters</p>
+  const body = (
+    <div className="lg:grid lg:grid-cols-[264px_minmax(0,1fr)] lg:items-start lg:gap-8">
+      {/* sidebar: one card, no inner scrolling ---------------------------- */}
+      {/* Sticks beside the grid as it scrolls, so the column under it never sits empty. Taller than
+          the screen (many sections open) it scrolls on its own rather than hiding its foot. */}
+      <aside className="hidden lg:sticky lg:top-24 lg:block" aria-label="Filters">
+        <div className="max-h-[calc(100vh-7rem)] overflow-y-auto overscroll-contain rounded-[var(--radius-cl)] border border-cl-line bg-cl-surface p-4">
+          <div className="flex min-h-[44px] items-center justify-between border-b border-cl-line pb-2">
+            <h2 className="flex items-center gap-2 text-[16px] font-semibold">
+              <Icon name="filter" size={16} />
+              Filters
+            </h2>
             {active > 0 && (
-              <button type="button" onClick={clearAll} className="text-[11px] text-accent underline underline-offset-4">
+              <button type="button" onClick={clearAll} className="min-h-[44px] text-[13px] font-semibold text-cl-muted underline underline-offset-4 hover:text-cl-ink">
                 Clear all
               </button>
             )}
           </div>
-          {panel}
+          {applied}
+          {sections}
         </div>
       </aside>
 
-      <div className="min-w-0 flex-1">
-        {/* toolbar ---------------------------------------------------- */}
-        <div className="mb-4 flex flex-wrap items-center gap-2">
-          <label className="relative flex h-9 min-w-0 flex-1 items-center sm:max-w-xs">
-            <Icon name="search" size={14} className="pointer-events-none absolute left-3 text-dim" />
+      <div className="min-w-0">
+        {/* phone: sticky Filter / Sort row ------------------------------------- */}
+        <div className="sticky top-14 z-30 mb-3 grid grid-cols-2 gap-2 bg-cl-page/95 py-2 backdrop-blur md:top-[68px] lg:hidden">
+          <button type="button" onClick={() => setSheet("filters")} aria-haspopup="dialog" className="cl-btn cl-btn-outline">
+            <Icon name="filter" size={16} />
+            Filter{active > 0 ? ` (${active})` : ""}
+          </button>
+          <button type="button" onClick={() => setSheet("sort")} aria-haspopup="dialog" className="cl-btn cl-btn-outline">
+            Sort
+            <Icon name="chevron" size={14} className="rotate-90" />
+          </button>
+        </div>
+
+        {/* toolbar ----------------------------------------------------------- */}
+        <div className="flex flex-wrap items-end gap-3">
+          <div className="relative min-w-0 flex-1 basis-64">
+            <label htmlFor={searchId} className="sr-only">
+              Search products
+            </label>
+            <Icon name="search" size={18} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-cl-muted" />
             <input
+              id={searchId}
+              type="search"
               value={filters.q}
               onChange={(e) => patch({ q: e.target.value })}
-              placeholder="Search this catalogue"
-              aria-label="Search the catalogue"
-              className="field h-9 w-full pl-8 text-xs"
+              placeholder="Search by name, size or part number"
+              className="cl-input min-h-[48px] pl-11"
             />
-          </label>
-
-          <button
-            type="button"
-            onClick={() => setPanelOpen(true)}
-            className="btn btn-outline btn-sm lg:hidden"
-            aria-label={active > 0 ? `Open filters, ${active} active` : "Open filters"}
-            aria-haspopup="dialog"
-          >
-            <Icon name="filter" size={14} />
-            Filters{active > 0 ? ` (${active})` : ""}
-          </button>
-
-          <select
-            aria-label="Sort products"
-            className="field ml-auto h-9 w-auto text-xs"
-            value={filters.sort}
-            onChange={(e) => patch({ sort: e.target.value as SortKey })}
-          >
-            {SORTS.map((s) => (
-              <option key={s.key} value={s.key}>
-                {s.label}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <ActiveChips
-          filters={filters}
-          locked={locked}
-          onToggle={toggle}
-          onPatch={patch}
-          brandOf={labelOf}
-          onClear={clearAll}
-          onEmpty={() => countRef.current?.focus()}
-        />
-
-        <p ref={countRef} tabIndex={-1} className="mb-4 text-xs text-ash tnum outline-none">
-          {results.length} product{results.length === 1 ? "" : "s"}
-          {results.length !== items.length && <span className="text-dim"> of {items.length}</span>}
-        </p>
-
-        {results.length === 0 && filters.oe && items.every((i) => !i.oe) ? (
-          <div className="card p-10 text-center">
-            <p className="font-display text-xl uppercase">Original Equipment</p>
-            <p className="mt-2 text-sm text-ash">
-              Original Equipment parts for {oeDepartment} are being added. Ask us on WhatsApp for OE availability.
-            </p>
-            <a
-              href={whatsapp(`Hi Riderzpro, do you have Original Equipment (OE) parts for ${oeDepartment}?`)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-primary btn-sm mt-5"
-            >
-              Ask on WhatsApp
-            </a>
           </div>
-        ) : results.length === 0 ? (
-          <div className="card p-10 text-center">
-            <p className="font-display text-xl uppercase">Nothing matches those filters</p>
-            <p className="mt-2 text-sm text-ash">
-              We stock far more than we list. Ask on WhatsApp and we&apos;ll check availability and fitment.
-            </p>
-            <button type="button" onClick={clearAll} className="btn btn-outline btn-sm mt-5">
-              Reset filters
-            </button>
-          </div>
-        ) : (
-          <>
-            <ul className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 xl:grid-cols-4">
-              {results.slice(0, visible).map((item) => (
-                <li key={item.id}>
-                  <CatalogCard item={item} showBrand={showBrandOnCards} />
-                </li>
+          <div className="hidden items-center gap-2 lg:flex">
+            <label htmlFor={sortId} className="text-[14px] font-semibold">
+              Sort
+            </label>
+            <select id={sortId} className="cl-input w-auto min-w-[12rem]" value={filters.sort} onChange={(e) => patch({ sort: e.target.value as SortKey })}>
+              {SORTS.filter((s) => s.key !== "rating" || filters.sort === "rating").map((s) => (
+                <option key={s.key} value={s.key}>
+                  {s.label}
+                </option>
               ))}
-            </ul>
-            {visible < results.length && (
-              <div className="mt-8 text-center">
-                <button type="button" onClick={() => setVisible((v) => v + PAGE)} className="btn btn-outline">
-                  Show more
-                  <span className="text-dim tnum">({results.length - visible} left)</span>
-                </button>
-              </div>
-            )}
-          </>
-        )}
-      </div>
-
-      {/* mobile bottom sheet ------------------------------------------ */}
-      {panelOpen && (
-        <FilterSheet count={results.length} onClear={clearAll} onClose={() => setPanelOpen(false)}>
-          {panel}
-        </FilterSheet>
-      )}
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ panel */
-
-const PRICE_CEILINGS = [999, 2499, 4999];
-
-const FOCUSABLE =
-  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
-
-/**
- * The filter panel below lg, as a bottom sheet. Same behaviour as the menu
- * drawer: Escape and the backdrop close it, body scroll is locked, Tab stays
- * inside, and focus returns to the button that opened it.
- */
-function FilterSheet({
-  count,
-  onClear,
-  onClose,
-  children,
-}: {
-  count: number;
-  onClear: () => void;
-  onClose: () => void;
-  children: React.ReactNode;
-}) {
-  const [shown, setShown] = useState(false);
-  const sheet = useRef<HTMLDivElement>(null);
-  const closeBtn = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    const opener = document.activeElement as HTMLElement | null;
-    const raf = requestAnimationFrame(() => {
-      setShown(true);
-      closeBtn.current?.focus();
-    });
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        e.preventDefault();
-        onClose();
-        return;
-      }
-      if (e.key !== "Tab" || !sheet.current) return;
-      const els = Array.from(sheet.current.querySelectorAll<HTMLElement>(FOCUSABLE));
-      if (els.length === 0) return;
-      const first = els[0];
-      const last = els[els.length - 1];
-      const cur = document.activeElement;
-      if (!sheet.current.contains(cur)) {
-        e.preventDefault();
-        first.focus();
-      } else if (e.shiftKey && cur === first) {
-        e.preventDefault();
-        last.focus();
-      } else if (!e.shiftKey && cur === last) {
-        e.preventDefault();
-        first.focus();
-      }
-    };
-    document.addEventListener("keydown", onKey);
-
-    // The sheet is `lg:hidden`; close it if the viewport crosses that breakpoint
-    // while open so the scroll lock and focus trap don't outlive it.
-    const mq = window.matchMedia("(min-width: 64rem)");
-    const onBreakpoint = (e: MediaQueryListEvent) => e.matches && onClose();
-    mq.addEventListener("change", onBreakpoint);
-
-    return () => {
-      cancelAnimationFrame(raf);
-      document.removeEventListener("keydown", onKey);
-      mq.removeEventListener("change", onBreakpoint);
-      document.body.style.overflow = prevOverflow;
-      opener?.focus?.();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  return (
-    <div className="fixed inset-0 z-[80] lg:hidden" role="dialog" aria-modal="true" aria-label="Filters">
-      <button
-        type="button"
-        tabIndex={-1}
-        aria-label="Close filters"
-        onClick={onClose}
-        className={`absolute inset-0 bg-void/70 transition-opacity duration-200 ${shown ? "opacity-100" : "opacity-0"}`}
-      />
-      <div
-        ref={sheet}
-        className={`absolute inset-x-0 bottom-0 flex max-h-[88dvh] flex-col rounded-t-2xl border-t border-tint/10 bg-void shadow-2xl shadow-tint/10 transition-transform duration-300 md:mx-auto md:max-w-xl ${
-          shown ? "translate-y-0" : "translate-y-full"
-        }`}
-      >
-        <div className="flex shrink-0 items-center justify-between border-b border-tint/10 px-4 py-3">
-          <p className="font-display text-lg font-extrabold uppercase">Filters</p>
-          <button
-            ref={closeBtn}
-            type="button"
-            onClick={onClose}
-            aria-label="Close filters"
-            className="grid h-10 w-10 place-items-center text-ash transition-colors hover:text-accent"
-          >
-            <Icon name="close" size={22} />
-          </button>
+            </select>
+          </div>
         </div>
-        <div className="flex-1 overflow-y-auto overscroll-contain px-4 py-5">{children}</div>
-        <div className="flex shrink-0 gap-3 border-t border-tint/10 bg-void px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
-          <button type="button" onClick={onClear} className="btn btn-outline flex-1">
-            Clear all
-          </button>
-          <button type="button" onClick={onClose} className="btn btn-primary flex-1">
-            Show {count} product{count === 1 ? "" : "s"}
-          </button>
+
+        <div className="mt-3 flex min-h-[44px] flex-wrap items-center gap-x-3 gap-y-2">
+          <p ref={countRef} tabIndex={-1} className="text-[14px] text-cl-muted tnum outline-none" aria-live="polite">
+            <strong className="font-bold text-cl-ink">{shownCount}</strong> of {items.length} product{items.length === 1 ? "" : "s"}
+          </p>
+          {/* Desktop shows the applied filters in the sidebar; phones see them here. */}
+          <div className="contents lg:hidden">
+            <ActiveChips filters={filters} locked={locked} onToggle={toggle} onPatch={patch} brandOf={labelOf} onClear={clearAll} onEmpty={() => countRef.current?.focus()} />
+          </div>
         </div>
-      </div>
-    </div>
-  );
-}
 
-type ToggleFn = <K extends "brands" | "categories" | "groups" | "subs" | "tiers" | "availability">(
-  key: K,
-  value: CatalogFilters[K][number],
-) => void;
-
-function FilterPanel({
-  filters,
-  facets,
-  locked,
-  garage,
-  onToggle,
-  onPatch,
-}: {
-  filters: CatalogFilters;
-  facets: ReturnType<typeof facetsFor>;
-  locked: LockedDimension[];
-  garage: { modelSlug: string; label: string } | null;
-  onToggle: ToggleFn;
-  onPatch: (next: Partial<CatalogFilters>) => void;
-}) {
-  return (
-    <div className="space-y-6">
-      {garage && (
-        <section>
-          <p className="eyebrow mb-3">My car</p>
-          <Check
-            label={`Fits my ${garage.label}`}
-            count={facets.fits || undefined}
-            checked={filters.fits === garage.modelSlug}
-            onChange={(on) => onPatch({ fits: on ? garage.modelSlug : null })}
-          />
-          <Link
-            href={`/accessories/${garage.modelSlug}`}
-            className="mt-2 inline-block text-[11px] text-accent underline underline-offset-4"
-          >
-            Open my car&apos;s page
-          </Link>
-        </section>
-      )}
-
-      {!locked.includes("brands") && facets.brands.length > 1 && (
-        <Group title="Brand">
-          {facets.brands.map((f) => (
-            <Check
-              key={f.value}
-              label={f.label}
-              count={f.count}
-              checked={filters.brands.includes(f.value)}
-              onChange={() => onToggle("brands", f.value)}
-            />
-          ))}
-        </Group>
-      )}
-
-      {!locked.includes("categories") && facets.categories.length > 1 && (
-        <Group title="Category">
-          {facets.categories.map((f) => (
-            <Check
-              key={f.value}
-              label={f.label}
-              count={f.count}
-              checked={filters.categories.includes(f.value)}
-              onChange={() => onToggle("categories", f.value)}
-            />
-          ))}
-        </Group>
-      )}
-
-      {facets.groups.length > 1 && (
-        <Group title="Group">
-          {facets.groups.map((f) => (
-            <Check
-              key={f.value}
-              label={f.label}
-              count={f.count}
-              checked={filters.groups.includes(f.value)}
-              onChange={() => onToggle("groups", f.value)}
-            />
-          ))}
-        </Group>
-      )}
-
-      {facets.subs.length > 1 && (
-        <Group title="Type" scroll>
-          {facets.subs.map((f) => (
-            <Check
-              key={f.value}
-              label={f.label}
-              count={f.count}
-              checked={filters.subs.includes(f.value)}
-              onChange={() => onToggle("subs", f.value)}
-            />
-          ))}
-        </Group>
-      )}
-
-      <Group title="Price">
-        <div className="mb-2 flex flex-wrap gap-2" role="group" aria-label="Price ceiling">
-          {PRICE_CEILINGS.map((n) => {
-            const on = filters.maxPrice === n;
-            return (
-              <button
-                key={n}
-                type="button"
-                aria-pressed={on}
-                onClick={() => onPatch({ maxPrice: on ? null : n })}
-                className={`chip min-h-[36px] ${on ? "chip-active" : "hover:border-accent hover:text-accent"}`}
-              >
-                {priceCeilingLabel(n)}
+        <div className="mt-4">
+          {results.length === 0 && filters.oe && items.every((i) => !i.oe) ? (
+            <Empty title="Original Equipment">
+              Original Equipment parts for {oeDepartment} are being added. Ask us about OE availability.
+              <EnquiryButton topic="product" message={`Hi Riderzpro, do you have Original Equipment (OE) parts for ${oeDepartment}?`} className="cl-btn cl-btn-primary mt-5">
+                Ask
+              </EnquiryButton>
+            </Empty>
+          ) : results.length === 0 ? (
+            <Empty title="Nothing matches those filters">
+              {autoFit ? "Nothing here is listed for your car yet. Change the car or clear some filters." : "We stock far more than we list. Clear a filter, or ask us and we'll check availability and fitment."}
+              <button type="button" onClick={clearAll} className="cl-btn cl-btn-outline mt-5">
+                Clear all filters
               </button>
-            );
-          })}
+            </Empty>
+          ) : (
+            <>
+              <ul className="grid grid-cols-2 gap-3 md:grid-cols-[repeat(auto-fill,minmax(230px,1fr))] md:gap-5">
+                {results.slice(0, visible).map((item) => (
+                  <li key={item.id}>
+                    <ListingCard item={item} showBrand={showBrandOnCards} fitsModel={garage && fitsModel && itemFits(item, garage.modelSlug) ? fitsModel : null} />
+                  </li>
+                ))}
+              </ul>
+              {visible < results.length && (
+                <div className="mt-8 text-center">
+                  <button type="button" onClick={() => setVisible((v) => v + PAGE)} className="cl-btn cl-btn-outline px-6">
+                    Show more · <span className="tnum">{Math.min(visible, results.length)} of {results.length}</span>
+                  </button>
+                </div>
+              )}
+            </>
+          )}
         </div>
-        {facets.tiers.length > 1 &&
-          facets.tiers.map((f) => (
-            <Check
-              key={f.value}
-              label={f.label}
-              count={f.count}
-              checked={filters.tiers.includes(f.value)}
-              onChange={() => onToggle("tiers", f.value)}
-            />
-          ))}
-      </Group>
+      </div>
 
-      {facets.availability.length > 1 && (
-        <Group title="Availability">
-          {facets.availability.map((f) => (
-            <Check
-              key={f.value}
-              label={f.label}
-              count={f.count}
-              checked={filters.availability.includes(f.value)}
-              onChange={() => onToggle("availability", f.value)}
-            />
-          ))}
-        </Group>
+      {sheet === "filters" && (
+        <Sheet
+          title="Filters"
+          full
+          closeAbove="(min-width: 64rem)"
+          onClose={() => setSheet(null)}
+          footer={
+            <div className="flex gap-3">
+              <button type="button" onClick={clearAll} className="cl-btn cl-btn-outline flex-1">
+                Clear all
+              </button>
+              <button type="button" onClick={() => setSheet(null)} className="cl-btn cl-btn-primary flex-[2]">
+                Show {shownCount} product{shownCount === 1 ? "" : "s"}
+              </button>
+            </div>
+          }
+        >
+          {applied}
+          {sections}
+        </Sheet>
       )}
+      {sheet === "sort" && <SortSheet value={filters.sort} onChange={(s) => patch({ sort: s })} onClose={() => setSheet(null)} />}
+    </div>
+  );
 
-      <Group title="Original Equipment">
-        <Check
-          label="OE (Original Equipment) only"
-          count={facets.oe}
-          checked={filters.oe}
-          onChange={(on) => onPatch({ oe: on })}
-        />
-      </Group>
+  if (!header) {
+    return (
+      <div className="cl-scope text-cl-ink">
+        {vehicleBar && (
+          <div className="mb-6">
+            <VehicleBar />
+          </div>
+        )}
+        {body}
+      </div>
+    );
+  }
 
-      <Group title="Service">
-        <Check
-          label="Installation available"
-          count={facets.installation}
-          checked={filters.installation}
-          onChange={(on) => onPatch({ installation: on })}
-        />
-      </Group>
+  return (
+    <div className="cl-scope bg-cl-page text-cl-ink">
+      <header className="border-b border-cl-line bg-cl-surface pb-5 pt-[4.75rem] md:pb-6 md:pt-[5.75rem]">
+        <div className="cl-shell flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
+          <div className="min-w-0">
+            <nav aria-label="Breadcrumb">
+              <ol className="flex flex-wrap items-center gap-1.5 text-[13px] text-cl-muted">
+                {crumbs.map((c, i) => (
+                  <li key={`${c.label}-${i}`} className="flex items-center gap-1.5">
+                    {c.href && i < crumbs.length - 1 ? (
+                      <Link href={c.href} className="hover:text-cl-ink hover:underline">
+                        {c.label}
+                      </Link>
+                    ) : (
+                      <span aria-current={i === crumbs.length - 1 ? "page" : undefined} className="text-cl-ink">
+                        {c.label}
+                      </span>
+                    )}
+                    {i < crumbs.length - 1 && <span aria-hidden="true">/</span>}
+                  </li>
+                ))}
+              </ol>
+            </nav>
+            <div className="mt-2 flex items-baseline justify-between gap-4">
+              <h1 className="font-display text-[30px] font-black uppercase leading-none tracking-[-0.02em] md:text-[44px]">{title}</h1>
+              <p className="shrink-0 text-[14px] text-cl-muted tnum md:hidden">
+                {shownCount} product{shownCount === 1 ? "" : "s"}
+              </p>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div className="cl-shell pb-16 pt-5 md:pt-6">
+        {vehicleBar && (
+          <div className="mb-4 md:mb-6">
+            <VehicleBar />
+          </div>
+        )}
+        {body}
+      </div>
     </div>
   );
 }
 
-function Group({ title, children, scroll = false }: { title: string; children: React.ReactNode; scroll?: boolean }) {
+function Empty({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section>
-      <p className="eyebrow mb-3">{title}</p>
-      <div className={scroll ? "max-h-64 space-y-0.5 overflow-y-auto pr-1" : "space-y-0.5"}>{children}</div>
-    </section>
-  );
-}
-
-function Check({
-  label,
-  count,
-  checked,
-  onChange,
-}: {
-  label: string;
-  count?: number;
-  checked: boolean;
-  onChange: (on: boolean) => void;
-}) {
-  const empty = count === 0 && !checked;
-  return (
-    <label
-      className={`flex cursor-pointer items-center gap-2.5 py-1 text-[13px] transition-colors ${
-        empty ? "text-dim" : "text-ash hover:text-chalk"
-      }`}
-    >
-      <input
-        type="checkbox"
-        checked={checked}
-        onChange={(e) => onChange(e.target.checked)}
-        className="h-3.5 w-3.5 shrink-0 accent-[var(--color-accent)]"
-      />
-      <span className="min-w-0 flex-1 truncate">{label}</span>
-      {count !== undefined && <span className="shrink-0 text-[11px] text-dim tnum">{count}</span>}
-    </label>
+    <div className="flex flex-col items-center rounded-[var(--radius-cl)] border border-cl-line bg-cl-surface p-10 text-center text-[14px] text-cl-muted">
+      <p className="mb-2 font-display text-[20px] font-extrabold uppercase text-cl-ink">{title}</p>
+      {children}
+    </div>
   );
 }
 
 /* ------------------------------------------------------------ active chips */
 
 function ActiveChips({
+  inPanel = false,
   filters,
   locked,
   onToggle,
@@ -582,6 +383,8 @@ function ActiveChips({
   onClear,
   onEmpty,
 }: {
+  /** In the filter sidebar / sheet: a labelled block with no divider or "Clear all" (the header has it). */
+  inPanel?: boolean;
   filters: CatalogFilters;
   locked: LockedDimension[];
   onToggle: ToggleFn;
@@ -591,9 +394,8 @@ function ActiveChips({
   /** Called when removing the last chip leaves nothing to focus. */
   onEmpty: () => void;
 }) {
-  /* Removing a chip unmounts the button that had focus. Remember its position and,
-     after the list re-renders, focus the chip that took its place (or the previous one). */
-  const wrap = useRef<HTMLDivElement>(null);
+  /* Removing a chip unmounts the button that had focus: focus the chip that took its place. */
+  const wrap = useRef<HTMLUListElement>(null);
   const refocus = useRef<number | null>(null);
   useEffect(() => {
     if (refocus.current === null) return;
@@ -606,54 +408,80 @@ function ActiveChips({
   });
 
   const chips: { key: string; label: string; remove: () => void }[] = [];
-
-  if (!locked.includes("brands"))
-    for (const b of filters.brands)
-      chips.push({ key: `b-${b}`, label: brandOf(b), remove: () => onToggle("brands", b) });
+  if (!locked.includes("brands")) for (const b of filters.brands) chips.push({ key: `b-${b}`, label: brandOf(b), remove: () => onToggle("brands", b) });
   if (!locked.includes("categories"))
-    for (const c of filters.categories)
-      chips.push({ key: `c-${c}`, label: categoryName(c), remove: () => onToggle("categories", c) });
+    for (const c of filters.categories) chips.push({ key: `c-${c}`, label: categoryName(c), remove: () => onToggle("categories", c) });
   const groupNames = new Map(
     (filters.categories.length === 1 ? (DEPARTMENT_BY_SLUG[filters.categories[0]]?.groups ?? []) : []).map((g) => [g.slug, g.name]),
   );
-  for (const g of filters.groups)
-    chips.push({ key: `g-${g}`, label: groupNames.get(g) ?? g, remove: () => onToggle("groups", g) });
+  for (const g of filters.groups) chips.push({ key: `g-${g}`, label: groupNames.get(g) ?? g, remove: () => onToggle("groups", g) });
+  for (const s of filters.sizes) chips.push({ key: `z-${s}`, label: SPEAKER_SIZE_LABELS[s], remove: () => onToggle("sizes", s) });
   if (filters.oe) chips.push({ key: "oe", label: "Original Equipment", remove: () => onPatch({ oe: false }) });
   for (const s of filters.subs) chips.push({ key: `s-${s}`, label: s, remove: () => onToggle("subs", s) });
-  for (const t of filters.tiers)
-    chips.push({ key: `t-${t}`, label: TIER_LABELS[t], remove: () => onToggle("tiers", t) });
-  if (filters.maxPrice !== null)
-    chips.push({ key: "max", label: priceCeilingLabel(filters.maxPrice), remove: () => onPatch({ maxPrice: null }) });
-  for (const a of filters.availability)
-    chips.push({ key: `a-${a}`, label: AVAILABILITY_LABELS[a], remove: () => onToggle("availability", a) });
+  for (const t of filters.tiers) chips.push({ key: `t-${t}`, label: TIER_LABELS[t], remove: () => onToggle("tiers", t) });
+  if (filters.minPrice !== null) chips.push({ key: "min", label: `Over ₹${filters.minPrice.toLocaleString("en-IN")}`, remove: () => onPatch({ minPrice: null }) });
+  if (filters.maxPrice !== null) chips.push({ key: "max", label: `Under ₹${filters.maxPrice.toLocaleString("en-IN")}`, remove: () => onPatch({ maxPrice: null }) });
+  for (const a of filters.availability) chips.push({ key: `a-${a}`, label: AVAILABILITY_LABELS[a], remove: () => onToggle("availability", a) });
   if (filters.fits) chips.push({ key: "fits", label: "Fits my car", remove: () => onPatch({ fits: null }) });
-  if (filters.installation)
-    chips.push({ key: "install", label: "Installation available", remove: () => onPatch({ installation: false }) });
+  if (filters.installation) chips.push({ key: "install", label: "Installation available", remove: () => onPatch({ installation: false }) });
   if (filters.q.trim()) chips.push({ key: "q", label: `“${filters.q.trim()}”`, remove: () => onPatch({ q: "" }) });
 
   if (chips.length === 0) return null;
 
+  if (inPanel) {
+    return (
+      <div className="border-b border-cl-line py-3">
+        <p className="cl-label mb-2">Applied</p>
+        <ul ref={wrap} className="flex flex-wrap gap-2" aria-label="Applied filters">
+          {chips.map((c, i) => (
+            <li key={c.key}>
+              <button
+                type="button"
+                data-chip=""
+                onClick={() => {
+                  refocus.current = i;
+                  c.remove();
+                }}
+                className="cl-chip min-h-[36px] text-[13px]"
+                aria-label={`Remove filter: ${c.label}`}
+              >
+                {c.label}
+                <Icon name="close" size={13} />
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+
   return (
-    <div ref={wrap} className="mb-4 flex flex-wrap items-center gap-2">
-      {chips.map((c, i) => (
-        <button
-          key={c.key}
-          type="button"
-          data-chip=""
-          onClick={() => {
-            refocus.current = i;
-            c.remove();
-          }}
-          className="chip chip-active hover:opacity-80"
-          aria-label={`Remove filter ${c.label}`}
-        >
-          {c.label}
-          <Icon name="close" size={11} />
-        </button>
-      ))}
-      <button type="button" onClick={onClear} className="text-[11px] text-accent underline underline-offset-4">
-        Clear all
-      </button>
-    </div>
+    <>
+      <span className="hidden h-5 w-px bg-cl-line sm:block" aria-hidden="true" />
+      <ul ref={wrap} className="flex flex-wrap items-center gap-2" aria-label="Active filters">
+        {chips.map((c, i) => (
+          <li key={c.key}>
+            <button
+              type="button"
+              data-chip=""
+              onClick={() => {
+                refocus.current = i;
+                c.remove();
+              }}
+              className="cl-chip"
+              aria-label={`Remove filter: ${c.label}`}
+            >
+              {c.label}
+              <Icon name="close" size={14} />
+            </button>
+          </li>
+        ))}
+        <li>
+          <button type="button" onClick={onClear} className="min-h-[44px] px-1 text-[13px] font-semibold text-cl-ink underline underline-offset-4">
+            Clear all
+          </button>
+        </li>
+      </ul>
+    </>
   );
 }

@@ -21,8 +21,8 @@ import {
 } from "@/lib/ppf/coverage";
 import { GUIDE, PREP_STEPS, QUALITY_CHECKLIST } from "@/lib/ppf/guide";
 import { rupees } from "@/lib/format";
-import { whatsapp } from "@/lib/data/site";
 import { pageMeta } from "@/lib/data/seo";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 
 export const metadata: Metadata = pageMeta({
   title: "Paint Protection Film (PPF) — Packages & Installation",
@@ -401,15 +401,9 @@ export default function PpfPage() {
               Build your PPF package
               <Icon name="arrow" size={15} />
             </Link>
-            <a
-              href={whatsapp("Hi Riderzpro, I want a PPF quote for my ")}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="btn btn-whatsapp btn-block mt-3"
-            >
-              <Icon name="whatsapp" size={16} />
-              Get PPF quote on WhatsApp
-            </a>
+            <EnquiryButton topic="installation" message={"Hi Riderzpro, I want a PPF quote for my "} className="btn btn-primary btn-block mt-3">
+              Get PPF quote
+            </EnquiryButton>
             <p className="mt-4 text-[11px] text-dim">
               Vehicle classes we price against: {VEHICLE_CLASSES.map((c) => c.label).join(" · ")}.
             </p>

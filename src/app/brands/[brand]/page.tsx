@@ -16,8 +16,8 @@ import {
   type CatalogQuery,
 } from "@/lib/catalog";
 import { CATEGORIES } from "@/lib/data/products";
-import { whatsapp } from "@/lib/data/site";
 import { breadcrumbLd, itemListLd, ldJson, pageMeta } from "@/lib/data/seo";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 
 export function generateStaticParams() {
   return BRANDS.map((b) => ({ brand: b.slug }));
@@ -165,15 +165,9 @@ function ImportPending({ name }: { name: string }) {
         the range isn&apos;t published yet. Ask us and we&apos;ll quote you against the current price list.
       </p>
       <div className="mt-6 flex flex-wrap gap-3">
-        <a
-          href={whatsapp(`Hi Riderzpro, I'm looking for ${name} products. What do you have?`)}
-          target="_blank"
-          rel="noreferrer noopener"
-          className="btn btn-whatsapp btn-sm"
-        >
-          <Icon name="whatsapp" size={15} />
-          Ask on WhatsApp
-        </a>
+        <EnquiryButton topic="product" message={`Hi Riderzpro, I'm looking for ${name} products. What do you have?`} className="btn btn-primary btn-sm">
+          Ask
+        </EnquiryButton>
         <Link href="/shop" className="btn btn-outline btn-sm">
           Browse the full shop
         </Link>

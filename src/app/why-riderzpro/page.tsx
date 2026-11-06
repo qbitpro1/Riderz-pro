@@ -4,22 +4,21 @@ import { PageHero } from "@/components/layout/PageHero";
 import { SectionHead } from "@/components/ui/Section";
 import { Icon } from "@/components/ui/Icon";
 import { Reveal } from "@/components/ui/Reveal";
-import { ReviewCard } from "@/components/community/Cards";
-import { TRUST_POINTS, whatsapp } from "@/lib/data/site";
-import { REVIEWS, STATS } from "@/lib/data/community";
+import { TRUST_POINTS } from "@/lib/data/site";
 import { pageMeta } from "@/lib/data/seo";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 
 export const metadata: Metadata = pageMeta({
   title: "Why Riderzpro",
   description:
-    "What Riderzpro does differently: one workshop for the whole car, published prices, documented builds, legal compliance, and a badge that means something.",
+    "What Riderzpro does differently: one team for the whole car, published prices, documented builds, legal compliance, and a badge that means something.",
   path: "/why-riderzpro",
 });
 
 const PRINCIPLES = [
   {
-    title: "One garage, the whole car",
-    body: "Buying, selling, accessories, audio, PPF, off-road, interiors and tuning under one roof. You stop coordinating four workshops that each blame the other.",
+    title: "One team, the whole car",
+    body: "Accessories, audio, PPF, off-road, interiors and installation from one team. You stop coordinating four workshops that each blame the other.",
   },
   {
     title: "Prices you can see",
@@ -52,16 +51,7 @@ export default function WhyPage() {
         blurb="Buy it, sell it, modify it, protect it, upgrade it or build it. One brand, one standard, one number to call when something isn't right."
         media="garageHeadlights"
         size="sm"
-      >
-        <dl className="mt-8 grid max-w-2xl grid-cols-2 gap-x-6 gap-y-5 border-t border-tint/12 pt-6 md:grid-cols-4">
-          {STATS.map((s) => (
-            <div key={s.label}>
-              <dd className="font-display text-2xl font-extrabold tnum">{s.value}</dd>
-              <dt className="mt-1 text-[11px] uppercase tracking-[0.14em] text-dim">{s.label}</dt>
-            </div>
-          ))}
-        </dl>
-      </PageHero>
+      />
 
       <section className="section">
         <div className="shell">
@@ -104,35 +94,20 @@ export default function WhyPage() {
 
       <section className="section">
         <div className="shell">
-          <SectionHead eyebrow="Customers" title="JUDGE US ON THIS." />
-          <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {REVIEWS.map((r) => (
-              <li key={r.name}>
-                <ReviewCard review={r} />
-              </li>
-            ))}
-          </ul>
-
-          <div className="card mt-8 flex flex-col items-start justify-between gap-4 p-6 md:flex-row md:items-center">
+          <div className="card flex flex-col items-start justify-between gap-4 p-6 md:flex-row md:items-center">
             <div>
               <p className="font-display text-lg font-extrabold uppercase">Start somewhere</p>
               <p className="mt-1 text-sm text-ash">
-                A ₹899 steering cover or a ₹6 lakh overland build — both get the same workshop.
+                A ₹899 steering cover or a ₹6 lakh overland build — both get the same care.
               </p>
             </div>
             <div className="flex flex-wrap gap-3">
               <Link href="/shop" className="btn btn-primary btn-sm">
                 Shop accessories
               </Link>
-              <a
-                href={whatsapp("Hi Riderzpro, I'd like to talk about my car.")}
-                target="_blank"
-                rel="noreferrer noopener"
-                className="btn btn-whatsapp btn-sm"
-              >
-                <Icon name="whatsapp" size={15} />
+              <EnquiryButton topic="other" message={"Hi Riderzpro, I'd like to talk about my car."} className="btn btn-primary btn-sm">
                 Ask us anything
-              </a>
+              </EnquiryButton>
             </div>
           </div>
         </div>

@@ -4,8 +4,8 @@ import { SellFlow } from "@/components/sell/SellFlow";
 import { SectionHead } from "@/components/ui/Section";
 import { Icon } from "@/components/ui/Icon";
 import { Accordion } from "@/components/ui/Accordion";
-import { whatsapp } from "@/lib/data/site";
 import { pageMeta } from "@/lib/data/seo";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 
 export const metadata: Metadata = pageMeta({
   title: "Sell Your Car — Free Valuation",
@@ -119,18 +119,12 @@ export default function SellPage() {
           <div className="card p-6">
             <p className="font-display text-lg font-extrabold uppercase">Prefer to just talk?</p>
             <p className="mt-2 text-sm text-ash">
-              Send us the registration number on WhatsApp. We will come back with a range and a slot for
+              Send us the registration number. We will come back with a range and a slot for
               a free inspection, usually within twenty minutes.
             </p>
-            <a
-              href={whatsapp("Hi Riderzpro, I want to sell my car. Registration number: ")}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="btn btn-whatsapp btn-block mt-5"
-            >
-              <Icon name="whatsapp" size={16} />
-              Sell my car on WhatsApp
-            </a>
+            <EnquiryButton topic="other" message={"Hi Riderzpro, I want to sell my car. Registration number: "} className="btn btn-primary btn-block mt-5">
+              Sell my car
+            </EnquiryButton>
           </div>
         </div>
       </section>

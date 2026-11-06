@@ -6,6 +6,7 @@ import { BottomNav } from "@/components/layout/BottomNav";
 import { AssistantFab } from "@/components/layout/AssistantFab";
 import { Footer } from "@/components/layout/Footer";
 import { SiteChrome } from "@/components/layout/SiteChrome";
+import { SiteTranslate } from "@/components/i18n/SiteTranslate";
 import { CartProvider } from "@/components/cart/CartContext";
 import { AccountProvider } from "@/components/account/AccountContext";
 import { LIVE_GROUPS } from "@/lib/catalog";
@@ -71,7 +72,8 @@ export const viewport: Viewport = {
 
 const ORG_SCHEMA = {
   "@context": "https://schema.org",
-  "@type": "AutoPartsStore",
+  // An online store: there is no walk-in address to publish yet (the region comes from the GSTIN).
+  "@type": "OnlineStore",
   "@id": `${SITE.url}/#organization`,
   legalName: SITE.legalName,
   logo: `${SITE.url}/brand/riderzpro-logo.png`,
@@ -81,13 +83,9 @@ const ORG_SCHEMA = {
   url: SITE.url,
   telephone: SITE.phone,
   email: SITE.email,
-  priceRange: "₹₹",
   address: {
     "@type": "PostalAddress",
-    streetAddress: "No. 14, Hosur Main Road, Kudlu Gate",
-    addressLocality: "Bengaluru",
     addressRegion: "Karnataka",
-    postalCode: "560068",
     addressCountry: "IN",
   },
   sameAs: [SITE.instagram, SITE.youtube, SITE.facebook],
@@ -132,6 +130,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <CartProvider>
           <SiteChrome part="header">
             <Header liveGroups={LIVE_GROUPS} />
+            <SiteTranslate />
           </SiteChrome>
           <main id="main">{children}</main>
           <SiteChrome part="footer">

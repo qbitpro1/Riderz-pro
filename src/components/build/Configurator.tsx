@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { rupees } from "@/lib/format";
-import { whatsapp } from "@/lib/data/site";
 import { BRANDS } from "@/lib/data/vehicles";
 import {
   BUILD_PRESETS,
@@ -13,6 +12,7 @@ import {
   type BuildOption,
 } from "@/lib/data/configurator";
 import { garageKey, useGarage, type Garage } from "@/lib/client/garage";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 
 export function Configurator() {
   // Starts from the shopper's saved car (and starts again if they change it in My Garage).
@@ -271,15 +271,10 @@ function Build({ garage }: { garage: Garage | null }) {
             <SummaryRow label="GST (18%)" value={rupees(gst)} />
           </dl>
 
-          <a
-            href={whatsapp(quoteMessage)}
-            target="_blank"
-            rel="noreferrer noopener"
-            className={`btn btn-block mt-5 ${selected.length ? "btn-accent" : "btn-outline pointer-events-none opacity-40"}`}
-          >
+          <EnquiryButton topic="installation" message={quoteMessage} className={`btn btn-block mt-5 ${selected.length ? "btn-accent" : "btn-outline pointer-events-none opacity-40"}`}>
             Request my build
             <Icon name="arrow" size={15} />
-          </a>
+          </EnquiryButton>
           <button
             type="button"
             onClick={() => setPicked(new Set())}

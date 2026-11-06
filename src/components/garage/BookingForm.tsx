@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { Icon } from "@/components/ui/Icon";
-import { LOCATIONS, whatsapp } from "@/lib/data/site";
+import { LOCATIONS } from "@/lib/data/site";
+import { EnquiryStatus, useEnquiry } from "@/components/enquiry/Enquiry";
 import { APPOINTMENT_SERVICES } from "@/lib/data/services";
 
 export function BookingForm({ defaultService }: { defaultService?: string }) {
@@ -11,9 +12,10 @@ export function BookingForm({ defaultService }: { defaultService?: string }) {
   const [car, setCar] = useState("");
   const [service, setService] = useState(defaultService ?? APPOINTMENT_SERVICES[0]);
   const [date, setDate] = useState("");
-  const [location, setLocation] = useState(LOCATIONS[0].slug);
+  const [location, setLocation] = useState(LOCATIONS[0]?.slug ?? "");
   const [notes, setNotes] = useState("");
 
+  const enquiry = useEnquiry();
   const branch = LOCATIONS.find((l) => l.slug === location);
   const ready = name.trim() && phone.trim().length >= 10 && car.trim();
 
@@ -24,7 +26,7 @@ export function BookingForm({ defaultService }: { defaultService?: string }) {
     `Car: ${car}`,
     `Service: ${service}`,
     `Preferred date: ${date || "flexible"}`,
-    `Location: ${branch?.name}`,
+    branch ? `Location: ${branch.name}` : "",
     notes ? `Notes: ${notes}` : "",
   ]
     .filter(Boolean)
@@ -35,14 +37,13 @@ export function BookingForm({ defaultService }: { defaultService?: string }) {
       className="card p-5 md:p-6"
       onSubmit={(e) => {
         e.preventDefault();
-        if (ready) window.open(whatsapp(message), "_blank", "noopener,noreferrer");
+        if (ready && !enquiry.sending) void enquiry.send({ name, mobile: phone, topic: "installation", message });
       }}
     >
       <p className="eyebrow mb-1">Riderzpro Garage</p>
       <h3 className="display-3">BOOK AN APPOINTMENT</h3>
       <p className="mt-2 text-sm text-ash">
-        Tell us what the car needs. We confirm a slot on WhatsApp within business hours, usually in
-        under twenty minutes.
+        Tell us what the car needs. We call you to confirm a slot within one working day.
       </p>
 
       <div className="mt-5 grid gap-3 sm:grid-cols-2">
@@ -80,15 +81,17 @@ export function BookingForm({ defaultService }: { defaultService?: string }) {
         <Field label="Preferred date" id="bk-date">
           <input id="bk-date" type="date" className="field" value={date} onChange={(e) => setDate(e.target.value)} />
         </Field>
-        <Field label="Location" id="bk-loc">
-          <select id="bk-loc" className="field" value={location} onChange={(e) => setLocation(e.target.value)}>
-            {LOCATIONS.map((l) => (
-              <option key={l.slug} value={l.slug}>
-                {l.city} — {l.bays} bays
-              </option>
-            ))}
-          </select>
-        </Field>
+        {LOCATIONS.length > 0 && (
+          <Field label="Location" id="bk-loc">
+            <select id="bk-loc" className="field" value={location} onChange={(e) => setLocation(e.target.value)}>
+              {LOCATIONS.map((l) => (
+                <option key={l.slug} value={l.slug}>
+                  {l.city} — {l.bays} bays
+                </option>
+              ))}
+            </select>
+          </Field>
+        )}
       </div>
 
       <div className="mt-3">
@@ -107,15 +110,19 @@ export function BookingForm({ defaultService }: { defaultService?: string }) {
 
       <button
         type="submit"
-        className={`btn btn-block mt-5 ${ready ? "btn-whatsapp" : "btn-outline cursor-not-allowed opacity-40"}`}
-        disabled={!ready}
+        className={`btn btn-block mt-5 ${ready ? "btn-primary" : "btn-outline cursor-not-allowed opacity-40"}`}
+        disabled={!ready || enquiry.sending}
+        aria-busy={enquiry.sending}
       >
-        <Icon name="whatsapp" size={16} />
-        Request this slot
+        <Icon name="check" size={16} />
+        {enquiry.sending ? "Sending…" : "Request this slot"}
       </button>
-      <p className="mt-3 text-[11px] text-dim">
-        {branch?.address} · {branch?.phone}
-      </p>
+      <EnquiryStatus status={enquiry.status} error={enquiry.error} />
+      {branch && (
+        <p className="mt-3 text-[11px] text-dim">
+          {branch.address} · {branch.phone}
+        </p>
+      )}
     </form>
   );
 }

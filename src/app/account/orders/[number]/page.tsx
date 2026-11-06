@@ -6,8 +6,8 @@ import { LiveTracking } from "@/components/tracking/LiveTracking";
 import { customerOrderDetail, customerPage } from "@/lib/server/customers";
 import { customerOrderPayment } from "@/lib/server/payments";
 import { rupees } from "@/lib/format";
-import { whatsapp } from "@/lib/data/site";
 import { ORDER_STATUS_TEXT, PART_STATUS_LABELS, PART_STEPS, fmtDay, type AccountOrderPart } from "@/lib/account/types";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 
 export const metadata: Metadata = { title: "Order details", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
@@ -74,14 +74,9 @@ export default async function OrderPage({ params }: Params) {
             {order.notes && <p className="mt-2 text-xs text-dim">Note: {order.notes}</p>}
           </div>
           <div className="flex flex-col gap-2">
-            <a
-              href={whatsapp(`Hi Riderzpro, I have a question about my order ${order.number}.`)}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="btn btn-whatsapp btn-block"
-            >
-              Ask about this order on WhatsApp
-            </a>
+            <EnquiryButton topic="order" message={`Hi Riderzpro, I have a question about my order ${order.number}.`} className="btn btn-primary btn-block">
+              Ask about this order
+            </EnquiryButton>
             <Link href={`/account/help?order=${order.number}`} className="btn btn-outline btn-block">
               Send us a message
             </Link>

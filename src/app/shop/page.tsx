@@ -18,7 +18,7 @@ import { liveVendorItems } from "@/lib/server/marketplace";
 export const metadata: Metadata = pageMeta({
   title: "Car Accessories Online India: Interior, Exterior, Audio, Lighting & Off-Road",
   description:
-    "Shop car accessories across eight departments and every brand we stock. Filter by brand, department, price and fitment, with installation at Riderzpro garages in Bengaluru, Hyderabad and Pune.",
+    "Shop car accessories across eight departments and every brand we stock. Filter by brand, department, price and fitment, with installation available on marked products.",
   path: "/shop",
 });
 

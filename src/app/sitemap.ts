@@ -54,7 +54,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     entry("/performance", 0.8),
     entry("/garage", 0.8),
     entry("/builds", 0.7),
-    entry("/locations", 0.6, "monthly"),
     entry("/contact", 0.6, "monthly"),
     entry("/why-riderzpro", 0.6, "monthly"),
 

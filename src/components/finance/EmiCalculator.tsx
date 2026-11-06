@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { emi, rupees } from "@/lib/format";
-import { whatsapp } from "@/lib/data/site";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 
 export function EmiCalculator({
   defaultPrice = 15_75_000,
@@ -96,17 +96,9 @@ export function EmiCalculator({
               with 11 lenders and will find you the cheapest available offer.
             </p>
           </div>
-          <a
-            href={whatsapp(
-              `Hi Riderzpro, I want finance for ${context}. Price ${rupees(price)}, down payment ${downPct}%, tenure ${months} months.`,
-            )}
-            target="_blank"
-            rel="noreferrer noopener"
-            className="btn btn-whatsapp btn-block mt-5"
-          >
-            <Icon name="whatsapp" size={16} />
+          <EnquiryButton topic="other" message={`Hi Riderzpro, I want finance for ${context}. Price ${rupees(price)}, down payment ${downPct}%, tenure ${months} months.`} className="btn btn-primary btn-block mt-5">
             Check my eligibility
-          </a>
+          </EnquiryButton>
         </div>
       </div>
     </div>

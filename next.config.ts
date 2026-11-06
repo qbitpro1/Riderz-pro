@@ -59,6 +59,10 @@ const nextConfig: NextConfig = {
       // rules above come first so the Motorbotz URLs resolve in a single hop.
       { source: "/product/:slug", destination: "/products/:slug", permanent: true },
       { source: "/autoform/:design", destination: "/products/autoform-:design", permanent: true },
+      // The garage locations page was demo content (no walk-in garages yet); visitors land on Contact.
+      { source: "/locations", destination: "/contact", permanent: false },
+      { source: "/ppf/ppf-in-hyderabad", destination: "/ppf", permanent: false },
+      { source: "/ppf/ppf-in-pune", destination: "/ppf", permanent: false },
       // The compare feature was dropped; its URL goes to the shop.
       { source: "/compare", destination: "/shop", permanent: true },
       // Pre-taxonomy shop categories, folded into the eight departments.

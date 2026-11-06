@@ -23,7 +23,6 @@ const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
       { label: "Shipping", href: "/support/shipping" },
       { label: "Returns", href: "/support/returns" },
       { label: "Warranty", href: "/support/warranty" },
-      { label: "Locations", href: "/locations" },
       { label: "Why Riderzpro", href: "/why-riderzpro" },
       { label: "Privacy Policy", href: "/legal/privacy" },
       { label: "Terms of Service", href: "/legal/terms" },
@@ -55,7 +54,7 @@ export function Footer() {
               <Social href={SITE.instagram} icon="instagram" label="Instagram" />
               <Social href={SITE.youtube} icon="youtube" label="YouTube" />
               <Social href={SITE.facebook} icon="facebook" label="Facebook" />
-              <Social href={LOCATIONS[0].mapUrl} icon="map" label="Google Maps" />
+              {LOCATIONS[0] && <Social href={LOCATIONS[0].mapUrl} icon="map" label="Google Maps" />}
             </div>
           </div>
 

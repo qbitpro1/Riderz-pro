@@ -39,6 +39,26 @@
   /* Blue "verified" badge and the check on it. */
   --color-verified: var(--verified);
   --color-on-verified: var(--on-verified);
+
+  /* Catalogue listing ("cl-") tokens: the product listing pages' palette. Ink is the text and
+     primary-button colour; red is only for discount badges and the car icon tint. */
+  --color-cl-ink: var(--cl-ink);
+  --color-cl-on-ink: var(--cl-on-ink);
+  --color-cl-page: var(--cl-page);
+  --color-cl-surface: var(--cl-surface);
+  --color-cl-fill: var(--cl-fill);
+  --color-cl-fill-2: var(--cl-fill-2);
+  --color-cl-line: var(--cl-line);
+  --color-cl-line-strong: var(--cl-line-strong);
+  --color-cl-muted: var(--cl-muted);
+  --color-cl-sale: var(--cl-sale);
+  --color-cl-sale-tint: var(--cl-sale-tint);
+  --color-cl-fit: var(--cl-fit);
+  --color-cl-fit-bg: var(--cl-fit-bg);
+  --color-cl-bar: var(--cl-bar);
+  --color-cl-on-bar: var(--cl-on-bar);
+  --color-cl-bar-fit: var(--cl-bar-fit);
+  --color-cl-bar-fit-bg: var(--cl-bar-fit-bg);
 }
 
 /* Offline Store screen: "wide" = a laptop/desktop (1024px+) OR any landscape screen from 768px,
@@ -57,6 +77,8 @@
   --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
 
   --radius-card: 4px;
+  --radius-cl: 12px;
+  --radius-cl-ctl: 10px;
 
   --breakpoint-xs: 24rem;
 }
@@ -84,6 +106,24 @@
     --verified: #4db5ff;
     --on-verified: #ffffff;
     --shadow-lift: 0 26px 60px -30px rgba(0, 0, 0, 0.9);
+    /* Catalogue (dark): derived from the light spec, every text pairing ≥4.5:1. */
+    --cl-ink: #f4f4f2;
+    --cl-on-ink: #111111;
+    --cl-page: #0b0b0c;
+    --cl-surface: #151517;
+    --cl-fill: #1f1f22;
+    --cl-fill-2: #232326;
+    --cl-line: #2e2e32;
+    --cl-line-strong: #55555b;
+    --cl-muted: #a8a8a2;
+    --cl-sale: #c8102e;
+    --cl-sale-tint: #3a1219;
+    --cl-fit: #9be3b5;
+    --cl-fit-bg: #173d27;
+    --cl-bar: #1f1f22;
+    --cl-on-bar: #f4f4f2;
+    --cl-bar-fit: #9be3b5;
+    --cl-bar-fit-bg: #173d27;
   }
 
   /* Every pairing here clears WCAG AA (4.5:1) on void, carbon and steel. --danger is a crimson (hue ~340) so error text reads apart from the brand red accent. */
@@ -108,6 +148,24 @@
     --verified: #1d9bf0;
     --on-verified: #ffffff;
     --shadow-lift: 0 22px 50px -28px rgba(15, 18, 22, 0.28);
+    /* Catalogue (light): the listing-page spec. */
+    --cl-ink: #111111;
+    --cl-on-ink: #ffffff;
+    --cl-page: #fafaf9;
+    --cl-surface: #ffffff;
+    --cl-fill: #f3f3f1;
+    --cl-fill-2: #f5f5f4;
+    --cl-line: #e4e4e1;
+    --cl-line-strong: #c9c9c4;
+    --cl-muted: #5c5c58;
+    --cl-sale: #c8102e;
+    --cl-sale-tint: #fdecec;
+    --cl-fit: #1e6b3c;
+    --cl-fit-bg: #e7f4ec;
+    --cl-bar: #111111;
+    --cl-on-bar: #ffffff;
+    --cl-bar-fit: #9be3b5;
+    --cl-bar-fit-bg: #173d27;
   }
 
   /* Recomputed wherever a theme is set, so a dark island on a light page gets
@@ -222,12 +280,14 @@
   }
 
   /* Section rhythm -------------------------------------------------- */
+  /* Section rhythm: generous enough to separate topics, tight enough that a page never reads as
+     empty space between them. */
   .section {
-    padding-block: 3.5rem;
+    padding-block: 2.75rem;
   }
   @media (min-width: 768px) {
     .section {
-      padding-block: 5.5rem;
+      padding-block: 4rem;
     }
   }
 
@@ -365,7 +425,6 @@
        including where backdrop-filter is unsupported. */
     background: color-mix(in oklab, var(--void) 94%, transparent);
     backdrop-filter: blur(16px) saturate(140%);
-    -webkit-backdrop-filter: blur(16px) saturate(140%);
     border: 1px solid var(--edge);
   }
 
@@ -378,8 +437,75 @@
   :root[data-theme="light"] .header-top {
     background: color-mix(in oklab, var(--void) 94%, transparent);
     backdrop-filter: blur(16px) saturate(140%);
-    -webkit-backdrop-filter: blur(16px) saturate(140%);
     border-bottom-color: var(--edge);
+  }
+
+  /* Navbar: Apple-style frosted glass. A translucent tint over a strong blur + saturation (the
+     page shows through softly), a hairline edge and a 1px inner highlight along the top. The same
+     material is used for the header's dropdowns and the profile menu (.nav-glass-panel).
+     Where backdrop-filter is unsupported the tint goes nearly opaque so text stays readable. */
+  .nav-glass,
+  .nav-glass-panel {
+    --glass-tint: rgba(255, 255, 255, 0.62);
+    --glass-panel-tint: rgba(255, 255, 255, 0.8);
+    --glass-edge: rgba(0, 0, 0, 0.08);
+    --glass-highlight: rgba(255, 255, 255, 0.7);
+    --glass-hover: rgba(0, 0, 0, 0.06);
+    --glass-shadow: 0 8px 32px -12px rgba(15, 18, 22, 0.18);
+  }
+  :root:not([data-theme="light"]) .nav-glass,
+  :root:not([data-theme="light"]) .nav-glass-panel,
+  :root[data-theme="dark"] .nav-glass,
+  :root[data-theme="dark"] .nav-glass-panel {
+    --glass-tint: rgba(22, 22, 26, 0.55);
+    --glass-panel-tint: rgba(28, 28, 32, 0.78);
+    --glass-edge: rgba(255, 255, 255, 0.1);
+    --glass-highlight: rgba(255, 255, 255, 0.08);
+    --glass-hover: rgba(255, 255, 255, 0.1);
+    --glass-shadow: 0 10px 40px -12px rgba(0, 0, 0, 0.7);
+  }
+  /* The bar's blur lives on a layer behind its content: an element with backdrop-filter becomes
+     the "backdrop root" for everything inside it, so the dropdowns (children of the header) could
+     only blur the header itself and the page showed through them sharp. */
+  .nav-glass {
+    border-bottom: 1px solid var(--glass-edge);
+    box-shadow: inset 0 1px 0 var(--glass-highlight);
+  }
+  .nav-glass::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--glass-tint);
+    backdrop-filter: blur(24px) saturate(180%);
+    pointer-events: none;
+  }
+  .nav-glass-panel {
+    background: var(--glass-panel-tint);
+    backdrop-filter: blur(30px) saturate(180%);
+  }
+  .nav-glass.nav-glass-scrolled {
+    box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow);
+  }
+  .nav-glass-panel {
+    border: 1px solid var(--glass-edge);
+    border-radius: 16px;
+    box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow);
+  }
+  /* Round, softly filled hover states for the header's icon buttons, as on Apple's bars. */
+  .nav-glass :is(a, button).place-items-center {
+    border-radius: 9999px;
+    transition: background-color 150ms, color 150ms;
+  }
+  .nav-glass :is(a, button).place-items-center:hover,
+  .nav-glass :is(a, button).place-items-center[aria-expanded="true"] {
+    background: var(--glass-hover);
+  }
+  @supports not (backdrop-filter: blur(1px)) {
+    .nav-glass::before,
+    .nav-glass-panel {
+      background: color-mix(in oklab, var(--void) 96%, transparent);
+    }
   }
 
   .hairline {
@@ -588,5 +714,184 @@
   }
   .rise {
     animation: mb-rise 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Catalogue listing pages
+------------------------------------------------------------------- */
+@layer components {
+  .cl-shell {
+    width: 100%;
+    max-width: 1360px;
+    margin-inline: auto;
+    padding-inline: 1rem;
+  }
+  @media (min-width: 768px) {
+    .cl-shell {
+      padding-inline: 2.5rem;
+    }
+  }
+  /* 2px ink focus ring on every interactive element inside a listing. */
+  .cl-scope :is(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline: 2px solid var(--cl-ink);
+    outline-offset: 2px;
+  }
+  .cl-label {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--cl-muted);
+  }
+  .cl-btn {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: var(--radius-cl-ctl);
+    padding-inline: 1.125rem;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background-color 150ms, color 150ms, border-color 150ms;
+  }
+  .cl-btn-primary {
+    background: var(--cl-ink);
+    color: var(--cl-on-ink);
+  }
+  .cl-btn-primary:hover {
+    opacity: 0.88;
+  }
+  .cl-btn-outline {
+    border: 1px solid var(--cl-line-strong);
+    background: var(--cl-surface);
+    color: var(--cl-ink);
+  }
+  .cl-btn-outline:hover {
+    border-color: var(--cl-ink);
+  }
+  .cl-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+  .cl-input {
+    width: 100%;
+    min-height: 44px;
+    border: 1px solid var(--cl-line-strong);
+    border-radius: var(--radius-cl-ctl);
+    background-color: var(--cl-surface);
+    color: var(--cl-ink);
+    padding-inline: 0.875rem;
+    font-size: 15px;
+  }
+  .cl-input:disabled {
+    background-color: var(--cl-fill);
+    color: var(--cl-muted);
+    cursor: not-allowed;
+  }
+  select.cl-input {
+    appearance: none;
+    padding-right: 2.25rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.875rem center;
+  }
+  .cl-chip {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    gap: 0.375rem;
+    border: 1px solid var(--cl-line-strong);
+    border-radius: 999px;
+    background: var(--cl-surface);
+    padding-inline: 0.875rem;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--cl-ink);
+  }
+  .cl-chip:hover {
+    border-color: var(--cl-ink);
+  }
+
+  /* Two-handle price slider: two range inputs stacked on one track. Only the thumbs take the
+     pointer, so either handle can be dragged; the ink fill shows the chosen band. */
+  .cl-range {
+    position: relative;
+    height: 28px;
+  }
+  .cl-range-track {
+    position: absolute;
+    inset-inline: 0;
+    top: 50%;
+    height: 4px;
+    margin-top: -2px;
+    border-radius: 999px;
+    background: var(--cl-line);
+  }
+  .cl-range-fill {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    border-radius: 999px;
+    background: var(--cl-ink);
+  }
+  .cl-range input[type="range"] {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 28px;
+    margin: 0;
+    background: none;
+    appearance: none;
+    pointer-events: none;
+  }
+  .cl-range input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    pointer-events: auto;
+    width: 22px;
+    height: 22px;
+    border-radius: 999px;
+    border: 2px solid var(--cl-ink);
+    background: var(--cl-surface);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+    cursor: grab;
+  }
+  .cl-range input[type="range"]::-moz-range-thumb {
+    pointer-events: auto;
+    width: 18px;
+    height: 18px;
+    border-radius: 999px;
+    border: 2px solid var(--cl-ink);
+    background: var(--cl-surface);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+    cursor: grab;
+  }
+  .cl-range input[type="range"]::-moz-range-track {
+    background: none;
+  }
+  .cl-range input[type="range"]:focus-visible {
+    outline: none;
+  }
+  .cl-range input[type="range"]:focus-visible::-webkit-slider-thumb {
+    outline: 2px solid var(--cl-ink);
+    outline-offset: 2px;
+  }
+  .cl-range input[type="range"]:focus-visible::-moz-range-thumb {
+    outline: 2px solid var(--cl-ink);
+    outline-offset: 2px;
+  }
+
+  /* Listing pages: the floating "Ask AI" button stays at the bottom right. On phones it is a small
+     ink pill so it doesn't crowd the Filter / Sort row. (!important: these override the button's
+     own utility classes from inside the components layer.) */
+  @media (max-width: 63.999rem) {
+    html[data-listing] .assistant-fab {
+      height: 2.75rem !important;
+      padding: 0 0.875rem 0 0.75rem !important;
+      background: var(--cl-ink) !important;
+      color: var(--cl-on-ink) !important;
+      font-size: 11px !important;
+    }
   }
 }

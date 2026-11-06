@@ -67,7 +67,7 @@ export function HelpForm({ orderNumber = "", compact = false }: { orderNumber?: 
     <form onSubmit={submit} noValidate className={`card space-y-3 ${compact ? "p-4" : "p-5 md:p-6"}`} aria-label="Send us a message">
       <div>
         <p className="font-display text-lg font-extrabold uppercase tracking-tight text-chalk">Send us a message</p>
-        <p className="mt-1 text-sm text-ash">We reply within one working day, on WhatsApp or by phone{customer ? ", and here in your account" : ""}.</p>
+        <p className="mt-1 text-sm text-ash">We reply within one working day by phone{customer ? ", and here in your account" : ""}.</p>
       </div>
       {sent && (
         <Notice tone="success">

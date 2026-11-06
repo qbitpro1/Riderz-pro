@@ -449,7 +449,7 @@ const HOUSE_PRODUCTS: (Omit<Product, "category"> & { category: string })[] = [
     installPrice: 6500,
     installTime: "6–8 hours",
     warranty: "3 years",
-    delivery: "In stock at Bengaluru, Hyderabad, Pune",
+    delivery: "2–4 days across India",
     image: "speakerCone",
     gallery: ["speakerCone", "studioMonitors", "speakerEnclosure"],
     hasVideo: true,

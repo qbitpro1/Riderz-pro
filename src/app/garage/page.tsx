@@ -8,13 +8,12 @@ import { Photo } from "@/components/ui/Photo";
 import { Reveal } from "@/components/ui/Reveal";
 import { GARAGE_SERVICES } from "@/lib/data/services";
 import { LOCATIONS, SITE } from "@/lib/data/site";
-import { STATS } from "@/lib/data/community";
 import { pageMeta } from "@/lib/data/seo";
 
 export const metadata: Metadata = pageMeta({
   title: "Riderzpro Garage — Installation, Modification & Service Workshop",
   description:
-    "Book installation, modification, detailing, PPF, audio, performance, off-road and interior work at Riderzpro garages in Bengaluru, Hyderabad and Pune. 26 bays.",
+    "Book installation, modification, detailing, PPF, audio, performance, off-road and interior work with Riderzpro. We call you to confirm the slot and the fitment.",
   path: "/garage",
 });
 
@@ -25,30 +24,22 @@ export default function GaragePage() {
     <>
       <PageHero
         eyebrow="Riderzpro Garage"
-        title="26 BAYS. ONE STANDARD."
-        blurb="Everything happens under one roof — trim shop, paint room, audio bay, dyno, welding and lifts. No sending your car to three different markets and hoping."
+        title="INSTALLATION & SERVICE."
+        blurb="Tell us what your car needs. We call you to confirm the slot and the fitment before any work starts."
         media="mechanicEngine"
         actions={[{ href: "#book", label: "Book an appointment", variant: "primary" }]}
-      >
-        <dl className="mt-8 grid max-w-2xl grid-cols-2 gap-x-6 gap-y-5 border-t border-tint/12 pt-6 md:grid-cols-4">
-          {STATS.map((s) => (
-            <div key={s.label}>
-              <dd className="font-display text-2xl font-extrabold tnum">{s.value}</dd>
-              <dt className="mt-1 text-[11px] uppercase tracking-[0.14em] text-dim">{s.label}</dt>
-            </div>
-          ))}
-        </dl>
-      </PageHero>
+      />
 
       <section className="section">
         <div className="shell grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:items-start" id="book">
           <div>
             <SectionHead
-              eyebrow="What we do here"
-              title="EVERY JOB, ONE ROOF."
-              blurb="If it can be done to a car, one of our bays does it. If we cannot do something properly, we say so instead of learning on your car."
+              eyebrow="What we do"
+              title="WHAT WE CAN DO."
+              blurb="If we cannot do something properly, we say so instead of learning on your car."
             />
-            <ul className="grid gap-px overflow-hidden border border-tint/8 bg-tint/8 sm:grid-cols-2">
+            {/* An odd last service spans both columns, so the grid never ends on an empty cell. */}
+            <ul className="grid gap-px overflow-hidden border border-tint/8 bg-tint/8 sm:grid-cols-2 sm:[&>li:last-child:nth-child(odd)]:col-span-2">
               {GARAGE_SERVICES.map((s) => (
                 <li key={s.name} className="bg-void p-4">
                   <p className="flex items-center gap-2 font-display text-sm font-extrabold uppercase">
@@ -59,6 +50,13 @@ export default function GaragePage() {
                 </li>
               ))}
             </ul>
+            <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3">
+              <Link href="/build" className="btn btn-accent btn-sm">
+                Configure a build before you come in
+                <Icon name="arrow" size={14} />
+              </Link>
+              <p className="text-sm text-dim">{SITE.hours}</p>
+            </div>
           </div>
 
           <BookingForm />
@@ -83,38 +81,37 @@ export default function GaragePage() {
         </div>
       </section>
 
+      {LOCATIONS.length > 0 && (
       <section className="section">
         <div className="shell">
-          <SectionHead eyebrow="Locations" title="VISIT RIDERZPRO." href="/locations" hrefLabel="All locations" />
-          <ul className="grid gap-4 md:grid-cols-3">
-            {LOCATIONS.map((l) => (
-              <li key={l.slug} className="card p-5">
-                <p className="flex items-center gap-2 font-display text-base font-extrabold uppercase">
-                  {l.city}
-                  {l.flagship && <span className="chip border-accent/35 bg-accent/12 text-accent">Flagship</span>}
-                </p>
-                <p className="mt-2 text-xs leading-relaxed text-ash">{l.address}</p>
-                <p className="mt-3 text-xs text-dim">{l.bays} bays · {l.services.join(" · ")}</p>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <a href={`tel:${l.phone.replace(/\s/g, "")}`} className="btn btn-outline btn-sm">
-                    <Icon name="phone" size={13} />
-                    Call
-                  </a>
-                  <a href={l.mapUrl} target="_blank" rel="noreferrer noopener" className="btn btn-outline btn-sm">
-                    <Icon name="map" size={13} />
-                    Directions
-                  </a>
-                </div>
-              </li>
-            ))}
-          </ul>
-          <p className="mt-6 text-sm text-dim">{SITE.hours}</p>
-          <Link href="/build" className="btn btn-accent btn-sm mt-6">
-            Configure a build before you come in
-            <Icon name="arrow" size={14} />
-          </Link>
+            <>
+              <SectionHead eyebrow="Locations" title="VISIT RIDERZPRO." />
+              <ul className="grid gap-4 md:grid-cols-3">
+                {LOCATIONS.map((l) => (
+                  <li key={l.slug} className="card p-5">
+                    <p className="flex items-center gap-2 font-display text-base font-extrabold uppercase">
+                      {l.city}
+                      {l.flagship && <span className="chip border-accent/35 bg-accent/12 text-accent">Flagship</span>}
+                    </p>
+                    <p className="mt-2 text-xs leading-relaxed text-ash">{l.address}</p>
+                    <p className="mt-3 text-xs text-dim">{l.bays} bays · {l.services.join(" · ")}</p>
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      <a href={`tel:${l.phone.replace(/\s/g, "")}`} className="btn btn-outline btn-sm">
+                        <Icon name="phone" size={13} />
+                        Call
+                      </a>
+                      <a href={l.mapUrl} target="_blank" rel="noreferrer noopener" className="btn btn-outline btn-sm">
+                        <Icon name="map" size={13} />
+                        Directions
+                      </a>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </>
         </div>
       </section>
+      )}
     </>
   );
 }

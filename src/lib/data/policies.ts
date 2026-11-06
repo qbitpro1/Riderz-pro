@@ -36,7 +36,7 @@ export const SUPPORT_POLICIES: Policy[] = [
         heading: "Dispatch times",
         body: [
           "In-stock items ordered before 2 PM on a working day are dispatched the same day. Everything else leaves within 48 hours.",
-          "Made-to-order items — seat covers, painted spoilers, custom audio enclosures — carry the lead time shown on the product page. We confirm the date on WhatsApp when the order is placed. They follow the made-to-order terms on the Returns page.",
+          "Made-to-order items — seat covers, painted spoilers, custom audio enclosures — carry the lead time shown on the product page. We confirm the date with you when the order is placed. They follow the made-to-order terms on the Returns page.",
         ],
       },
       {
@@ -59,9 +59,9 @@ export const SUPPORT_POLICIES: Policy[] = [
         id: "tracking",
         heading: "Order tracking",
         body: [
-          "You receive a tracking link on WhatsApp the moment the consignment is picked up, and again when it is out for delivery. Orders are confirmed on WhatsApp today, so that is also where updates reach you.",
+          "You receive a tracking link by SMS or email the moment the consignment is picked up, and again when it is out for delivery. Signed-in customers can also follow the order under My orders.",
           "If a consignment stalls for more than 48 hours, we chase the carrier ourselves rather than asking you to.",
-          "Not sure where your order is? Use the Track your order page and we will pick it up on WhatsApp.",
+          "Not sure where your order is? Use the Track your order page and we will pick it up with you.",
         ],
       },
       {
@@ -69,7 +69,7 @@ export const SUPPORT_POLICIES: Policy[] = [
         heading: "Damaged or missing items",
         body: [
           "Record a short video while opening any package that arrives visibly damaged. Send it to us within 48 hours and we ship a replacement immediately — no investigation, no arguing with the courier on your time.",
-          "If something is missing from your parcel, message us on WhatsApp with your order number and a photo of what arrived, and we will confirm the next step with you there.",
+          "If something is missing from your parcel, send us a message from the Contact page with your order number and a photo of what arrived, and we will confirm the next step with you.",
         ],
       },
     ],
@@ -108,7 +108,7 @@ export const SUPPORT_POLICIES: Policy[] = [
         id: "start-a-return",
         heading: "How to start a return",
         body: [
-          "Message us on WhatsApp with your order number and a photo. We arrange reverse pickup in most pin codes within 72 hours.",
+          "Send us a message from the Contact page with your order number and a photo. We arrange reverse pickup in most pin codes within 72 hours.",
         ],
       },
       {
@@ -122,7 +122,7 @@ export const SUPPORT_POLICIES: Policy[] = [
         id: "cancellations",
         heading: "Cancellations",
         body: [
-          "Orders can be cancelled free of charge until they are dispatched. Message us on WhatsApp with your order number.",
+          "Orders can be cancelled free of charge until they are dispatched. Send us a message from the Contact page with your order number.",
           "Made-to-order items can be cancelled until production starts — usually within 24 hours of ordering.",
         ],
       },
@@ -163,8 +163,7 @@ export const SUPPORT_POLICIES: Policy[] = [
         id: "claims",
         heading: "Making a warranty claim",
         body: [
-          "Message us on WhatsApp with your invoice number. Most claims are resolved with a workshop visit; where a manufacturer replacement is required, we raise it and hand you the replacement — you never deal with the brand directly.",
-          "If you are not near one of our garages, tell us on WhatsApp and we will confirm how your claim will be handled.",
+          "Send us a message from the Contact page with your invoice number. We confirm how your claim will be handled; where a manufacturer replacement is required, we raise it and hand you the replacement — you never deal with the brand directly.",
         ],
       },
     ],
@@ -174,13 +173,13 @@ export const SUPPORT_POLICIES: Policy[] = [
     title: "INSTALLATION & BOOKINGS",
     eyebrow: "Customer support",
     intro:
-      "You can have what you buy fitted at a Riderzpro garage in Bengaluru, Hyderabad or Pune. Workmanship is warranted by the garage that did the work.",
+      "You can have what you buy fitted where installation is offered. Workmanship is warranted by the team that did the work.",
     sections: [
       {
         id: "booking",
         heading: "Booking a fitting",
         body: [
-          "Add installation to a product where it is offered, or book a slot with the form on the Contact page or on WhatsApp. We confirm your slot with you there.",
+          "Add installation to a product where it is offered, or book a slot with the form on the Contact page. We call you to confirm the slot.",
           "Autoform seat covers are made to order for your car: we take the order, confirm the pattern for your exact variant, and fit it at the workshop.",
         ],
       },
@@ -216,7 +215,7 @@ export const SUPPORT_POLICIES: Policy[] = [
         heading: "How to pay",
         body: [
           "Pay online at checkout: choose Pay online and complete the payment securely with Razorpay. Your order is confirmed as soon as the payment goes through, and your tax invoice is in My orders.",
-          "Or choose Confirm order on WhatsApp. We check fitment against your variant, confirm the total, and tell you how to pay in that conversation before anything is dispatched.",
+          "Or choose Place order, pay later. We call you to check fitment against your variant, confirm the total, and tell you how to pay before anything is dispatched.",
           "If an online payment isn't completed within 30 minutes, the order is cancelled and nothing is charged. If money left your account anyway, it is refunded.",
         ],
       },
@@ -262,7 +261,7 @@ export const LEGAL_POLICIES: Policy[] = [
           "Your orders: the items, the delivery details you give at checkout (name, phone, email, address and, if you choose \"Detect my location\", your location at that moment) and the order history, so we can deliver, honour warranties and answer questions. Messages you send us from the help form are kept with them.",
           "Online payments are taken by Razorpay on its own secure page. We never see or store your card, UPI or bank details; we keep the payment reference, amount and status.",
           "If you order on a seller's shop screen in their store, we keep your name and mobile number with that order.",
-          "Enquiries that reach us on WhatsApp, by phone or by email, with the vehicle details we need to confirm fitment (make, model, variant and year).",
+          "Enquiries that reach us through the website, by phone or by email, with the vehicle details we need to confirm fitment (make, model, variant and year).",
         ],
       },
       {
@@ -336,7 +335,7 @@ export const LEGAL_POLICIES: Policy[] = [
         id: "orders-and-prices",
         heading: "Orders, prices and estimates",
         body: [
-          "Prices shown online include GST unless stated otherwise. Orders are confirmed with you on WhatsApp before dispatch. Build configurator totals are estimates: they become binding only in a written quote issued after a fitment check.",
+          "Prices shown online include GST unless stated otherwise. Pay-later orders are confirmed with you by phone before dispatch. Build configurator totals are estimates: they become binding only in a written quote issued after a fitment check.",
           "We honour a written quote for 15 days. Where a part price moves because of an import duty or exchange rate change, we tell you before proceeding and you may cancel free of charge.",
         ],
       },

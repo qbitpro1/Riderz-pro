@@ -13,8 +13,8 @@ import { AUDIO_PACKAGES } from "@/lib/data/services";
 import { productsIn } from "@/lib/data/products";
 import { REVIEWS } from "@/lib/data/community";
 import { rupees } from "@/lib/format";
-import { whatsapp } from "@/lib/data/site";
 import { pageMeta } from "@/lib/data/seo";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 
 export const metadata: Metadata = pageMeta({
   title: "Premium Car Audio — Component, DSP & Signature Builds",
@@ -100,14 +100,9 @@ export default function AudioPage() {
                       Best for: {p.bestFor}
                     </p>
 
-                    <a
-                      href={whatsapp(`Hi Riderzpro, I'm interested in the ${p.name} audio package (${rupees(p.price)}). My car is: `)}
-                      target="_blank"
-                      rel="noreferrer noopener"
-                      className={`btn btn-sm btn-block mt-4 ${p.highlight ? "btn-accent" : "btn-outline"}`}
-                    >
+                    <EnquiryButton topic="installation" message={`Hi Riderzpro, I'm interested in the ${p.name} audio package (${rupees(p.price)}). My car is: `} className={`btn btn-sm btn-block mt-4 ${p.highlight ? "btn-accent" : "btn-outline"}`}>
                       Book this package
-                    </a>
+                    </EnquiryButton>
                   </div>
                 </Reveal>
               </li>
@@ -184,21 +179,23 @@ export default function AudioPage() {
       </section>
 
       <section className="section">
-        <div className="shell grid gap-10 lg:grid-cols-2 lg:items-start">
+        <div className={`shell grid gap-10 lg:items-start ${audioReviews.length > 0 ? "lg:grid-cols-2" : ""}`}>
           <div>
             <SectionHead eyebrow="Questions" title="AUDIO FAQs." />
             <Accordion items={FAQ} />
           </div>
-          <div>
-            <SectionHead eyebrow="Owners" title="AFTER THE BUILD." />
-            <ul className="grid gap-4">
-              {audioReviews.map((r) => (
-                <li key={r.name}>
-                  <ReviewCard review={r} />
-                </li>
-              ))}
-            </ul>
-          </div>
+          {audioReviews.length > 0 && (
+            <div>
+              <SectionHead eyebrow="Owners" title="AFTER THE BUILD." />
+              <ul className="grid gap-4">
+                {audioReviews.map((r) => (
+                  <li key={r.name}>
+                    <ReviewCard review={r} />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       </section>
     </>

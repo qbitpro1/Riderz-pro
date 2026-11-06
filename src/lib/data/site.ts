@@ -3,11 +3,10 @@ export const SITE = {
   tagline: "CAR & BIKE ACCESSORIES",
   support: "Your Car. Your Build. Your Ride.",
   description:
-    "Riderzpro makes and sells car accessories in India — interior, exterior, multimedia, covers and guards, utilities, lighting and off-roading parts, fitment-checked for your car and fitted at our garages.",
+    "Riderzpro makes and sells car accessories in India — interior, exterior, multimedia, covers and guards, utilities, lighting and off-roading parts, fitment-checked for your car, with installation available.",
   url: "https://riderzpro.com",
   phone: "+91 98860 44488",
   phoneHref: "tel:+919886044488",
-  whatsappNumber: "919886044488",
   email: "hello@riderzpro.com",
   instagram: "https://instagram.com/riderzpro",
   youtube: "https://youtube.com/@riderzpro",
@@ -16,12 +15,12 @@ export const SITE = {
   /** The registered company (GSTIN holder) that owns the Riderzpro trademark. Ends with a full stop. */
   legalName: "Motorbotz Automotive Pvt. Ltd.",
   gstin: "29AAJCM4412Q1ZP",
+  /**
+   * Registered office address printed on GST invoices. Empty until the company confirms it
+   * (docs/team/Sathwik_work.md §5); the invoice leaves the line out while it is empty.
+   */
+  registeredOffice: "",
 } as const;
-
-/** Deep link into WhatsApp with a pre-filled, context-aware message. */
-export function whatsapp(message: string): string {
-  return `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(message)}`;
-}
 
 export type Location = {
   slug: string;
@@ -36,42 +35,11 @@ export type Location = {
   flagship?: boolean;
 };
 
-export const LOCATIONS: Location[] = [
-  {
-    slug: "bengaluru-hq",
-    name: "Riderzpro Garage — Bengaluru",
-    city: "Bengaluru",
-    address: "No. 14, Hosur Main Road, Kudlu Gate, Bengaluru, Karnataka 560068",
-    phone: "+91 98860 44488",
-    mapUrl: "https://www.google.com/maps/search/?api=1&query=Kudlu+Gate+Hosur+Road+Bengaluru",
-    embedQuery: "Kudlu Gate, Hosur Road, Bengaluru",
-    services: ["Build studio", "PPF & detailing", "Audio bay", "Off-road workshop", "Car sales"],
-    bays: 12,
-    flagship: true,
-  },
-  {
-    slug: "hyderabad",
-    name: "Riderzpro Garage — Hyderabad",
-    city: "Hyderabad",
-    address: "Plot 42, Gachibowli–Miyapur Road, Kondapur, Hyderabad, Telangana 500084",
-    phone: "+91 98860 44489",
-    mapUrl: "https://www.google.com/maps/search/?api=1&query=Kondapur+Hyderabad",
-    embedQuery: "Kondapur, Hyderabad",
-    services: ["Build studio", "PPF & detailing", "Audio bay", "Car sales"],
-    bays: 8,
-  },
-  {
-    slug: "pune",
-    name: "Riderzpro Garage — Pune",
-    city: "Pune",
-    address: "Survey 61, Mundhwa–Kharadi Road, Kharadi, Pune, Maharashtra 411014",
-    phone: "+91 98860 44490",
-    mapUrl: "https://www.google.com/maps/search/?api=1&query=Kharadi+Pune",
-    embedQuery: "Kharadi, Pune",
-    services: ["Accessories & installation", "Audio bay", "Detailing"],
-    bays: 6,
-  },
-];
+/**
+ * Walk-in garages. Empty: the earlier Bengaluru, Hyderabad and Pune entries were demo content. Pages
+ * that list garages hide that section while this is empty. Add a real garage here to show it again.
+ */
+export const LOCATIONS: Location[] = [];
 
 export const TRUST_POINTS = [
   {

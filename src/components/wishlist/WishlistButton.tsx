@@ -13,7 +13,8 @@ export function WishlistButton({
   className = "",
 }: {
   item: WishlistInput;
-  variant: "overlay" | "inline";
+  /** "card": the 44px round button on listing cards. */
+  variant: "overlay" | "inline" | "card";
   className?: string;
 }) {
   const { has, toggle, ready } = useWishlist();
@@ -23,6 +24,21 @@ export function WishlistButton({
   const heart = <Icon name="heart" size={18} filled={saved} className={saved ? "text-accent" : ""} />;
   const focus =
     "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
+
+  if (variant === "card") {
+    return (
+      <button
+        type="button"
+        aria-pressed={saved}
+        aria-label={label}
+        title={label}
+        onClick={() => toggle(item)}
+        className={`z-10 grid h-11 w-11 place-items-center rounded-full border border-cl-line bg-cl-surface text-cl-ink shadow-sm transition-colors duration-150 hover:border-cl-ink ${className}`}
+      >
+        <Icon name="heart" size={18} filled={saved} />
+      </button>
+    );
+  }
 
   if (variant === "overlay") {
     return (

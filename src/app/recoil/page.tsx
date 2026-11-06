@@ -16,8 +16,8 @@ import {
   FEATURED,
   PRODUCTS,
 } from "@/lib/data/recoil";
-import { whatsapp } from "@/lib/data/site";
 import { pageMeta } from "@/lib/data/seo";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 
 export const metadata: Metadata = pageMeta({
   title: "RECOIL Car Audio & Installation — Authorised Reseller",
@@ -165,15 +165,9 @@ export default async function RecoilPage({ searchParams }: { searchParams: Promi
             </p>
           </div>
           <div className="flex flex-wrap gap-3 lg:justify-end">
-            <a
-              href={whatsapp("Hi Riderzpro, do you stock this RECOIL model number: ")}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="btn btn-whatsapp"
-            >
-              <Icon name="whatsapp" size={16} />
+            <EnquiryButton topic="product" message={"Hi Riderzpro, do you stock this RECOIL model number: "} className="btn btn-primary">
               Ask about a model
-            </a>
+            </EnquiryButton>
             <Link href="/build-audio" className="btn btn-outline">
               Build my audio system
             </Link>

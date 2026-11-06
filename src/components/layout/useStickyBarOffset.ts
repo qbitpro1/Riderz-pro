@@ -7,7 +7,7 @@ export const STICKY_BAR_VAR = "--sticky-bar-h";
 
 /**
  * Publish a fixed bottom bar's height on <html> while it is mounted and shown,
- * so the WhatsApp button and the footer can clear it without knowing which
+ * so the chat button and the footer can clear it without knowing which
  * route they are on. The bars are `lg:hidden`, so the measured height is 0 on
  * desktop. Anything that must clear the bar adds `var(--sticky-bar-h, 0px)`.
  */

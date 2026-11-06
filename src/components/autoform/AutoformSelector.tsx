@@ -5,10 +5,10 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { rupees } from "@/lib/format";
-import { whatsapp } from "@/lib/data/site";
 import { BRANDS } from "@/lib/data/vehicles";
 import { storeSlug } from "@/lib/store/slugs";
 import { productHref } from "@/lib/store/types";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 
 export type DesignCard = {
   code: string;
@@ -226,17 +226,9 @@ export function AutoformSelector({ designs }: { designs: DesignCard[] }) {
         <p className="text-sm text-ash">
           Not sure which design suits your interior? Send us a photo of your seats.
         </p>
-        <a
-          href={whatsapp(
-            `Hi Riderzpro, I want Autoform seat covers${vehicle ? ` for my ${vehicle}` : ""}. Seat layout: ${rows === 2 ? "5-seater" : "6/7-seater"}.`,
-          )}
-          target="_blank"
-          rel="noreferrer noopener"
-          className="btn btn-whatsapp btn-sm"
-        >
-          <Icon name="whatsapp" size={15} />
+        <EnquiryButton topic="installation" message={`Hi Riderzpro, I want Autoform seat covers${vehicle ? ` for my ${vehicle}` : ""}. Seat layout: ${rows === 2 ? "5-seater" : "6/7-seater"}.`} className="btn btn-primary btn-sm">
           Help me choose
-        </a>
+        </EnquiryButton>
       </div>
     </div>
   );

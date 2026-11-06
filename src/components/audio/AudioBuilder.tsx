@@ -1,10 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Icon } from "@/components/ui/Icon";
 import { rupees } from "@/lib/format";
-import { whatsapp } from "@/lib/data/site";
 import { AUDIO_STAGES } from "@/lib/data/services";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 
 type Choice = Record<string, number>;
 
@@ -83,15 +82,9 @@ export function AudioBuilder() {
             ))}
           </ul>
 
-          <a
-            href={whatsapp(message)}
-            target="_blank"
-            rel="noreferrer noopener"
-            className="btn btn-accent btn-block mt-5"
-          >
-            <Icon name="whatsapp" size={16} />
+          <EnquiryButton topic="installation" message={message} className="btn btn-accent btn-block mt-5">
             Get this quoted
-          </a>
+          </EnquiryButton>
           <p className="mt-4 text-[11px] leading-relaxed text-dim">
             Every Riderzpro system is tuned by ear and by measurement before you collect the car, and
             re-tuned free once inside the first month.

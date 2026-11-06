@@ -7,8 +7,8 @@ import { Reveal } from "@/components/ui/Reveal";
 import { Accordion } from "@/components/ui/Accordion";
 import { BODY_KIT_SERVICES, FACELIFT_CONVERSIONS } from "@/lib/data/services";
 import { rupees } from "@/lib/format";
-import { whatsapp } from "@/lib/data/site";
 import { pageMeta } from "@/lib/data/seo";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 
 export const metadata: Metadata = pageMeta({
   title: "Body Kits & Facelift Conversions",
@@ -46,7 +46,7 @@ export default function BodyKitsPage() {
         media="chromeGrille"
         actions={[
           { href: "#conversions", label: "See conversions", variant: "primary" },
-          { href: whatsapp("Hi Riderzpro, I want a facelift quote. My car is: "), label: "Get facelift quote", variant: "outline", external: true },
+          { href: "#enquire", label: "Get facelift quote", variant: "outline" },
         ]}
       />
 
@@ -88,14 +88,9 @@ export default function BodyKitsPage() {
                         ))}
                       </ul>
 
-                      <a
-                        href={whatsapp(`Hi Riderzpro, I want a quote for: ${f.from} → ${f.to}.`)}
-                        target="_blank"
-                        rel="noreferrer noopener"
-                        className="btn btn-outline btn-sm btn-block mt-5"
-                      >
+                      <EnquiryButton topic="installation" message={`Hi Riderzpro, I want a quote for: ${f.from} → ${f.to}.`} className="btn btn-outline btn-sm btn-block mt-5">
                         Get facelift quote
-                      </a>
+                      </EnquiryButton>
                     </div>
                   </article>
                 </Reveal>
@@ -152,15 +147,9 @@ export default function BodyKitsPage() {
               We convert far more models than we list here — and we build custom kits in fibreglass
               and carbon when nothing exists off the shelf. Send us the car and the look you want.
             </p>
-            <a
-              href={whatsapp("Hi Riderzpro, I want a facelift / body kit quote. My car is:  and the look I want is: ")}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="btn btn-whatsapp btn-block mt-5"
-            >
-              <Icon name="whatsapp" size={16} />
+            <EnquiryButton id="enquire" topic="installation" message={"Hi Riderzpro, I want a facelift / body kit quote. My car is:  and the look I want is: "} className="btn btn-primary btn-block mt-5">
               Get facelift quote
-            </a>
+            </EnquiryButton>
           </div>
         </div>
       </section>

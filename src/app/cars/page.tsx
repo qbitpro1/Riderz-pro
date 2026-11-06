@@ -8,8 +8,9 @@ import { Icon } from "@/components/ui/Icon";
 import { toCardData } from "@/lib/inventory/card-data";
 import { BROWSABLE, FACETS, KM_BANDS, PRICE_BANDS, SPECIAL_FILTERS } from "@/lib/inventory/store";
 import { SEARCH_EXAMPLES } from "@/lib/inventory/query";
-import { TRUST_POINTS, whatsapp } from "@/lib/data/site";
+import { TRUST_POINTS } from "@/lib/data/site";
 import { pageMeta } from "@/lib/data/seo";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 
 export const metadata: Metadata = pageMeta({
   title: "Buy Used Cars in India — Verified, Inspected & Certified",
@@ -114,19 +115,13 @@ export default function CarsPage() {
             <div>
               <p className="font-display text-lg font-extrabold uppercase">Can&apos;t find the right car?</p>
               <p className="mt-1 text-sm text-ash">
-                Tell us the spec and budget. We source to order every week across three cities.
+                Tell us the spec and budget. We will source it to order.
               </p>
             </div>
             <div className="flex flex-wrap gap-3">
-              <a
-                href={whatsapp("Hi Riderzpro, I'm looking for a car. My requirement is: ")}
-                target="_blank"
-                rel="noreferrer noopener"
-                className="btn btn-whatsapp btn-sm"
-              >
-                <Icon name="whatsapp" size={15} />
+              <EnquiryButton topic="other" message={"Hi Riderzpro, I'm looking for a car. My requirement is: "} className="btn btn-primary btn-sm">
                 Tell us what you want
-              </a>
+              </EnquiryButton>
               <Link href="/sell" className="btn btn-outline btn-sm">
                 Sell my car
               </Link>

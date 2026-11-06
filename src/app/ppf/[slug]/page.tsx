@@ -9,9 +9,10 @@ import { Icon } from "@/components/ui/Icon";
 import { PPF_LANDINGS, getLanding } from "@/lib/ppf/landings";
 import { PPF_PACKAGES, PRICE_DISCLAIMER, quote } from "@/lib/ppf/coverage";
 import { GUIDE } from "@/lib/ppf/guide";
-import { LOCATIONS, whatsapp } from "@/lib/data/site";
+import { LOCATIONS } from "@/lib/data/site";
 import { rupees } from "@/lib/format";
 import type { MediaKey } from "@/lib/media";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 
 export function generateStaticParams() {
   return PPF_LANDINGS.map((l) => ({ slug: l.slug }));
@@ -123,10 +124,10 @@ export default async function PpfLandingPage({ params }: { params: Promise<{ slu
         </div>
       </section>
 
-      {landing.kind === "city" && (
+      {landing.kind === "city" && LOCATIONS.length > 0 && (
         <section className="section">
           <div className="shell">
-            <SectionHead eyebrow="Where to bring it" title="OUR STUDIOS." href="/locations" hrefLabel="All locations" />
+            <SectionHead eyebrow="Where to bring it" title="OUR STUDIOS." />
             <ul className="grid gap-4 md:grid-cols-3">
               {LOCATIONS.map((l) => (
                 <li key={l.slug} className="card p-5">
@@ -141,8 +142,8 @@ export default async function PpfLandingPage({ params }: { params: Promise<{ slu
             </ul>
             {!landing.city?.address && (
               <p className="mt-4 text-xs leading-relaxed text-dim">
-                We do not have a studio in {landing.city?.name} yet. Customers there use the nearest
-                Riderzpro workshop — tell us on WhatsApp and we will sort out logistics.
+                We do not have a studio in {landing.city?.name} yet. Send us a message and we will
+                sort out logistics.
               </p>
             )}
           </div>
@@ -179,19 +180,11 @@ export default async function PpfLandingPage({ params }: { params: Promise<{ slu
               Build your package
               <Icon name="arrow" size={15} />
             </Link>
-            <a
-              href={whatsapp(
-                landing.kind === "vehicle"
+            <EnquiryButton topic="installation" message={landing.kind === "vehicle"
                   ? `Hi Riderzpro, I want a PPF quote for my ${landing.vehicle!.brand} ${landing.vehicle!.model}.`
-                  : `Hi Riderzpro, I want PPF in ${landing.city!.name}. My car is: `,
-              )}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="btn btn-whatsapp btn-block mt-3"
-            >
-              <Icon name="whatsapp" size={16} />
-              Get PPF quote on WhatsApp
-            </a>
+                  : `Hi Riderzpro, I want PPF in ${landing.city!.name}. My car is: `} className="btn btn-primary btn-block mt-3">
+              Get PPF quote
+            </EnquiryButton>
           </div>
         </div>
       </section>

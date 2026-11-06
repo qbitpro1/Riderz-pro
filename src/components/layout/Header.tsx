@@ -8,7 +8,7 @@ import { Logo } from "@/components/brand/Logo";
 import { SearchPanel } from "@/components/search/SearchPanel";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { useCart } from "@/components/cart/CartContext";
-import { AccountLink } from "@/components/account/AccountLink";
+import { ProfileMenu } from "@/components/account/ProfileMenu";
 import { DesktopNav } from "@/components/nav/DesktopNav";
 import { MobileDrawer } from "@/components/nav/MobileDrawer";
 import { navActions, useNavState } from "@/components/nav/navStore";
@@ -34,7 +34,7 @@ export function Header({ liveGroups }: { liveGroups?: LiveGroups }) {
   return (
     <>
       <header
-        className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${scrolled ? "glass" : "header-top"}`}
+        className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 nav-glass ${scrolled ? "nav-glass-scrolled" : ""}`}
       >
         <div className="shell flex h-14 items-center justify-between gap-3 md:h-[68px]">
           <Link href="/" className="group flex shrink-0 items-center gap-2" aria-label="Riderzpro home">
@@ -49,7 +49,7 @@ export function Header({ liveGroups }: { liveGroups?: LiveGroups }) {
               <Icon name="search" size={20} />
             </IconButton>
 
-            <AccountLink />
+            <ProfileMenu />
 
             <button
               type="button"

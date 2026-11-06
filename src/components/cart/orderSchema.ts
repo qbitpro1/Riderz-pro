@@ -44,7 +44,7 @@ export const placeOrderSchema = z.object({
     )
     .min(1)
     .max(50),
-  /** "online": pay now with Razorpay. "whatsapp": the order is confirmed and paid over WhatsApp. */
+  /** "online": pay now with Razorpay. "whatsapp" (the stored name for pay later): we call to confirm and arrange payment. */
   paymentMethod: z.enum(["whatsapp", "online"]).default("whatsapp"),
   /** The customer's GPS point from "Detect my location", for the rider map and arrival alerts. */
   deliveryPoint: pointSchema.optional(),

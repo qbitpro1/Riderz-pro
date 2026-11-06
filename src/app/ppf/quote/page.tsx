@@ -68,7 +68,7 @@ export default function PpfQuotePage() {
             <SectionHead eyebrow="What happens next" title="THE PRICE ON SCREEN IS NOT THE QUOTE." />
             <ol className="space-y-4">
               {[
-                { t: "You send the configuration", b: "Everything you picked arrives with us on WhatsApp, itemised." },
+                { t: "You send the configuration", b: "Everything you picked arrives with us, itemised." },
                 { t: "We book an inspection", b: "Free, about twenty minutes, at any Riderzpro studio." },
                 { t: "We read the paint", b: "Depth gauge on every panel, under inspection lighting. This is what moves the price." },
                 { t: "You get a firm quote", b: "Fixed, itemised, valid for fifteen days. No surprises on collection day." },

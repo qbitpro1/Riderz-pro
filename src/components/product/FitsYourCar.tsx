@@ -3,9 +3,9 @@
 import { useGarage } from "@/lib/client/garage";
 import { Icon } from "@/components/ui/Icon";
 import { findModelBySlug } from "@/lib/data/vehicles";
-import { whatsapp } from "@/lib/data/site";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 
-/** Fitment as the data states it: universal, a model list, or "confirmed on WhatsApp". */
+/** Fitment as the data states it: universal, a model list, or "confirmed with you before dispatch". */
 export function FitsYourCar({ fitment, title, code }: { fitment: string[]; title: string; code: string | null }) {
   const garage = useGarage();
 
@@ -13,10 +13,10 @@ export function FitsYourCar({ fitment, title, code }: { fitment: string[]; title
   const models = fitment
     .filter((s) => s !== "universal")
     .map((s) => ({ slug: s, model: findModelBySlug(s) }));
-  const ask = whatsapp(
-    `Hi Riderzpro, will ${title}${code ? ` (${code})` : ""} fit my car?${garage ? ` I drive a ${garage.label}.` : ""}`,
+  const ask = (
+    `Hi Riderzpro, will ${title}${code ? ` (${code})` : ""} fit my car?${garage ? ` I drive a ${garage.label}.` : ""}`
   );
-  const link = "text-accent underline underline-offset-2";
+  const link = "text-accent underline underline-offset-2 min-h-0 p-0";
 
   return (
     <section className="border border-tint/8 bg-tint/2 p-4 md:p-5">
@@ -27,10 +27,10 @@ export function FitsYourCar({ fitment, title, code }: { fitment: string[]; title
 
       {fitment.length === 0 ? (
         <p className="mt-2 text-sm text-ash">
-          Fitment for this product is confirmed on WhatsApp before we dispatch it.{" "}
-          <a href={ask} target="_blank" rel="noopener noreferrer" className={link}>
+          Fitment for this product is confirmed with you before we dispatch it.{" "}
+          <EnquiryButton topic="fitment" title="Will it fit my car?" message={ask} className={link}>
             Check your car
-          </a>
+          </EnquiryButton>
         </p>
       ) : (
         <>
@@ -56,9 +56,9 @@ export function FitsYourCar({ fitment, title, code }: { fitment: string[]; title
             ) : (
               <p className="mt-3 text-sm text-ash">
                 Not listed for your {garage.label}.{" "}
-                <a href={ask} target="_blank" rel="noopener noreferrer" className={link}>
+                <EnquiryButton topic="fitment" title="Will it fit my car?" message={ask} className={link}>
                   Ask us
-                </a>
+                </EnquiryButton>
               </p>
             ))}
         </>

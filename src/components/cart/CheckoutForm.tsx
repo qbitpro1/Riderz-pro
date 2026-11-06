@@ -5,11 +5,10 @@ import { useLatest } from "@/lib/client/hooks";
 import Link from "next/link";
 import { api, ApiFailure } from "@/lib/vendor/client";
 import { INDIAN_STATES } from "@/lib/vendor/validators";
-import { whatsapp } from "@/lib/data/site";
+import { SITE } from "@/lib/data/site";
 import type { CartLine } from "@/lib/store/types";
 import { Icon } from "@/components/ui/Icon";
 import { useCart } from "./CartContext";
-import { orderMessage } from "./cartMessage";
 import { customerSchema } from "./orderSchema";
 import { useAccount } from "@/components/account/AccountContext";
 import { ADDRESS_MAX, type AddressView } from "@/lib/account/types";
@@ -21,7 +20,7 @@ import { DetectLocation, type DetectedLocation } from "@/components/location/Det
 import type { LatLng } from "@/lib/tracking/geo";
 
 /**
- * payment: "whatsapp"   ordered on WhatsApp; payment is arranged there
+ * payment: "later"      ordered without paying; we call to confirm fitment and arrange payment
  *          "paid"       paid online and confirmed
  *          "confirming" Razorpay reported success but our confirmation didn't answer (the webhook will settle it)
  *          "refund_due" the money arrived after the order had expired; it will be refunded
@@ -29,11 +28,10 @@ import type { LatLng } from "@/lib/tracking/geo";
 export type PlacedOrder = {
   number: string;
   total: number;
-  whatsappHref: string | null;
-  payment: "whatsapp" | "paid" | "confirming" | "refund_due";
+  payment: "later" | "paid" | "confirming" | "refund_due";
 };
 
-type Method = "online" | "whatsapp";
+type Method = "online" | "later";
 type PayPhase = "idle" | "creating" | "open" | "verifying" | "dismissed";
 type PendingPayment = { key: string; number: string; total: number; payment: OnlinePaymentStart };
 const DEV = process.env.NODE_ENV !== "production";
@@ -59,9 +57,9 @@ const EMPTY: Values = { name: "", mobile: "", email: "", address: "", city: "", 
  * is cleared. A closed payment window keeps the order (and its stock) for UNPAID_HOLD_MINUTES so
  * "Try payment again" reuses it. Without Razorpay keys the option shows as unavailable.
  *
- * WhatsApp: on success WhatsApp opens with the order number and the cart is cleared. If the order
- * service is down (503) or unreachable, it falls back to the WhatsApp-only order so the store keeps
- * taking orders; the cart is kept in that case.
+ * Pay later: the order is saved (the server's pay-later method, still named "whatsapp" in the
+ * database) and the cart is cleared; the team calls to confirm fitment and arrange payment. If the
+ * order service is down or unreachable, the cart is kept and the shopper is asked to try again.
  */
 export function CheckoutForm({
   lines,
@@ -154,12 +152,11 @@ export function CheckoutForm({
   }
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [formError, setFormError] = useState<string | null>(null);
-  const [fallbackHref, setFallbackHref] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   /* ---- payment choice ---- */
   const [onlineEnabled, setOnlineEnabled] = useState<boolean | null>(null);
-  const [method, setMethod] = useState<Method>("whatsapp");
+  const [method, setMethod] = useState<Method>("later");
   const methodChosen = useRef(false);
   const [phase, setPhase] = useState<PayPhase>("idle");
   const [pending, setPending] = useState<PendingPayment | null>(null);
@@ -203,15 +200,15 @@ export function CheckoutForm({
         setPhase("idle");
         if (err instanceof ApiFailure && err.code === "payments_unavailable") {
           setOnlineEnabled(false);
-          setMethod("whatsapp");
-          setFormError(err.message);
+          setMethod("later");
+          setFormError("Online payment isn't available right now. You can place the order and pay later.");
         } else if (err instanceof ApiFailure && err.status !== 503) {
           const next: Record<string, string> = {};
           for (const [k, v] of Object.entries(err.fields)) next[k.replace(/^customer\./, "")] = v;
           setErrors(next);
           setFormError(err.message);
         } else {
-          setFormError("We couldn't start the payment just now. Please try again, or order on WhatsApp.");
+          setFormError("We couldn't start the payment just now. Please try again, or place the order and pay later.");
         }
         return;
       }
@@ -256,7 +253,7 @@ export function CheckoutForm({
     rememberAddress(details);
     setPending(null);
     setPhase("idle");
-    onPlaced({ number: p.number, total, whatsappHref: null, payment: outcome });
+    onPlaced({ number: p.number, total, payment: outcome });
   }
 
   const ADDRESS_FIELDS: (keyof Values)[] = ["address", "city", "state", "pincode"];
@@ -276,7 +273,6 @@ export function CheckoutForm({
     e.preventDefault();
     if (busy || payBusy) return;
     setFormError(null);
-    setFallbackHref(null);
 
     const parsed = customerSchema.safeParse(values);
     if (!parsed.success) {
@@ -305,11 +301,9 @@ export function CheckoutForm({
           couponCode: totals.couponCode,
         },
       });
-      const href = whatsapp(orderMessage(lines, { ...totals, total: res.order.total }, { orderNumber: res.order.number, customer: details }));
       clear();
       rememberAddress(details);
-      window.open(href, "_blank", "noopener,noreferrer");
-      onPlaced({ number: res.order.number, total: res.order.total, whatsappHref: href, payment: "whatsapp" });
+      onPlaced({ number: res.order.number, total: res.order.total, payment: "later" });
     } catch (err) {
       if (err instanceof ApiFailure && err.status !== 503) {
         const next: Record<string, string> = {};
@@ -317,10 +311,8 @@ export function CheckoutForm({
         setErrors(next);
         setFormError(err.message);
       } else {
-        // Order service unavailable or unreachable: take the order the old way.
-        const href = whatsapp(orderMessage(lines, totals, { customer: details }));
-        setFallbackHref(href);
-        window.open(href, "_blank", "noopener,noreferrer");
+        // Order service unavailable or unreachable: keep the cart and ask them to try again.
+        setFormError(`We couldn't place your order just now. Your cart is saved: please try again in a minute, or call us on ${SITE.phone}.`);
       }
     } finally {
       setBusy(false);
@@ -466,25 +458,25 @@ export function CheckoutForm({
                   ? "UPI, cards, netbanking and wallets, secured by Razorpay."
                   : DEV
                     ? "Online payment not configured (set RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET)."
-                    : "Online payment isn't available yet. Please order on WhatsApp."}
+                    : "Online payment isn't available yet. Place the order below and pay later."}
             </span>
           </span>
         </label>
-        <label className={`flex cursor-pointer items-start gap-3 rounded-sm border p-3 text-xs ${method === "whatsapp" ? "border-accent" : "border-tint/15"}`}>
+        <label className={`flex cursor-pointer items-start gap-3 rounded-sm border p-3 text-xs ${method === "later" ? "border-accent" : "border-tint/15"}`}>
           <input
             type="radio"
             name={`${uid}-pay`}
-            checked={method === "whatsapp"}
+            checked={method === "later"}
             disabled={payBusy}
-            onChange={() => choose("whatsapp")}
+            onChange={() => choose("later")}
             className="mt-0.5 accent-[var(--accent)]"
           />
           <span className="min-w-0">
             <span className="flex items-center gap-1.5 font-semibold text-chalk">
-              <Icon name="whatsapp" size={14} />
-              Order on WhatsApp
+              <Icon name="phone" size={14} />
+              Place order, pay later
             </span>
-            <span className="mt-0.5 block text-ash">We confirm fitment and arrange payment with you on WhatsApp.</span>
+            <span className="mt-0.5 block text-ash">We call you to confirm fitment and arrange payment.</span>
           </span>
         </label>
       </fieldset>
@@ -497,7 +489,7 @@ export function CheckoutForm({
       {method === "online" && pending && phase === "dismissed" && (
         <div role="status" className="card border-gold/30 p-3 text-xs leading-relaxed text-chalk">
           Payment not completed. Order <span className="font-semibold tnum">{pending.number}</span> is held for {UNPAID_HOLD_MINUTES} minutes:
-          pay below to finish it, or choose WhatsApp instead. Nothing has been charged unless Razorpay told you so.
+          pay below to finish it, or choose pay later instead. Nothing has been charged unless Razorpay told you so.
         </div>
       )}
       {method === "online" && payError && (
@@ -509,16 +501,6 @@ export function CheckoutForm({
         <p role="status" className="text-xs text-ash">
           Payment received by Razorpay. Confirming your order…
         </p>
-      )}
-      {fallbackHref && (
-        <div role="status" className="card border-gold/30 p-3 text-xs leading-relaxed text-chalk">
-          We couldn&apos;t save your order online just now, so we opened WhatsApp instead. Send the message there and we&apos;ll confirm
-          it. Nothing opened?{" "}
-          <a href={fallbackHref} target="_blank" rel="noreferrer noopener" className="underline hover:text-accent">
-            Open WhatsApp
-          </a>
-          .
-        </div>
       )}
 
       {method === "online" ? (
@@ -535,9 +517,9 @@ export function CheckoutForm({
                   : `Pay ${rupees(pending?.total ?? totals.total)} securely`}
         </button>
       ) : (
-        <button type="submit" disabled={busy || payBusy} aria-busy={busy} className="btn btn-whatsapp btn-block">
-          <Icon name="whatsapp" size={16} />
-          {busy ? "Placing your order…" : "Place order & confirm on WhatsApp"}
+        <button type="submit" disabled={busy || payBusy} aria-busy={busy} className="btn btn-primary btn-block">
+          <Icon name="check" size={16} />
+          {busy ? "Placing your order…" : "Place order"}
         </button>
       )}
     </form>
