@@ -362,7 +362,7 @@ export function StoreScreen({
     <button type="button" onClick={() => setDrawer(true)} className={`${ui.primary} relative h-14 shrink-0 px-4 md:px-6`} aria-label={`Your order, ${count} items, ${rupees(total)}`}>
       <ShoppingBag size={22} aria-hidden />
       <span className="hidden md:inline">Your order</span>
-      {count > 0 && <span className="tnum hidden border-l border-on-accent/30 pl-2.5 lg:inline">{rupees(total)}</span>}
+      {count > 0 && <span className="tnum hidden border-l border-on-accent/30 pl-2.5 wide:inline">{rupees(total)}</span>}
       <span
         aria-hidden
         className={`absolute -right-1.5 -top-1.5 grid h-7 min-w-7 place-items-center rounded-full bg-chalk px-1.5 text-sm font-bold text-void tnum ring-2 ring-void transition-opacity ${
@@ -390,10 +390,10 @@ export function StoreScreen({
                 scroller.current?.scrollTo({ top: 0 });
               }}
               aria-label={`${store.name}. Show all products`}
-              className="flex min-w-0 shrink-0 items-center gap-3 rounded-2xl text-left transition-transform duration-200 active:scale-[0.97] max-sm:mr-auto lg:w-60 xl:w-64"
+              className="flex min-w-0 shrink-0 items-center gap-3 rounded-2xl text-left transition-transform duration-200 active:scale-[0.97] max-sm:mr-auto wide:w-52 lg:w-60 xl:w-64"
             >
               <StoreMark store={store} className="h-12 w-12 md:h-14 md:w-14" text="text-xl" />
-              <span className="hidden min-w-0 lg:block">
+              <span className="hidden min-w-0 wide:block">
                 <span className="flex min-w-0 items-center gap-1.5">
                   <h1 className="truncate font-display text-lg font-extrabold leading-tight tracking-tight text-chalk">{store.name}</h1>
                   <BadgeCheck size={18} aria-label="Riderzpro verified seller" className="shrink-0 fill-verified text-on-verified" />
@@ -457,7 +457,7 @@ export function StoreScreen({
 
           {/* Categories on phones and tablets (the rail takes over from lg) */}
           {groups.length > 1 && (
-            <nav aria-label="Categories" className="ss-hide-bar flex gap-2 overflow-x-auto px-4 pb-3 lg:hidden md:px-6">
+            <nav aria-label="Categories" className="ss-hide-bar flex gap-2 overflow-x-auto px-4 pb-3 wide:hidden md:px-6">
               <CategoryPill active={group === "all"} onClick={() => pickGroup("all")} label="All products" count={groupTotal} />
               {groups.map((g) => (
                 <CategoryPill key={g.slug} active={group === g.slug} onClick={() => pickGroup(g.slug)} label={g.name} count={g.count} />
@@ -465,7 +465,7 @@ export function StoreScreen({
             </nav>
           )}
           {subs.length > 0 && (
-            <nav aria-label="Sub-categories" className="ss-hide-bar flex gap-2 overflow-x-auto px-4 pb-3 lg:hidden md:px-6">
+            <nav aria-label="Sub-categories" className="ss-hide-bar flex gap-2 overflow-x-auto px-4 pb-3 wide:hidden md:px-6">
               <CategoryPill active={sub === "all"} onClick={() => pickSub("all")} label={`All ${groups.find((g) => g.slug === group)?.name ?? ""}`} count={subTotal} />
               {subs.map((x) => (
                 <CategoryPill key={x.slug} active={sub === x.slug} onClick={() => pickSub(x.slug)} label={x.name} count={x.count} />
@@ -473,7 +473,7 @@ export function StoreScreen({
             </nav>
           )}
           {brands.length > 1 && (
-            <nav aria-label="Brands" className="ss-hide-bar flex gap-2 overflow-x-auto px-4 pb-3 lg:hidden md:px-6">
+            <nav aria-label="Brands" className="ss-hide-bar flex gap-2 overflow-x-auto px-4 pb-3 wide:hidden md:px-6">
               <CategoryPill active={brand === "all"} onClick={() => pickBrand("all")} label="All brands" count={brandPool.length} />
               {brands.map((b) => (
                 <CategoryPill key={b.name} active={brand === b.name} onClick={() => pickBrand(b.name)} label={b.name} count={b.count} />
@@ -481,7 +481,7 @@ export function StoreScreen({
             </nav>
           )}
           {(prices.length > 0 || hasSale) && (
-            <nav aria-label="Price and offers" className="ss-hide-bar flex gap-2 overflow-x-auto px-4 pb-3 lg:hidden md:px-6">
+            <nav aria-label="Price and offers" className="ss-hide-bar flex gap-2 overflow-x-auto px-4 pb-3 wide:hidden md:px-6">
               {hasSale && <SalePill active={sale} onClick={toggleSale} count={saleCount} />}
               {prices.length > 0 && <CategoryPill active={price === "all"} onClick={() => pickPrice("all")} label="Any price" count={pricePool.length} />}
               {prices.map((b) => (
@@ -494,7 +494,7 @@ export function StoreScreen({
         <div className="flex min-h-0 flex-1">
           {/* Category rail */}
           {showFilters && (
-            <nav aria-label="Categories, brands and prices" className="ss-scroll hidden w-60 shrink-0 overflow-y-auto border-r border-tint/10 bg-carbon px-3 py-5 lg:block xl:w-64">
+            <nav aria-label="Categories, brands and prices" className="ss-scroll hidden w-52 shrink-0 overflow-y-auto border-r border-tint/10 bg-carbon px-3 py-5 wide:block lg:w-60 xl:w-64">
               {groups.length > 1 && (
                 <ul className="space-y-1">
                   <li>

@@ -46,7 +46,7 @@ export function ReviewScreen({
   return (
     <Layer label="Your order, show at the counter" onClose={onBack} kind="full">
       <div className="ss-scroll min-h-0 flex-1 overflow-y-auto">
-        <div className="ss-print mx-auto grid max-w-[1700px] gap-8 px-5 py-6 md:px-10 md:py-10 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] lg:gap-14">
+        <div className="ss-print mx-auto grid max-w-[1700px] gap-8 px-5 py-6 md:px-10 md:py-10 wide:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] wide:gap-14">
           {/* Items */}
           <section className="min-w-0" aria-label="Items in your order">
             <div className="flex items-center gap-4">
@@ -78,7 +78,7 @@ export function ReviewScreen({
           </section>
 
           {/* Ticket */}
-          <aside className="min-w-0 lg:sticky lg:top-6 lg:self-start" aria-label="Order summary">
+          <aside className="min-w-0 wide:sticky wide:top-6 wide:self-start" aria-label="Order summary">
             <div className="rounded-[2rem] border border-tint/10 bg-carbon p-6 md:p-8">
               <p className="text-base font-semibold text-dim">Order number</p>
               <p className="tnum font-display text-[clamp(4rem,10vw,7.5rem)] font-extrabold leading-none tracking-[-0.05em] text-accent">{token ?? "-"}</p>
