@@ -68,10 +68,10 @@ export function CompareSheet({
 
   return (
     <Layer label="Compare products" onClose={onClose} kind="full">
-      <div className="flex shrink-0 items-center justify-between gap-3 border-b border-tint/10 px-4 py-3 md:px-8">
+      <div className="flex shrink-0 items-center justify-between gap-3 border-b border-tint/10 px-4 py-3 md:px-8 short:py-2">
         <div className="min-w-0">
-          <h2 className="font-display text-2xl font-extrabold tracking-tight text-chalk md:text-3xl">Compare</h2>
-          <p className="text-sm text-dim md:text-base">{products.length} of 3 products</p>
+          <h2 className="font-display text-2xl font-extrabold tracking-tight text-chalk md:text-3xl short:text-2xl">Compare</h2>
+          <p className="text-sm text-dim md:text-base short:text-sm">{products.length} of 3 products</p>
         </div>
         <div className="flex items-center gap-3">
           {products.length > 1 && (
@@ -115,12 +115,12 @@ export function CompareSheet({
                   const qty = qtys[p.id] ?? 0;
                   const max = maxFor(p);
                   return (
-                    <th key={p.id} scope="col" className="sticky top-0 z-10 border-b border-l border-tint/10 bg-void p-3 text-left align-top font-normal md:p-4">
+                    <th key={p.id} scope="col" className="sticky top-0 z-10 border-b border-l border-tint/10 bg-void p-3 text-left align-top font-normal md:p-4 short:py-2">
                       <div className="relative">
                         <button type="button" onClick={() => onOpen(p)} className="block w-full text-left" aria-label={`${p.title}. View details`}>
-                          <Photo id={p.images[0]} alt="" sizes="(min-width:1024px) 20vw, 40vw" className="h-36 w-full rounded-xl md:h-44" pad="p-2" />
-                          {p.brand && <p className="mt-2 truncate text-sm font-semibold uppercase tracking-wide text-dim">{p.brand}</p>}
-                          <p className="line-clamp-2 min-h-[2.75rem] text-base font-semibold leading-snug text-chalk md:text-lg">{p.title}</p>
+                          <Photo id={p.images[0]} alt="" sizes="(min-width:1024px) 20vw, 40vw" className="h-36 w-full rounded-xl md:h-44 short:h-24" pad="p-2" />
+                          {p.brand && <p className="mt-2 truncate text-sm font-semibold uppercase tracking-wide text-dim short:mt-1.5 short:text-xs">{p.brand}</p>}
+                          <p className="line-clamp-2 min-h-[2.75rem] text-base font-semibold leading-snug text-chalk md:text-lg short:min-h-0 short:text-base">{p.title}</p>
                         </button>
                         <button
                           type="button"
@@ -131,14 +131,14 @@ export function CompareSheet({
                           <X size={20} aria-hidden />
                         </button>
                       </div>
-                      <Price p={p} className="mt-1.5" />
+                      <Price p={p} className="mt-1.5 short:mt-1" />
                       {qty > 0 ? (
                         <div className="mt-2 flex items-center gap-2">
                           <Stepper value={qty} max={max} onChange={(n) => onSetQty(p.id, Math.max(0, Math.min(n, max)))} label={p.title} compact />
                           <span className="text-sm text-dim">in order</span>
                         </div>
                       ) : (
-                        <button type="button" onClick={() => onSetQty(p.id, 1)} disabled={max < 1} className={`${ui.primary} mt-2 min-h-12 w-full`}>
+                        <button type="button" onClick={() => onSetQty(p.id, 1)} disabled={max < 1} className={`${ui.primary} mt-2 min-h-12 w-full short:min-h-11`}>
                           <Plus size={18} aria-hidden /> Add to order
                         </button>
                       )}
@@ -150,11 +150,11 @@ export function CompareSheet({
             <tbody>
               {rows.map((r, i) => (
                 <tr key={r.label} className={i % 2 === 0 ? "bg-carbon" : ""}>
-                  <th scope="row" className={`sticky left-0 z-[5] px-3 py-3.5 text-left align-top text-base font-semibold text-dim md:px-5 md:text-lg ${i % 2 === 0 ? "bg-carbon" : "bg-void"}`}>
+                  <th scope="row" className={`sticky left-0 z-[5] px-3 py-3.5 text-left align-top text-base font-semibold text-dim md:px-5 md:text-lg short:py-2.5 short:text-base ${i % 2 === 0 ? "bg-carbon" : "bg-void"}`}>
                     {r.label}
                   </th>
                   {r.values.map((v, j) => (
-                    <td key={j} className="break-words border-l border-tint/10 px-3 py-3.5 align-top text-base text-chalk md:px-5 md:text-lg">
+                    <td key={j} className="break-words border-l border-tint/10 px-3 py-3.5 align-top text-base text-chalk md:px-5 md:text-lg short:py-2.5 short:text-base">
                       {r.lists ? (
                         r.lists[j].length > 0 ? (
                           <ul className="list-disc space-y-1 pl-5">

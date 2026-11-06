@@ -217,7 +217,7 @@ export function StoreAssistant({
           />
           <span className="absolute right-1 top-1/2 -translate-y-1/2">
             {/* Voice fills the box as the customer speaks; the question goes the moment they stop. */}
-            <VoiceSearch onText={setText} onFinal={(q) => void ask(q)} />
+            <VoiceSearch onText={setText} onFinal={(q) => void ask(q)} popup="above" />
           </span>
         </label>
         <button type="submit" disabled={busy || !text.trim()} className={`${ui.primary} h-14 px-5`} aria-label="Send">

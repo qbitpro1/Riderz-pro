@@ -52,6 +52,22 @@
   }
 }
 
+/* Offline Store screen: "short" = a screen no taller than 640px, such as a shop TV whose browser
+   reports 960x540 or a phone on its side. The shop screen tightens its spacing there so a product,
+   its price and "Add to order" fit without scrolling. Laptops (720px+) are not affected. */
+@custom-variant short {
+  @media (max-height: 40rem) {
+    @slot;
+  }
+}
+
+/* "short" and at least 896px wide: room for four product tiles in a row. */
+@custom-variant short-wide {
+  @media (max-height: 40rem) and (min-width: 56rem) {
+    @slot;
+  }
+}
+
 @theme {
   --font-display: var(--font-archivo), "Arial Black", system-ui, sans-serif;
   --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;

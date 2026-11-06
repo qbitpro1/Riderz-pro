@@ -76,8 +76,8 @@ export function ProductSheet({
   return (
     <Layer label={p.title} onClose={onClose} kind="full">
       {/* Top bar */}
-      <div className="flex shrink-0 items-center justify-between gap-3 border-b border-tint/10 bg-void px-4 py-3 md:px-8">
-        <button type="button" onClick={onClose} className={`${ui.secondary} min-h-12 px-5`}>
+      <div className="flex shrink-0 items-center justify-between gap-3 border-b border-tint/10 bg-void px-4 py-3 md:px-8 short:py-2">
+        <button type="button" onClick={onClose} className={`${ui.secondary} min-h-12 px-5 short:min-h-11`}>
           <ArrowLeft size={20} aria-hidden /> Back to products
         </button>
         <div className="flex items-center gap-2">
@@ -86,13 +86,13 @@ export function ProductSheet({
             onClick={() => onToggleCompare(p.id)}
             disabled={!inCompare && compare.length >= COMPARE_MAX}
             aria-pressed={inCompare}
-            className={`${ui.secondary} min-h-12 px-4 ${inCompare ? "border-chalk bg-chalk text-void hover:bg-chalk" : ""}`}
+            className={`${ui.secondary} min-h-12 px-4 short:min-h-11 ${inCompare ? "border-chalk bg-chalk text-void hover:bg-chalk" : ""}`}
           >
             {inCompare ? <Check size={18} aria-hidden /> : <Columns2 size={18} aria-hidden />}
             <span className="hidden sm:inline">{inCompare ? "In compare" : "Compare"}</span>
           </button>
           {orderCount > 0 && (
-            <button type="button" onClick={onViewOrder} className={`${ui.primary} min-h-12 px-5`}>
+            <button type="button" onClick={onViewOrder} className={`${ui.primary} min-h-12 px-5 short:min-h-11`}>
               <ShoppingBag size={18} aria-hidden />
               <span className="hidden sm:inline">Your order</span>
               <span className="tnum">{orderCount} · {rupees(orderTotal)}</span>
@@ -102,42 +102,42 @@ export function ProductSheet({
       </div>
 
       <div className="ss-scroll min-h-0 flex-1 overflow-y-auto">
-        <div className="mx-auto max-w-[1500px] px-4 py-6 md:px-8 md:py-8">
-          <div className="grid gap-8 wide:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] wide:gap-12">
+        <div className="mx-auto max-w-[1500px] px-4 py-6 md:px-8 md:py-8 short:py-3">
+          <div className="grid gap-8 wide:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] wide:gap-12 short:gap-6">
             <div className="min-w-0 wide:sticky wide:top-0 wide:self-start">
               <Gallery images={p.images} title={p.title} brand={p.brand} />
             </div>
 
-            <div className="min-w-0 space-y-6">
+            <div className="min-w-0 space-y-6 short:space-y-3">
               <div>
                 {p.bestseller && <BestsellerTag className="mb-2" />}
                 <p className="text-base font-semibold text-accent">
                   {p.brand} <span className="text-dim">/ {p.subName ? `${p.groupName} / ${p.subName}` : p.groupName}</span>
                 </p>
-                <h2 className="mt-2 text-balance font-display text-[clamp(1.75rem,3.4vw,3rem)] font-extrabold leading-[1.02] tracking-[-0.035em] text-chalk">
+                <h2 className="mt-2 text-balance font-display text-[clamp(1.75rem,3.4vw,3rem)] short:mt-1 short:text-[1.75rem] font-extrabold leading-[1.02] tracking-[-0.035em] text-chalk">
                   {p.title}
                 </h2>
               </div>
 
               <div>
                 <Price p={p} size="lg" />
-                <p className="mt-1.5 text-sm text-dim">Price includes GST. MRP is the printed maximum retail price.</p>
+                <p className="mt-1.5 text-sm text-dim short:mt-0.5 short:text-xs">Price includes GST. MRP is the printed maximum retail price.</p>
               </div>
 
               <ul className="flex flex-wrap gap-2">
-                <li className={`rounded-full px-3.5 py-1.5 text-sm font-semibold ${low ? "bg-accent/10 text-accent" : "bg-carbon text-ash"}`}>
+                <li className={`rounded-full px-3.5 py-1.5 text-sm font-semibold short:py-1 ${low ? "bg-accent/10 text-accent" : "bg-carbon text-ash"}`}>
                   {low ? `Only ${p.stock} left` : "In stock"}
                 </li>
-                <li className="rounded-full bg-carbon px-3.5 py-1.5 text-sm font-semibold text-ash">{p.partType}</li>
+                <li className="rounded-full bg-carbon px-3.5 py-1.5 text-sm font-semibold text-ash short:py-1">{p.partType}</li>
                 {p.warrantyMonths ? (
-                  <li className="inline-flex items-center gap-1.5 rounded-full bg-carbon px-3.5 py-1.5 text-sm font-semibold text-ash">
+                  <li className="inline-flex items-center gap-1.5 rounded-full bg-carbon px-3.5 py-1.5 text-sm font-semibold text-ash short:py-1">
                     <ShieldCheck size={15} aria-hidden /> {p.warrantyMonths}-month warranty
                   </li>
                 ) : null}
               </ul>
 
               {/* Fitment */}
-              <div className="rounded-2xl border border-tint/10 bg-carbon p-4 md:p-5">
+              <div className="rounded-2xl border border-tint/10 bg-carbon p-4 md:p-5 short:px-4 short:py-3">
                 <p className="flex items-center gap-2 text-base font-bold text-chalk">
                   <CarFront size={20} className="text-accent" aria-hidden />
                   {p.universal ? "Universal fit" : "Made to fit"}
@@ -228,7 +228,7 @@ export function ProductSheet({
       </div>
 
       {/* Add bar */}
-      <div className="shrink-0 border-t border-tint/10 bg-void px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 md:px-8">
+      <div className="shrink-0 border-t border-tint/10 bg-void px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 md:px-8 short:pb-[max(0.5rem,env(safe-area-inset-bottom))] short:pt-2">
         <div className="mx-auto flex max-w-[1500px] flex-wrap items-center justify-between gap-3">
           <div className="hidden min-w-0 sm:block">
             <p className="truncate text-sm font-semibold text-dim">{p.brand}</p>
@@ -237,7 +237,7 @@ export function ProductSheet({
           {room > 0 ? (
             <div className="flex w-full items-center gap-3 sm:w-auto">
               <Stepper value={qty} min={1} max={room} onChange={(n) => setQty(Math.max(1, Math.min(n, room)))} label={p.title} />
-              <button type="button" data-autofocus onClick={() => onAdd(qty)} className={`${ui.primary} min-h-14 flex-1 sm:flex-none sm:px-8`}>
+              <button type="button" data-autofocus onClick={() => onAdd(qty)} className={`${ui.primary} min-h-14 flex-1 sm:flex-none sm:px-8 short:min-h-12`}>
                 <Plus size={20} aria-hidden />
                 {inOrder > 0 ? "Add more" : "Add to order"}
                 <span className="tnum">· {rupees(p.price * qty)}</span>
@@ -246,7 +246,7 @@ export function ProductSheet({
           ) : (
             <div className="flex w-full items-center justify-between gap-3 sm:w-auto">
               <p className="text-base font-medium text-ash">All {inOrder} available are in your order.</p>
-              <button type="button" data-autofocus onClick={onViewOrder} className={ui.primary}>
+              <button type="button" data-autofocus onClick={onViewOrder} className={`${ui.primary} short:min-h-12`}>
                 <ShoppingBag size={20} aria-hidden /> View order
               </button>
             </div>

@@ -70,27 +70,27 @@ export function SellerDialog({ onClose, onWelcome }: { onClose: () => void; onWe
 
   return (
     <Layer label="Seller options" onClose={onClose} size="sm">
-      <form onSubmit={submit} noValidate className="p-6">
+      <form onSubmit={submit} noValidate className="ss-scroll min-h-0 overflow-y-auto p-6 short:p-5">
         <div className="flex items-start justify-between gap-3">
           <div>
             <h2 className="font-display text-2xl font-extrabold tracking-tight text-chalk">Seller only</h2>
-            <p className="mt-1 text-base text-ash">Enter your seller password to close the store screen and go to your dashboard or your products.</p>
+            <p className="mt-1 text-base text-ash short:text-sm">Enter your seller password to close the store screen and go to your dashboard or your products.</p>
           </div>
           <CloseButton onClick={onClose} />
         </div>
 
-        <button type="button" onClick={toggleFull} className={`${ui.secondary} mt-5 min-h-12 w-full`}>
+        <button type="button" onClick={toggleFull} className={`${ui.secondary} mt-5 min-h-12 w-full short:mt-3 short:min-h-11`}>
           {full ? <Minimize size={18} aria-hidden /> : <Maximize size={18} aria-hidden />}
           {full ? "Leave full screen" : "Go full screen"}
         </button>
 
-        <button type="button" onClick={onWelcome} className={`${ui.secondary} mt-3 min-h-12 w-full`}>
+        <button type="button" onClick={onWelcome} className={`${ui.secondary} mt-3 min-h-12 w-full short:mt-2 short:min-h-11 short:text-[15px]`}>
           <RotateCcw size={18} aria-hidden /> Clear the order and show the welcome screen
         </button>
 
-        <fieldset className="mt-5">
+        <fieldset className="mt-5 short:mt-3">
           <legend className="label">Go to</legend>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-2 short:grid-cols-4">
             {(
               [
                 ["add-product", "Add a product"],
@@ -104,7 +104,7 @@ export function SellerDialog({ onClose, onWelcome }: { onClose: () => void; onWe
                 type="button"
                 aria-pressed={to === key}
                 onClick={() => setTo(key)}
-                className={`min-h-12 rounded-xl border px-3 text-base font-semibold transition-colors ${
+                className={`min-h-12 rounded-xl border px-3 text-base font-semibold transition-colors short:px-2 short:leading-tight short:text-sm ${
                   to === key ? "border-accent bg-accent text-on-accent" : "border-tint/15 text-chalk hover:bg-steel"
                 }`}
               >
@@ -114,7 +114,7 @@ export function SellerDialog({ onClose, onWelcome }: { onClose: () => void; onWe
           </div>
         </fieldset>
 
-        <label htmlFor="screen-password" className="label mt-5">
+        <label htmlFor="screen-password" className="label mt-5 short:mt-3">
           Seller password
         </label>
         <input
@@ -123,7 +123,7 @@ export function SellerDialog({ onClose, onWelcome }: { onClose: () => void; onWe
           autoComplete="current-password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="field min-h-14! rounded-xl! text-base!"
+          className="field min-h-14! rounded-xl! text-base! short:min-h-12!"
           aria-invalid={error ? true : undefined}
           aria-describedby={error ? "screen-password-msg" : undefined}
           data-autofocus
@@ -133,11 +133,11 @@ export function SellerDialog({ onClose, onWelcome }: { onClose: () => void; onWe
             {error}
           </p>
         )}
-        <div className="mt-5 grid grid-cols-2 gap-3">
-          <button type="button" onClick={onClose} className={ui.secondary}>
+        <div className="mt-5 grid grid-cols-2 gap-3 short:mt-3">
+          <button type="button" onClick={onClose} className={`${ui.secondary} short:min-h-12`}>
             Cancel
           </button>
-          <button type="submit" disabled={busy} className={ui.primary}>
+          <button type="submit" disabled={busy} className={`${ui.primary} short:min-h-12`}>
             {busy ? "Checking…" : to === "dashboard" ? "Exit to dashboard" : "Unlock and go"}
           </button>
         </div>

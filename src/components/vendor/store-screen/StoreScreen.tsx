@@ -359,7 +359,7 @@ export function StoreScreen({
   const dockBottom = count > 0 || compare.length > 0;
 
   const orderButton = (
-    <button type="button" onClick={() => setDrawer(true)} className={`${ui.primary} relative h-14 shrink-0 px-4 md:px-6`} aria-label={`Your order, ${count} items, ${rupees(total)}`}>
+    <button type="button" onClick={() => setDrawer(true)} className={`${ui.primary} relative h-14 shrink-0 px-4 md:px-6 short:h-12 short:min-h-12`} aria-label={`Your order, ${count} items, ${rupees(total)}`}>
       <ShoppingBag size={22} aria-hidden />
       <span className="hidden md:inline">Your order</span>
       {count > 0 && <span className="tnum hidden border-l border-on-accent/30 pl-2.5 wide:inline">{rupees(total)}</span>}
@@ -382,7 +382,7 @@ export function StoreScreen({
       {/* Browse (stays mounted under the attract screen, so the first touch is instant) */}
       <div className="flex min-h-0 flex-1 flex-col" inert={attract === "on"} aria-hidden={attract === "on"}>
         <header className="z-20 shrink-0 border-b border-tint/10 bg-void">
-          <div className="flex flex-wrap items-center gap-3 px-4 py-3 sm:flex-nowrap md:gap-4 md:px-6">
+          <div className="flex flex-wrap items-center gap-3 px-4 py-3 sm:flex-nowrap md:gap-4 md:px-6 short:py-2">
             <button
               type="button"
               onClick={() => {
@@ -392,13 +392,13 @@ export function StoreScreen({
               aria-label={`${store.name}. Show all products`}
               className="flex min-w-0 shrink-0 items-center gap-3 rounded-2xl text-left transition-transform duration-200 active:scale-[0.97] max-sm:mr-auto wide:w-52 lg:w-60 xl:w-64"
             >
-              <StoreMark store={store} className="h-12 w-12 md:h-14 md:w-14" text="text-xl" />
+              <StoreMark store={store} className="h-12 w-12 md:h-14 md:w-14 short:h-11 short:w-11" text="text-xl" />
               <span className="hidden min-w-0 wide:block">
                 <span className="flex min-w-0 items-center gap-1.5">
                   <h1 className="truncate font-display text-lg font-extrabold leading-tight tracking-tight text-chalk">{store.name}</h1>
                   <BadgeCheck size={18} aria-label="Riderzpro verified seller" className="shrink-0 fill-verified text-on-verified" />
                 </span>
-                <span className="line-clamp-2 text-sm leading-snug text-dim tnum" title={store.address ?? undefined}>{store.address ?? `${products.length} in stock`}</span>
+                <span className="line-clamp-2 text-sm leading-snug text-dim tnum short:line-clamp-1" title={store.address ?? undefined}>{store.address ?? `${products.length} in stock`}</span>
               </span>
             </button>
 
@@ -415,7 +415,7 @@ export function StoreScreen({
                 placeholder="Search or tap the mic: seat covers for Creta…"
                 autoComplete="off"
                 enterKeyHint="search"
-                className={`h-14 w-full rounded-xl border border-tint/15 bg-carbon pl-12 ${query ? "pr-28" : "pr-14"} text-base text-chalk outline-none transition-colors placeholder:text-dim focus:border-accent [&::-webkit-search-cancel-button]:hidden`}
+                className={`h-14 w-full short:h-12 rounded-xl border border-tint/15 bg-carbon pl-12 ${query ? "pr-28" : "pr-14"} text-base text-chalk outline-none transition-colors placeholder:text-dim focus:border-accent [&::-webkit-search-cancel-button]:hidden`}
               />
               <span className="absolute right-1 top-1/2 flex -translate-y-1/2 items-center">
                 {query && (
@@ -433,7 +433,7 @@ export function StoreScreen({
             </label>
 
             {sales.aiEnabled && (
-              <button type="button" onClick={() => askAi()} className={`${ui.secondary} h-14 shrink-0 px-4 md:px-5`} aria-label="Ask Salesman AI">
+              <button type="button" onClick={() => askAi()} className={`${ui.secondary} h-14 shrink-0 px-4 md:px-5 short:h-12 short:min-h-12`} aria-label="Ask Salesman AI">
                 <Sparkles size={22} aria-hidden />
                 <span className="hidden xl:inline">Salesman AI</span>
               </button>
@@ -443,7 +443,7 @@ export function StoreScreen({
               <button
                 type="button"
                 onClick={() => setCarOpen(true)}
-                className={`${ui.secondary} h-14 shrink-0 px-4 md:px-5 ${car ? "border-chalk bg-chalk text-void hover:bg-chalk" : ""}`}
+                className={`${ui.secondary} h-14 shrink-0 px-4 md:px-5 short:h-12 short:min-h-12 ${car ? "border-chalk bg-chalk text-void hover:bg-chalk" : ""}`}
                 aria-label={car ? `Your car: ${car.brand} ${car.name}. Change` : "Find for my car"}
               >
                 <CarFront size={22} aria-hidden />
@@ -494,7 +494,7 @@ export function StoreScreen({
         <div className="flex min-h-0 flex-1">
           {/* Category rail */}
           {showFilters && (
-            <nav aria-label="Categories, brands and prices" className="ss-scroll hidden w-52 shrink-0 overflow-y-auto border-r border-tint/10 bg-carbon px-3 py-5 wide:block lg:w-60 xl:w-64">
+            <nav aria-label="Categories, brands and prices" className="ss-scroll hidden w-52 shrink-0 overflow-y-auto border-r border-tint/10 bg-carbon px-3 py-5 wide:block lg:w-60 xl:w-64 short:py-3">
               {groups.length > 1 && (
                 <ul className="space-y-1">
                   <li>
@@ -556,9 +556,9 @@ export function StoreScreen({
             </nav>
           )}
 
-          <section ref={scroller} aria-label="Products" className={`ss-scroll min-w-0 flex-1 overflow-y-auto px-4 pt-4 md:px-6 md:pt-5 ${dockBottom ? "pb-32" : "pb-8"}`}>
+          <section ref={scroller} aria-label="Products" className={`ss-scroll min-w-0 flex-1 overflow-y-auto px-4 pt-4 md:px-6 md:pt-5 short:pt-3 ${dockBottom ? "pb-32" : "pb-8"}`}>
             {products.length > 0 && (
-              <div className="mb-5 flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
+              <div className="mb-5 flex flex-wrap items-center justify-between gap-x-4 gap-y-3 short:mb-3">
                 <div className="flex min-w-0 items-center gap-3">
                   <p className="text-base font-semibold text-chalk tnum" aria-live="polite">
                     {shown.length} {shown.length === 1 ? "product" : "products"}
@@ -582,7 +582,7 @@ export function StoreScreen({
                       type="button"
                       aria-pressed={sort === s.key}
                       onClick={() => setSort(s.key)}
-                      className={`${ui.pill} min-h-12 text-sm ${sort === s.key ? "border-chalk bg-chalk text-void" : "border-tint/15 text-ash hover:border-tint/35"}`}
+                      className={`${ui.pill} min-h-12 text-sm short:min-h-10 short:px-3.5 ${sort === s.key ? "border-chalk bg-chalk text-void" : "border-tint/15 text-ash hover:border-tint/35"}`}
                     >
                       {s.label}
                     </button>
@@ -885,7 +885,7 @@ function SaleSwitch({ active, onClick, count }: { active: boolean; onClick: () =
       role="switch"
       aria-checked={active}
       onClick={onClick}
-      className={`flex min-h-14 w-full items-center gap-3 rounded-xl border px-4 text-left text-base font-semibold transition-colors duration-200 active:scale-[0.98] ${
+      className={`flex min-h-14 w-full items-center gap-3 rounded-xl border px-4 short:min-h-11 text-left text-base font-semibold transition-colors duration-200 active:scale-[0.98] ${
         active ? "border-accent bg-accent/10 text-chalk" : "border-tint/15 bg-void text-chalk hover:bg-steel"
       } ${count === 0 && !active ? "opacity-45" : ""}`}
     >
@@ -920,7 +920,7 @@ function RailItem({
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`flex ${small ? "min-h-12 text-[15px]" : "min-h-14 text-base"} w-full items-center justify-between gap-3 rounded-xl px-4 text-left font-semibold transition-colors duration-200 active:scale-[0.98] ${
+      className={`flex ${small ? "min-h-12 text-[15px] short:min-h-10" : "min-h-14 text-base short:min-h-11"} w-full items-center justify-between gap-3 rounded-xl px-4 text-left font-semibold transition-colors duration-200 active:scale-[0.98] ${
         active ? "bg-accent text-on-accent shadow-sm" : "text-chalk hover:bg-steel"
       } ${dim && !active ? "opacity-45" : ""}`}
     >
