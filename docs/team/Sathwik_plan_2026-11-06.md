@@ -10,7 +10,7 @@ Do these in order. Steps 1 to 4 use today's `old-deploy` and don't depend on thi
 
 | Step | Task | What to do | Done when |
 | --- | --- | --- | --- |
-| 1 | #3 Server settings | Check `.env` against `DEPLOY.md` section 2. **Don't replace `VENDOR_DATA_KEY`** (see "Decide today"). | No unexpected `[config]` lines in the log |
+| 1 | #3 Server settings | Check `.env` against `DEPLOY.md` section 2. **Keep the current `VENDOR_DATA_KEY`** (see "Decided"). | No unexpected `[config]` lines in the log |
 | 2 | #1 Redeploy | Deploy the latest `old-deploy` using section 6. Fill in the real folder and process name. | Log shows `[indus] Indus Enterprises set up`; `/api/health` is OK |
 | 3 | #5 nginx | Apply section 7. Check `client_max_body_size` too: the 1 MB default blocks seller uploads over 1 MB. | `rate_limits` shows a phone's real address |
 | 4 | #4 Cleanup job | Apply section 8. | Manual call returns `"ok":true`; the log has a new line after the next hour |
@@ -18,16 +18,14 @@ Do these in order. Steps 1 to 4 use today's `old-deploy` and don't depend on thi
 | 6 | #6 and #2 | Open a Pull Request from this branch into `old-deploy` and get it reviewed. **Merge only after step 5.** | Reviewed |
 | 7 | #8 Payment test | After merging and redeploying: test card and UPI, order turns Paid, invoice opens, refund ₹1. Cancel the test orders. | All pass |
 
-## Decide today
+## Decided
 
-1. **`VENDOR_DATA_KEY`.** The task asks for a "final" key, but the code can only use one key
-   (`src/lib/server/security.ts`) and nothing re-encrypts saved data. If the live site already holds
-   seller data, a new key makes their bank details and PAN unreadable. Recommendation: with
-   Muni/Vamsi, keep the current live key as the final one and save it in the password manager.
-   Replace it only if that key was exposed, and then with a re-encryption step first.
-2. **When online-only checkout goes live.** WhatsApp is how the live site takes orders today. After
-   this branch is deployed, the site can't take any order without Razorpay keys. Recommendation: merge
-   once test keys work, and don't announce the site until live keys are on.
+1. **`VENDOR_DATA_KEY`: keep the current live key as the final one.** Save it in the password manager
+   and tell Muni/Vamsi. The code can only use one key (`src/lib/server/security.ts`) and nothing
+   re-encrypts saved data, so a new key would make sellers' bank details and PAN unreadable.
+2. **Online-only checkout: merge once Razorpay test keys work on the server.** WhatsApp is how the live
+   site takes orders today, and after this branch is deployed no order can be placed without keys.
+   Don't announce the site until live keys are on.
 
 ## Status of every task
 
@@ -39,7 +37,7 @@ Do these in order. Steps 1 to 4 use today's `old-deploy` and don't depend on thi
 | 4 | Hourly cleanup job | Now | **Steps written**; server step |
 | 5 | nginx real IP | Now | **Config written**; server step |
 | 6 | Remove WhatsApp ordering (server) | Now | **Code done on this branch**; merge after step 5 |
-| 7 | Razorpay | Now | KYC and keys are yours; live keys at go-live |
+| 7 | Razorpay | Now | Test keys create orders from a local run; still to do: server, webhook, KYC, then live keys at go-live |
 | 8 | Payment test | Next | After step 6. Mock-API run passes (`scripts/test-payments.mjs`) |
 | 9 | GST check with the accountant | Next | Not started |
 | 10 | No commission on shop-screen sales | Next | New sales are 0%. See "Still open on commission" |
