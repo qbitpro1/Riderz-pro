@@ -51,23 +51,23 @@ export function ProductTile({
             id={p.images[0]}
             alt=""
             sizes="(min-width:1700px) 20vw, (min-width:1280px) 22vw, (min-width:1024px) 28vw, (min-width:640px) 32vw, 48vw"
-            className={compact ? "aspect-[4/3] w-full" : "aspect-[5/4] w-full"}
-            pad="p-4"
+            className={compact ? "aspect-[4/3] w-full" : "aspect-[5/4] w-full short:aspect-[3/2]"}
+            pad="p-4 short:p-2.5"
           />
           {(off > 0 || p.bestseller) && (
-            <span className="absolute left-3 top-3 flex flex-col items-start gap-1.5">
-              {off > 0 && <span className="rounded-full bg-accent px-3 py-1 text-sm font-bold text-on-accent tnum">{off}% off</span>}
+            <span className="absolute left-3 top-3 flex flex-col items-start gap-1.5 short:left-2 short:top-2 short:gap-1">
+              {off > 0 && <span className="rounded-full bg-accent px-3 py-1 text-sm font-bold text-on-accent tnum short:px-2 short:py-0.5 short:text-xs">{off}% off</span>}
               {p.bestseller && <BestsellerTag />}
             </span>
           )}
           {low && (
-            <span className="absolute right-3 top-3 rounded-full bg-gold/15 px-3 py-1 text-sm font-bold text-gold">
+            <span className="absolute right-3 top-3 rounded-full bg-gold/15 px-3 py-1 text-sm font-bold text-gold short:right-2 short:top-2 short:px-2 short:py-0.5 short:text-xs">
               Only {p.stock} left
             </span>
           )}
           {fit && (
             <span
-              className={`absolute bottom-3 left-3 max-w-[70%] truncate rounded-full px-2.5 py-1 text-xs font-semibold shadow-sm ${
+              className={`absolute bottom-3 left-3 max-w-[70%] truncate short:bottom-2 short:left-2 short:px-2 short:py-0.5 rounded-full px-2.5 py-1 text-xs font-semibold shadow-sm ${
                 fit.match ? "bg-chalk text-void" : "bg-void text-ash"
               }`}
             >
@@ -75,26 +75,27 @@ export function ProductTile({
             </span>
           )}
         </div>
-        <div className={`flex flex-1 flex-col gap-1 ${compact ? "p-3" : "px-4 pb-3 pt-3.5"}`}>
-          <p className="truncate text-xs font-bold uppercase tracking-[0.14em] text-dim">{p.brand}</p>
-          <p className={`line-clamp-2 font-bold leading-snug text-chalk ${compact ? "text-[15px]" : "text-lg xl:text-xl"}`}>{p.title}</p>
-          <Price p={p} size={compact ? "sm" : "md"} className="mt-auto pt-1.5" />
+        <div className={`flex flex-1 flex-col gap-1 short:gap-0.5 ${compact ? "p-3" : "px-4 pb-3 pt-3.5 short:px-3 short:pb-2 short:pt-2"}`}>
+          <p className="truncate text-xs font-bold uppercase tracking-[0.14em] text-dim short:text-[11px]">{p.brand}</p>
+          <p className={`line-clamp-2 font-bold leading-snug text-chalk ${compact ? "text-[15px]" : "text-lg xl:text-xl short:text-[15px]"}`}>{p.title}</p>
+          <Price p={p} size={compact ? "sm" : "md"} className="mt-auto pt-1.5 short:pt-1" offClassName="short:hidden" />
         </div>
       </button>
 
-      <div className={compact ? "px-3 pb-3" : "px-4 pb-4"}>
+      <div className={compact ? "px-3 pb-3" : "px-4 pb-4 short:px-3 short:pb-3"}>
         {qty === 0 ? (
           <button
             type="button"
             onClick={() => onSetQty(p.id, 1)}
-            className="inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-accent text-base font-bold text-on-accent shadow-md transition-transform duration-200 active:scale-[0.97]"
+            className="inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-accent text-base font-bold short:min-h-12 short:gap-1.5 short:text-[15px] text-on-accent shadow-md transition-transform duration-200 active:scale-[0.97]"
             aria-label={`Add ${p.title} to order`}
           >
             <Plus size={20} aria-hidden /> Add to order
           </button>
         ) : (
-          <div className="flex items-center justify-between gap-2">
-            <span className="flex items-center gap-1.5 text-sm font-bold text-accent">
+          <div className="flex items-center justify-between gap-2 short:justify-center">
+            {/* Short screens (a shop TV): four tiles a row leave room for the stepper alone. */}
+            <span className="flex items-center gap-1.5 text-sm font-bold text-accent short:hidden">
               <Check size={16} aria-hidden /> In order
             </span>
             <Stepper value={qty} max={max} onChange={(n) => onSetQty(p.id, n)} label={p.title} compact />
@@ -107,7 +108,7 @@ export function ProductTile({
             disabled={compareFull}
             aria-pressed={inCompare}
             aria-label={inCompare ? `Remove ${p.title} from compare` : compareFull ? `Compare is full, ${COMPARE_MAX} products` : `Compare ${p.title}`}
-            className={`mt-2 flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl border-2 text-sm font-bold transition-[transform,background-color] duration-200 active:scale-[0.98] disabled:opacity-40 ${
+            className={`mt-2 flex min-h-12 w-full items-center short:hidden justify-center gap-2 rounded-2xl border-2 text-sm font-bold transition-[transform,background-color] duration-200 active:scale-[0.98] disabled:opacity-40 ${
               inCompare ? "border-chalk bg-chalk text-void" : "border-tint/10 text-ash"
             }`}
           >
@@ -122,7 +123,7 @@ export function ProductTile({
 
 export function BrowseGrid({ products, actions }: { products: ScreenProduct[]; actions: TileActions }) {
   return (
-    <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-5 xl:grid-cols-4 min-[1700px]:grid-cols-5">
+    <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-5 xl:grid-cols-4 min-[1700px]:grid-cols-5 short:gap-3 short-wide:grid-cols-4">
       {products.map((p, i) => (
         <li key={p.id} className="ss-rise" style={{ animationDelay: `${Math.min(i, 12) * 28}ms` }}>
           <ProductTile product={p} actions={actions} />

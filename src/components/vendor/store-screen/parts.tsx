@@ -70,13 +70,16 @@ export function Price({
   p,
   size = "md",
   className = "",
+  offClassName = "",
 }: {
   p: { mrp: number; price: number };
   size?: "sm" | "md" | "lg";
   className?: string;
+  /** Extra classes for the "% off" chip, e.g. to hide it where the photo already shows it. */
+  offClassName?: string;
 }) {
   const off = offPct(p);
-  const main = { sm: "text-lg", md: "text-xl md:text-2xl", lg: "text-4xl md:text-5xl" }[size];
+  const main = { sm: "text-lg", md: "text-xl md:text-2xl short:text-lg", lg: "text-4xl md:text-5xl short:text-4xl" }[size];
   return (
     <div className={`flex flex-wrap items-baseline gap-x-2.5 gap-y-1 ${className}`}>
       <span className={`tnum font-display font-extrabold tracking-tight text-chalk ${main}`}>{rupees(p.price)}</span>
@@ -86,7 +89,7 @@ export function Price({
             <span className="sr-only">MRP </span>
             {rupees(p.mrp)}
           </span>
-          <span className={`rounded-md bg-accent/10 px-1.5 py-0.5 font-bold text-accent ${size === "lg" ? "text-base" : "text-xs"}`}>{off}% off</span>
+          <span className={`rounded-md bg-accent/10 px-1.5 py-0.5 font-bold text-accent ${size === "lg" ? "text-base" : "text-xs"} ${offClassName}`}>{off}% off</span>
         </>
       )}
     </div>
@@ -108,7 +111,7 @@ export function Stepper({
   label: string;
   compact?: boolean;
 }) {
-  const size = compact ? "h-12 w-12" : "h-14 w-14";
+  const size = compact ? "h-12 w-12" : "h-14 w-14 short:h-12 short:w-12";
   return (
     <div className="inline-flex items-center rounded-xl border border-tint/20 bg-void" role="group" aria-label={`Quantity, ${label}`}>
       <button

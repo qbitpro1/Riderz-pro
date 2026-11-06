@@ -1,5 +1,7 @@
 import "server-only";
 
+import { speechConfigWarning, speechProvider } from "@/lib/server/speech-to-text";
+
 /**
  * PRODUCTION SETTINGS CHECK
  *
@@ -13,7 +15,7 @@ const env = (k: string) => process.env[k]?.trim() || "";
 export type ConfigReport = {
   problems: string[];
   warnings: string[];
-  features: { payments: boolean; paymentWebhook: boolean; email: boolean; sms: boolean; assistant: boolean; cron: boolean };
+  features: { payments: boolean; paymentWebhook: boolean; email: boolean; sms: boolean; assistant: boolean; speechToText: boolean; cron: boolean };
 };
 
 export function checkConfig(): ConfigReport {
@@ -39,12 +41,15 @@ export function checkConfig(): ConfigReport {
     email: Boolean(env("RESEND_API_KEY") && (env("OTP_EMAIL_FROM") || env("RESEND_FROM"))),
     sms: Boolean((env("MSG91_AUTH_KEY") && env("MSG91_OTP_TEMPLATE_ID")) || (env("TWILIO_ACCOUNT_SID") && env("TWILIO_AUTH_TOKEN") && env("TWILIO_FROM"))),
     assistant: Boolean(env("ANTHROPIC_API_KEY")),
+    speechToText: speechProvider() !== null,
     cron: Boolean(env("CRON_SECRET")),
   };
   if (features.payments && !features.paymentWebhook) warnings.push("Razorpay keys set but RAZORPAY_WEBHOOK_SECRET isn't: payments from a closed tab are only found by the unpaid-order check.");
   if (features.payments && env("RAZORPAY_KEY_ID").startsWith("rzp_test_")) warnings.push("Razorpay is in TEST mode (rzp_test_ key): no real money is taken.");
   if (!features.email) warnings.push("Email is off (RESEND_API_KEY + sender): no sign-in codes or order emails by email.");
   if (!features.sms) warnings.push("SMS is off (MSG91 or Twilio): mobile sign-in codes and delivery alerts can't be sent.");
+  const speech = speechConfigWarning();
+  if (speech) warnings.push(speech);
   if (!features.cron) warnings.push("CRON_SECRET not set: schedule /api/cron/housekeeping hourly (see docs/DEPLOY.md); until then it only runs when the site is busy.");
   return { problems, warnings, features };
 }
