@@ -425,7 +425,7 @@ export function CheckoutForm({
       </div>
 
       {customer && chosen === "new" && saved.length < ADDRESS_MAX && (
-        <label className="flex items-center gap-2 text-xs text-ash">
+        <label className="flex min-h-11 cursor-pointer items-center gap-3 text-xs text-ash">
           <input type="checkbox" checked={saveNew} onChange={(e) => setSaveNew(e.target.checked)} className="h-4 w-4 accent-[var(--accent)]" />
           Save this address to my account
         </label>

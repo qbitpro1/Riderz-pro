@@ -37,16 +37,16 @@ export function BrandStrip({ exclude = [] as string[] }) {
                     <p className="text-[11px] text-dim tnum">
                       {b.state === "importing" ? "Catalogue import in progress" : `${count} products`}
                     </p>
-                    <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
+                    <div className="mt-1 flex flex-wrap gap-x-4">
                       <Link
                         href={`/brands/${b.slug}`}
-                        className="inline-flex items-center gap-1 text-[11px] text-accent underline underline-offset-4"
+                        className="inline-flex min-h-11 items-center gap-1 text-[11px] text-accent underline underline-offset-4"
                       >
                         Shop {b.name}
                         <Icon name="arrow" size={12} />
                       </Link>
                       {b.storeHref && (
-                        <Link href={b.storeHref} className="text-[11px] text-ash underline underline-offset-4 hover:text-chalk">
+                        <Link href={b.storeHref} className="inline-flex min-h-11 items-center text-[11px] text-ash underline underline-offset-4 hover:text-chalk">
                           {b.storeLabel}
                         </Link>
                       )}

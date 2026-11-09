@@ -64,10 +64,10 @@ export function Footer() {
                 <p className="mb-4 font-display text-[11px] font-bold uppercase tracking-[0.18em] text-dim">
                   {col.title}
                 </p>
-                <ul className="space-y-2.5">
+                <ul className="md:space-y-2.5">
                   {col.links.map((l) => (
                     <li key={l.href}>
-                      <Link href={l.href} className="text-sm text-ash transition-colors hover:text-accent">
+                      <Link href={l.href} className="inline-flex min-h-11 items-center text-sm text-ash transition-colors hover:text-accent md:min-h-0">
                         {l.label}
                       </Link>
                     </li>
@@ -82,21 +82,21 @@ export function Footer() {
           <p className="mb-4 font-display text-[11px] font-bold uppercase tracking-[0.18em] text-dim">
             Popular accessory pages
           </p>
-          <ul className="flex flex-wrap gap-x-5 gap-y-2">
+          <ul className="flex flex-wrap gap-x-5 md:gap-y-2">
             {LANDING_MODELS.map((m) => (
               <li key={m.slug}>
-                <Link href={`/accessories/${m.slug}`} className="text-xs text-dim transition-colors hover:text-accent">
+                <Link href={`/accessories/${m.slug}`} className="inline-flex min-h-11 items-center text-xs text-dim transition-colors hover:text-accent md:min-h-0">
                   {m.name} accessories
                 </Link>
               </li>
             ))}
             <li>
-              <Link href="/used-cars" className="text-xs text-dim transition-colors hover:text-accent">
+              <Link href="/used-cars" className="inline-flex min-h-11 items-center text-xs text-dim transition-colors hover:text-accent md:min-h-0">
                 Used cars
               </Link>
             </li>
             <li>
-              <Link href="/car-modification" className="text-xs text-dim transition-colors hover:text-accent">
+              <Link href="/car-modification" className="inline-flex min-h-11 items-center text-xs text-dim transition-colors hover:text-accent md:min-h-0">
                 Car modification near me
               </Link>
             </li>
@@ -122,7 +122,7 @@ function Social({ href, icon, label }: { href: string; icon: "instagram" | "yout
       target="_blank"
       rel="noreferrer noopener"
       aria-label={label}
-      className="grid h-10 w-10 place-items-center border border-tint/12 text-ash transition-colors hover:border-accent hover:text-accent"
+      className="grid h-11 w-11 place-items-center border border-tint/12 text-ash transition-colors hover:border-accent hover:text-accent"
     >
       <Icon name={icon} size={18} />
     </a>

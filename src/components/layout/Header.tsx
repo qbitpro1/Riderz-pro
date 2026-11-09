@@ -66,7 +66,9 @@ export function Header({ liveGroups }: { liveGroups?: LiveGroups }) {
               )}
             </button>
 
-            <IconButton label="Open menu" onClick={navActions.openDrawer} className="xl:hidden">
+            {/* Phones and small tablets open the menu from the bottom bar's Menu button, so the header
+                shows this only from lg (bottom bar gone) until xl (the full navigation row appears). */}
+            <IconButton label="Open menu" onClick={navActions.openDrawer} className="max-lg:hidden xl:hidden">
               <Icon name="menu" size={22} />
             </IconButton>
           </div>

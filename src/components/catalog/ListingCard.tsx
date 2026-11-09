@@ -35,23 +35,30 @@ export function ListingCard({
   const priced = !(item.price === null || (!item.buyable && !item.seller));
 
   return (
-    <article className="relative flex h-full flex-col overflow-hidden rounded-[var(--radius-cl)] border border-cl-line bg-cl-surface text-cl-ink">
-      <Link href={item.href} className="relative block aspect-square overflow-hidden bg-cl-fill" tabIndex={-1} aria-hidden="true">
+    // The title link stretches over the whole card (its ::after), so the card is one big target; the
+    // wishlist heart, seller link and quick action sit above it (z-[2]) and keep their own clicks.
+    <article className="fs-card group relative flex h-full flex-col overflow-hidden text-cl-ink">
+      <Link
+        href={item.href}
+        className="fs-card-media relative m-1.5 block aspect-square overflow-hidden bg-cl-fill md:m-2"
+        tabIndex={-1}
+        aria-hidden="true"
+      >
         <ListingImage item={item} sizes={sizes} />
         {off > 0 && (
-          <span className="absolute left-3 top-3 rounded-[6px] bg-cl-sale px-2 py-1 text-[12px] font-bold leading-none text-white">
+          <span className="absolute left-2.5 top-2.5 z-[2] rounded-full bg-cl-sale px-2.5 py-1 text-[12px] font-bold leading-none text-white shadow-[0_4px_12px_-4px_rgba(200,16,46,0.6)]">
             {off}% OFF
           </span>
         )}
         {item.availability === "coming-soon" && (
-          <span className="absolute left-3 top-3 rounded-[6px] bg-cl-ink px-2 py-1 text-[12px] font-bold leading-none text-cl-on-ink">
+          <span className="absolute left-2.5 top-2.5 z-[2] rounded-full bg-cl-ink px-2.5 py-1 text-[12px] font-bold leading-none text-cl-on-ink">
             Coming soon
           </span>
         )}
       </Link>
-      <WishlistButton variant="card" item={wishlistItem(item)} className="absolute right-3 top-3" />
+      <WishlistButton variant="card" item={wishlistItem(item)} className="absolute right-4 top-4 z-[2] md:right-5 md:top-5" />
 
-      <div className="flex flex-1 flex-col gap-1.5 p-3 md:p-4">
+      <div className="flex flex-1 flex-col gap-1.5 px-3 pb-3 pt-1.5 md:px-4 md:pb-4 md:pt-2">
         {fitsModel && (
           <p className="inline-flex w-fit items-center gap-1 rounded-full bg-cl-fit-bg px-2.5 py-1 text-[12px] font-semibold text-cl-fit">
             <Icon name="check" size={13} />
@@ -60,7 +67,10 @@ export function ListingCard({
         )}
         {showBrand && <p className="truncate text-[12px] font-semibold uppercase tracking-[0.08em] text-cl-muted">{item.brandName}</p>}
         <h3 className="line-clamp-2 text-[14px] font-semibold leading-snug md:text-[15px]">
-          <Link href={item.href} className="hover:underline hover:underline-offset-2">
+          <Link
+            href={item.href}
+            className="rounded-[20px] outline-none after:absolute after:inset-0 after:z-[1] after:rounded-[20px] after:content-[''] focus-visible:after:ring-2 focus-visible:after:ring-cl-ink/40"
+          >
             {item.title}
           </Link>
         </h3>
@@ -73,7 +83,7 @@ export function ListingCard({
         {item.seller && (
           <p className="truncate text-[12px] text-cl-muted">
             Sold by{" "}
-            <Link href={storeHref(item.seller.slug)} className="font-semibold text-cl-ink hover:underline">
+            <Link href={storeHref(item.seller.slug)} className="relative z-[2] font-semibold text-cl-ink hover:underline">
               {item.seller.name}
             </Link>
           </p>
@@ -108,8 +118,11 @@ export function ListingCard({
           {item.seller && !item.buyable && <p className="text-[12px] text-cl-muted">Out of stock</p>}
         </div>
 
-        <div className="hidden pt-2 md:block">
-          <CatalogQuickAction item={item} className="cl-btn cl-btn-outline w-full" />
+        <div className="relative z-[2] hidden pt-2 md:block">
+          <CatalogQuickAction
+            item={item}
+            className="cl-btn cl-btn-outline w-full rounded-full transition-colors duration-200 group-hover:border-cl-ink group-hover:bg-cl-ink group-hover:text-cl-on-ink"
+          />
         </div>
       </div>
     </article>

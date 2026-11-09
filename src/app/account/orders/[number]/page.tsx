@@ -111,11 +111,12 @@ function Part({ part, orderStatus }: { part: AccountOrderPart; orderStatus: stri
       </div>
 
       {part.status && !stopped && (
-        <ol className="mt-4 grid grid-cols-5 gap-1" aria-label="Progress">
+        // Phones: a vertical list with whole labels (five columns cut them to "Confi…"). sm and up: one row.
+        <ol className="mt-4 grid gap-2 sm:grid-cols-5 sm:gap-1" aria-label="Progress">
           {PART_STEPS.map((s, i) => (
-            <li key={s} className="min-w-0">
-              <span className={`block h-1.5 rounded-full ${i <= reached ? "bg-accent" : "bg-tint/10"}`} />
-              <span className={`mt-1.5 block truncate text-[11px] ${i <= reached ? "font-semibold text-chalk" : "text-dim"}`}>
+            <li key={s} className="flex min-w-0 items-center gap-3 sm:block" aria-current={i === reached ? "step" : undefined}>
+              <span className={`block h-1.5 w-8 shrink-0 rounded-full sm:w-auto ${i <= reached ? "bg-accent" : "bg-tint/10"}`} />
+              <span className={`block text-xs sm:mt-1.5 sm:truncate sm:text-[11px] ${i <= reached ? "font-semibold text-chalk" : "text-dim"}`}>
                 {PART_STATUS_LABELS[s]}
               </span>
             </li>

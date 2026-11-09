@@ -23,6 +23,25 @@ import { GUIDE, PREP_STEPS, QUALITY_CHECKLIST } from "@/lib/ppf/guide";
 import { rupees } from "@/lib/format";
 import { pageMeta } from "@/lib/data/seo";
 import { EnquiryButton } from "@/components/enquiry/Enquiry";
+import { PlaceCard } from "@/components/ui/card-22";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { photoAlt, photoUrl, type MediaKey } from "@/lib/media";
+import type { DetailService } from "@/lib/data/services";
+
+/** Carousel photos per service card (stock photography from lib/media). */
+const SERVICE_GALLERY: Partial<Record<string, MediaKey[]>> = {
+  "ceramic-coating": ["detailingPolish", "garageSpotlit", "chromeGrille"],
+  "graphene-coating": ["washBay", "nightStreetSedan", "garageHeadlights"],
+  "paint-correction": ["frontGrilleRed", "garageSpotlit", "heroWorkshopNight"],
+  "interior-detailing": ["cockpitScreen", "steeringNight"],
+};
+
+const SERVICE_CATEGORY: Record<DetailService["category"], string> = {
+  protection: "Protection",
+  correction: "Correction",
+  wrap: "Wrap",
+};
 
 export const metadata: Metadata = pageMeta({
   title: "Paint Protection Film (PPF) — Packages & Installation",
@@ -363,17 +382,31 @@ export default function PpfPage() {
             title="PPF ISN'T THE ONLY LAYER."
             blurb="A ceramic coating over film makes the whole car easier to wash. It is not a substitute for the physical protection film gives you."
           />
-          <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <ul className="cl-scope grid gap-5 md:grid-cols-2 lg:grid-cols-4">
             {DETAIL_SERVICES.filter((s) => s.slug !== "paint-protection-film")
               .slice(0, 4)
               .map((s) => (
-                <li key={s.slug} id={s.slug} className="scroll-mt-24">
-                  <div className="card flex h-full flex-col p-5">
-                    <p className="font-display text-base font-extrabold uppercase">{s.name}</p>
-                    <p className="mt-2 flex-1 text-xs leading-relaxed text-ash">{s.blurb}</p>
-                    <p className="mt-3 font-display text-lg font-extrabold text-accent tnum">From {rupees(s.price)}</p>
-                    <p className="text-[11px] text-dim">{s.priceNote}</p>
-                  </div>
+                <li key={s.slug} id={s.slug} className="flex scroll-mt-24">
+                  <PlaceCard
+                    className="max-w-none"
+                    images={(SERVICE_GALLERY[s.slug] ?? [s.image]).map((key) => ({ src: photoUrl(key, 800), alt: photoAlt(key) }))}
+                    tags={[SERVICE_CATEGORY[s.category]]}
+                    title={s.name}
+                    meta={[s.duration, ...(s.warranty !== "—" ? [s.warranty] : [])]}
+                    description={s.blurb}
+                    price={`From ${rupees(s.price)}`}
+                    priceNote={s.priceNote}
+                    action={
+                      <EnquiryButton
+                        topic="installation"
+                        message={`Hi Riderzpro, I'd like to book ${s.name} for my `}
+                        className={cn(buttonVariants({ size: "sm" }), "rounded-full px-4")}
+                      >
+                        Book now
+                        <Icon name="arrow" size={14} />
+                      </EnquiryButton>
+                    }
+                  />
                 </li>
               ))}
           </ul>

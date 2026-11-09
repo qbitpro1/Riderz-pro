@@ -25,7 +25,7 @@ export const revalidate = 3600;
 
 export default function LatestCarsPage() {
   const listings = latestFirst();
-  // eslint-disable-next-line react-hooks/purity -- a Server Component, rendered once per revalidation
+  // Date.now() during render is fine: a Server Component, rendered once per revalidation.
   const now = Date.now();
 
   const grouped = ORDER.map((bucket) => ({

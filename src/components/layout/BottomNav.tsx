@@ -8,7 +8,7 @@ import { navActions, useNavState } from "@/components/nav/navStore";
 import { BOTTOM_NAV } from "@/lib/data/nav";
 
 const cell = "flex h-16 w-full flex-col items-center justify-center gap-1 transition-colors";
-const labelCls = "font-display text-[10px] font-bold uppercase tracking-[0.1em]";
+const labelCls = "font-display text-[11px] font-bold uppercase tracking-[0.08em]";
 
 export function BottomNav() {
   const pathname = usePathname();

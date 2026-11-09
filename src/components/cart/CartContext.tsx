@@ -81,7 +81,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     try {
       const stored = parseLines(readStored(KEY));
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- hydrating from browser storage (see above)
+      // Setting state in this effect is deliberate: hydrating from browser storage (see above).
       if (stored) setLines(stored);
     } catch {
       // A corrupt or unavailable store should never block the page.

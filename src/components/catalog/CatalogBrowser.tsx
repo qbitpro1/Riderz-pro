@@ -172,16 +172,20 @@ export function CatalogBrowser({
       {/* sidebar: one card, no inner scrolling ---------------------------- */}
       {/* Sticks beside the grid as it scrolls, so the column under it never sits empty. Taller than
           the screen (many sections open) it scrolls on its own rather than hiding its foot. */}
-      <aside className="hidden lg:sticky lg:top-24 lg:block" aria-label="Filters">
-        <div className="max-h-[calc(100vh-7rem)] overflow-y-auto overscroll-contain rounded-[var(--radius-cl)] border border-cl-line bg-cl-surface p-4">
-          <div className="flex min-h-[44px] items-center justify-between border-b border-cl-line pb-2">
-            <h2 className="flex items-center gap-2 text-[16px] font-semibold">
-              <Icon name="filter" size={16} />
+      <aside className="fs-backdrop hidden lg:sticky lg:top-24 lg:block" aria-label="Filters">
+        <div className="fs-glass max-h-[calc(100vh-7rem)] overflow-y-auto overscroll-contain px-5 pb-3 pt-4">
+          <div className="flex min-h-[44px] items-center justify-between border-b border-cl-ink/[0.07] pb-3">
+            <h2 className="flex items-center gap-2.5 text-[17px] font-semibold tracking-[-0.02em]">
+              <span className="fs-well grid h-8 w-8 place-items-center rounded-full" aria-hidden="true">
+                <Icon name="filter" size={15} />
+              </span>
               Filters
             </h2>
             {active > 0 && (
-              <button type="button" onClick={clearAll} className="min-h-[44px] text-[13px] font-semibold text-cl-muted underline underline-offset-4 hover:text-cl-ink">
-                Clear all
+              <button type="button" onClick={clearAll} className="group grid min-h-[44px] place-items-center">
+                <span className="rounded-full bg-cl-ink px-3 py-1.5 text-[12px] font-semibold text-cl-on-ink shadow-[0_4px_12px_-4px_rgba(0,0,0,0.35)] transition-transform group-active:scale-95">
+                  Clear all
+                </span>
               </button>
             )}
           </div>
@@ -308,7 +312,7 @@ export function CatalogBrowser({
     return (
       <div className="cl-scope text-cl-ink">
         {vehicleBar && (
-          <div className="mb-6">
+          <div className="fs-backdrop mb-6">
             <VehicleBar />
           </div>
         )}
@@ -352,7 +356,7 @@ export function CatalogBrowser({
 
       <div className="cl-shell pb-16 pt-5 md:pt-6">
         {vehicleBar && (
-          <div className="mb-4 md:mb-6">
+          <div className="fs-backdrop mb-4 md:mb-6">
             <VehicleBar />
           </div>
         )}
@@ -430,8 +434,8 @@ function ActiveChips({
 
   if (inPanel) {
     return (
-      <div className="border-b border-cl-line py-3">
-        <p className="cl-label mb-2">Applied</p>
+      <div className="border-b border-cl-ink/[0.07] py-3">
+        <p className="mb-2 pl-1 text-[11px] font-semibold uppercase tracking-[0.1em] text-cl-muted">Applied</p>
         <ul ref={wrap} className="flex flex-wrap gap-2" aria-label="Applied filters">
           {chips.map((c, i) => (
             <li key={c.key}>
@@ -442,11 +446,13 @@ function ActiveChips({
                   refocus.current = i;
                   c.remove();
                 }}
-                className="cl-chip min-h-[36px] text-[13px]"
+                className="fs-well inline-flex min-h-[34px] items-center gap-1.5 rounded-full pl-3 pr-1.5 text-[13px] font-medium transition-colors hover:bg-cl-ink/[0.06] active:scale-[0.97]"
                 aria-label={`Remove filter: ${c.label}`}
               >
                 {c.label}
-                <Icon name="close" size={13} />
+                <span className="grid h-5 w-5 place-items-center rounded-full bg-cl-ink/10" aria-hidden="true">
+                  <Icon name="close" size={11} />
+                </span>
               </button>
             </li>
           ))}

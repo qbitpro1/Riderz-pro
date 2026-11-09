@@ -57,7 +57,7 @@ export function CatalogCard({
       <WishlistButton variant="overlay" item={wishlistItem(item)} className="absolute right-2.5 top-2.5" />
 
       <div className="flex flex-1 flex-col p-3.5">
-        <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em]">
+        <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.12em]">
           {showBrand && <span className="text-accent">{item.brandName}</span>}
           {showBrand && <span className="text-dim">·</span>}
           <span className="truncate text-dim">{item.code ?? item.sub}</span>
@@ -94,7 +94,7 @@ export function CatalogCard({
             </p>
           ) : (
             <p className="flex items-baseline gap-2">
-              {item.priceFrom && <span className="text-[10px] uppercase tracking-[0.12em] text-dim">from</span>}
+              {item.priceFrom && <span className="text-[11px] uppercase tracking-[0.1em] text-dim">from</span>}
               <span className="font-display text-lg font-extrabold tnum">{rupees(item.price)}</span>
               {item.mrp && item.mrp > item.price && (
                 <span className="text-xs text-dim line-through tnum">{rupees(item.mrp)}</span>

@@ -62,6 +62,9 @@ export function AssistantFab() {
   if (pathname === "/assistant") return null;
 
   const bottom = "bottom-[calc(76px+var(--sticky-bar-h,0px)+env(safe-area-inset-bottom))] lg:bottom-6";
+  // On the cart (which is also checkout) the floating button sat over the quantity controls and the
+  // address fields on phones and tablets, so it is hidden there below desktop width.
+  const offOnSmall = pathname === "/cart" ? "max-lg:hidden" : "";
 
   return (
     <>
@@ -114,7 +117,7 @@ export function AssistantFab() {
         aria-expanded={open}
         aria-controls="assistant-window"
         aria-label={open ? "Close the AI assistant" : "Ask our AI assistant"}
-        className={`assistant-fab fixed right-4 z-50 flex h-13 items-center gap-2 rounded-full bg-accent py-3 pl-3.5 pr-4 font-display text-xs font-bold uppercase tracking-[0.12em] text-on-accent shadow-[0_14px_40px_-12px_rgba(0,0,0,0.8)] transition-transform hover:-translate-y-0.5 lg:right-6 ${bottom} ${open ? "max-md:hidden" : ""}`}
+        className={`assistant-fab fixed right-4 z-50 flex h-13 items-center gap-2 rounded-full bg-accent py-3 pl-3.5 pr-4 font-display text-xs font-bold uppercase tracking-[0.12em] text-on-accent shadow-[0_14px_40px_-12px_rgba(0,0,0,0.8)] transition-transform hover:-translate-y-0.5 lg:right-6 ${bottom} ${offOnSmall} ${open ? "max-md:hidden" : ""}`}
       >
         <Icon name={open ? "close" : "spark"} size={19} />
         <span className="hidden xs:inline">{open ? "Close" : "Ask AI"}</span>

@@ -42,12 +42,15 @@ export function SectionHead({
 
 export function SectionFootLink({ href, label }: { href: string; label: string }) {
   return (
+    // Phone-only link: the 44px-tall box is the tap target; the underline stays tight to the text.
     <Link
       href={href}
-      className="mt-6 inline-flex items-center gap-2 border-b border-tint/20 pb-1 font-display text-xs font-bold uppercase tracking-[0.16em] text-chalk transition-colors hover:border-accent hover:text-accent md:hidden"
+      className="group mt-3 inline-flex min-h-11 items-center font-display text-xs font-bold uppercase tracking-[0.16em] text-chalk transition-colors hover:text-accent md:hidden"
     >
-      {label}
-      <Icon name="arrow" size={15} />
+      <span className="inline-flex items-center gap-2 border-b border-tint/20 pb-1 transition-colors group-hover:border-accent">
+        {label}
+        <Icon name="arrow" size={15} />
+      </span>
     </Link>
   );
 }

@@ -2,6 +2,7 @@
 
 import { useId, useState, type ReactNode } from "react";
 import { Icon } from "@/components/ui/Icon";
+import { Slider } from "@/components/ui/slider";
 import type { CatalogFacets, CatalogFilters } from "@/lib/catalog/filters";
 import type { SpeakerSize } from "@/lib/catalog/speaker-size";
 
@@ -43,7 +44,7 @@ export function FilterSections({
 }) {
   const moreActive = (filters.oe ? 1 : 0) + (filters.installation ? 1 : 0) + filters.tiers.length;
   return (
-    <div className="divide-y divide-cl-line">
+    <div className="divide-y divide-cl-ink/[0.07]">
       {!locked.includes("categories") && facets.categories.length > 1 && (
         <Section title="Category" active={filters.categories.length} onClear={() => onPatch({ categories: [] })}>
           <CheckList facets={facets.categories} selected={filters.categories} onToggle={(v) => onToggle("categories", v)} />
@@ -72,8 +73,8 @@ export function FilterSections({
                   type="button"
                   aria-pressed={on}
                   onClick={() => onToggle("sizes", f.value)}
-                  className={`min-h-[44px] min-w-[3.75rem] rounded-[var(--radius-cl-ctl)] border px-3 text-[14px] font-semibold transition-colors ${
-                    on ? "border-cl-ink bg-cl-ink text-cl-on-ink" : "border-cl-line-strong bg-cl-surface text-cl-ink hover:border-cl-ink"
+                  className={`min-h-[40px] min-w-[3.75rem] rounded-full px-3.5 text-[14px] font-semibold transition-all active:scale-95 ${
+                    on ? "bg-cl-ink text-cl-on-ink shadow-[0_4px_12px_-4px_rgba(0,0,0,0.35)]" : "fs-well text-cl-ink hover:bg-cl-ink/[0.06]"
                   }`}
                 >
                   {f.label}
@@ -145,14 +146,14 @@ function Section({
   const [open, setOpen] = useState(defaultOpen || active > 0);
   const id = useId();
   return (
-    <fieldset className="py-2">
+    <fieldset className="py-3">
       <legend className="flex w-full items-center gap-2">
         <button
           type="button"
           aria-expanded={open}
           aria-controls={id}
           onClick={() => setOpen((o) => !o)}
-          className="flex min-h-[44px] flex-1 items-center justify-between gap-2 text-left text-[14px] font-semibold"
+          className="group flex min-h-[44px] flex-1 items-center justify-between gap-2 text-left text-[15px] font-semibold tracking-[-0.01em]"
         >
           <span>
             {title}
@@ -162,20 +163,22 @@ function Section({
               </span>
             )}
           </span>
-          <Icon name="chevron" size={16} className={`text-cl-muted transition-transform duration-150 ${open ? "-rotate-90" : "rotate-90"}`} />
+          <span className="fs-well grid h-7 w-7 shrink-0 place-items-center rounded-full transition-colors group-hover:bg-cl-ink/[0.06]" aria-hidden="true">
+            <Icon name="chevron" size={14} className={`text-cl-muted transition-transform duration-200 ${open ? "-rotate-90" : "rotate-90"}`} />
+          </span>
         </button>
         {active > 0 && onClear && (
           <button
             type="button"
             onClick={onClear}
-            className="-order-none min-h-[44px] px-1 text-[12px] font-semibold text-cl-muted underline underline-offset-4 hover:text-cl-ink"
+            className="group/clear grid min-h-[44px] place-items-center"
             aria-label={`Clear ${title.toLowerCase()} filter`}
           >
-            Clear
+            <span className="fs-well rounded-full px-2.5 py-1 text-[12px] font-semibold text-cl-muted transition-colors group-hover/clear:text-cl-ink">Clear</span>
           </button>
         )}
       </legend>
-      <div id={id} hidden={!open} className="pb-2">
+      <div id={id} hidden={!open} className="pb-1 pt-1">
         {children}
       </div>
     </fieldset>
@@ -219,7 +222,7 @@ function CheckList<T extends string>({
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder={searchLabel}
-            className="cl-input min-h-[40px] pl-9 text-[14px]"
+            className="fs-well fs-field min-h-[40px] rounded-full pl-9 text-[14px]"
           />
         </div>
       )}
@@ -239,15 +242,19 @@ function CheckList<T extends string>({
 function Check({ label, count, checked, onChange }: { label: string; count?: number; checked: boolean; onChange: (on: boolean) => void }) {
   const empty = count === 0 && !checked;
   return (
-    <label className={`flex min-h-[40px] cursor-pointer items-center gap-3 text-[14px] ${empty ? "text-cl-muted" : "text-cl-ink"}`}>
+    <label
+      className={`-mx-2 flex min-h-[40px] cursor-pointer items-center gap-3 rounded-xl px-2 text-[14px] transition-colors hover:bg-cl-ink/[0.04] ${empty ? "text-cl-muted" : "text-cl-ink"}`}
+    >
       <input
         type="checkbox"
         checked={checked}
         onChange={(e) => onChange(e.target.checked)}
-        className="h-[18px] w-[18px] shrink-0 accent-[var(--cl-ink)]"
+        className="fs-check"
       />
       <span className="min-w-0 flex-1">{label}</span>
-      {count !== undefined && <span className="shrink-0 text-[13px] text-cl-muted tnum">{count}</span>}
+      {count !== undefined && (
+        <span className="shrink-0 rounded-full bg-cl-ink/[0.06] px-2 py-0.5 text-[12px] font-medium text-cl-muted tnum">{count}</span>
+      )}
     </label>
   );
 }
@@ -303,12 +310,11 @@ function PriceRange({
 
   const loNum = parse(lo) ?? floor;
   const hiNum = parse(hi) ?? ceil;
-  const span = Math.max(1, ceil - floor);
-  const pct = (n: number) => Math.min(100, Math.max(0, ((n - floor) / span) * 100));
+  const clamp = (n: number) => Math.min(ceil, Math.max(floor, n));
 
   const field = (label: string, value: string, set: (v: string) => void, key: "min" | "max") => (
     <div className="min-w-0 flex-1">
-      <label htmlFor={`${id}-${key}`} className="mb-1 block text-[12px] font-semibold uppercase tracking-[0.08em] text-cl-muted">
+      <label htmlFor={`${id}-${key}`} className="mb-1.5 block pl-1 text-[11px] font-semibold uppercase tracking-[0.1em] text-cl-muted">
         {label}
       </label>
       <div className="relative">
@@ -318,7 +324,7 @@ function PriceRange({
         <input
           id={`${id}-${key}`}
           inputMode="numeric"
-          className="cl-input pl-7"
+          className="fs-well fs-field pl-7"
           value={value}
           onChange={(e) => set(e.target.value)}
           onBlur={() => commit(lo, hi)}
@@ -332,35 +338,25 @@ function PriceRange({
   return (
     <div>
       {bounds && ceil > floor && (
-        <div className="cl-range mb-3 mt-1">
-          <div className="cl-range-track" aria-hidden="true">
-            <div className="cl-range-fill" style={{ left: `${pct(loNum)}%`, right: `${100 - pct(hiNum)}%` }} />
-          </div>
-          <input
-            type="range"
-            min={floor}
-            max={ceil}
-            step={step}
-            value={Math.min(loNum, hiNum)}
-            aria-label="Minimum price"
-            aria-valuetext={rupee(Math.min(loNum, hiNum))}
-            onChange={(e) => setLo(String(Math.min(Number(e.target.value), hiNum)))}
-            onPointerUp={() => commit(lo, hi)}
-            onKeyUp={() => commit(lo, hi)}
-          />
-          <input
-            type="range"
-            min={floor}
-            max={ceil}
-            step={step}
-            value={Math.max(hiNum, loNum)}
-            aria-label="Maximum price"
-            aria-valuetext={rupee(Math.max(hiNum, loNum))}
-            onChange={(e) => setHi(String(Math.max(Number(e.target.value), loNum)))}
-            onPointerUp={() => commit(lo, hi)}
-            onKeyUp={() => commit(lo, hi)}
-          />
-        </div>
+        <Slider
+          className="mb-5 mt-3"
+          trackClassName="data-[orientation=horizontal]:h-1.5 bg-cl-ink/10"
+          rangeClassName="bg-cl-ink"
+          thumbClassName="h-7 w-7 cursor-grab border-0 bg-white shadow-[0_3px_10px_rgba(0,0,0,0.18),0_0_0_0.5px_rgba(0,0,0,0.12)] transition-transform active:scale-110 active:cursor-grabbing focus-visible:outline-cl-ink/30"
+          min={floor}
+          max={ceil}
+          step={step}
+          minStepsBetweenThumbs={0}
+          value={[clamp(Math.min(loNum, hiNum)), clamp(Math.max(loNum, hiNum))]}
+          onValueChange={([a, b]) => {
+            setLo(String(a));
+            setHi(String(b));
+          }}
+          onValueCommit={([a, b]) => commit(String(a), String(b))}
+          thumbLabels={["Minimum price", "Maximum price"]}
+          showTooltip
+          tooltipContent={rupee}
+        />
       )}
       <div className="flex items-end gap-2">
         {field("Min", lo, setLo, "min")}
@@ -370,7 +366,7 @@ function PriceRange({
         {field("Max", hi, setHi, "max")}
       </div>
       {bounds && (
-        <p className="mt-2 text-[12px] text-cl-muted tnum">
+        <p className="mt-2.5 pl-1 text-[12px] text-cl-muted tnum">
           Prices here run from {rupee(floor)} to {rupee(ceil)}.
         </p>
       )}

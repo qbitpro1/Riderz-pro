@@ -80,7 +80,6 @@ export function Be6BuildProvider({ children }: { children: ReactNode }) {
       const offered = coloursFor(v);
       const c = offered.some((x) => x.slug === saved.colourSlug) ? saved.colourSlug! : offered[0].slug;
       // Hydrating from browser storage after the server render: one extra render, by design.
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setBuild({
         variantSlug: v,
         batteryId: b,

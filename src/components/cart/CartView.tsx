@@ -136,7 +136,9 @@ export function CartView() {
     <div className="grid gap-6 lg:grid-cols-[1.6fr_1fr] lg:items-start">
       <ul className="divide-y divide-tint/8 border-y border-tint/8">
         {lines.map((l) => (
-          <li key={l.id} className="flex flex-wrap items-center gap-4 py-4">
+          // Phones: picture and name on the first row, quantity · price · remove on the second, so the
+          // name is not squeezed to one word per line. From sm up it is the original single row.
+          <li key={l.id} className="grid grid-cols-[80px_minmax(0,1fr)] items-center gap-x-4 gap-y-3 py-4 sm:flex sm:flex-wrap sm:gap-4">
             <CartThumb image={l.image} size={80} />
             <div className="min-w-0 flex-1">
               <Link href={l.href} className="text-sm font-semibold transition-colors hover:text-accent">
@@ -150,12 +152,13 @@ export function CartView() {
               </p>
             </div>
 
+            <div className="col-span-2 flex items-center gap-3 sm:contents">
             <div className="flex items-center border border-tint/12">
               <button
                 type="button"
                 aria-label={`Decrease ${l.name}`}
                 onClick={() => setQty(l.id, l.qty - 1)}
-                className="grid h-10 w-9 place-items-center text-ash hover:text-accent"
+                className="grid h-11 w-11 place-items-center text-ash hover:text-accent sm:h-10 sm:w-9"
               >
                 <Icon name="minus" size={14} />
               </button>
@@ -164,13 +167,13 @@ export function CartView() {
                 type="button"
                 aria-label={`Increase ${l.name}`}
                 onClick={() => setQty(l.id, l.qty + 1)}
-                className="grid h-10 w-9 place-items-center text-ash hover:text-accent"
+                className="grid h-11 w-11 place-items-center text-ash hover:text-accent sm:h-10 sm:w-9"
               >
                 <Icon name="plus" size={14} />
               </button>
             </div>
 
-            <p className="w-24 shrink-0 text-right font-display text-base font-bold tnum">
+            <p className="ml-auto w-24 shrink-0 text-right font-display text-base font-bold tnum sm:ml-0">
               {rupees((l.price + (l.install ?? 0)) * l.qty)}
             </p>
 
@@ -178,10 +181,11 @@ export function CartView() {
               type="button"
               onClick={() => remove(l.id)}
               aria-label={`Remove ${l.name}`}
-              className="text-dim transition-colors hover:text-danger"
+              className="-mr-2 grid h-11 w-11 shrink-0 place-items-center text-dim transition-colors hover:text-danger sm:mr-0 sm:h-auto sm:w-auto"
             >
               <Icon name="close" size={16} />
             </button>
+            </div>
           </li>
         ))}
       </ul>
@@ -229,10 +233,10 @@ export function CartView() {
         </p>
 
         <div className="mt-5 flex justify-between border-t border-tint/8 pt-4">
-          <Link href="/shop" className="text-xs text-ash underline underline-offset-4 hover:text-accent">
+          <Link href="/shop" className="inline-flex min-h-11 items-center text-xs text-ash underline underline-offset-4 hover:text-accent">
             Continue shopping
           </Link>
-          <button type="button" onClick={clear} className="text-xs text-dim underline underline-offset-4 hover:text-danger">
+          <button type="button" onClick={clear} className="inline-flex min-h-11 items-center text-xs text-dim underline underline-offset-4 hover:text-danger">
             Empty cart
           </button>
         </div>

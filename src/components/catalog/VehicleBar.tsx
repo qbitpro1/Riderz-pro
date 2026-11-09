@@ -43,26 +43,34 @@ export function VehicleBar() {
   if (state.kind === "saved") {
     const t = carTitle(BRANDS, state.car);
     return (
-      <section aria-label="Your car" className="rounded-[var(--radius-cl)] bg-cl-bar text-cl-on-bar">
-        <div className="flex min-h-[72px] items-center gap-3 px-4 py-3 md:min-h-[90px] md:gap-4 md:px-5">
-          <span className="hidden h-12 w-12 shrink-0 place-items-center rounded-[10px] bg-white/10 md:grid">
+      <section
+        aria-label="Your car"
+        className="relative overflow-hidden rounded-[24px] bg-cl-bar text-cl-on-bar shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_24px_50px_-28px_rgba(0,0,0,0.6)] ring-1 ring-white/10"
+      >
+        {/* Soft colour wash so the dark bar reads as tinted glass, not a flat slab. */}
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_120%_at_0%_0%,rgba(255,80,70,0.22),transparent_60%),radial-gradient(50%_120%_at_100%_100%,rgba(70,140,255,0.2),transparent_60%)]"
+        />
+        <div className="relative flex min-h-[72px] items-center gap-3 px-4 py-3 md:min-h-[90px] md:gap-4 md:px-6">
+          <span className="fs-icon hidden h-12 w-12 md:grid">
             <Icon name="car" size={26} />
           </span>
           <div className="min-w-0 flex-1">
-            <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-white/75">Shopping for</p>
-            <p className="truncate font-display text-[17px] font-extrabold md:text-[20px]">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-white/70">Shopping for</p>
+            <p className="truncate text-[17px] font-semibold tracking-[-0.02em] md:text-[20px]">
               {t.name}
               {t.detail && <span className="font-sans text-[15px] font-medium text-white/80 md:text-[17px]"> · {t.detail}</span>}
             </p>
           </div>
-          <p className="hidden shrink-0 items-center gap-1.5 rounded-full bg-cl-bar-fit-bg px-3 py-1.5 text-[13px] font-semibold text-cl-bar-fit lg:inline-flex">
+          <p className="hidden shrink-0 items-center gap-1.5 rounded-full bg-cl-bar-fit-bg/80 px-3 py-1.5 text-[13px] font-semibold text-cl-bar-fit ring-1 ring-white/10 backdrop-blur lg:inline-flex">
             <Icon name="check" size={14} />
             Showing only parts that fit
           </p>
           <button
             type="button"
             onClick={change}
-            className="inline-flex min-h-[44px] shrink-0 items-center rounded-[var(--radius-cl-ctl)] border border-white/40 px-4 text-[14px] font-semibold hover:border-white"
+            className="inline-flex min-h-[44px] shrink-0 items-center rounded-full bg-white/12 px-4 text-[14px] font-semibold shadow-[inset_0_1px_0_rgba(255,255,255,0.18)] ring-1 ring-white/20 backdrop-blur transition-colors hover:bg-white/20 active:scale-[0.97]"
           >
             <span className="md:hidden">Change</span>
             <span className="hidden md:inline">Change car</span>
@@ -79,14 +87,16 @@ export function VehicleBar() {
         type="button"
         onClick={() => setSheetOpen(true)}
         aria-haspopup="dialog"
-        className="flex min-h-[72px] w-full items-center gap-3 rounded-[var(--radius-cl)] border-2 border-dashed border-cl-line-strong bg-cl-surface px-4 text-left md:hidden"
+        className="fs-glass flex min-h-[72px] w-full items-center gap-3 px-4 text-left transition-transform active:scale-[0.99] md:hidden"
       >
         <CarIcon />
         <span className="min-w-0 flex-1">
-          <span className="block font-display text-[16px] font-extrabold">Add your car</span>
+          <span className="block text-[16px] font-semibold tracking-[-0.01em]">Add your car</span>
           <span className="block text-[13px] text-cl-muted">See only parts that fit</span>
         </span>
-        <Icon name="chevron" size={18} />
+        <span className="fs-well grid h-8 w-8 shrink-0 place-items-center rounded-full text-cl-muted" aria-hidden="true">
+          <Icon name="chevron" size={15} />
+        </span>
       </button>
       {sheetOpen && (
         <Sheet title="Your car" onClose={() => setSheetOpen(false)}>
@@ -97,15 +107,15 @@ export function VehicleBar() {
       {/* tablet and up: the selects in one row */}
       <section
         aria-labelledby="vb-title"
-        className="hidden min-h-[90px] items-center gap-x-5 gap-y-3 rounded-[var(--radius-cl)] border border-cl-line bg-cl-surface px-5 py-4 md:flex md:flex-wrap xl:flex-nowrap"
+        className="fs-glass hidden min-h-[90px] items-center gap-x-6 gap-y-4 px-6 py-5 md:flex md:flex-wrap xl:flex-nowrap"
       >
         <div className="flex basis-full items-center gap-3 xl:basis-auto xl:min-w-[15rem]">
           <CarIcon />
           <div>
-            <h2 id="vb-title" className="font-display text-[20px] font-extrabold leading-tight">
+            <h2 id="vb-title" className="text-[19px] font-semibold leading-tight tracking-[-0.02em]">
               What do you drive?
             </h2>
-            <p className="text-[13px] text-cl-muted">Only see parts confirmed to fit your car.</p>
+            <p className="mt-0.5 text-[13px] text-cl-muted">Only see parts confirmed to fit your car.</p>
           </div>
         </div>
         <PickerForm sel={sel} onChange={setSel} />
@@ -116,8 +126,8 @@ export function VehicleBar() {
 
 function CarIcon() {
   return (
-    <span className="grid h-12 w-12 shrink-0 place-items-center rounded-[10px] bg-cl-sale-tint text-cl-sale">
-      <Icon name="car" size={26} />
+    <span className="fs-icon h-12 w-12" aria-hidden="true">
+      <Icon name="car" size={24} />
     </span>
   );
 }
@@ -168,7 +178,7 @@ function PickerForm({
     <form onSubmit={submit} className={`flex min-w-0 flex-1 gap-3 ${stacked ? "flex-col" : "flex-wrap items-end lg:flex-nowrap"}`} noValidate>
       {(["brand", "model", "variant", "year"] as Step[]).map((s) => (
         <div key={s} className={stacked ? "" : "min-w-[8.5rem] flex-1"}>
-          <label htmlFor={`${uid}-${s}`} className="mb-1 block text-[12px] font-semibold uppercase tracking-[0.08em] text-cl-muted">
+          <label htmlFor={`${uid}-${s}`} className="mb-1.5 block pl-1 text-[11px] font-semibold uppercase tracking-[0.1em] text-cl-muted">
             {STEP_LABEL[s]}
           </label>
           <select
@@ -176,7 +186,7 @@ function PickerForm({
             ref={(el) => {
               refs.current[s] = el;
             }}
-            className="cl-input"
+            className="fs-well fs-field"
             value={sel[s]}
             disabled={!stepEnabled(sel, s)}
             aria-invalid={hint === s || undefined}
@@ -196,7 +206,7 @@ function PickerForm({
         </div>
       ))}
       <div className={stacked ? "pt-1" : "shrink-0"}>
-        <button type="submit" disabled={!canSubmit(sel)} className={`cl-btn cl-btn-primary whitespace-nowrap ${stacked ? "w-full" : ""}`}>
+        <button type="submit" disabled={!canSubmit(sel)} className={`fs-btn whitespace-nowrap ${stacked ? "w-full" : ""}`}>
           Show parts that fit
         </button>
       </div>

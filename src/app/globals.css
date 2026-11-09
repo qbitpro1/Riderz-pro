@@ -1,4 +1,6 @@
 @import "tailwindcss";
+/* animate-in / fade-in / zoom-in classes used by shadcn components (tooltips). */
+@import "tw-animate-css";
 
 /* Register sources explicitly. Automatic detection honours ignore rules, which
    is easy to trip over with a directory literally named "build". */
@@ -59,6 +61,28 @@
   --color-cl-on-bar: var(--cl-on-bar);
   --color-cl-bar-fit: var(--cl-bar-fit);
   --color-cl-bar-fit-bg: var(--cl-bar-fit-bg);
+
+  /* shadcn/ui names (src/components/ui/{slider,tooltip,button,toggle,label,badge,card-22}.tsx), pointed at the
+     catalogue palette so those components follow both themes. "accent" is NOT remapped: here it is
+     the brand red, so shadcn's ghost/outline button hover and toggle "on" state show red. */
+  --color-background: var(--cl-surface);
+  --color-foreground: var(--cl-ink);
+  --color-primary: var(--cl-ink);
+  --color-primary-foreground: var(--cl-on-ink);
+  --color-secondary: var(--cl-line);
+  --color-secondary-foreground: var(--cl-ink);
+  --color-muted: var(--cl-fill);
+  --color-muted-foreground: var(--cl-muted);
+  --color-accent-foreground: var(--on-accent);
+  --color-popover: var(--cl-ink);
+  --color-popover-foreground: var(--cl-on-ink);
+  --color-destructive: var(--danger);
+  --color-destructive-foreground: var(--on-accent);
+  --color-card: var(--cl-surface);
+  --color-card-foreground: var(--cl-ink);
+  --color-border: var(--cl-line);
+  --color-input: var(--cl-line-strong);
+  --color-ring: var(--cl-ink);
 }
 
 /* Offline Store screen: "wide" = a laptop/desktop (1024px+) OR any landscape screen from 768px,
@@ -124,6 +148,14 @@
     --cl-on-bar: #f4f4f2;
     --cl-bar-fit: #9be3b5;
     --cl-bar-fit-bg: #173d27;
+    /* Glass filter panel (dark): smoky glass, faint top highlight, deeper glow. */
+    --glass-fill: rgba(28, 28, 32, 0.5);
+    --glass-edge: rgba(255, 255, 255, 0.1);
+    --glass-hi: rgba(255, 255, 255, 0.08);
+    --glass-well: rgba(255, 255, 255, 0.06);
+    --glass-well-edge: rgba(255, 255, 255, 0.1);
+    --glass-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.7);
+    --glass-glow: 0.55;
   }
 
   /* Every pairing here clears WCAG AA (4.5:1) on void, carbon and steel. --danger is a crimson (hue ~340) so error text reads apart from the brand red accent. */
@@ -166,6 +198,14 @@
     --cl-on-bar: #ffffff;
     --cl-bar-fit: #9be3b5;
     --cl-bar-fit-bg: #173d27;
+    /* Glass filter panel (light): frosted white, bright top highlight, soft lift. */
+    --glass-fill: rgba(255, 255, 255, 0.5);
+    --glass-edge: rgba(255, 255, 255, 0.75);
+    --glass-hi: rgba(255, 255, 255, 0.95);
+    --glass-well: rgba(255, 255, 255, 0.7);
+    --glass-well-edge: rgba(17, 17, 17, 0.08);
+    --glass-shadow: 0 24px 50px -28px rgba(15, 18, 22, 0.35), 0 2px 8px -2px rgba(15, 18, 22, 0.06);
+    --glass-glow: 1;
   }
 
   /* Recomputed wherever a theme is set, so a dark island on a light page gets
@@ -564,6 +604,26 @@
   .field::placeholder {
     color: var(--dim);
   }
+  /* Phones: chips that are links or buttons get a 44px tap height (plain label chips stay small). */
+  @media (max-width: 47.99rem) {
+    a.chip,
+    button.chip {
+      min-height: 2.75rem;
+      padding-inline: 0.75rem;
+    }
+    .btn-sm {
+      min-height: 2.75rem;
+    }
+  }
+  /* Phones: 16px in every text field. iOS Safari zooms the whole page into a field whose text is
+     smaller than 16px; from tablet width up the fields go back to 15px. */
+  @media (max-width: 47.99rem) {
+    .field,
+    .cl-input,
+    .fs-field {
+      font-size: 16px;
+    }
+  }
   .field:focus {
     border-color: color-mix(in oklab, var(--accent) 60%, transparent);
     background: color-mix(in oklab, var(--accent) 5%, transparent);
@@ -814,72 +874,249 @@
     border-color: var(--cl-ink);
   }
 
-  /* Two-handle price slider: two range inputs stacked on one track. Only the thumbs take the
-     pointer, so either handle can be dragged; the ink fill shows the chosen band. */
-  .cl-range {
+  /* ------------------------------------------------------------------
+     Glass filter panel (catalogue sidebar): frosted, Apple-style.
+     Colours come from --glass-* in each theme block. A soft colour glow sits
+     behind the panel so the blur has something to frost on a plain page.
+  ------------------------------------------------------------------- */
+  .fs-backdrop {
     position: relative;
-    height: 28px;
+    isolation: isolate;
   }
-  .cl-range-track {
+  .fs-backdrop::before {
+    content: "";
     position: absolute;
-    inset-inline: 0;
-    top: 50%;
-    height: 4px;
-    margin-top: -2px;
-    border-radius: 999px;
-    background: var(--cl-line);
+    /* No sideways overhang, so it never adds a horizontal scrollbar; the blur spreads it anyway. */
+    inset: -32px 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: var(--glass-glow);
+    background:
+      radial-gradient(40% 40% at 12% 18%, rgba(255, 70, 60, 0.24), transparent 72%),
+      radial-gradient(44% 46% at 88% 30%, rgba(56, 132, 255, 0.22), transparent 72%),
+      radial-gradient(42% 40% at 30% 88%, rgba(160, 90, 255, 0.2), transparent 72%),
+      radial-gradient(36% 34% at 70% 92%, rgba(40, 200, 170, 0.14), transparent 72%);
+    filter: blur(32px);
   }
-  .cl-range-fill {
-    position: absolute;
-    top: 0;
-    bottom: 0;
+  .fs-glass {
+    border-radius: 24px;
+    border: 1px solid var(--glass-edge);
+    background: var(--glass-fill);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    backdrop-filter: blur(28px) saturate(180%);
+    box-shadow:
+      inset 0 1px 0 var(--glass-hi),
+      0 0 0 0.5px color-mix(in oklab, var(--cl-ink) 6%, transparent),
+      var(--glass-shadow);
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in oklab, var(--cl-ink) 18%, transparent) transparent;
+  }
+  /* Recessed "well" for inputs, counts and the chevron button. */
+  .fs-well {
+    border: 1px solid var(--glass-well-edge);
+    background: var(--glass-well);
+    box-shadow: inset 0 1px 2px color-mix(in oklab, var(--cl-ink) 5%, transparent);
+  }
+  .fs-field {
+    width: 100%;
+    min-height: 44px;
+    border-radius: 14px;
+    padding-inline: 0.75rem 0.75rem;
+    font-size: 15px;
+    color: var(--cl-ink);
+    font-variant-numeric: tabular-nums;
+    transition: box-shadow 150ms, border-color 150ms;
+  }
+  select.fs-field {
+    appearance: none;
+    padding-right: 2.25rem;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 10 5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.85rem center;
+  }
+  .fs-field:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+  /* Ink pill button (primary action on glass). */
+  .fs-btn {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
     border-radius: 999px;
+    padding-inline: 1.25rem;
+    background: var(--cl-ink);
+    color: var(--cl-on-ink);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    box-shadow:
+      inset 0 1px 0 color-mix(in oklab, var(--cl-on-ink) 18%, transparent),
+      0 8px 20px -8px rgba(0, 0, 0, 0.45);
+    transition: transform 120ms, opacity 150ms, box-shadow 150ms;
+  }
+  .fs-btn:hover:not(:disabled) {
+    box-shadow:
+      inset 0 1px 0 color-mix(in oklab, var(--cl-on-ink) 18%, transparent),
+      0 12px 26px -8px rgba(0, 0, 0, 0.5);
+  }
+  .fs-btn:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+  .fs-btn:disabled {
+    opacity: 0.35;
+    box-shadow: none;
+    cursor: not-allowed;
+  }
+  .fs-btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--cl-ink) 18%, transparent);
+  }
+  /* App-icon tile in the brand red. */
+  .fs-icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    border-radius: 14px;
+    color: #fff;
+    background: linear-gradient(145deg, #ff6a5c 0%, #e02424 55%, #b31717 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.45),
+      0 8px 18px -6px rgba(200, 30, 30, 0.55);
+  }
+  .fs-field::placeholder {
+    color: var(--cl-muted);
+  }
+  .fs-field:focus {
+    outline: none;
+    border-color: color-mix(in oklab, var(--cl-ink) 35%, transparent);
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--cl-ink) 10%, transparent);
+  }
+  /* Rounded-square checkbox that fills with ink and a white tick when on. */
+  .fs-check {
+    appearance: none;
+    display: grid;
+    place-items: center;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    margin: 0;
+    border-radius: 6px;
+    border: 1.5px solid color-mix(in oklab, var(--cl-ink) 28%, transparent);
+    background: var(--glass-well);
+    cursor: pointer;
+    transition: background-color 150ms, border-color 150ms, transform 120ms;
+  }
+  .fs-check::after {
+    content: "";
+    width: 11px;
+    height: 11px;
+    background: var(--cl-on-ink);
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center / contain no-repeat;
+    transform: scale(0);
+    transition: transform 150ms cubic-bezier(0.3, 1.5, 0.6, 1);
+  }
+  .fs-check:checked {
+    border-color: var(--cl-ink);
     background: var(--cl-ink);
   }
-  .cl-range input[type="range"] {
+  .fs-check:checked::after {
+    transform: scale(1);
+  }
+  .fs-check:active {
+    transform: scale(0.92);
+  }
+  .fs-check:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--cl-ink) 14%, transparent);
+  }
+  /* ------------------------------------------------------------------
+     Product card on listing pages (ListingCard): frosted card, inset image tile.
+     Hover effects only on devices that really hover (a mouse), so a tap on a
+     phone never leaves a card stuck "lifted"; phones get a light press instead.
+  ------------------------------------------------------------------- */
+  .fs-card {
+    border-radius: 20px;
+    border: 1px solid color-mix(in oklab, var(--cl-ink) 7%, transparent);
+    background: color-mix(in oklab, var(--cl-surface) 90%, transparent);
+    box-shadow:
+      inset 0 1px 0 var(--glass-hi),
+      0 1px 2px color-mix(in oklab, var(--cl-ink) 5%, transparent);
+    transition:
+      transform 320ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      box-shadow 320ms ease,
+      border-color 320ms ease;
+  }
+  .fs-card-media {
+    border-radius: 14px;
+    isolation: isolate;
+  }
+  .fs-card-media img {
+    transition: transform 600ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  /* Soft light sweep across the image on hover. */
+  .fs-card-media::after {
+    content: "";
     position: absolute;
     inset: 0;
-    width: 100%;
-    height: 28px;
-    margin: 0;
-    background: none;
-    appearance: none;
+    z-index: 1;
     pointer-events: none;
+    background: linear-gradient(115deg, transparent 35%, rgba(255, 255, 255, 0.28) 50%, transparent 65%);
+    transform: translateX(-120%);
+    transition: transform 800ms cubic-bezier(0.2, 0.8, 0.2, 1);
   }
-  .cl-range input[type="range"]::-webkit-slider-thumb {
-    appearance: none;
-    pointer-events: auto;
-    width: 22px;
-    height: 22px;
-    border-radius: 999px;
-    border: 2px solid var(--cl-ink);
-    background: var(--cl-surface);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
-    cursor: grab;
+  .fs-card:focus-within {
+    border-color: color-mix(in oklab, var(--cl-ink) 30%, transparent);
   }
-  .cl-range input[type="range"]::-moz-range-thumb {
-    pointer-events: auto;
-    width: 18px;
-    height: 18px;
-    border-radius: 999px;
-    border: 2px solid var(--cl-ink);
-    background: var(--cl-surface);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
-    cursor: grab;
+  @media (hover: hover) and (pointer: fine) {
+    .fs-card:hover {
+      transform: translateY(-4px);
+      border-color: color-mix(in oklab, var(--cl-ink) 14%, transparent);
+      box-shadow:
+        inset 0 1px 0 var(--glass-hi),
+        0 0 0 0.5px color-mix(in oklab, var(--cl-ink) 6%, transparent),
+        var(--glass-shadow);
+    }
+    .fs-card:hover .fs-card-media img {
+      transform: scale(1.06);
+    }
+    .fs-card:hover .fs-card-media::after {
+      transform: translateX(120%);
+    }
   }
-  .cl-range input[type="range"]::-moz-range-track {
-    background: none;
+  @media (hover: none) {
+    .fs-card:active {
+      transform: scale(0.985);
+    }
   }
-  .cl-range input[type="range"]:focus-visible {
-    outline: none;
+  @media (prefers-reduced-motion: reduce) {
+    .fs-card,
+    .fs-card-media img,
+    .fs-card-media::after {
+      transition: none;
+    }
+    .fs-card:hover,
+    .fs-card:active,
+    .fs-card:hover .fs-card-media img {
+      transform: none;
+    }
+    .fs-card-media::after {
+      display: none;
+    }
   }
-  .cl-range input[type="range"]:focus-visible::-webkit-slider-thumb {
-    outline: 2px solid var(--cl-ink);
-    outline-offset: 2px;
-  }
-  .cl-range input[type="range"]:focus-visible::-moz-range-thumb {
-    outline: 2px solid var(--cl-ink);
-    outline-offset: 2px;
+  /* Settings that ask for less transparency get a solid panel. */
+  @media (prefers-reduced-transparency: reduce) {
+    .fs-glass {
+      background: var(--cl-surface);
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+    .fs-backdrop::before {
+      display: none;
+    }
   }
 
   /* Listing pages: the floating "Ask AI" button stays at the bottom right. On phones it is a small
