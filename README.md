@@ -6,12 +6,15 @@ RECOIL, Blaupunkt and Autoform across eight departments, with fitment checks per
 the company's garages.
 
 **Business model (decided 9 Nov 2026):**
-- **The website sells Riderzpro's own catalogue only.** Website users see and buy only these products.
-- **Sellers' products are private to the seller.** A seller signs in to their account to sell from
-  their own **Offline Store** (the shop-floor screen in their shop). Their listings are not shown to
-  website users: no public storefronts, not in the shop, search, Ask AI, sitemap or online checkout.
-- **The Offline Store is an add-on for sellers** that makes in-shop sales easier. Riderzpro will charge
-  sellers a **monthly fee** for it in future (billing not built yet).
+- **The website sells Riderzpro's own catalogue.**
+- **Sellers can also list products to sell on the website, but only after Riderzpro's admin approves
+  them.** Only approved ("live") products of approved sellers reach website users (shop, seller pages,
+  search, Ask AI, sitemap, online checkout). Edits to a live product's details wait for review; the
+  website keeps the approved version meanwhile.
+- **The Offline Store is the seller's own shop screen**, signed in through their seller account. It
+  shows all their products straight away, with no Riderzpro review (except products admin rejected).
+  It is an add-on that makes in-shop sales easier; Riderzpro will charge sellers a **monthly fee** for
+  it in future (billing not built yet).
 
 ## Current status (9 Nov 2026)
 
@@ -72,7 +75,7 @@ the company's garages.
 | Ask AI | Free shopping help over our own catalogue (Claude optional) | `/assistant` |
 | Checkout | Server-priced orders; online payment only (Razorpay); coupons; "Detect my location" | `/cart`, `/api/orders` |
 | Customer accounts | Sign-in with a mobile/email code, orders with live tracking, GST invoices, addresses, help desk | `/account` |
-| Sellers | Sign-up, KYC onboarding, products, stock, pricing, orders, notifications, for selling in their own Offline Store (not on the website) | `/vendor` |
+| Sellers | Sign-up, KYC onboarding, products, stock, pricing, orders, invoices, payouts, notifications; listings go on the website after admin approval, and on their Offline Store straight away | `/vendor` |
 | Offline Store | Shop-floor screen per seller: shop categories, Bestseller tags, suggestions, Salesman AI with seller-limited bargaining, pay on the screen or at the counter, receipts by SMS | `/store/[slug]`, set up in `/vendor/dashboard/store-screen` |
 | Riders (Delhi NCR) | Apply, accept deliveries, share location, delivery codes, earnings | `/rider` |
 | Admin | Team logins with roles; sellers, products, orders, refunds, payouts, dispatch, riders, coupons, customers, reports, audit log | `/admin` |
@@ -146,15 +149,12 @@ The task list per person is kept with the team (latest: task update of 9 Nov 202
     zod 4 change;
   - Google Translate in the language menu: **approved**; add a line about it to the privacy policy;
   - invoices keep an address until the registered office address is shared.
-- [ ] **Hide sellers' products from the website** (business model above): remove the public `/sellers`
-  storefronts and seller product pages, take seller items out of `/shop`, category pages, search,
-  Ask AI and the sitemap, refuse seller items in online checkout, and change the seller portal wording
-  ("goes live on the website after review") to the Offline Store. Older website orders for seller
-  items stay readable.
-- [ ] **Vamsi (PR #3)**: don't merge as it is: its sellers-only website is the opposite of the business
-  model. Split out the seller JSON catalogue upload (for the Offline Store), account carts and the
-  `DATABASE_SCHEMA` option into a new PR into `main`, without the start-up deletion of `DEMO-` products;
-  run `npm run build`.
+- [ ] **Vamsi (PR #3, database catalogue)**: the direction is agreed, but the branch is not complete
+  yet, so it is not merged. It moves the shop to products stored in the database (JSON catalogue
+  upload, admin approval), adds account carts and a `DATABASE_SCHEMA` option. Before merging: finish
+  it, update it to `main` (5 small conflicts today), run `npm run build` and the test scripts, and
+  decide how Indus's `DEMO-` sample products are removed (today the branch deletes them on every
+  start-up).
 - [ ] Later: monthly Offline Store subscription for sellers (plans, billing, what happens when unpaid).
 - [ ] **Hima Bindu**: `/partners` dealer form (saves nothing today), remove used cars and "sell your car"
   (`/used-cars`, `/cars`, `/sell`, EMI calculator, links, sitemap), remove WhatsApp from admin and
@@ -171,8 +171,9 @@ The task list per person is kept with the team (latest: task update of 9 Nov 202
 
 - [x] Google Translate on the customer site: **yes**.
 - [ ] Registered office address: to be shared.
-- [x] Website = Riderzpro's own catalogue; sellers' products only in their own Offline Store;
-  Offline Store to be a paid monthly add-on later. So **no** sellers-only website (Vamsi's PR #3).
+- [x] Website = Riderzpro's own catalogue plus seller listings approved by Riderzpro's admin; the
+  seller's Offline Store shows their products straight away; the Offline Store becomes a paid monthly
+  add-on later.
 
 ## Stack
 
@@ -258,8 +259,8 @@ Tests (scripted, no real money or messages):
   it is merged. Nobody pushes straight to `main` or `old-deploy`.
 - `old-deploy`: **the live site.** For each release, Sathwik moves it up to `main` and redeploys.
   Never delete it. Tag `old-deploy-2026-11-05` marks where it started.
-- Open team branches (9 Nov 2026): `customer-site-updates` (Sathese), `vamsi` (PR #3, not to be merged
-  as it is),
+- Open team branches (9 Nov 2026): `customer-site-updates` (Sathese), `vamsi` (PR #3, not complete
+  yet),
   `sathwik/deploy-and-payments` and `harshitha/seller-portal-tasks` (both already merged into `main`;
   close PR #2 without merging it into `old-deploy`: it lacks a shop-checkout fix that is on `main`).
 - Versions are tagged:
