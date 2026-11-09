@@ -4,7 +4,8 @@ import type { ScreenProduct } from "@/components/vendor/store-screen/types";
 import type { AssistantMessage } from "@/lib/assistant/types";
 import type { BargainStep } from "../store-sales";
 import { askedFor, describe, inr, isHinglish, noLatin, parse, search, withContext, type Candidate, type Intent } from "./local";
-import { fits, modelLabel } from "./search";
+import { fits, modelLabel, words } from "./search";
+import { DEPARTMENTS } from "@/lib/data/taxonomy";
 import type { StoreAction } from "./store";
 
 /**
@@ -64,9 +65,14 @@ export async function askStoreLocal(
   const byId = new Map(products.map((p) => [p.id, p]));
   const cart = input.cart.filter((l) => byId.has(l.id));
   const carName = input.car ? modelLabel(input.car) : null;
-  const { intent, shown } = withContext(input.messages, input.car && carName ? { slug: input.car, name: carName } : null);
+  const { intent: said, shown } = withContext(input.messages, input.car && carName ? { slug: input.car, name: carName } : null);
   const raw = parse(last);
   const all = products.map(candidate);
+  // Only words that name something a car-accessory shop sells count as the product asked for:
+  // "bhaiya mere paas Creta hai, 3000 ke andar" keeps Creta and ₹3000 and drops "bhaiya paas".
+  const vocab = productVocabulary(all);
+  const intent: Intent = { ...said, words: said.words.filter((w) => vocab.has(w)) };
+  const unclear = said.words.length > 0 && intent.words.length === 0;
   const help = t(
     "Tell me your car and what you're looking for, like “seat covers for my Creta” or “dash cam under 5000”.",
     "Apni gaadi aur kya chahiye bataiye, jaise “Creta ke liye seat cover” ya “5000 tak dash cam”.",
@@ -75,7 +81,9 @@ export async function askStoreLocal(
   // "Add it", "ye wala", "add karo": the product the customer names, else the pick from the last
   // answer (always its first card).
   if (intent.add) {
-    const pick = raw.words.length ? search(all, intent, [], 1).items[0]?.p : shown.length ? byId.get(shown[0]) : undefined;
+    // "Add the first one": "first" names no product, so it means the top card just shown.
+    const named = raw.words.filter((w) => vocab.has(w));
+    const pick = named.length ? search(all, { ...intent, words: named }, [], 1).items[0]?.p : shown.length ? byId.get(shown[0]) : undefined;
     if (!pick) return say(t("Which product should I add? Tell me what you're looking for.", "Kaunsa product add karun? Bataiye kya chahiye."));
     const inOrder = cart.find((l) => l.id === pick.id)?.qty ?? 0;
     if (inOrder + 1 > pick.stock) return { text: t(`Sorry, we only have ${pick.stock} of ${pick.title} in stock.`, `Maaf kijiye, ${pick.title} ke sirf ${pick.stock} piece stock mein hain.`), products: [pick.id], actions: [] };
@@ -86,7 +94,9 @@ export async function askStoreLocal(
     };
   }
 
-  if (intent.topic === "bargain") return bargain(input.bargain, cart.length > 0, t);
+  // "Too expensive", "bahut mehenga": a price complaint is a request for a better price.
+  const priceComplaint = /\b(too (expensive|costly|much|high)|very (expensive|costly)|so (expensive|costly)|mehenga|mehnga|bahut zyada|reduce)\b/i.test(last);
+  if (intent.topic === "bargain" || (priceComplaint && intent.words.length === 0)) return bargain(input.bargain, cart.length > 0, t);
 
   const fixed = topicReply(intent, cart.length > 0, input.pay, input.storeName, help, t);
   if (fixed) return { text: fixed.text, products: [], actions: fixed.checkout ? [{ type: "checkout" }] : [] };
@@ -95,7 +105,17 @@ export async function askStoreLocal(
   const onScreen = shown.map((id) => byId.get(id)).filter((p): p is ScreenProduct => Boolean(p));
   if (raw.pick && raw.words.length === 0 && onScreen.length >= 2) return bestOf(onScreen, intent.car?.slug ?? null, t);
 
-  if (intent.words.length === 0 && !intent.car && intent.sort === "relevance") return say(t(`Welcome to ${input.storeName}! ${help}`, `${input.storeName} mein swagat hai! ${help}`));
+  if (intent.words.length === 0 && !intent.car && intent.sort === "relevance" && intent.min === null && intent.max === null) {
+    if (!unclear) return say(t(`Welcome to ${input.storeName}! ${help}`, `${input.storeName} mein swagat hai! ${help}`));
+    // Not sure what they want: ask, with what this shop actually has.
+    const kinds = [...new Set(products.map((p) => p.groupName).filter(Boolean))].slice(0, 4).join(", ");
+    return say(
+      t(
+        `Happy to help! Which car do you drive, and what are you looking for${kinds ? ` (we have ${kinds})` : ""}? A budget helps too.`,
+        `Zaroor madad karunga! Aapki gaadi kaunsi hai, aur kya chahiye${kinds ? ` (hamare paas ${kinds} hai)` : ""}? Budget bhi bata dijiye.`,
+      ),
+    );
+  }
 
   const found = search(all, intent, shown, SHOW);
   if (!found.items.length && intent.cheaper && onScreen.length) {
@@ -126,6 +146,19 @@ export async function askStoreLocal(
 }
 
 const say = (text: string): Reply => ({ text, products: [], actions: [] });
+
+/** Common car-accessory words a shop may not stock, so "tyres?" still gets an honest "we don't have tyres". */
+const ACCESSORY_WORDS = "tyre tire wheel alloy rim battery oil horn wiper bulb helmet charger perfume freshener cover mat light camera stereo speaker sensor polish wax";
+
+/** Words that name something sellable: this shop's products and the site's departments and categories. */
+function productVocabulary(all: Candidate[]): Set<string> {
+  const v = new Set<string>();
+  const add = (s: string) => words(s).forEach((w) => v.add(w));
+  for (const c of all) [c.title, c.brand, c.category, c.extra].forEach(add);
+  for (const d of DEPARTMENTS) [d.name, ...d.groups.map((g) => g.name)].forEach(add);
+  add(ACCESSORY_WORDS);
+  return v;
+}
 
 type T = (en: string, hin: string) => string;
 
