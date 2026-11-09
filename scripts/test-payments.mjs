@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * End-to-end payment checks against a local dev server and a MOCK Razorpay API (no real keys,
- * no real money, nothing leaves this machine). Uses the embedded database in .data/pglite.
+ * no real money, nothing leaves this machine). Uses the embedded dev database in ./dev.db.
  *
  *   node scripts/test-payments.mjs            (stop any dev server using this folder first)
  *
@@ -43,7 +43,7 @@ const alnum = (n) => randomBytes(n).toString("base64").replace(/[^A-Za-z0-9]/g, 
 
 async function openDb() {
   const { PGlite } = await import("@electric-sql/pglite");
-  const dir = path.join(ROOT, ".data", "pglite");
+  const dir = path.join(ROOT, "dev.db");
   mkdirSync(dir, { recursive: true });
   const db = new PGlite(dir);
   await db.waitReady;

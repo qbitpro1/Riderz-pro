@@ -119,15 +119,14 @@ export function CartView() {
         <Icon name="bag" size={32} className="mx-auto text-dim" />
         <p className="mt-4 font-display text-xl uppercase">Nothing in here yet</p>
         <p className="mx-auto mt-2 max-w-sm text-sm text-ash">
-          Start with the accessories store, or tell us what you drive and we&apos;ll only show parts that
-          fit.
+          Browse products from our verified sellers, or ask our AI assistant what suits your car.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           <Link href="/shop" className="btn btn-primary btn-sm">
             Shop accessories
           </Link>
-          <Link href="/build" className="btn btn-outline btn-sm">
-            Configure a build
+          <Link href="/assistant" className="btn btn-outline btn-sm">
+            Ask AI
           </Link>
         </div>
       </div>
@@ -150,7 +149,7 @@ export function CartView() {
                 {l.name}
               </Link>
               {l.variant && <p className="mt-0.5 text-xs text-ash">{l.variant}</p>}
-              {l.seller && <p className="mt-0.5 text-xs text-dim">Sold by {l.seller.name}</p>}
+              {l.seller && <p className="mt-0.5 text-xs text-dim">Store: {l.seller.name}</p>}
               <p className="mt-0.5 text-xs text-dim tnum">
                 {rupees(l.price)} each
                 {l.install ? ` · installation ${rupees(l.install)}` : ""}

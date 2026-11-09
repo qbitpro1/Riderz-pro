@@ -13,7 +13,7 @@ import "server-only";
 
 import { CATEGORIES, fitsModel as houseFitsModel } from "@/lib/data/products";
 import { BRANDS, LIVE_BRANDS, type BrandSlug } from "./brands";
-import { autoformItems, blaupunktItems, houseItems, recoilItems } from "./adapters";
+import { houseItems } from "./adapters";
 import { itemFits } from "./filters";
 import type { CatalogItem } from "./types";
 
@@ -21,13 +21,12 @@ export * from "./brands";
 export * from "./filters";
 export * from "./types";
 
-/** Every product from every brand, in one list. */
-export const CATALOG: CatalogItem[] = [
-  ...houseItems(),
-  ...recoilItems(),
-  ...autoformItems(),
-  ...blaupunktItems(),
-];
+/**
+ * The built-in (house) products, in one list. The bundled brand price lists (RECOIL, Autoform,
+ * Blaupunkt) are no longer shown on the site: the shop sells what approved sellers list, which
+ * is merged in at request time (`liveVendorItems`).
+ */
+export const CATALOG: CatalogItem[] = [...houseItems()];
 
 export const CATALOG_BY_BRAND: Record<BrandSlug, CatalogItem[]> = Object.fromEntries(
   BRANDS.map((b) => [b.slug, CATALOG.filter((i) => i.brand === b.slug)]),

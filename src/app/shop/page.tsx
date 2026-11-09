@@ -2,29 +2,26 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHero } from "@/components/layout/PageHero";
 import { Photo } from "@/components/ui/Photo";
-import { Icon } from "@/components/ui/Icon";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHead } from "@/components/ui/Section";
 import { CatalogBrowser } from "@/components/catalog/CatalogBrowser";
-import { BrandStrip } from "@/components/catalog/BrandStrip";
 import { FitmentPicker } from "@/components/fitment/FitmentPicker";
 import { CATEGORIES, PRICE_BANDS } from "@/lib/data/products";
 import { DEPARTMENT_BY_SLUG } from "@/lib/data/taxonomy";
-import { CATALOG, CATALOG_TOTALS, filtersFromQuery, type CatalogQuery } from "@/lib/catalog";
-import { LANDING_MODELS } from "@/lib/data/vehicles";
+import { CATALOG, filtersFromQuery, type CatalogQuery } from "@/lib/catalog";
 import { breadcrumbLd, itemListLd, ldJson, pageMeta } from "@/lib/data/seo";
 import { liveVendorItems } from "@/lib/server/marketplace";
 
 export const metadata: Metadata = pageMeta({
   title: "Car Accessories Online India: Interior, Exterior, Audio, Lighting & Off-Road",
   description:
-    "Shop car accessories across eight departments and every brand we stock. Filter by brand, department, price and fitment, with installation at Riderzpro garages in Bengaluru, Hyderabad and Pune.",
+    "Shop car accessories from verified sellers across eight departments. Filter by brand, department, price and fitment.",
   path: "/shop",
 });
 
 export default async function ShopPage({ searchParams }: { searchParams: Promise<CatalogQuery> }) {
   const filters = filtersFromQuery(await searchParams);
-  // Approved sellers' live products follow the house range; empty when there is no database.
+  // Approved sellers' live products; empty when there is no database.
   const items = [...CATALOG, ...(await liveVendorItems())];
 
   return (
@@ -34,7 +31,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
       <PageHero
         eyebrow="Accessories store"
         title="EVERYTHING THAT BOLTS ON."
-        blurb="Eight departments, every brand we stock, every part fitment-checked against your variant. If it shows up for your car, it fits your car — or we collect it and refund in full."
+        blurb="Eight departments, every product listed by a verified seller. Pick your car to see what fits it."
         media="tailLightBokeh"
         size="sm"
       />
@@ -84,25 +81,12 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
         </div>
       </section>
 
-      <section className="section border-y border-tint/8 bg-carbon">
-        <div className="shell">
-          <SectionHead
-            eyebrow="Shop by brand"
-            title="EVERY BRAND WE STOCK."
-            blurb="RECOIL and Autoform keep their own stores, and everything in them is also here — so you can filter across brands, or stay inside one."
-            href="/brands"
-            hrefLabel="All brands"
-          />
-          <BrandStrip />
-        </div>
-      </section>
-
       <section className="section">
         <div className="shell">
           <SectionHead
             eyebrow="Everything in stock"
             title="THE FULL CATALOGUE."
-            blurb={`${CATALOG_TOTALS.products} products across ${CATALOG_TOTALS.brands} brands. Filter by brand, category, type, price band or fitment. Prices include GST; installation is quoted separately and is often free.`}
+            blurb={`${items.length} product${items.length === 1 ? "" : "s"} from verified sellers. Filter by store brand, category, type, price band or fitment. Prices include GST.`}
           />
           <CatalogBrowser items={items} initial={filters} />
         </div>
@@ -123,21 +107,6 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
         </div>
       </section>
 
-      <section className="section border-t border-tint/8">
-        <div className="shell">
-          <SectionHead eyebrow="Shop by car" title="PARTS FOR YOUR EXACT MODEL." />
-          <ul className="flex flex-wrap gap-2">
-            {LANDING_MODELS.map((m) => (
-              <li key={m.slug}>
-                <Link href={`/accessories/${m.slug}`} className="chip hover:border-accent hover:text-accent">
-                  <Icon name="chevron" size={11} className="text-accent" />
-                  {m.brand} {m.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
     </>
   );
 }

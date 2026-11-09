@@ -118,7 +118,13 @@ export default async function VendorProductPage({ params }: { params: Params }) 
             <div className="min-w-0">
               <p className="eyebrow">{p.brand}</p>
               <h1 className="display-3 mt-2 text-balance">{p.title}</h1>
-              <p className="mt-2 text-xs text-dim">
+              <p className="mt-2 text-sm text-ash">
+                Store:{" "}
+                <Link href={storeHref(seller.slug)} className="font-semibold text-accent underline-offset-4 hover:underline">
+                  {seller.name}
+                </Link>
+              </p>
+              <p className="mt-1 text-xs text-dim">
                 {PART_TYPE_LABELS[p.partType]} · SKU <span className="font-display font-bold tracking-[0.06em] text-chalk">{p.sku}</span>
               </p>
 
@@ -162,7 +168,7 @@ export default async function VendorProductPage({ params }: { params: Params }) 
                   Verified seller
                 </p>
                 <p className="text-sm">
-                  Sold by{" "}
+                  Store:{" "}
                   <Link href={storeHref(seller.slug)} className="font-semibold text-accent underline underline-offset-4">
                     {seller.name}
                   </Link>

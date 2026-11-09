@@ -8,9 +8,7 @@
  * Client-safe: imports no server-only modules.
  */
 
-import { BRANDS } from "@/lib/catalog/brands";
 import { DEPARTMENTS, departmentHref, groupHref, oeHref, type Department, type DepartmentSlug } from "@/lib/data/taxonomy";
-import { LANDING_MODELS } from "@/lib/data/vehicles";
 import type { IconName } from "@/components/ui/Icon";
 
 export type NavLink = { label: string; href: string };
@@ -54,52 +52,20 @@ export function liveMenuGroups(d: DepartmentMenu, live?: LiveGroups) {
 
 export const DEPARTMENT_MENUS: DepartmentMenu[] = DEPARTMENTS.map(toMenu);
 
-export const SHOP_BY_CAR: NavSection = {
-  id: "shop-by-car",
-  title: "Shop by Car",
-  links: LANDING_MODELS.slice(0, 10).map((m) => ({
-    label: `${m.brand} ${m.name}`,
-    href: `/accessories/${m.slug}`,
-  })),
-  all: { label: "All cars", href: "/shop" },
-};
-
-export const BRANDS_NAV: NavSection = {
-  id: "brands",
-  title: "Brands",
-  links: BRANDS.map((b) => ({ label: b.name, href: `/brands/${b.slug}` })),
-  all: { label: "All brands", href: "/brands" },
-};
-
-export const SERVICES_NAV: NavSection = {
-  id: "services",
-  title: "Services",
+/** Shopping shortcuts: the "More" panel's first column. */
+export const SHOP_MORE_NAV: NavSection = {
+  id: "shop-more",
+  title: "Shop",
   links: [
-    { label: "Installation & Garage", href: "/garage" },
-    { label: "PPF & Detailing", href: "/ppf" },
-    { label: "Audio Builds", href: "/audio" },
-    { label: "Body Kits", href: "/body-kits" },
-    { label: "Off-Roading Builds", href: "/off-road" },
-    { label: "Custom Interiors", href: "/interiors" },
-    { label: "Performance", href: "/performance" },
-    { label: "Build Your Car", href: "/build" },
+    { label: "All products", href: "/shop" },
+    { label: "Offers", href: "/offers" },
+    { label: "Wishlist", href: "/wishlist" },
+    { label: "Track your order", href: "/track-order" },
+    { label: "Ask AI", href: "/assistant" },
   ],
 };
 
-export const CARS_NAV: NavSection = {
-  id: "cars",
-  title: "Cars",
-  links: [
-    { label: "Buy Cars", href: "/cars" },
-    { label: "Sell Your Car", href: "/sell" },
-    { label: "BE 6", href: "/be-6" },
-    { label: "BE 6 Limited Edition", href: "/be-6/limited-edition" },
-    { label: "List Your Cars", href: "/partners" },
-    { label: "Sell on Riderzpro", href: "/vendor" },
-  ],
-};
-
-/** Partner programmes: sellers, car dealers and delivery riders who work with Riderzpro. */
+/** Partner programmes: sellers and delivery riders who work with Riderzpro. */
 export const PARTNERS_NAV: NavSection = {
   id: "partners",
   title: "Partners",
@@ -107,19 +73,16 @@ export const PARTNERS_NAV: NavSection = {
     { label: "Sell on Riderzpro", href: "/vendor" },
     { label: "Vendor Sign In", href: "/vendor/auth" },
     { label: "Ride with Riderzpro", href: "/rider" },
-    { label: "List Your Cars", href: "/partners" },
   ],
 };
 
 /** Columns of the desktop "More" panel, and the drawer sections after the departments. */
-export const MORE_SECTIONS: NavSection[] = [SHOP_BY_CAR, BRANDS_NAV, SERVICES_NAV, CARS_NAV];
+export const MORE_SECTIONS: NavSection[] = [SHOP_MORE_NAV, PARTNERS_NAV];
 
 /** Footer: "Shop by" column. */
 export const SHOP_BY_LINKS: NavLink[] = [
-  { label: "Car", href: "/shop" },
-  { label: "Brand", href: "/brands" },
+  { label: "All products", href: "/shop" },
   { label: "OE", href: "/shop?oe=1" },
-  { label: "Collections", href: "/collections" },
   { label: "Wishlist", href: "/wishlist" },
   { label: "Offers", href: "/offers" },
   { label: "AI assistant", href: "/assistant" },

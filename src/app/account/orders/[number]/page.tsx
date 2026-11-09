@@ -105,10 +105,10 @@ function Part({ part, orderStatus }: { part: AccountOrderPart; orderStatus: stri
   const stopped = part.status === "cancelled" || part.status === "return_requested" || part.status === "returned";
   const reached = part.status ? PART_STEPS.indexOf(part.status) : -1;
   return (
-    <section className="card p-4 sm:p-5" aria-label={`Sold by ${part.seller}`}>
+    <section className="card p-4 sm:p-5" aria-label={`Store: ${part.seller}`}>
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="text-sm text-ash">
-          Sold by <span className="font-semibold text-chalk">{part.seller}</span>
+          Store: <span className="font-semibold text-chalk">{part.seller}</span>
         </p>
         <p className={`text-sm font-bold ${stopped ? "text-danger" : "text-chalk"}`}>
           {part.status ? PART_STATUS_LABELS[part.status] : ORDER_STATUS_TEXT[orderStatus as keyof typeof ORDER_STATUS_TEXT]}

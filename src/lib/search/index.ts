@@ -1,54 +1,19 @@
 import "server-only";
 
-import { CARS } from "@/lib/data/cars";
 import { PRODUCTS } from "@/lib/data/products";
 import { DEPARTMENTS, departmentHref } from "@/lib/data/taxonomy";
-import { AUDIO_PACKAGES, DETAIL_SERVICES, FACELIFT_CONVERSIONS } from "@/lib/data/services";
-import { BUILDS } from "@/lib/data/community";
-import { LANDING_MODELS, findModelBySlug } from "@/lib/data/vehicles";
-import { COMING_SOON as RECOIL_COMING_SOON, PRODUCTS as RECOIL_PRODUCTS } from "@/lib/data/recoil";
-import { DESIGNS as AUTOFORM_DESIGNS, bandFor, priceFor } from "@/lib/autoform/catalog";
-import { BRANDS, CATALOG, CATALOG_BY_BRAND } from "@/lib/catalog";
-import { COLLECTIONS } from "@/lib/data/collections";
-import { lakh, rupees } from "@/lib/format";
+import { findModelBySlug } from "@/lib/data/vehicles";
+import { rupees } from "@/lib/format";
 import { storeSlug } from "@/lib/store/slugs";
 import { productHref } from "@/lib/store/types";
+import { storeHref } from "@/lib/vendor/types";
+import { liveVendorItems } from "@/lib/server/marketplace";
 import { norm, type SearchBrand, type SearchEntry, type SearchIndex } from "./match";
 
 export * from "./match";
 
-/** Detail-service ids rendered as anchors on /ppf ("Goes with it" cards: the first four non-film services). */
-const PPF_PAGE_ANCHORS = new Set(
-  DETAIL_SERVICES.filter((s) => s.slug !== "paint-protection-film")
-    .slice(0, 4)
-    .map((s) => s.slug),
-);
-
-export const SEARCH_INDEX: SearchEntry[] = [
-  // Brands come first in construction order so an exact brand name — "recoil",
-  // "autoform", "blaupunkt" — always has a destination, whether or not that
-  // brand has products listed yet.
-  ...BRANDS.map((b) => {
-    const count = CATALOG_BY_BRAND[b.slug]?.length ?? 0;
-    return {
-      id: `brand-${b.slug}`,
-      kind: "Brand" as const,
-      title: `${b.name} — all products`,
-      meta: count > 0 ? `${b.position} · ${count} products` : "Catalogue not published yet",
-      href: `/brands/${b.slug}`,
-      keywords: norm(`${b.name} ${b.position} ${b.tagline} ${b.categories.join(" ")} brand shop by brand`),
-    };
-  }),
-  ...CARS.map((c) => ({
-    id: `car-${c.slug}`,
-    kind: "Car" as const,
-    title: `${c.year} ${c.brand} ${c.model} ${c.variant}`,
-    meta: `${lakh(c.price)} · ${c.city}`,
-    href: `/cars/${c.slug}`,
-    keywords: norm(
-      `${c.brand} ${c.model} ${c.variant} ${c.body} ${c.fuel} ${c.transmission} ${c.city} ${c.condition} used car buy`,
-    ),
-  })),
+/** Entries that never change: house products, help pages and the shop departments. */
+const STATIC_ENTRIES: SearchEntry[] = [
   ...PRODUCTS.map((p) => {
     // Expand fitment slugs into brand + model names so "BMW ambient lighting"
     // finds a part listed only against the 3 Series and GLC.
@@ -67,28 +32,6 @@ export const SEARCH_INDEX: SearchEntry[] = [
       keywords: norm(`${p.name} ${p.sub} ${p.category} ${p.maker} ${fitment} accessories`),
     };
   }),
-  // The RECOIL catalogue is SKU-first: "SPL4200" has to find SPL4200.4.
-  ...RECOIL_PRODUCTS.concat(RECOIL_COMING_SOON).map((p) => ({
-    id: `recoil-${p.slug}`,
-    kind: "RECOIL" as const,
-    title: `${p.sku} — ${p.priceListName}`,
-    meta:
-      p.status === "COMING_SOON"
-        ? `Coming soon · ${p.subcategory}`
-        : `${p.sellingPrice ? rupees(p.sellingPrice) : "Price on request"} · ${p.subcategory}`,
-    href: productHref(storeSlug.recoil(p)),
-    keywords: norm(`recoil ${p.sku} ${p.searchTokens.join(" ")} car audio`),
-  })),
-  // Autoform designs are named things people search for by code — "u-volt",
-  // "x-cross" — so they need their own entries, not just a brand page.
-  ...AUTOFORM_DESIGNS.map((d) => ({
-    id: `autoform-${d.slug}`,
-    kind: "Autoform" as const,
-    title: `Autoform ${d.code}`,
-    meta: `From ${rupees(priceFor(d, 2).sellingPrice)} · ${d.tagline}`,
-    href: productHref(storeSlug.autoformDesign(d)),
-    keywords: norm(`autoform ${d.code} ${d.tagline} ${bandFor(d).series} seat cover seat covers interior`),
-  })),
   // Help pages people look for by name.
   ...[
     { id: "faq", title: "FAQ — ordering, fitment, delivery, returns", href: "/faq", k: "faq help questions ordering fitment delivery returns payment" },
@@ -96,6 +39,7 @@ export const SEARCH_INDEX: SearchEntry[] = [
     { id: "shipping", title: "Shipping & delivery", href: "/support/shipping", k: "shipping delivery charges free shipping dispatch" },
     { id: "returns", title: "Returns & refunds", href: "/support/returns", k: "returns refund exchange cancel cancellation fitment guarantee" },
     { id: "wishlist", title: "Your wishlist", href: "/wishlist", k: "wishlist saved items favourites" },
+    { id: "sell", title: "Sell on Riderzpro", href: "/vendor", k: "sell seller vendor open a store marketplace" },
   ].map((h) => ({
     id: `help-${h.id}`,
     kind: "Service" as const,
@@ -114,68 +58,38 @@ export const SEARCH_INDEX: SearchEntry[] = [
       `${d.name} ${d.groups.map((g) => `${g.name} ${g.subs.join(" ")}`).join(" ")} accessories shop department oe original equipment`,
     ),
   })),
-  ...COLLECTIONS.map((c) => ({ c, count: CATALOG.filter(c.match).length }))
-    .filter((x) => x.count > 0)
-    .map(({ c, count }) => ({
-      id: `collection-${c.slug}`,
-      kind: "Category" as const,
-      title: `${c.name} — collection`,
-      meta: `${c.tagline} · ${count} product${count === 1 ? "" : "s"}`,
-      href: `/collections/${c.slug}`,
-      keywords: norm(`${c.name} ${c.tagline} ${c.blurb} collection offers deals`),
-    })),
-  ...LANDING_MODELS.map((m) => ({
-    id: `model-${m.brandSlug}-${m.slug}`,
-    kind: "My Car" as const,
-    title: `${m.name} accessories`,
-    meta: `${m.brand} · ${m.body}`,
-    href: `/accessories/${m.slug}`,
-    keywords: norm(`${m.brand} ${m.name} ${m.body} accessories modification parts fitment`),
-  })),
-  ...AUDIO_PACKAGES.map((a) => ({
-    id: `audio-${a.slug}`,
-    kind: "Service" as const,
-    title: `${a.name} audio package`,
-    meta: `${rupees(a.price)} ${a.priceNote}`,
-    href: `/audio#${a.slug}`,
-    keywords: norm(`${a.name} audio speakers dsp amplifier subwoofer sound ${a.bestFor}`),
-  })),
-  ...DETAIL_SERVICES.map((d) => ({
-    id: `ppf-${d.slug}`,
-    kind: "Service" as const,
-    title: d.name,
-    // The PPF entry is priced per car on /ppf (from the quote helper), so no
-    // "from" figure is shown here that could contradict it.
-    meta: d.slug === "paint-protection-film" ? "Priced for your car" : `From ${rupees(d.price)}`,
-    // Only the services /ppf lists as cards have an anchor; the rest go to the page.
-    href: PPF_PAGE_ANCHORS.has(d.slug) ? `/ppf#${d.slug}` : d.slug === "paint-protection-film" ? "/ppf#packages" : "/ppf",
-    keywords: norm(`${d.name} ppf paint protection ceramic detailing wrap ${d.category}`),
-  })),
-  ...FACELIFT_CONVERSIONS.map((f) => ({
-    id: `facelift-${f.slug}`,
-    kind: "Service" as const,
-    title: `${f.to}`,
-    meta: `${f.from} · from ${rupees(f.price)}`,
-    href: `/body-kits#${f.slug}`,
-    keywords: norm(`${f.from} ${f.to} facelift conversion body kit bumper headlamp`),
-  })),
-  ...BUILDS.map((b) => ({
-    id: `build-${b.slug}`,
-    kind: "Build" as const,
-    title: b.title,
-    meta: `${b.vehicle} · ${rupees(b.cost)}`,
-    href: `/builds/${b.slug}`,
-    keywords: norm(`${b.title} ${b.vehicle} ${b.tag} build modified`),
-  })),
 ];
 
-/** Brand shortcuts for the search panel — name, destination and product count. */
-export const SEARCH_BRANDS: SearchBrand[] = BRANDS.map((b) => ({
-  slug: b.slug,
-  name: b.name,
-  href: `/brands/${b.slug}`,
-  count: CATALOG_BY_BRAND[b.slug]?.length ?? 0,
-}));
+/**
+ * What the search panel downloads (`/search-index.json`): the fixed entries plus every live
+ * product approved sellers have listed, each labelled with its store; the shortcuts are the stores.
+ */
+export async function publicSearchIndex(): Promise<SearchIndex> {
+  const items = await liveVendorItems();
+  const products: SearchEntry[] = items.map((i) => ({
+    id: `vendor-${i.id}`,
+    kind: "Product" as const,
+    title: i.title,
+    meta: [i.price !== null ? rupees(i.price) : "Price on request", i.seller ? `Store: ${i.seller.name}` : i.sub].join(" · "),
+    href: i.href,
+    keywords: norm(`${i.title} ${i.brandName} ${i.sub} ${i.code ?? ""} ${i.seller?.name ?? ""} ${i.category}`),
+  }));
 
-/** What the search panel downloads, served as a static file by `/search-index.json`. */
-export const PUBLIC_SEARCH_INDEX: SearchIndex = { entries: SEARCH_INDEX, brands: SEARCH_BRANDS };
+  const stores = new Map<string, SearchBrand>();
+  for (const i of items) {
+    if (!i.seller) continue;
+    const s = stores.get(i.seller.slug) ?? { slug: i.seller.slug, name: i.seller.name, href: storeHref(i.seller.slug), count: 0 };
+    s.count += 1;
+    stores.set(i.seller.slug, s);
+  }
+  const storeEntries: SearchEntry[] = [...stores.values()].map((s) => ({
+    id: `store-${s.slug}`,
+    kind: "Brand" as const,
+    title: `${s.name} — store`,
+    meta: `${s.count} product${s.count === 1 ? "" : "s"}`,
+    href: s.href,
+    keywords: norm(`${s.name} store seller shop`),
+  }));
+
+  return { entries: [...storeEntries, ...products, ...STATIC_ENTRIES], brands: [...stores.values()] };
+}

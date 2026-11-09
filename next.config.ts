@@ -47,8 +47,6 @@ const nextConfig: NextConfig = {
   redirects() {
     return [
       { source: "/shop/protection", destination: "/shop/covers-guards", permanent: true },
-      { source: "/why-motorbotz", destination: "/why-riderzpro", permanent: true },
-      { source: "/brands/motorbotz", destination: "/brands/riderzpro", permanent: true },
       { source: "/product/motorbotz-9d-floor-mats", destination: "/products/riderzpro-9d-floor-mats", permanent: true },
       {
         source: "/product/motorbotz-signature-component-set",
@@ -58,7 +56,6 @@ const nextConfig: NextConfig = {
       // One product page for every brand, at /products/{slug}. The explicit
       // rules above come first so the Motorbotz URLs resolve in a single hop.
       { source: "/product/:slug", destination: "/products/:slug", permanent: true },
-      { source: "/autoform/:design", destination: "/products/autoform-:design", permanent: true },
       // The compare feature was dropped; its URL goes to the shop.
       { source: "/compare", destination: "/shop", permanent: true },
       // Pre-taxonomy shop categories, folded into the eight departments.
@@ -80,7 +77,7 @@ const nextConfig: NextConfig = {
       { source: "/dashboard/vendor", destination: "/vendor/dashboard", permanent: true },
       { source: "/dashboard/rider", destination: "/rider/dashboard", permanent: true },
       { source: "/dashboard/admin", destination: "/admin", permanent: true },
-      { source: "/dashboard/workshop", destination: "/garage", permanent: true },
+      { source: "/dashboard/workshop", destination: "/shop", permanent: true },
       { source: "/app", destination: "/", permanent: true },
       { source: "/support", destination: "/contact", permanent: true },
       { source: "/privacy", destination: "/legal/privacy", permanent: true },
@@ -91,6 +88,21 @@ const nextConfig: NextConfig = {
       // The old seller dashboard lived at /vendor/{id}; this site's own /vendor/* pages are excluded.
       { source: "/vendor/:id((?!auth$|dashboard$|onboarding$|pending$|offline-store$)[^/]+)", destination: "/vendor/dashboard", permanent: true },
       { source: "/admin/login", destination: "/admin", permanent: true },
+
+      // Sections taken off the site (brand price lists, demo showcases, services): old links land
+      // on the shop. Not permanent, so a section can come back later.
+      ...[
+        "/brands", "/recoil", "/autoform", "/collections", "/accessories", "/be-6", "/cars", "/builds",
+        "/ppf", "/admin/be-6", "/admin/ppf",
+      ].flatMap((p) => [
+        { source: p, destination: p.startsWith("/admin") ? "/admin" : "/shop", permanent: false },
+        { source: `${p}/:path*`, destination: p.startsWith("/admin") ? "/admin" : "/shop", permanent: false },
+      ]),
+      ...[
+        "/used-cars", "/sell", "/partners", "/build", "/build-audio", "/audio", "/body-kits", "/car-accessories",
+        "/car-modification", "/suv-modification", "/interiors", "/off-road", "/performance", "/garage", "/locations",
+        "/why-riderzpro", "/admin/catalog", "/admin/inventory", "/admin/launch", "/why-motorbotz",
+      ].map((p) => ({ source: p, destination: p.startsWith("/admin") ? "/admin" : "/shop", permanent: false })),
       { source: "/super-admin", destination: "/admin", permanent: true },
       { source: "/super-admin/:path*", destination: "/admin", permanent: true },
       { source: "/superadmin", destination: "/admin", permanent: true },

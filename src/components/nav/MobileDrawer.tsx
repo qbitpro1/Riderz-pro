@@ -174,7 +174,6 @@ export function MobileDrawer({ onClose, liveGroups }: { onClose: () => void; liv
               <WishlistLink variant="text" className="flex min-h-11 items-center" />
             </li>
             {[
-              { label: "Collections", href: "/collections" },
               { label: "Track Order", href: "/track-order" },
               { label: "FAQ", href: "/faq" },
             ].map((l) => (

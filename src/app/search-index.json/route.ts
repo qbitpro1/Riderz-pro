@@ -1,12 +1,11 @@
-import { PUBLIC_SEARCH_INDEX } from "@/lib/search";
+import { publicSearchIndex } from "@/lib/search";
 
 /**
- * The site search index, built once at build time and served as a static
- * file. The search panel fetches it the first time it opens, so the brand
- * catalogues it is built from never ship in the page bundle.
+ * The site search index. The search panel fetches it the first time it opens. It includes
+ * every live seller product, so it is built per request (sellers' changes show at once).
  */
-export const dynamic = "force-static";
+export const dynamic = "force-dynamic";
 
-export function GET() {
-  return Response.json(PUBLIC_SEARCH_INDEX);
+export async function GET() {
+  return Response.json(await publicSearchIndex(), { headers: { "Cache-Control": "public, max-age=60" } });
 }

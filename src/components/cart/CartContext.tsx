@@ -6,10 +6,13 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
 import { readStored } from "@/lib/storage";
+import { api } from "@/lib/vendor/client";
+import { useAccount } from "@/components/account/AccountContext";
 import type { CartLine } from "@/lib/store/types";
 import { CartDrawer } from "./CartDrawer";
 
@@ -32,6 +35,23 @@ type CartState = {
 };
 
 const KEY = "riderzpro.cart.v1";
+/** Which account this browser's cart was last synced with (a different one means: merge first). */
+const SYNCED_KEY = "riderzpro.cart.synced";
+const readCartSynced = () => {
+  try {
+    return localStorage.getItem(SYNCED_KEY);
+  } catch {
+    return null;
+  }
+};
+const writeCartSynced = (id: string | null) => {
+  try {
+    if (id) localStorage.setItem(SYNCED_KEY, id);
+    else localStorage.removeItem(SYNCED_KEY);
+  } catch {
+    /* storage blocked: each page load then merges, which only ever adds */
+  }
+};
 /** The most of one line the cart — and the checkout endpoint — accepts. */
 export const MAX_QTY = 99;
 
@@ -107,6 +127,64 @@ export function CartProvider({ children }: { children: ReactNode }) {
       /* storage full or blocked — cart simply doesn't persist */
     }
   }, [lines, ready]);
+
+  /*
+   * Signed-in shoppers keep their cart in the account (/api/account/cart), so it follows them to
+   * other devices:
+   *   - first sign-in on this browser: what is in the cart here is added to the account's cart;
+   *   - after that the account is the reference: each page load takes its cart, each change saves it;
+   *   - signing out empties the cart here (it stays in the account) so a shared device shows nothing.
+   */
+  const { customer, ready: accountReady } = useAccount();
+  const customerId = customer?.id ?? null;
+  const linesRef = useRef(lines);
+  const syncedWith = useRef<string | null>(null);
+  const prevCustomer = useRef<string | null>(null);
+
+  useEffect(() => {
+    linesRef.current = lines;
+  }, [lines]);
+
+  useEffect(() => {
+    if (!ready || !accountReady) return;
+    const prev = prevCustomer.current;
+    prevCustomer.current = customerId;
+    if (!customerId) {
+      syncedWith.current = null;
+      if (prev) {
+        writeCartSynced(null);
+        setLines([]);
+      }
+      return;
+    }
+    let alive = true;
+    const first = readCartSynced() !== customerId;
+    const request = first
+      ? api<{ lines: CartLine[] }>("/api/account/cart", { method: "PUT", body: { lines: linesRef.current, merge: true } })
+      : api<{ lines: CartLine[] }>("/api/account/cart");
+    request.then(
+      (r) => {
+        if (!alive) return;
+        writeCartSynced(customerId);
+        syncedWith.current = customerId;
+        setLines(parseLines(JSON.stringify(r.lines)) ?? []);
+      },
+      () => {
+        /* accounts unavailable: the cart keeps working in this browser */
+      },
+    );
+    return () => {
+      alive = false;
+    };
+  }, [ready, accountReady, customerId]);
+
+  useEffect(() => {
+    if (!ready || !customerId || syncedWith.current !== customerId) return;
+    const t = setTimeout(() => {
+      api("/api/account/cart", { method: "PUT", body: { lines } }).catch(() => {});
+    }, 400);
+    return () => clearTimeout(t);
+  }, [lines, ready, customerId]);
 
   const openCart = useCallback(() => setDrawerOpen(true), []);
   const closeCart = useCallback(() => setDrawerOpen(false), []);

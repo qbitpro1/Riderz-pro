@@ -50,7 +50,7 @@ function PickerForm({ saved, compact }: { saved: Garage | null; compact: boolean
       <div className="card flex flex-wrap items-center gap-3 p-4">
         <span className="chip chip-active">Your car</span>
         <span className="text-sm font-semibold">{saved.label}</span>
-        <Link href={`/accessories/${saved.modelSlug}`} className="btn btn-accent btn-sm ml-auto">
+        <Link href={`/shop?fits=${encodeURIComponent(saved.modelSlug)}`} className="btn btn-accent btn-sm ml-auto">
           Shop parts that fit
           <Icon name="arrow" size={14} />
         </Link>
@@ -167,7 +167,7 @@ function PickerForm({ saved, compact }: { saved: Garage | null; compact: boolean
 
       <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center">
         {complete ? (
-          <Link href={`/accessories/${modelSlug}`} onClick={save} className="btn btn-primary btn-block sm:w-auto">
+          <Link href={`/shop?fits=${encodeURIComponent(modelSlug)}`} onClick={save} className="btn btn-primary btn-block sm:w-auto">
             Show what fits
             <Icon name="arrow" size={15} />
           </Link>

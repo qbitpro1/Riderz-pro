@@ -1,9 +1,8 @@
 import Link from "next/link";
 import { Logo } from "@/components/brand/Logo";
 import { Icon } from "@/components/ui/Icon";
-import { LOCATIONS, SITE } from "@/lib/data/site";
-import { LANDING_MODELS } from "@/lib/data/vehicles";
-import { CARS_NAV, DEPARTMENT_MENUS, PARTNERS_NAV, SERVICES_NAV, SHOP_BY_LINKS } from "@/lib/data/nav";
+import { SITE } from "@/lib/data/site";
+import { DEPARTMENT_MENUS, PARTNERS_NAV, SHOP_BY_LINKS } from "@/lib/data/nav";
 
 const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
   {
@@ -11,8 +10,6 @@ const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
     links: DEPARTMENT_MENUS.map((d) => ({ label: d.label, href: d.href })),
   },
   { title: "Shop by", links: SHOP_BY_LINKS },
-  { title: "Services", links: SERVICES_NAV.links },
-  { title: "Cars", links: CARS_NAV.links.filter((l) => l.href !== "/partners" && l.href !== "/vendor") },
   { title: "Partners", links: [...PARTNERS_NAV.links, { label: "Offline Store login", href: "/vendor/offline-store" }] },
   {
     title: "Support",
@@ -23,8 +20,6 @@ const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
       { label: "Shipping", href: "/support/shipping" },
       { label: "Returns", href: "/support/returns" },
       { label: "Warranty", href: "/support/warranty" },
-      { label: "Locations", href: "/locations" },
-      { label: "Why Riderzpro", href: "/why-riderzpro" },
       { label: "Privacy Policy", href: "/legal/privacy" },
       { label: "Terms of Service", href: "/legal/terms" },
     ],
@@ -40,8 +35,8 @@ export function Footer() {
           <div>
             <Logo className="h-28" />
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-ash">
-              Accessories we make, source and fit ourselves — checked against your car before they
-              ship.
+              Car accessories from verified sellers across India, with secure checkout and order
+              tracking.
             </p>
 
             <div className="mt-6 flex flex-wrap gap-3">
@@ -55,11 +50,10 @@ export function Footer() {
               <Social href={SITE.instagram} icon="instagram" label="Instagram" />
               <Social href={SITE.youtube} icon="youtube" label="YouTube" />
               <Social href={SITE.facebook} icon="facebook" label="Facebook" />
-              <Social href={LOCATIONS[0].mapUrl} icon="map" label="Google Maps" />
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 xl:grid-cols-6">
+          <div className="grid grid-cols-2 gap-8 sm:grid-cols-4">
             {COLUMNS.map((col) => (
               <div key={col.title}>
                 <p className="mb-4 font-display text-[11px] font-bold uppercase tracking-[0.18em] text-dim">
@@ -77,31 +71,6 @@ export function Footer() {
               </div>
             ))}
           </div>
-        </div>
-
-        <div className="mt-12 border-t border-tint/8 pt-8">
-          <p className="mb-4 font-display text-[11px] font-bold uppercase tracking-[0.18em] text-dim">
-            Popular accessory pages
-          </p>
-          <ul className="flex flex-wrap gap-x-5 gap-y-2">
-            {LANDING_MODELS.map((m) => (
-              <li key={m.slug}>
-                <Link href={`/accessories/${m.slug}`} className="text-xs text-dim transition-colors hover:text-accent">
-                  {m.name} accessories
-                </Link>
-              </li>
-            ))}
-            <li>
-              <Link href="/used-cars" className="text-xs text-dim transition-colors hover:text-accent">
-                Used cars
-              </Link>
-            </li>
-            <li>
-              <Link href="/car-modification" className="text-xs text-dim transition-colors hover:text-accent">
-                Car modification near me
-              </Link>
-            </li>
-          </ul>
         </div>
 
         <div className="mt-10 flex flex-col gap-3 border-t border-tint/8 pt-6 text-xs text-dim md:flex-row md:items-center md:justify-between">

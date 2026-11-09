@@ -71,7 +71,7 @@ export function CatalogCard({
 
         {item.seller && (
           <p className="mt-1 truncate text-[11px] text-dim">
-            Sold by{" "}
+            Store:{" "}
             <Link href={storeHref(item.seller.slug)} className="font-semibold text-ash underline-offset-2 hover:text-accent hover:underline">
               {item.seller.name}
             </Link>

@@ -1,17 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHero } from "@/components/layout/PageHero";
-import { BookingForm } from "@/components/garage/BookingForm";
 import { HelpForm } from "@/components/account/HelpForm";
 import { SectionHead } from "@/components/ui/Section";
 import { Icon } from "@/components/ui/Icon";
-import { LOCATIONS, SITE, whatsapp } from "@/lib/data/site";
+import { SITE, whatsapp } from "@/lib/data/site";
 import { pageMeta } from "@/lib/data/seo";
 
 export const metadata: Metadata = pageMeta({
   title: "Contact Riderzpro",
   description:
-    "Talk to Riderzpro on WhatsApp or by phone about cars, accessories, builds, audio, PPF, off-road work and workshop bookings across Bengaluru, Hyderabad and Pune.",
+    "Talk to Riderzpro on WhatsApp, by phone or through the help desk about products, orders, sellers and returns.",
   path: "/contact",
 });
 
@@ -31,14 +30,6 @@ const CHANNELS = [
     href: SITE.phoneHref,
     icon: "phone" as const,
     external: true,
-  },
-  {
-    title: "Visit a garage",
-    body: "Three workshops, 26 bays. Walk in and look at what's on the lifts.",
-    action: "See locations",
-    href: "/locations",
-    icon: "map" as const,
-    external: false,
   },
 ];
 
@@ -125,23 +116,10 @@ export default function ContactPage() {
               ))}
             </ul>
 
-            <p className="mt-8 label">Our garages</p>
-            <ul className="space-y-3">
-              {LOCATIONS.map((l) => (
-                <li key={l.slug} className="text-sm text-ash">
-                  <span className="font-display text-xs font-bold uppercase tracking-[0.14em] text-chalk">
-                    {l.city}
-                  </span>
-                  <br />
-                  {l.address}
-                </li>
-              ))}
-            </ul>
           </div>
 
           <div className="space-y-6">
             <HelpForm />
-            <BookingForm />
           </div>
         </div>
       </section>

@@ -5,7 +5,7 @@
  *   node scripts/test-invoice.mjs
  *
  * Needs Node 24+ (built-in TypeScript type stripping). Runs on a fresh embedded database in a temp
- * folder (never .data/pglite, so the dev server can keep running), with every provider key removed
+ * folder (never dev.db, so the dev server can keep running), with every provider key removed
  * and `fetch` replaced by a recorder: nothing is ever sent.
  *
  *   1. GST maths: within a state (CGST + SGST, odd rupee to SGST), across states (IGST), 0% lines,

@@ -1,11 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import {
-  BadgeCheck,
   Banknote,
-  Boxes,
-  CarFront,
-  ClipboardList,
   FileSearch,
   Landmark,
   LifeBuoy,
@@ -14,7 +10,6 @@ import {
   Route,
   Wallet,
   PackageCheck,
-  Rocket,
   ShoppingBag,
   Store,
   Users,
@@ -67,11 +62,6 @@ export default async function AdminHub({ searchParams }: { searchParams: Promise
     { href: "/admin/audit", perm: "audit", title: "Audit log", text: "Every sign-in, decision and change, newest first.", icon: ScrollText },
   ];
   const site: Tile[] = [
-    { href: "/admin/catalog", perm: "catalog", title: "Catalogue report", text: "House catalogue import and data quality.", icon: ClipboardList },
-    { href: "/admin/inventory", perm: "catalog", title: "Inventory", text: "Used-car sources, freshness and compliance.", icon: Boxes },
-    { href: "/admin/launch", perm: "catalog", title: "Launch readiness", text: "What is live, held back, and what unblocks it.", icon: Rocket },
-    { href: "/admin/ppf", perm: "catalog", title: "PPF", text: "Paint protection film tools.", icon: BadgeCheck },
-    { href: "/admin/be-6", perm: "catalog", title: "BE 6 programme", text: "Flagship programme admin.", icon: CarFront },
     { href: "/admin/shopify", perm: "catalog", title: "Shopify export", text: "Product CSV for the Shopify import.", icon: FileSearch },
   ];
 

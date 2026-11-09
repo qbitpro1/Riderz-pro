@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import Link from "next/link";
 import { CatalogCard } from "./CatalogCard";
 import { Icon } from "@/components/ui/Icon";
 import { whatsapp } from "@/lib/data/site";
@@ -403,12 +402,6 @@ function FilterPanel({
             checked={filters.fits === garage.modelSlug}
             onChange={(on) => onPatch({ fits: on ? garage.modelSlug : null })}
           />
-          <Link
-            href={`/accessories/${garage.modelSlug}`}
-            className="mt-2 inline-block text-[11px] text-accent underline underline-offset-4"
-          >
-            Open my car&apos;s page
-          </Link>
         </section>
       )}
 

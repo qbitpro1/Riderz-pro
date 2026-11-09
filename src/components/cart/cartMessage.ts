@@ -29,7 +29,7 @@ export function orderMessage(
       (l) =>
         `• ${l.name}${l.variant ? ` (${l.variant})` : ""} × ${l.qty} — ${rupees(l.price * l.qty)}${
           l.install ? ` (+ installation ${rupees(l.install * l.qty)})` : ""
-        }${l.seller ? ` · sold by ${l.seller.name}` : ""}`,
+        }${l.seller ? ` · Store: ${l.seller.name}` : ""}`,
     ),
     "",
     `Subtotal: ${rupees(t.subtotal)}`,

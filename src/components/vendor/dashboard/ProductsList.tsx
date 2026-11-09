@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { Archive, ArchiveRestore, Copy, FolderTree, Pencil, Plus, Search, Trash2 } from "lucide-react";
+import { Archive, ArchiveRestore, Copy, FileJson, FolderTree, Pencil, Plus, Search, Trash2 } from "lucide-react";
 import { api } from "@/lib/vendor/client";
 import { PRODUCT_STATUSES, type VendorProduct, type VendorProductStatus } from "@/lib/vendor/types";
 import { rupees } from "@/lib/format";
@@ -126,13 +126,23 @@ export function ProductsList({ initial, readOnly, initialStatus }: Props) {
             <FolderTree size={16} aria-hidden /> Shop categories
           </Link>
           {readOnly ? (
-            <span className="btn btn-primary pointer-events-none opacity-40" aria-disabled>
-              <Plus size={16} aria-hidden /> Add product
-            </span>
+            <>
+              <span className="btn btn-outline pointer-events-none opacity-40" aria-disabled>
+                <FileJson size={16} aria-hidden /> Upload JSON
+              </span>
+              <span className="btn btn-primary pointer-events-none opacity-40" aria-disabled>
+                <Plus size={16} aria-hidden /> Add product
+              </span>
+            </>
           ) : (
-            <Link href={`${base}/new`} className="btn btn-primary">
-              <Plus size={16} aria-hidden /> Add product
-            </Link>
+            <>
+              <Link href={`${base}/import`} className="btn btn-outline">
+                <FileJson size={16} aria-hidden /> Upload JSON
+              </Link>
+              <Link href={`${base}/new`} className="btn btn-primary">
+                <Plus size={16} aria-hidden /> Add product
+              </Link>
+            </>
           )}
         </div>
       </div>

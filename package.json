@@ -15,8 +15,7 @@
     "import:blaupunkt": "node scripts/import-blaupunkt.mjs",
     "extract:pdf-images": "node scripts/extract-pdf-images.mjs",
     "catalog:rebuild": "npm run sync:recoil && npm run verify:recoil && npm run import:recoil",
-    "inventory:refresh": "node scripts/inventory-refresh.mjs",
-    "inventory:check-robots": "node scripts/check-robots.mjs"
+    "seed:logins": "node --env-file=.env.local scripts/seed-dev-logins.mjs"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.3.16",

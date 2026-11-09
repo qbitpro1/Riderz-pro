@@ -6,8 +6,9 @@
 /out
 /build
 /dist
-# Embedded development database (src/lib/db/client.ts)
+# Embedded development database (src/lib/db/client.ts) and scratch data
 /.data
+/dev.db
 
 .env*
 !.env.example

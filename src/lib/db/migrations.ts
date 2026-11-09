@@ -1015,4 +1015,16 @@ UPDATE order_items i SET hsn = p.hsn, gst_rate = p.gst_rate, warranty_months = p
  WHERE i.product_kind = 'vendor' AND p.id = i.product_ref;
 `,
   },
+  {
+    // A signed-in shopper's cart, kept in the account so it follows them across devices.
+    // `lines` is the cart as the browser shows it; checkout re-prices everything on the server.
+    id: "019_customer_cart",
+    sql: `
+CREATE TABLE customer_cart (
+  customer_id text PRIMARY KEY REFERENCES customers(id) ON DELETE CASCADE,
+  lines       jsonb NOT NULL DEFAULT '[]'::jsonb,
+  updated_at  timestamptz NOT NULL DEFAULT now()
+);
+`,
+  },
 ];

@@ -8,7 +8,7 @@ import { getProductDetail } from "@/lib/store/products";
 import { productHref } from "@/lib/store/types";
 import { vendorProductHref } from "@/lib/vendor/types";
 import { parseLineId } from "@/lib/shopify/variants";
-import type { AddressInput, Identifier, TicketInput } from "@/lib/account/schemas";
+import { CART_MAX, type AddressInput, type CartLineInput, type Identifier, type TicketInput } from "@/lib/account/schemas";
 import {
   ADDRESS_MAX,
   type AccountOrder,
@@ -216,7 +216,7 @@ export async function contactFree(customerId: string, id: Identifier): Promise<b
 }
 
 /**
- * Deletes the account: profile, sessions, addresses, wishlist and saved car go. Orders stay (sellers,
+ * Deletes the account: profile, sessions, addresses, wishlist, cart and saved car go. Orders stay (sellers,
  * invoices and tax records need them) but are no longer linked to an account.
  */
 export async function deleteAccount(customerId: string): Promise<void> {
@@ -372,6 +372,39 @@ export async function mergeWishlist(customerId: string, items: WishlistItem[]): 
 
 export async function removeWishlistItem(customerId: string, slug: string): Promise<void> {
   await sql("DELETE FROM customer_wishlist WHERE customer_id = $1 AND slug = $2", [customerId, slug]);
+}
+
+/* ------------------------------------------------------------------ cart */
+
+export async function getCart(customerId: string): Promise<CartLineInput[]> {
+  const row = await sqlOne<{ lines: CartLineInput[] }>("SELECT lines FROM customer_cart WHERE customer_id = $1", [customerId]);
+  return Array.isArray(row?.lines) ? row.lines : [];
+}
+
+/**
+ * Saves the cart. With `merge`, lines from this device are added to the saved cart (the same line
+ * keeps the larger quantity), so signing in never loses what either side had; otherwise the given
+ * lines replace it.
+ */
+export async function saveCart(customerId: string, lines: CartLineInput[], merge = false): Promise<CartLineInput[]> {
+  return transaction(async (q) => {
+    let next = lines;
+    if (merge) {
+      const rows = await q<{ lines: CartLineInput[] }>("SELECT lines FROM customer_cart WHERE customer_id = $1 FOR UPDATE", [customerId]);
+      const byId = new Map<string, CartLineInput>((Array.isArray(rows[0]?.lines) ? rows[0].lines : []).map((l) => [l.id, l]));
+      for (const l of lines) {
+        const had = byId.get(l.id);
+        byId.set(l.id, had ? { ...l, qty: Math.max(had.qty, l.qty) } : l);
+      }
+      next = [...byId.values()].slice(0, CART_MAX);
+    }
+    await q(
+      `INSERT INTO customer_cart (customer_id, lines, updated_at) VALUES ($1, $2, now())
+       ON CONFLICT (customer_id) DO UPDATE SET lines = EXCLUDED.lines, updated_at = now()`,
+      [customerId, JSON.stringify(next)],
+    );
+    return next;
+  });
 }
 
 export async function setCar(customerId: string, car: SavedCar | null): Promise<void> {

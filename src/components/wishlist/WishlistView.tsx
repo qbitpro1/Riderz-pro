@@ -47,8 +47,8 @@ export function WishlistView({ live }: { live: Record<string, LiveProduct> }) {
           <Link href="/shop" className="btn btn-primary">
             Browse the shop
           </Link>
-          <Link href="/collections/bestsellers" className="btn btn-outline">
-            See bestsellers
+          <Link href="/shop?sort=popular" className="btn btn-outline">
+            See popular products
           </Link>
         </div>
       </div>

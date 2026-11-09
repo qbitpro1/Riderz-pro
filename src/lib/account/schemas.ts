@@ -83,6 +83,24 @@ export const wishlistItemSchema = z.object({
   hasOptions: z.boolean(),
   savedAt: z.number().int().min(0),
 });
+/** One cart line as the browser keeps it (a snapshot; checkout prices everything on the server). */
+export const cartLineSchema = z.object({
+  id: z.string().min(1).max(400),
+  slug: z.string().min(1).max(200).regex(/^[a-z0-9][a-z0-9:_-]*$/i),
+  href: sitePath,
+  name: z.string().min(1).max(300),
+  variant: z.string().max(200).optional(),
+  image: imageSchema.optional(),
+  price: z.number().min(0).max(10_000_000),
+  qty: z.number().int().min(1).max(99),
+  install: z.number().min(0).max(10_000_000).optional(),
+  seller: z.object({ id: z.string().min(1).max(100), name: z.string().min(1).max(200), slug: z.string().min(1).max(200) }).optional(),
+});
+export const CART_MAX = 100;
+/** PUT body: `merge` adds these lines to the saved cart (first sign-in on this device); otherwise they replace it. */
+export const cartSchema = z.object({ lines: z.array(cartLineSchema).max(CART_MAX), merge: z.boolean().optional() });
+export type CartLineInput = z.output<typeof cartLineSchema>;
+
 export const WISHLIST_MAX = 50;
 export const wishlistSchema = z.object({ items: z.array(wishlistItemSchema).max(WISHLIST_MAX) });
 

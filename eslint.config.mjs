@@ -15,5 +15,5 @@ export default defineConfig([
     },
     linterOptions: { reportUnusedDisableDirectives: "error" },
   },
-  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts", ".data/**", ".claude/**", "public/**"]),
+  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts", ".data/**", "dev.db/**", ".claude/**", "public/**"]),
 ]);

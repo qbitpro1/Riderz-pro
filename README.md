@@ -55,7 +55,7 @@ screen in their own shop.
 | Offline Store | Shop-floor screen per seller: shop categories, Bestseller tags, suggestions, Salesman AI with seller-limited bargaining, pay on the screen or at the counter, receipts by SMS | `/store/[slug]`, set up in `/vendor/dashboard/store-screen` |
 | Riders (Delhi NCR) | Apply, accept deliveries, share location, delivery codes, earnings | `/rider` |
 | Admin | Team logins with roles; sellers, products, orders, refunds, payouts, dispatch, riders, coupons, customers, reports, audit log | `/admin` |
-| Other | Services (PPF, audio, body kits…), used cars, the Mahindra BE 6 programme, offers | menus |
+| Other | Offers and coupons, help pages. (The bundled brand price lists, services, used cars and the BE 6 pages were taken off the site; old links go to `/shop`.) | menus |
 
 ### Offline Store in short
 
@@ -202,13 +202,26 @@ npm run build && npm start
 ```
 
 No settings are needed in development:
-- the embedded database is used;
+- the embedded database is used, stored in `./dev.db` (git-ignored);
 - `/admin` is open when `ADMIN_USER` is unset;
 - sign-in codes are printed in the server console;
 - payments show as "not switched on";
 - the free AI works.
 
 Copy `.env.example` to `.env.local` to set anything; every setting is described there.
+
+To use a local Postgres instead, set `DATABASE_URL`. If that database already belongs to another app,
+also set `DATABASE_SCHEMA` (e.g. `riderzpro_app`): this app's tables are then kept in that schema and
+the other app's tables are never touched.
+
+Test logins: start `npm run dev` once (it creates the tables), then `npm run seed:logins`. That adds
+two customers, two approved sellers and an admin team member; the second admin is `ADMIN_USER` /
+`ADMIN_PASSWORD`. The emails and passwords are in `scripts/seed-dev-logins.mjs`. Customers sign in with
+a code, which is printed in the dev server console.
+
+Sellers can add many products at once from **Products → Upload JSON**
+(`/vendor/dashboard/products/import`). Each product goes in under the signed-in seller and shows on the
+site as "Store: <store name>" once an admin approves it. The page lists the fields and has an example.
 
 Before `npm run build`:
 - stop the dev server (it locks the embedded database);
