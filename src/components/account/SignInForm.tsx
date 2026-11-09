@@ -32,6 +32,7 @@ export function SignInForm({ next }: { next: string }) {
   const [step, setStep] = useState<Step>({ kind: "ask" });
   const [identifier, setIdentifier] = useState("");
   const [code, setCode] = useState("");
+  const [devCode, setDevCode] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [fieldError, setFieldError] = useState<string | undefined>();
@@ -66,9 +67,14 @@ export function SignInForm({ next }: { next: string }) {
     setError(null);
     setFieldError(undefined);
     try {
-      await api("/api/account/code/send", { body: { identifier: raw } });
+      const res = await api<{ devCode?: string }>("/api/account/code/send", { body: { identifier: raw } });
       setStep({ kind: "code", identifier: raw, channel: parsed.data.channel, target: parsed.data.target });
-      setCode("");
+      if (res.devCode) {
+        setDevCode(res.devCode);
+        setCode(res.devCode);
+      } else {
+        setCode("");
+      }
       setWait(RESEND_AFTER);
     } catch (err) {
       if (err instanceof ApiFailure && err.fields.identifier) setFieldError(err.fields.identifier);
@@ -185,6 +191,11 @@ export function SignInForm({ next }: { next: string }) {
                   We sent a 6-digit code to {step.channel === "mobile" ? "+91 " : ""}
                   <span className="font-semibold text-chalk">{maskContact(step.target)}</span>. It expires in 10 minutes.
                 </p>
+                {devCode && (
+                  <p className="mt-3 rounded border border-accent/40 bg-accent/10 p-2.5 text-xs text-accent">
+                    <strong>Development OTP:</strong> <code className="font-mono font-bold tracking-wider">{devCode}</code> (auto-filled)
+                  </p>
+                )}
               </div>
               <TextField
                 id="code"

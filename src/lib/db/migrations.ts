@@ -1029,4 +1029,12 @@ UPDATE vendor_orders vo SET commission_rate = 0, updated_at = now()
    AND vo.commission_rate <> 0 AND vo.payout_id IS NULL;
 `,
   },
+  {
+    // The seller's lowest price for a product on the shop screen: Salesman AI's bargaining never
+    // takes a unit below it (store-sales.ts). Empty = no floor beyond the seller's % / ₹ limits.
+    id: "019_product_min_price",
+    sql: `
+ALTER TABLE vendor_products ADD COLUMN min_price integer CHECK (min_price IS NULL OR min_price >= 1);
+`,
+  },
 ];

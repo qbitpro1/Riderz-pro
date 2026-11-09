@@ -14,6 +14,9 @@ export const POST = route(async (req: Request) => {
     throw new ApiError(400, "already_verified", "This is already verified.");
   }
   await rateLimit(`otp-send:${vendor.id}:${channel}`, 6, 60 * 60);
-  await sendOtp({ vendorId: vendor.id, channel, target: channel === "email" ? vendor.email : vendor.mobile, purpose: "verify" });
-  return ok({ sentTo: channel === "email" ? vendor.email : `+91 ${vendor.mobile.slice(0, 2)}XXXXXX${vendor.mobile.slice(-2)}` });
+  const code = await sendOtp({ vendorId: vendor.id, channel, target: channel === "email" ? vendor.email : vendor.mobile, purpose: "verify" });
+  return ok({
+    sentTo: channel === "email" ? vendor.email : `+91 ${vendor.mobile.slice(0, 2)}XXXXXX${vendor.mobile.slice(-2)}`,
+    ...(process.env.NODE_ENV !== "production" ? { devCode: code } : {}),
+  });
 });

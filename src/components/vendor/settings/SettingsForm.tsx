@@ -8,6 +8,7 @@ import type { VendorSettings } from "@/lib/server/vendor-account";
 import { api, ApiFailure, uploadFile } from "@/lib/vendor/client";
 import { fileHref, offlineStoreHref, storeHref } from "@/lib/vendor/types";
 import { INDIAN_STATES } from "@/lib/vendor/validators";
+import { IfscBankHint } from "../IfscBankHint";
 
 type Msg = { tone: "ok" | "error"; text: string } | null;
 
@@ -357,11 +358,14 @@ export default function SettingsForm({ initial }: { initial: VendorSettings }) {
               <input className="field" inputMode="numeric" value={bank.confirmAccountNumber} onChange={(e) => setBank({ ...bank, confirmAccountNumber: e.target.value.replace(/\D/g, "") })} autoComplete="off" />
               <Err>{bankErr.confirmAccountNumber}</Err>
             </label>
-            <label className="block">
-              <span className="label">IFSC</span>
-              <input className="field uppercase" value={bank.ifsc} onChange={(e) => setBank({ ...bank, ifsc: e.target.value })} maxLength={11} autoComplete="off" />
-              <Err>{bankErr.ifsc}</Err>
-            </label>
+            <div>
+              <label className="block">
+                <span className="label">IFSC</span>
+                <input className="field uppercase" value={bank.ifsc} onChange={(e) => setBank({ ...bank, ifsc: e.target.value })} maxLength={11} autoComplete="off" spellCheck={false} />
+                <Err>{bankErr.ifsc}</Err>
+              </label>
+              {!bankErr.ifsc && <IfscBankHint ifsc={bank.ifsc} />}
+            </div>
             <div className="flex items-end gap-2 sm:col-span-2">
               <button type="submit" className="btn btn-primary btn-sm" disabled={busy === "bank"}>{busy === "bank" ? "Sending…" : "Send for review"}</button>
               <button type="button" className="btn btn-outline btn-sm" onClick={() => { setBankOpen(false); setBankErr({}); }}>Cancel</button>

@@ -31,6 +31,7 @@ export type VendorProductRow = {
   price: number;
   stock: number;
   low_stock_at: number;
+  min_price: number | null;
   part_type: VendorProduct["partType"];
   warranty_months: number | null;
   summary: string | null;
@@ -68,6 +69,7 @@ export function toVendorProduct(r: VendorProductRow): VendorProduct {
     price: r.price,
     stock: r.stock,
     lowStockAt: r.low_stock_at,
+    minPrice: r.min_price ?? null,
     partType: r.part_type,
     warrantyMonths: r.warranty_months,
     summary: r.summary,

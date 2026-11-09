@@ -117,6 +117,7 @@ export async function sendOtp(opts: { vendorId: string | null; channel: OtpChann
     await sql("UPDATE vendor_otps SET consumed_at = now() WHERE id = $1", [otpId]).catch(() => {});
     throw err;
   }
+  return code;
 }
 
 /**

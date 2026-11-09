@@ -6,6 +6,7 @@ import type { VendorSelf } from "@/lib/vendor/types";
 import { ApiFailure, api } from "@/lib/vendor/client";
 import { bankStepSchema, normaliseId } from "@/lib/vendor/validators";
 import { Notice, TextField, useFocusFirstInvalid, validate, type FieldErrors } from "../auth/fields";
+import { IfscBankHint } from "../IfscBankHint";
 import { StepFooter, StepFrame, type StepProps } from "./ui";
 
 export function StepBank({ state, editable, onSaved, goBack, goNext }: StepProps) {
@@ -99,17 +100,20 @@ export function StepBank({ state, editable, onSaved, goBack, goNext }: StepProps
                 error={errors.confirmAccountNumber}
               />
             </div>
-            <TextField
-              id="ifsc"
-              label="IFSC code"
-              value={ifsc}
-              onChange={(e) => setIfsc(e.target.value.toUpperCase().slice(0, 11))}
-              autoComplete="off"
-              spellCheck={false}
-              className="sm:max-w-xs"
-              error={errors.ifsc}
-              hint="11 characters, for example HDFC0001234."
-            />
+            <div>
+              <TextField
+                id="ifsc"
+                label="IFSC code"
+                value={ifsc}
+                onChange={(e) => setIfsc(e.target.value.toUpperCase().slice(0, 11))}
+                autoComplete="off"
+                spellCheck={false}
+                className="sm:max-w-xs"
+                error={errors.ifsc}
+                hint="11 characters, for example HDFC0001234."
+              />
+              {!errors.ifsc && <IfscBankHint ifsc={ifsc} />}
+            </div>
             {existing && editable && (
               <button type="button" onClick={() => setChanging(false)} className="text-xs font-semibold text-ash underline hover:text-chalk">
                 Keep the saved account
