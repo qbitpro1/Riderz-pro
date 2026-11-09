@@ -210,3 +210,37 @@ release with online-only checkout goes live**. Without them nobody can place an 
    cancel the test orders.
 3. At go-live, once KYC is approved, switch to the live keys and the live-mode webhook secret, then
    restart.
+
+## 10. Uptime checks and logs
+
+**Uptime.** Add two checks in any uptime service (UptimeRobot, Better Stack, Uptime Kuma …), every
+5 minutes, alerting the owner and the developer by email and SMS/WhatsApp:
+
+| Check | URL | Healthy |
+| --- | --- | --- |
+| Site and database | `https://riderzpro.com/api/health` | HTTP 200 and body contains `"ok":true` (503 = database down) |
+| Home page | `https://riderzpro.com/` | HTTP 200 |
+
+The hourly cleanup job (section 8) appends to `~/riderzpro-cron.log`; if the service supports
+heartbeat ("cron") monitors, append `&& curl -fsS <heartbeat URL>` to the crontab line so a missed
+hour raises an alert.
+
+**Logs.** The app writes one `[error] …` line per server error (no personal data) and `[config] …`
+lines at start-up.
+
+- pm2: keep logs from filling the disk:
+  ```bash
+  pm2 install pm2-logrotate
+  pm2 set pm2-logrotate:max_size 20M
+  pm2 set pm2-logrotate:retain 14
+  pm2 save
+  ```
+- systemd: journald rotates by itself; check `SystemMaxUse=` in `/etc/systemd/journald.conf`
+  (e.g. `1G`).
+- Daily look (or after each deploy):
+  ```bash
+  pm2 logs riderzpro --lines 2000 --nostream | grep -E '\[error\]|\[config\]|Razorpay'
+  # or: journalctl -u riderzpro --since "24 hours ago" | grep -E '\[error\]|\[config\]|Razorpay'
+  ```
+- Payment problems also show in the Razorpay Dashboard → Webhooks → the webhook → recent deliveries.
+  Failed deliveries there usually mean a wrong `RAZORPAY_WEBHOOK_SECRET` or the site being down.
