@@ -103,7 +103,23 @@ export async function askStoreLocal(
 
   // "Best konsa hai inme?", "which one is better": choose among the products just shown.
   const onScreen = shown.map((id) => byId.get(id)).filter((p): p is ScreenProduct => Boolean(p));
-  if (raw.pick && raw.words.length === 0 && onScreen.length >= 2) return bestOf(onScreen, intent.car?.slug ?? null, t);
+  // "Compare the two lights": among those shown, the ones the words name (all of them when none do).
+  // With fewer than two on screen, compare the best matches for the words instead.
+  if (raw.pick) {
+    const named = raw.words.filter((w) => vocab.has(w) && !COUNT_WORDS.has(w));
+    const pool = onScreen.length >= 2 ? onScreen : named.length ? search(all, { ...intent, words: named }, [], SHOW).items.map((c) => c.p) : [];
+    const matching = named.length && onScreen.length >= 2
+      ? pool.filter((p) => {
+          const text = new Set(words(`${p.title} ${p.brand} ${p.groupName} ${p.subName ?? ""} ${p.typeName}`));
+          return named.every((w) => text.has(w));
+        })
+      : pool;
+    if (matching.length >= 2) return bestOf(matching, intent.car?.slug ?? null, t);
+    if (pool.length >= 2 && !named.length) return bestOf(pool, intent.car?.slug ?? null, t);
+    if (pool.length === 1) {
+      return { ...say(t(`We have just one of those: ${pool[0].title} at ${inr(pool[0].price)}. Say “add it” to put it in your order.`, `Iska ek hi option hai: ${pool[0].title}, ${inr(pool[0].price)}. “Add karo” boliye to order mein daal dunga.`)), products: [pool[0].id] };
+    }
+  }
 
   if (intent.words.length === 0 && !intent.car && intent.sort === "relevance" && intent.min === null && intent.max === null) {
     if (!unclear) return say(t(`Welcome to ${input.storeName}! ${help}`, `${input.storeName} mein swagat hai! ${help}`));
@@ -146,6 +162,9 @@ export async function askStoreLocal(
 }
 
 const say = (text: string): Reply => ({ text, products: [], actions: [] });
+
+/** "Compare the two", "dono mein": counting words, not product names. */
+const COUNT_WORDS = new Set(["two", "both", "three", "first", "second", "third", "dono", "teeno", "teen"]);
 
 /** Common car-accessory words a shop may not stock, so "tyres?" still gets an honest "we don't have tyres". */
 const ACCESSORY_WORDS = "tyre tire wheel alloy rim battery oil horn wiper bulb helmet charger perfume freshener cover mat light camera stereo speaker sensor polish wax";

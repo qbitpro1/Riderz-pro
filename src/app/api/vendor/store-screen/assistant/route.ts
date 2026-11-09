@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { ApiError, guardMutation, ok, rateLimit, readJson, route } from "@/lib/server/http";
 import { CAN_SELL, requireVendor } from "@/lib/server/session";
-import { askStoreAssistant, fullSalesmanFor } from "@/lib/server/assistant/store";
+import { askStoreAssistant, fullSalesmanFor, type StoreAction } from "@/lib/server/assistant/store";
 import { askStoreLocal } from "@/lib/server/assistant/store-local";
 import { screenCategories, screenProducts, screenStore } from "@/lib/server/store-screen";
 import { isHinglish } from "@/lib/server/assistant/local";
@@ -28,6 +28,9 @@ const schema = assistantRequestSchema.extend({
  * (store-local.ts, free) answers instead. Both bargain on the same ladder within the seller's limits.
  */
 type Answer = { text: string; products: string[]; actions: { type: string; id?: string; qty?: number }[] };
+
+/** The customer asks what to buy alongside: "what else goes with it", "add-ons?", "iske saath kya". */
+const ADD_ON_QUESTION = /\b(goes? (well )?with|go with|what else|add[- ]?ons?|along with (it|this)|(iske|uske|is ke|us ke) saath|saath (mein|me) kya)\b/i;
 
 /**
  * After Salesman AI puts something in the order (either mode), it also names a few products that
@@ -102,6 +105,22 @@ export const POST = route(async (req: Request) => {
         make: (percent: number) => createOffer(vendor.id, percent, body.cart, "Basic mode bargaining ladder"),
       }
     : null;
+  // "What else goes with it?", "iske saath kya lu?": the screen's own pairs for what's in the order
+  // (or, with an empty order, the product just shown), so Basic mode suggests real add-ons.
+  if (ADD_ON_QUESTION.test(last.content)) {
+    const lastShown = [...messages].reverse().find((m) => m.role === "assistant" && m.products?.length)?.products?.[0];
+    const base = body.cart.length ? body.cart : lastShown ? [{ id: lastShown, qty: 1 }] : [];
+    if (base.length) {
+      const hi = isHinglish(last.content);
+      const empty = { text: "", products: [] as string[], actions: [] as StoreAction[] };
+      const s = await addSuggestions(empty, base, vendor.id, body.cart, car, last.content, products).catch(() => empty);
+      const r = s.text.trim()
+        ? { ...s, text: s.text.trim() }
+        : { ...empty, text: hi ? "Abhi iske saath jodne layak kuch aur stock mein nahi hai. Checkout karein?" : "Nothing else in stock pairs with it right now. Shall we check out?" };
+      await log("basic", r);
+      return ok({ reply: r.text, products: r.products, actions: r.actions, mode: "basic" });
+    }
+  }
   const r0 = await askStoreLocal(products, { messages, cart: body.cart, car, storeName: screenStore(vendor).name, pay: payOptions(settings), bargain });
   const r = await withSuggestions(r0, vendor.id, body.cart, car, last.content, products);
   await log("basic", r);
