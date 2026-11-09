@@ -31,6 +31,7 @@ other team files. Do it on **staging first**, then production.
 | `WEB_ASSISTANT_ENGINE` | optional: `claude` to answer Ask AI with Claude (needs the key) | Owner |
 | `NEXT_PUBLIC_MAP_TILES_URL`, `ROUTING_BASE_URL` | optional (free defaults) | Viswanath |
 | `SPEECH_TO_TEXT_PROVIDER`, `SARVAM_API_KEY` | optional: mic on shop screens whose browser has no speech recognition (see `.env.example`) | Owner |
+| `CSP_MODE` | optional: `report-only` (default), `enforce` after the week of checking, `off`; build time (section 11) | Sathwik |
 
 `NEXT_PUBLIC_*` values are built into the site: after changing one, run `npm run build` again, a
 restart alone isn't enough.
@@ -244,3 +245,50 @@ lines at start-up.
   ```
 - Payment problems also show in the Razorpay Dashboard → Webhooks → the webhook → recent deliveries.
   Failed deliveries there usually mean a wrong `RAZORPAY_WEBHOOK_SECRET` or the site being down.
+
+## 11. Content Security Policy (report-only, then enforce)
+
+`next.config.ts` sends a Content Security Policy on every page. It ships as
+**`Content-Security-Policy-Report-Only`**: the browser checks every script, image, frame, form post
+and connection against it and logs anything outside it, but **blocks nothing**. Once a week of real
+use shows no unexpected reports, switch it to enforcing.
+
+What it allows: the site itself; Razorpay Checkout (`checkout.razorpay.com` script, `api.razorpay.com`
+and `*.razorpay.com` for its frame, API calls, images and form posts); the map tile server from
+`NEXT_PUBLIC_MAP_TILES_URL` (default `tile.openstreetmap.org`); product photos from Unsplash, RECOIL
+and Shopify's CDN; the Google Maps embed on `/locations`. It also sets `frame-ancestors 'self'`,
+`base-uri 'self'`, `object-src 'none'` and `form-action 'self'` + Razorpay.
+
+It has no nonces, so it works with Next's statically rendered pages; the cost is
+`script-src 'unsafe-inline'` (Next's own inline scripts, the theme script, JSON-LD). It still stops
+scripts, frames and form posts from other sites. Moving to nonces later means rendering every page
+dynamically in `src/proxy.ts` (see Next's CSP guide in `node_modules/next/dist/docs`).
+
+`CSP_MODE` setting (read **at build time**: rebuild after changing it, a restart is not enough):
+
+| `CSP_MODE` | Header sent |
+| --- | --- |
+| empty / `report-only` (default) | `Content-Security-Policy-Report-Only` |
+| `enforce` | `Content-Security-Policy` |
+| `off` | none (emergency only) |
+
+**The week of checking (staging, then production):**
+
+1. In Chrome, open DevTools → Console, tick "Preserve log", and go through the smoke test (section 4):
+   home, shop, a product page, cart, **a Razorpay test payment including a UPI/card 3-D Secure step**,
+   `/locations` (Google Maps), a rider's live map on an order page, the seller Offline Store screen
+   (mic, receipt), and `/admin` (vendor review with a PDF preview).
+2. Every miss shows as `[Report Only] Refused to load … because it violates the following Content
+   Security Policy directive: "…"`. There is no report endpoint, so the console is the record:
+   note each one (page, blocked address, directive).
+3. For each report: if the source is something we use on purpose, add it to the right directive in
+   `CSP_DIRECTIVES` in `next.config.ts` and redeploy. Reports from browser extensions
+   (`chrome-extension://…`, injected ad/translate scripts) can be ignored.
+4. Repeat on Safari (iPhone) and Firefox once; they report a little differently.
+5. After a week with no new reports from the site's own pages, set `CSP_MODE=enforce`, rebuild and
+   redeploy, then run the smoke test again with the console open: anything now says `Refused to …`
+   without `[Report Only]` and is actually blocked.
+
+**Rolling back:** set `CSP_MODE=report-only` (or `off`), rebuild and redeploy.
+
+To check which header is live: `curl -sI https://riderzpro.com/ | grep -i content-security`.
