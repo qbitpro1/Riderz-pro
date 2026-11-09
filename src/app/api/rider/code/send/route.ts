@@ -10,6 +10,6 @@ export const POST = route(async (req: Request) => {
   await rateLimit(`rider-code-ip:${clientIp(req)}`, 10, 10 * 60);
   const { mobile } = await readJson(req, riderCodeSendSchema);
   await rateLimit(`rider-code-to:${mobile}`, 5, 60 * 60);
-  await sendOtp({ vendorId: null, channel: "mobile", target: mobile, purpose: "rider_login" });
-  return ok({ sent: true });
+  const code = await sendOtp({ vendorId: null, channel: "mobile", target: mobile, purpose: "rider_login" });
+  return ok({ sent: true, ...(process.env.NODE_ENV !== "production" ? { devCode: code } : {}) });
 });

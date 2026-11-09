@@ -1,6 +1,10 @@
 import type { NextConfig } from "next";
+import path from "node:path";
 
 const nextConfig: NextConfig = {
+  turbopack: {
+    root: path.resolve(__dirname),
+  },
   reactStrictMode: true,
   poweredByHeader: false,
   // Database drivers load native/wasm code at runtime; keep them out of the server bundle.

@@ -110,6 +110,7 @@ export async function sendOtp(opts: { vendorId: string | null; channel: OtpChann
     [newId("otp"), opts.vendorId, opts.channel, opts.target, opts.purpose, codeHash(opts.target, opts.purpose, code), TTL_MINUTES],
   );
   await deliver(opts.channel, opts.target, code, opts.purpose);
+  return code;
 }
 
 /**
