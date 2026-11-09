@@ -221,14 +221,18 @@ async function bargain(b: LocalBargain | null, hasOrder: boolean, t: T): Promise
   const r = await b.make(b.next.percent);
   if (!r.ok) return say(t("The prices on this screen are already our best. Please ask our staff at the counter.", "Screen par jo price hai wahi best price hai. Counter par staff se baat kijiye."));
   const { offer } = r;
-  const pct = b.next.percent;
   const total = inr(offer.total);
+  // When a product's lowest price held the discount back, name the real saving in rupees, not the
+  // ladder's percent (e.g. "₹10 off", never "5% off" for a ₹10 saving).
+  const held = offer.percent !== b.next.percent;
+  const off = held ? `${inr(offer.discount)} off` : `${b.next.percent}% off`;
+  const kam = held ? `${inr(offer.discount)} kam` : `${b.next.percent}% kam`;
   const valid = t(` Valid for ${offer.validMinutes} minutes.`, ` ${offer.validMinutes} minute tak valid.`);
   const text = {
-    first: t(`For you I can do ${pct}% off: ${total} instead of ${inr(offer.subtotal)}.${valid}`, `Aapke liye ${pct}% kam kar deta hoon: ${inr(offer.subtotal)} ki jagah ${total}.${valid}`),
-    more: t(`Alright, ${pct}% off: ${total}. That's a very good price.${valid}`, `Chaliye, ${pct}% off: ${total}. Bahut accha price hai.${valid}`),
-    last: t(`My last price: ${pct}% off, ${total}. I can't go lower than this.${valid}`, `Last price: ${pct}% off, ${total}. Isse kam nahi ho payega.${valid}`),
-    final: t(`Only for you: ${pct}% off, ${total}. This is my final price.${valid}`, `Sirf aapke liye: ${pct}% off, ${total}. Ye bilkul final price hai.${valid}`),
+    first: t(`For you I can do ${off}: ${total} instead of ${inr(offer.subtotal)}.${valid}`, `Aapke liye ${kam} kar deta hoon: ${inr(offer.subtotal)} ki jagah ${total}.${valid}`),
+    more: t(`Alright, ${off}: ${total}. That's a very good price.${valid}`, `Chaliye, ${off}: ${total}. Bahut accha price hai.${valid}`),
+    last: t(`My last price: ${off}, ${total}. I can't go lower than this.${valid}`, `Last price: ${off}, ${total}. Isse kam nahi ho payega.${valid}`),
+    final: t(`Only for you: ${off}, ${total}. This is my final price.${valid}`, `Sirf aapke liye: ${off}, ${total}. Ye bilkul final price hai.${valid}`),
   }[b.next.kind];
   return { text, products: [], actions: [{ type: "offer", offer }] };
 }
