@@ -80,7 +80,7 @@ const LABEL = { confirmed: "Confirm order", completed: "Mark completed", cancell
 export function OrderStatusButtons({
   orderId,
   status,
-  paymentMethod = "whatsapp",
+  paymentMethod = "online",
   paymentStatus = "pending",
 }: {
   orderId: string;

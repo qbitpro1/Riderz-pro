@@ -5,6 +5,7 @@ import {
   REFUND_STATUS_LABELS,
   paiseToText,
   type AdminPaymentSummary,
+  type PaymentMethod,
   type PaymentStatus,
 } from "@/lib/payments/types";
 import { RefundForm } from "./RefundForm";
@@ -15,6 +16,16 @@ export const PAYMENT_TONE: Record<PaymentStatus, string> = {
   failed: "text-danger border-danger/40",
   refunded: "text-ash border-tint/30",
   partially_refunded: "text-gold border-gold/40",
+};
+
+/** What the card says for an order not paid through Razorpay. New website orders are always online. */
+const OFFLINE_NOTE: Record<Exclude<PaymentMethod, "online">, (paid: boolean) => string> = {
+  counter: (paid) =>
+    paid
+      ? "Paid at the shop counter: the seller took the money when handing over. It isn't a Razorpay payment, so it isn't tracked here."
+      : "To be paid at the shop counter: the seller takes the money when handing over. It isn't a Razorpay payment, so it isn't tracked here.",
+  whatsapp: () => "Older WhatsApp order: payment was arranged with the customer on WhatsApp and isn't tracked here.",
+  cod: () => "Cash on delivery: payment is collected on delivery and isn't tracked here.",
 };
 
 /** The admin order page's payment card: Razorpay attempts, refunds, and the refund form. */
@@ -30,7 +41,7 @@ export function PaymentCard({ orderId, summary }: { orderId: string; summary: Ad
       </div>
 
       {s.method !== "online" ? (
-        <p className="text-xs text-ash">Payment is arranged with the customer on WhatsApp and isn&apos;t tracked here.</p>
+        <p className="text-xs text-ash">{OFFLINE_NOTE[s.method](s.status === "paid")}</p>
       ) : (
         <>
           {s.paidAfterCancel && (

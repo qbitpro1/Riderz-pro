@@ -11,12 +11,12 @@
  * payment.failed, refunds (partial, over-limit, refused, webhook-settled, full), the unpaid-order
  * release with stock coming back, a late payment after release, and the no-keys behaviour.
  */
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { createHmac, randomBytes } from "node:crypto";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import http from "node:http";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import assert from "node:assert/strict";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -57,7 +57,7 @@ async function migrate(db) {
   mkdirSync(tmpDir, { recursive: true });
   const tmp = path.join(tmpDir, `migrations-${Date.now()}.ts`);
   writeFileSync(tmp, src);
-  const { MIGRATIONS } = await import(tmp);
+  const { MIGRATIONS } = await import(pathToFileURL(tmp).href);
   await db.exec("CREATE TABLE IF NOT EXISTS schema_migrations (id text PRIMARY KEY, applied_at timestamptz NOT NULL DEFAULT now())");
   const done = new Set((await db.query("SELECT id FROM schema_migrations")).rows.map((r) => r.id));
   for (const m of MIGRATIONS) {
@@ -145,7 +145,7 @@ async function startServer(withKeys) {
       RAZORPAY_API_BASE: `http://127.0.0.1:${MOCK_PORT}`,
     });
   }
-  server = spawn(path.join(ROOT, "node_modules/.bin/next"), ["dev", "-p", String(PORT)], { cwd: ROOT, env, stdio: ["ignore", "pipe", "pipe"] });
+  server = spawn(process.execPath, [path.join(ROOT, "node_modules/next/dist/bin/next"), "dev", "-p", String(PORT)], { cwd: ROOT, env, stdio: ["ignore", "pipe", "pipe"] });
   let log = "";
   server.stdout.on("data", (d) => (log += d));
   server.stderr.on("data", (d) => (log += d));
@@ -165,7 +165,8 @@ async function stopServer() {
   if (!server) return;
   const s = server;
   server = null;
-  s.kill("SIGTERM");
+  if (process.platform === "win32") spawnSync("taskkill", ["/pid", String(s.pid), "/t", "/f"]);
+  else s.kill("SIGTERM");
   await new Promise((r) => {
     s.once("exit", r);
     setTimeout(r, 8000);
@@ -203,7 +204,7 @@ const placeOnline = (qty, extra = {}) => call("POST", "/api/orders", { customer,
 
 /** Stock left, read from the "Only N left" answer to an impossible order (places nothing). */
 async function stockLeft() {
-  const r = await call("POST", "/api/orders", { customer, lines: [line(99)] });
+  const r = await call("POST", "/api/orders", { customer, lines: [line(99)], paymentMethod: "online" });
   assert.equal(r.status, 409, `stock probe: ${JSON.stringify(r.data)}`);
   const m = r.data.message.match(/Only (\d+) of/);
   return m ? Number(m[1]) : 0;
@@ -241,6 +242,7 @@ async function main() {
   let db = await openDb();
   await migrate(db);
   await seed(db);
+  await db.query("DELETE FROM rate_limits"); // left by an earlier run of this script
   await db.close();
 
   await startServer(true);
@@ -434,10 +436,11 @@ async function main() {
   await stopServer();
   db = await openDb();
   await db.query("UPDATE orders SET created_at = now() - interval '40 minutes' WHERE number = ANY($1)", [[o3.number, o4.number, o5.number]]);
+  await db.query("DELETE FROM rate_limits"); // this script places more orders than one customer may
   await db.close();
   await startServer(true);
 
-  r = await call("POST", "/api/orders", { customer, lines: [{ id: "vendor:does-not-exist", qty: 1, install: false }] }); // any order request kicks off the release
+  r = await call("POST", "/api/orders", { customer, lines: [{ id: "vendor:does-not-exist", qty: 1, install: false }], paymentMethod: "online" }); // any order request kicks off the release
   assert.equal(r.status, 409);
   let released = false;
   for (let i = 0; i < 20 && !released; i++) {
@@ -478,20 +481,22 @@ async function main() {
   r = await call("GET", "/api/payments/razorpay/config");
   assert.equal(r.data.enabled, false);
   r = await placeOnline(1);
-  assert.equal(r.status, 409);
+  assert.equal(r.status, 503);
   assert.equal(r.data.error, "payments_unavailable");
-  assert.equal(await stockLeft(), 2, "nothing reserved");
   r = await call("POST", "/api/payments/razorpay/verify", { razorpay_order_id: o1.rp, razorpay_payment_id: pid1, razorpay_signature: goodSig });
   assert.equal(r.status, 503);
   r = await webhook("payment.captured", paymentEntity(o1.rp, pid1, o1.paise)).send();
   assert.equal(r.status, 503);
-  r = await call("POST", "/api/orders", { customer, lines: [line(1)] });
-  assert.equal(r.status, 201, "WhatsApp ordering still works");
-  ok("no keys: online option off, online order refused before anything is reserved, verify/webhook 503, WhatsApp orders still work");
+  for (const refused of [{ paymentMethod: "whatsapp" }, {}]) {
+    r = await call("POST", "/api/orders", { customer, lines: [line(1)], ...refused });
+    assert.equal(r.status, 400, "only online orders are accepted");
+  }
+  ok("no keys: online option off, online order refused, verify/webhook 503, WhatsApp and no-method orders refused");
   await stopServer();
 
   /* 8. database trail */
   db = await openDb();
+  assert.equal((await db.query("SELECT stock FROM vendor_products WHERE slug = $1", [SLUG])).rows[0].stock, 2, "nothing reserved without keys");
   const ev = (await db.query("SELECT count(*)::int AS n FROM payment_webhook_events")).rows[0].n;
   const refunds = (await db.query("SELECT status, source, amount_paise FROM refunds WHERE order_id = (SELECT id FROM orders WHERE number = $1) ORDER BY created_at", [o1.number])).rows;
   const auditRows = (await db.query("SELECT action FROM audit_log WHERE action LIKE 'payment.%' OR action = 'order.payment_expired'")).rows.map((x) => x.action);

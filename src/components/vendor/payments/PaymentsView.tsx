@@ -82,7 +82,7 @@ export function PaymentsView({ data }: { data: PayoutOverview }) {
           </button>
         </div>
         {settlements.length === 0 ? (
-          <div className="card p-8 text-center text-sm text-ash">Delivered orders show up here with their commission and what you earn.</div>
+          <div className="card p-8 text-center text-sm text-ash">Delivered orders paid through Riderzpro show up here with what you earn. Commission applies to online orders only; shop counter sales have no commission.</div>
         ) : (
           <>
             <div className="card hidden overflow-x-auto md:block">

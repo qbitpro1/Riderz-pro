@@ -12,7 +12,6 @@ import { ApiError } from "./http";
 import { newId, sha256 } from "./security";
 import { LIVE_PRODUCT_WHERE } from "./vendor-products";
 import { audit, notifyVendor, type Actor } from "./vendors";
-import { onOrderConfirmed } from "./payments-hooks";
 import { applyCoupon, recordRedemption } from "./coupons";
 import { onOrderConfirmedMessages } from "./order-emails";
 import type { PaymentMethod, PaymentStatus } from "@/lib/payments/types";
@@ -149,17 +148,16 @@ export async function priceCart(lines: PlaceOrderInput["lines"]) {
 /**
  * `customerId` comes from the session (never the request body); null for guest checkout.
  *
- * `method: "online"`: the order waits for its Razorpay payment (payments.ts). Stock is taken now and
+ * The order waits for its Razorpay payment (payments.ts). Stock is taken now and
  * held; sellers are told and see the order only once it is paid; unpaid orders are cancelled and
  * their stock released after UNPAID_HOLD_MINUTES (releaseUnpaidOrders).
  */
 export async function placeOrder(
   input: PlaceOrderInput,
   customerId: string | null = null,
-  opts: { method?: "whatsapp" | "online" } = {},
 ): Promise<PlacedOrderRecord> {
   const { customer } = input;
-  const method = opts.method ?? "whatsapp";
+  const method = "online";
 
   /* ---- 1. price every line from the server's own data ---- */
   const { items, commissions, subtotal, shipping: listShipping, houseItems } = await priceCart(input.lines);
@@ -191,7 +189,7 @@ export async function placeOrder(
         [
           orderId, candidate, customer.name, customer.mobile, customer.email, customer.address, customer.city,
           customer.state, customer.pincode, customer.notes, subtotal, shipping, total, customerId,
-          method, method === "online" ? "online" : "whatsapp",
+          method, "online",
           // "Detect my location" at checkout; without it the address is geocoded when a rider accepts.
           input.deliveryPoint?.lat ?? null, input.deliveryPoint?.lng ?? null, input.deliveryPoint ? "device" : null,
           discount, coupon?.code ?? null,
@@ -274,7 +272,7 @@ export async function placeOrder(
     await audit({ type: "customer", id: sha256(customer.mobile).slice(0, 12) }, "order.place", {
       detail: { number, total, vendorParts: placed.length, paymentMethod: method, ...(input.couponCode ? { coupon: input.couponCode, discount } : {}) },
     });
-    if (method !== "online") await onOrderConfirmed(orderId, "whatsapp_placed");
+    // Online orders are confirmed when the Razorpay payment captures (via webhook/verify onOrderConfirmed)
   } catch (err) {
     console.error("[orders] post-commit step failed", err instanceof Error ? err.message : err);
   }

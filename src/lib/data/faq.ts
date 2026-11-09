@@ -24,7 +24,7 @@ export const FAQ_GROUPS: FaqGroup[] = [
     items: [
       {
         q: "How do I place an order?",
-        a: "Add products to your cart, fill in your delivery details, then choose Pay online, or Confirm order on WhatsApp, where we check fitment against your variant and confirm the total before anything is dispatched.",
+        a: "Add products to your cart, fill in your delivery details, then pay online with Razorpay. Your order is confirmed as soon as the payment goes through, and we send the confirmation by SMS, and by email if you gave us one.",
         href: "/support/payments#how-to-pay",
         hrefLabel: "How to pay",
       },
@@ -48,7 +48,7 @@ export const FAQ_GROUPS: FaqGroup[] = [
     items: [
       {
         q: "How do I know a part will fit my car?",
-        a: "Save your car on the site and we show what fits it. We also confirm fitment against your variant and year on WhatsApp before dispatch. Where a product page says fitment is confirmed on WhatsApp, we check it with you first.",
+        a: "Save your car on the site and we show what fits it. Where a product page does not list your car, ask us on WhatsApp with your variant and year before you order.",
         href: "/support/returns#fitment-guarantee",
         hrefLabel: "Fitment guarantee",
       },
@@ -78,7 +78,7 @@ export const FAQ_GROUPS: FaqGroup[] = [
       },
       {
         q: "How do I track my order?",
-        a: "We send a tracking link on WhatsApp when the consignment is picked up and again when it is out for delivery. If you cannot find it, use the Track your order page and we will follow up on WhatsApp.",
+        a: "Sign in and open My orders to see each seller's progress and the courier tracking number. If you cannot find an update, use the Track your order page and we will get back to you.",
         href: "/track-order",
         hrefLabel: "Track your order",
       },
@@ -150,7 +150,7 @@ export const FAQ_GROUPS: FaqGroup[] = [
     items: [
       {
         q: "How do I pay?",
-        a: "Pay online at checkout with Razorpay, or confirm your order on WhatsApp and we tell you how to pay there.",
+        a: "Pay online at checkout with Razorpay: UPI, cards, netbanking or wallets. An order not paid within 30 minutes is cancelled and nothing is charged; refunds go back to the original payment method.",
         href: "/support/payments#how-to-pay",
         hrefLabel: "How to pay",
       },

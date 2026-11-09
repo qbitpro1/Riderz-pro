@@ -36,7 +36,7 @@ export const SUPPORT_POLICIES: Policy[] = [
         heading: "Dispatch times",
         body: [
           "In-stock items ordered before 2 PM on a working day are dispatched the same day. Everything else leaves within 48 hours.",
-          "Made-to-order items — seat covers, painted spoilers, custom audio enclosures — carry the lead time shown on the product page. We confirm the date on WhatsApp when the order is placed. They follow the made-to-order terms on the Returns page.",
+          "Made-to-order items — seat covers, painted spoilers, custom audio enclosures — carry the lead time shown on the product page. They follow the made-to-order terms on the Returns page.",
         ],
       },
       {
@@ -59,9 +59,9 @@ export const SUPPORT_POLICIES: Policy[] = [
         id: "tracking",
         heading: "Order tracking",
         body: [
-          "You receive a tracking link on WhatsApp the moment the consignment is picked up, and again when it is out for delivery. Orders are confirmed on WhatsApp today, so that is also where updates reach you.",
+          "When your payment goes through we confirm the order by SMS, and by email if you gave us one. Signed in, you can follow each order on the My orders page, including each seller's progress and the courier tracking number.",
           "If a consignment stalls for more than 48 hours, we chase the carrier ourselves rather than asking you to.",
-          "Not sure where your order is? Use the Track your order page and we will pick it up on WhatsApp.",
+          "Not sure where your order is? Use the Track your order page and we will get back to you.",
         ],
       },
       {
@@ -215,8 +215,7 @@ export const SUPPORT_POLICIES: Policy[] = [
         id: "how-to-pay",
         heading: "How to pay",
         body: [
-          "Pay online at checkout: choose Pay online and complete the payment securely with Razorpay. Your order is confirmed as soon as the payment goes through, and your tax invoice is in My orders.",
-          "Or choose Confirm order on WhatsApp. We check fitment against your variant, confirm the total, and tell you how to pay in that conversation before anything is dispatched.",
+          "Pay online at checkout: complete the payment securely with Razorpay by UPI, card, netbanking or wallet. Your order is confirmed as soon as the payment goes through, and your tax invoice is in My orders.",
           "If an online payment isn't completed within 30 minutes, the order is cancelled and nothing is charged. If money left your account anyway, it is refunded.",
         ],
       },
@@ -336,7 +335,7 @@ export const LEGAL_POLICIES: Policy[] = [
         id: "orders-and-prices",
         heading: "Orders, prices and estimates",
         body: [
-          "Prices shown online include GST unless stated otherwise. Orders are confirmed with you on WhatsApp before dispatch. Build configurator totals are estimates: they become binding only in a written quote issued after a fitment check.",
+          "Prices shown online include GST unless stated otherwise. Orders are paid online at checkout through Razorpay and confirmed once the payment goes through; an order not paid within 30 minutes is cancelled. Build configurator totals are estimates: they become binding only in a written quote issued after a fitment check.",
           "We honour a written quote for 15 days. Where a part price moves because of an import duty or exchange rate change, we tell you before proceeding and you may cancel free of charge.",
         ],
       },

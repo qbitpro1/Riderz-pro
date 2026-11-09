@@ -62,7 +62,7 @@ export function onlinePaymentsEnabled(): boolean {
 
 function requireKeys() {
   const keys = razorpayKeys();
-  if (!keys) throw new ApiError(503, "payments_unavailable", "Online payment isn't available right now. Please order on WhatsApp.");
+  if (!keys) throw new ApiError(503, "payments_unavailable", "Online payment isn't available right now. Please try again in a few minutes.");
   return keys;
 }
 
@@ -78,7 +78,7 @@ export async function startOnlinePayment(order: PlacedOrderRecord): Promise<Onli
   const giveUp = async (why: string) => {
     console.error("[payments] could not start payment", order.number, why);
     await transaction((q) => cancelUnpaidOnlineOrder(q, order.id, "Payment could not be started")).catch(() => {});
-    throw new ApiError(502, "payment_start_failed", "We couldn't start the payment. Nothing was charged. Please try again, or order on WhatsApp.");
+    throw new ApiError(502, "payment_start_failed", "We couldn't start the payment. Nothing was charged. Please try again in a few minutes.");
   };
 
   let rp;
