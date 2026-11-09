@@ -13,8 +13,8 @@ import type { VendorProductRow } from "./vendor-products";
  * THE OFFLINE STORE SCREEN
  *
  * What a seller shows customers in their own shop, on a signed-in tablet or TV.
- * The shop owner controls it: every product they have saved (any status but archived)
- * that has stock shows straight away, with no Riderzpro review, and edits waiting for
+ * The shop owner controls it: every product they have saved (any status but archived or
+ * rejected) that has stock shows straight away, with no Riderzpro review, and edits waiting for
  * review on a live product show in their new form. Seller products are not on the main
  * Riderzpro website; this screen is the only place they appear.
  *
@@ -70,7 +70,9 @@ const offFraction = (p: { mrp: number; price: number }) => (p.mrp > p.price ? (p
  * Which of a seller's products are for sale on their own screen (aliases p = vendor_products,
  * v = vendors). Used for showing, pricing and placing screen orders alike.
  */
-export const SCREEN_PRODUCT_WHERE = "p.status <> 'archived' AND v.status = 'approved'";
+// Rejected products are left out too: Riderzpro turned them down, so the screen doesn't show them,
+// Salesman AI doesn't offer them, and checkout (store-sales.ts uses this same rule) refuses them.
+export const SCREEN_PRODUCT_WHERE = "p.status NOT IN ('archived', 'rejected') AND v.status = 'approved'";
 
 /** The seller's latest wording of a product: an edit waiting for review on a live product, else the row. */
 export const SCREEN_TITLE_SQL = "coalesce(p.pending_revision->>'title', p.title)";

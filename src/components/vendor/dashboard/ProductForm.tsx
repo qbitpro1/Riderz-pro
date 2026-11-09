@@ -353,10 +353,17 @@ export function ProductForm({ product: initialProduct, commissionRate, readOnly,
       {!readOnly && status !== "archived" && (
         <p role="note" className="flex items-start gap-2.5 rounded-[2px] border border-tint/10 bg-steel p-3 text-sm text-ash">
           <MonitorSmartphone size={18} aria-hidden className="mt-0.5 shrink-0 text-accent" />
-          <span>
-            <strong className="text-chalk">On your Offline Store screen:</strong> shows within seconds of saving, as long as stock is more than 0. No review needed for
-            your own shop. The Riderzpro website shows it (and later edits) after Riderzpro review.
-          </span>
+          {status === "rejected" ? (
+            <span>
+              <strong className="text-chalk">Not on your Offline Store screen:</strong> Riderzpro rejected this product, so customers can&apos;t see it or buy it on
+              your shop screen, and Salesman AI won&apos;t offer it. Contact seller support if you think this is a mistake.
+            </span>
+          ) : (
+            <span>
+              <strong className="text-chalk">On your Offline Store screen:</strong> shows within seconds of saving, as long as stock is more than 0. No review needed for
+              your own shop. The Riderzpro website shows it (and later edits) after Riderzpro review.
+            </span>
+          )}
         </p>
       )}
       {product?.status === "changes_requested" && product.reviewNotes && (
