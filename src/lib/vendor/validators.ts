@@ -290,8 +290,11 @@ export const productCommercialSchema = z
     price: z.number().int().min(1).max(10_000_000),
     stock: z.number().int().min(0).max(100_000),
     lowStockAt: z.number().int().min(0).max(10_000),
+    /** Lowest price Salesman AI may bargain down to on the shop screen. Omitted = unchanged on edit. */
+    minPrice: z.number().int().min(1, "Lowest price must be at least ₹1").max(10_000_000).nullable().optional(),
   })
-  .refine((v) => v.price <= v.mrp, { path: ["price"], message: "Selling price cannot be above MRP" });
+  .refine((v) => v.price <= v.mrp, { path: ["price"], message: "Selling price cannot be above MRP" })
+  .refine((v) => v.minPrice == null || v.minPrice <= v.price, { path: ["minPrice"], message: "Lowest price cannot be above the selling price" });
 
 /** Draft products may be saved incomplete; only these fields are required. */
 export const productDraftSchema = z.object({

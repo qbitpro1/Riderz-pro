@@ -42,6 +42,7 @@ type FormState = {
   price: string;
   stock: string;
   lowStockAt: string;
+  minPrice: string;
 };
 
 type Props = {
@@ -56,7 +57,7 @@ type Props = {
 
 const base = "/vendor/dashboard/products";
 /** Focus order for "first error". */
-const FIELD_ORDER = ["title", "brand", "department", "groupSlug", "partType", "summary", "highlights", "specs", "fitment", "warrantyMonths", "hsn", "gstRate", "sku", "mrp", "price", "stock", "lowStockAt", "images"];
+const FIELD_ORDER = ["title", "brand", "department", "groupSlug", "partType", "summary", "highlights", "specs", "fitment", "warrantyMonths", "hsn", "gstRate", "sku", "mrp", "price", "stock", "lowStockAt", "minPrice", "images"];
 
 function initialState(product: VendorProduct | null): FormState {
   const c: VendorProductContent | null = product ? (product.status === "live" && product.pendingRevision) || product : null;
@@ -79,6 +80,7 @@ function initialState(product: VendorProduct | null): FormState {
     price: product ? String(product.price) : "",
     stock: product ? String(product.stock) : "0",
     lowStockAt: product ? String(product.lowStockAt) : "3",
+    minPrice: product?.minPrice ? String(product.minPrice) : "",
   };
 }
 
@@ -180,9 +182,12 @@ export function ProductForm({ product: initialProduct, commissionRate, readOnly,
     };
   }
 
-  function buildCommercial(): { value: { sku: string; mrp: number; price: number; stock: number; lowStockAt: number } | null; errs: Record<string, string> } {
+  function buildCommercial(): {
+    value: { sku: string; mrp: number; price: number; stock: number; lowStockAt: number; minPrice?: number | null } | null;
+    errs: Record<string, string>;
+  } {
     const errs: Record<string, string> = {};
-    const num = (key: "mrp" | "price" | "stock" | "lowStockAt", raw: string) => {
+    const num = (key: "mrp" | "price" | "stock" | "lowStockAt" | "minPrice", raw: string) => {
       const n = toInt(raw);
       if (n === null) errs[key] = "Enter a whole number";
       return n;
@@ -191,8 +196,10 @@ export function ProductForm({ product: initialProduct, commissionRate, readOnly,
     const price = num("price", f.price);
     const stock = num("stock", f.stock);
     const lowStockAt = num("lowStockAt", f.lowStockAt);
-    if (mrp === null || price === null || stock === null || lowStockAt === null) return { value: null, errs };
-    const parsed = productCommercialSchema.safeParse({ sku: f.sku, mrp, price, stock, lowStockAt });
+    // Optional: empty means no lowest price (Salesman AI then only keeps to the shop's % / ₹ limits).
+    const minPrice = f.minPrice.trim() === "" ? null : num("minPrice", f.minPrice);
+    if (mrp === null || price === null || stock === null || lowStockAt === null || errs.minPrice) return { value: null, errs };
+    const parsed = productCommercialSchema.safeParse({ sku: f.sku, mrp, price, stock, lowStockAt, minPrice });
     if (!parsed.success) {
       for (const i of parsed.error.issues) errs[String(i.path[0])] ??= i.message;
       return { value: null, errs };
@@ -545,6 +552,9 @@ export function ProductForm({ product: initialProduct, commissionRate, readOnly,
           </Field>
           <Field error={errors.lowStockAt} name="lowStockAt" label="Low-stock alert at">
             <input {...a("lowStockAt")} className={`field ${invalidCls("lowStockAt")}`} inputMode="numeric" value={f.lowStockAt} onChange={(e) => set("lowStockAt", e.target.value.replace(/\D/g, "").slice(0, 5))} />
+          </Field>
+          <Field error={errors.minPrice} name="minPrice" label="Lowest price (₹)" hint="Optional. Salesman AI never bargains below this on your shop screen.">
+            <input {...a("minPrice")} className={`field ${invalidCls("minPrice")}`} inputMode="numeric" value={f.minPrice} onChange={(e) => set("minPrice", e.target.value.replace(/\D/g, "").slice(0, 8))} />
           </Field>
         </div>
 
