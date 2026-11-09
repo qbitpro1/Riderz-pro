@@ -5,7 +5,7 @@
   "description": "RIDERZPRO — Buy. Build. Drive. India's automotive ecosystem.",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
