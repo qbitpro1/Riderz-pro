@@ -72,8 +72,8 @@ export type Buyable =
  * `wanted` maps option name -> value label, which is how Shopify names variants.
  */
 export function checkBuyable(id: string): Buyable {
-  // Marketplace items are not in Shopify; they are ordered through /api/orders and WhatsApp.
-  if (isVendorLineSlug(id)) return { ok: false, reason: "Marketplace items are ordered on WhatsApp" };
+  // Marketplace items are not in Shopify; they are paid for through /api/orders (Razorpay).
+  if (isVendorLineSlug(id)) return { ok: false, reason: "Marketplace items check out on this site" };
   const parsed = parseLineId(id);
   if (!parsed) return { ok: false, reason: "Invalid cart line" };
   const detail = getProductDetail(parsed.slug);

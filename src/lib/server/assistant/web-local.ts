@@ -56,8 +56,8 @@ async function topicReply(intent: Intent, onlinePay: boolean): Promise<string | 
       return "Products marked with the wrench can be fitted at our garages; the fitting price and time show on the product page, and you can add fitting in the cart. Workmanship at a Riderzpro garage has a 12-month warranty.";
     case "payment":
       return onlinePay
-        ? "Pay online at checkout with UPI, card or net banking. Your order is confirmed as soon as the payment goes through."
-        : "Place your order at checkout and our team confirms the payment with you.";
+        ? "Pay online at checkout with UPI, card, net banking or wallet. Your order is confirmed as soon as the payment goes through."
+        : "Orders are paid online at checkout, which isn't available right now. Please try again in a few minutes.";
     case "order_status":
       return "To see your order, sign in under Account → My orders, or use Track your order with your order number and mobile.";
     case "warranty":

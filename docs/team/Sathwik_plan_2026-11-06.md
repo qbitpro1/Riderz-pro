@@ -37,12 +37,12 @@ Do these in order. Steps 1 to 4 use today's `old-deploy` and don't depend on thi
 | 4 | Hourly cleanup job | Now | **Steps written**; server step |
 | 5 | nginx real IP | Now | **Config written**; server step |
 | 6 | Remove WhatsApp ordering (server) | Now | **Code done on this branch**; merge after step 5 |
-| 7 | Razorpay | Now | Test keys create orders from a local run; still to do: server, webhook, KYC, then live keys at go-live |
+| 7 | Razorpay | Now | Test keys and a webhook secret are in the local `.env` (9 Nov). Still to do: the same three values in the server `.env`, the webhook in the Razorpay Dashboard (test mode), KYC, then live keys at go-live |
 | 8 | Payment test | Next | After step 6. Mock-API run passes (`scripts/test-payments.mjs`) |
 | 9 | GST check with the accountant | Next | Not started |
-| 10 | No commission on shop-screen sales | Next | New sales are 0%. See "Still open on commission" |
-| 11 | Uptime and logs | Next | Not started; log guide is in section 6 |
-| 12 | CSP header and zod 4 | Later | Not started |
+| 10 | No commission on shop-screen sales | Next | **Code done**: migration `019_store_sales_zero_commission` plus the Reports and seller copy. Review before deploy |
+| 11 | Uptime and logs | Next | **Steps written** (`DEPLOY.md` section 10); set up the monitors on the server |
+| 12 | CSP header and zod 4 | Later | On branch `sathwik/csp-zod4` (separate PR after this one) |
 
 ## What changed on this branch
 
@@ -75,9 +75,8 @@ Shop-screen sales carry no commission. What changed:
 
 - **Sathese:** start your WhatsApp work after this merges, because `CheckoutForm.tsx` and `CartView.tsx`
   changed and `cartMessage.ts` is gone.
-- **Hima Bindu:** the admin Reports page counts WhatsApp orders, and `PaymentCard.tsx` tells admins
-  that every non-online order, including shop counter orders, is arranged on WhatsApp.
-- **Needs an owner:** `src/lib/data/policies.ts` and `faq.ts` still tell customers that orders are
-  confirmed and tracked on WhatsApp. Only the "How to pay" section is fixed here. The rest should go
-  live with or soon after this branch.
+- **Hima Bindu:** done here. Reports labels WhatsApp as "older orders", and `PaymentCard.tsx` now
+  tells counter, older WhatsApp and cash-on-delivery orders apart.
+- **Policies and FAQ:** done here. `policies.ts` and `faq.ts` describe paying online with Razorpay,
+  SMS/email confirmation and tracking on My orders. WhatsApp stays as the support contact.
 - **Whoever owns the task list:** it points to `docs/GO_LIVE.md`, which isn't on `main` or `old-deploy`.
