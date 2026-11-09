@@ -21,7 +21,7 @@ export default function BuildsPage() {
     <>
       <PageHero
         eyebrow="Riderzpro builds"
-        title="RIDERZPRO BUILDS."
+        title="Riderzpro builds"
         blurb="Every build we publish lists exactly what went into it and what it cost. Builds appear here once their owners agree to share them."
         media="garageSpotlit"
         size="sm"
@@ -71,7 +71,7 @@ export default function BuildsPage() {
       {REVIEWS.length > 0 && (
         <section className="section border-t border-tint/8 bg-carbon">
           <div className="shell">
-            <SectionHead eyebrow="Owners" title="WHAT THEY SAY AFTER." />
+            <SectionHead eyebrow="Owners" title="What they say after" />
             <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {REVIEWS.map((r) => (
                 <li key={r.name}>

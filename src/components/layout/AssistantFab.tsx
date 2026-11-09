@@ -74,21 +74,26 @@ export function AssistantFab() {
           id="assistant-window"
           role="dialog"
           aria-label="AI shopping assistant"
-          className={`fixed inset-x-3 top-20 z-[60] flex flex-col overflow-hidden rounded-md border border-tint/15 bg-void shadow-[0_24px_70px_-20px_rgba(0,0,0,0.75)] ${bottom} md:inset-x-auto md:top-auto md:right-6 md:h-[min(600px,calc(100dvh-8rem))] md:w-[400px] lg:bottom-24`}
+          className={`fs-panel fixed inset-x-3 top-20 z-[60] flex flex-col overflow-hidden text-cl-ink ${bottom} md:inset-x-auto md:top-auto md:right-6 md:h-[min(600px,calc(100dvh-8rem))] md:w-[400px] lg:bottom-24`}
         >
-          <div className="flex items-center justify-between gap-3 border-b border-tint/10 bg-carbon px-4 py-3">
-            <div className="flex items-center gap-2.5">
-              <span className="grid h-9 w-9 place-items-center rounded-full bg-accent text-on-accent">
-                <Icon name="spark" size={17} />
+          <div className="flex items-center justify-between gap-3 border-b border-cl-ink/[0.07] px-4 py-3.5">
+            <div className="flex min-w-0 items-center gap-3">
+              <span className="fs-icon h-10 w-10" aria-hidden="true">
+                <Icon name="spark" size={18} />
               </span>
-              <div>
-                <p className="font-display text-sm font-bold uppercase tracking-[0.1em] text-chalk">AI assistant</p>
-                <p className="text-[11px] text-dim">Parts that fit your car, within budget</p>
+              <div className="min-w-0">
+                <p className="text-[15px] font-semibold tracking-[-0.01em]">AI assistant</p>
+                <p className="truncate text-[12px] text-cl-muted">Parts that fit your car, within budget</p>
               </div>
             </div>
-            <div className="flex items-center gap-1">
-              <Link href="/assistant" className="whitespace-nowrap px-2 py-1 text-[11px] text-ash underline underline-offset-4 hover:text-accent">
-                Full screen
+            <div className="flex shrink-0 items-center gap-1.5">
+              <Link
+                href="/assistant"
+                aria-label="Open the assistant full screen"
+                title="Full screen"
+                className="fs-well grid h-9 w-9 place-items-center rounded-full text-cl-muted transition-colors hover:bg-cl-ink/[0.06] hover:text-cl-ink"
+              >
+                <Icon name="arrow" size={15} className="-rotate-45" />
               </Link>
               <button
                 type="button"
@@ -98,9 +103,9 @@ export function AssistantFab() {
                   button.current?.focus();
                 }}
                 aria-label="Close the assistant"
-                className="grid h-9 w-9 place-items-center text-chalk/80 hover:text-accent"
+                className="fs-well grid h-9 w-9 place-items-center rounded-full text-cl-muted transition-colors hover:bg-cl-ink/[0.06] hover:text-cl-ink"
               >
-                <Icon name="close" size={18} />
+                <Icon name="close" size={15} />
               </button>
             </div>
           </div>

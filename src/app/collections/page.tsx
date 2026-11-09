@@ -21,7 +21,7 @@ export default function CollectionsPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: ldJson(itemListLd("Collections", collections.map(({ c }) => ({ name: c.name, path: `/collections/${c.slug}` })))) }} />
       <PageHero
         eyebrow="Collections"
-        title="SHOP BY PRICE AND OFFER."
+        title="Shop by price and offer"
         blurb="Curated views of the catalogue. Every count is the number of products in it today."
         media="heroWorkshopNight"
         size="sm"

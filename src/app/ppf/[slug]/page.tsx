@@ -127,7 +127,7 @@ export default async function PpfLandingPage({ params }: { params: Promise<{ slu
       {landing.kind === "city" && LOCATIONS.length > 0 && (
         <section className="section">
           <div className="shell">
-            <SectionHead eyebrow="Where to bring it" title="OUR STUDIOS." />
+            <SectionHead eyebrow="Where to bring it" title="Our studios" />
             <ul className="grid gap-4 md:grid-cols-3">
               {LOCATIONS.map((l) => (
                 <li key={l.slug} className="card p-5">
@@ -153,7 +153,7 @@ export default async function PpfLandingPage({ params }: { params: Promise<{ slu
       <section className="section border-t border-tint/8 bg-carbon">
         <div className="shell grid gap-8 lg:grid-cols-2 lg:items-start">
           <div>
-            <SectionHead eyebrow="Read first" title="WORTH KNOWING." href="/ppf/guide" hrefLabel="Full guide" />
+            <SectionHead eyebrow="Read first" title="Worth knowing" href="/ppf/guide" hrefLabel="Full guide" />
             <ul className="space-y-2">
               {guideLinks.map((a) => (
                 <li key={a.slug}>
@@ -191,7 +191,7 @@ export default async function PpfLandingPage({ params }: { params: Promise<{ slu
 
       <section className="section">
         <div className="shell">
-          <SectionHead eyebrow="More PPF pages" title="KEEP LOOKING." />
+          <SectionHead eyebrow="More PPF pages" title="Keep looking" />
           <ul className="flex flex-wrap gap-2">
             {PPF_LANDINGS.filter((l) => l.slug !== landing.slug).map((l) => (
               <li key={l.slug}>

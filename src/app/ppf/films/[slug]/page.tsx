@@ -224,7 +224,7 @@ export default async function PpfFilmPage({ params }: { params: Promise<{ slug: 
 
       <section className="section border-t border-tint/8 bg-carbon">
         <div className="shell">
-          <SectionHead eyebrow="Other films" title="COMPARE THE RANGE." href="/ppf/films" hrefLabel="All films" />
+          <SectionHead eyebrow="Other films" title="Compare the range" href="/ppf/films" hrefLabel="All films" />
           <ul className="flex flex-wrap gap-2">
             {PPF_FILMS.filter((f) => f.slug !== film.slug).map((f) => (
               <li key={f.sku}>

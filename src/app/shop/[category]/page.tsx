@@ -79,7 +79,7 @@ export default async function CategoryPage({
         <div className="shell">
           <SectionHead
             eyebrow={`${cat.name} range`}
-            title="EVERYTHING IN THIS CATEGORY."
+            title="Everything in this category"
             blurb="Listed online or not, we stock or source all of it. Ask us for anything you can't find here."
           />
           {/* A type we actually have listed links into the filtered grid. One we

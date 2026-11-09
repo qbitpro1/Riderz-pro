@@ -9,8 +9,12 @@ import { DEPARTMENT_MENUS, MORE_SECTIONS, liveMenuGroups, type LiveGroups, type 
 const OPEN_DELAY = 80;
 const CLOSE_DELAY = 160;
 
+// Hover: a soft pill fades in behind the label (the ::before), the accent underline grows from the
+// centre and the chevron nudges down. The trigger is full header height, so the pill is a pseudo-element.
 const triggerCls =
-  "relative inline-flex h-full items-center gap-1 whitespace-nowrap px-1.5 font-display text-[11px] font-bold uppercase tracking-[0.1em] transition-colors 2xl:px-3";
+  "group relative isolate inline-flex h-full items-center gap-1 whitespace-nowrap px-1.5 font-display text-[11px] font-bold uppercase tracking-[0.1em] transition-colors 2xl:px-3 " +
+  "before:absolute before:inset-x-0 before:top-1/2 before:-z-10 before:h-8 before:-translate-y-1/2 before:scale-90 before:rounded-full before:bg-tint/[0.07] before:opacity-0 before:transition-[opacity,scale] before:duration-200 before:content-[''] " +
+  "hover:before:scale-100 hover:before:opacity-100 focus-visible:before:scale-100 focus-visible:before:opacity-100 motion-reduce:before:transition-none";
 
 const itemCls =
   "block px-3 py-2 text-[13px] text-ash transition-colors hover:bg-tint/5 hover:text-chalk focus-visible:bg-tint/5 focus-visible:text-chalk";
@@ -231,9 +235,14 @@ function Dropdown({ id, label, href, active, open, show, hide, panelClassName, r
       <Icon
         name="chevron"
         size={10}
-        className={`text-dim transition-transform duration-150 ${open ? "-rotate-90" : "rotate-90"}`}
+        className={`text-dim transition-[rotate,translate,color] duration-200 group-hover:translate-y-px group-hover:text-chalk ${open ? "-rotate-90" : "rotate-90"}`}
       />
-      {(active || open) && <span className="absolute inset-x-2.5 bottom-3 h-px bg-accent 2xl:inset-x-3" />}
+      <span
+        aria-hidden="true"
+        className={`absolute inset-x-2.5 bottom-3 h-px origin-center bg-accent transition-[scale,opacity] duration-200 motion-reduce:transition-none 2xl:inset-x-3 ${
+          active || open ? "scale-x-100" : "scale-x-0 opacity-60 group-hover:scale-x-100"
+        }`}
+      />
     </>
   );
 

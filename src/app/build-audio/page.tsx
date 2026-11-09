@@ -37,7 +37,7 @@ export default async function BuildAudioPage({ searchParams }: { searchParams: P
     <>
       <PageHero
         eyebrow="Build my audio system"
-        title="TELL US WHAT YOU WANT IT TO DO."
+        title="Tell us what you want it to do"
         blurb="Budget, car, goal. We put together a RECOIL specification that actually works as a system — and tell you when the honest answer is that your budget buys fewer, better parts."
         media="studioMonitors"
         size="sm"
@@ -78,7 +78,7 @@ export default async function BuildAudioPage({ searchParams }: { searchParams: P
           <div className="shell">
             <SectionHead
               eyebrow={`${goalMeta?.label} · ${rupees(budget!)} budget${vehicle ? ` · ${vehicle}` : ""}`}
-              title="YOUR SYSTEM."
+              title="Your system"
               blurb={goalMeta?.blurb}
             />
 

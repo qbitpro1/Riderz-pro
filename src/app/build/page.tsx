@@ -21,7 +21,7 @@ export default function BuildPage() {
     <>
       <PageHero
         eyebrow="Build your car"
-        title="BUILD DIFFERENT."
+        title="Build different"
         blurb="Pick your car, then walk through five stages. Everything you select is a part we stock at a price we actually charge — labour and GST included in the running total."
         media="garageSpotlit"
         size="sm"
@@ -37,7 +37,7 @@ export default function BuildPage() {
         <div className="shell">
           <SectionHead
             eyebrow="Five stages"
-            title="WHAT YOU CAN CHANGE."
+            title="What you can change"
             blurb="Anything not listed here, we can still do. The configurator covers what we fit most often."
           />
           <ul className="grid gap-px overflow-hidden border border-tint/8 bg-tint/8 md:grid-cols-2 lg:grid-cols-5">
@@ -65,7 +65,7 @@ export default function BuildPage() {
         <div className="shell">
           <SectionHead
             eyebrow="How a build runs"
-            title="FROM QUOTE TO KEYS."
+            title="From quote to keys"
             blurb="No surprises, no scope creep, no calls asking for more money halfway through."
           />
           <ol className="grid gap-px overflow-hidden border border-tint/8 bg-tint/8 sm:grid-cols-2 lg:grid-cols-4">
@@ -97,7 +97,7 @@ export default function BuildPage() {
           <div className="shell">
             <SectionHead
               eyebrow="Finished builds"
-              title="BUILD SOMETHING LIKE THIS."
+              title="Build something like this"
               href="/builds"
               hrefLabel="All builds"
             />

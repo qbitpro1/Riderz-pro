@@ -71,7 +71,7 @@ export function SeoLandingPage({ landing }: { landing: SeoLanding }) {
       {landing.store && (
         <section className="section border-t border-tint/8">
           <div className="shell">
-            <SectionHead eyebrow="Departments" title="SHOP BY DEPARTMENT." href="/shop" hrefLabel="Whole shop" />
+            <SectionHead eyebrow="Departments" title="Shop by department" href="/shop" hrefLabel="Whole shop" />
             <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {DEPARTMENTS.map((d) => (
                 <li key={d.slug}>
@@ -110,7 +110,7 @@ export function SeoLandingPage({ landing }: { landing: SeoLanding }) {
 
       <section className="section border-y border-tint/8 bg-carbon">
         <div className="shell">
-          <SectionHead eyebrow="Where next" title="KEEP GOING." />
+          <SectionHead eyebrow="Where next" title="Keep going" />
           <ul className="flex flex-wrap gap-2">
             {landing.links.map((l) => (
               <li key={l.href}>
@@ -138,7 +138,7 @@ export function SeoLandingPage({ landing }: { landing: SeoLanding }) {
       {LOCATIONS.length > 0 && (
         <section className="section">
           <div className="shell">
-            <SectionHead eyebrow="Near you" title="VISIT RIDERZPRO." />
+            <SectionHead eyebrow="Near you" title="Visit Riderzpro" />
             <ul className="grid gap-4 md:grid-cols-3">
               {LOCATIONS.map((l) => (
                 <li key={l.slug} className="card p-5">

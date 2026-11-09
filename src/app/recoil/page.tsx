@@ -38,7 +38,7 @@ export default async function RecoilPage({ searchParams }: { searchParams: Promi
     <>
       <PageHero
         eyebrow="Authorised RECOIL reseller"
-        title="RECOIL. THE WHOLE RANGE."
+        title="RECOIL. The whole range"
         blurb="Amplifiers, processors, speakers, subwoofers, damping, wiring and everything that connects them — imported from the RECOIL May 2026 price list, matched model number by model number to the manufacturer's own catalogue."
         media="studioMonitors"
         size="sm"
@@ -82,7 +82,7 @@ export default async function RecoilPage({ searchParams }: { searchParams: Promi
       {/* categories ------------------------------------------------- */}
       <section className="section" id="catalogue">
         <div className="shell">
-          <SectionHead eyebrow="Car audio" title="SOUND. POWER. CONTROL." blurb="Everything that makes noise, and everything that tells it what to do." />
+          <SectionHead eyebrow="Car audio" title="Sound. Power. Control" blurb="Everything that makes noise, and everything that tells it what to do." />
           <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {audio.map((c, i) => (
               <li key={c.slug}>
@@ -96,7 +96,7 @@ export default async function RecoilPage({ searchParams }: { searchParams: Promi
           <div className="mt-12">
             <SectionHead
               eyebrow="Installation"
-              title="THE PARTS NOBODY PHOTOGRAPHS."
+              title="The parts nobody photographs"
               blurb="Damping, wiring, distribution, fusing and tools. The half of the build that decides whether the other half works."
             />
             <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -115,7 +115,7 @@ export default async function RecoilPage({ searchParams }: { searchParams: Promi
       {/* featured --------------------------------------------------- */}
       <section className="section border-y border-tint/8 bg-carbon">
         <div className="shell">
-          <SectionHead eyebrow="Flagships" title="WHERE PEOPLE START." href="/recoil/amplifiers" hrefLabel="All amplifiers" />
+          <SectionHead eyebrow="Flagships" title="Where people start" href="/recoil/amplifiers" hrefLabel="All amplifiers" />
           <ul className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-6">
             {featured.map((p) => (
               <li key={p.slug}>
@@ -129,7 +129,7 @@ export default async function RecoilPage({ searchParams }: { searchParams: Promi
       {/* the whole range, through the shared catalogue browser ---------- */}
       <section className="section border-t border-tint/8" id="range">
         <div className="shell">
-          <SectionHead eyebrow="Every model" title="FILTER THE WHOLE RANGE." blurb="The same catalogue as the rest of the shop, locked to RECOIL." />
+          <SectionHead eyebrow="Every model" title="Filter the whole range" blurb="The same catalogue as the rest of the shop, locked to RECOIL." />
           <CatalogBrowser items={catalogFor("recoil")} initial={filters} locked={["brands"]} showBrandOnCards={false} />
         </div>
       </section>
@@ -139,7 +139,7 @@ export default async function RecoilPage({ searchParams }: { searchParams: Promi
           <div className="shell">
             <SectionHead
               eyebrow="Not yet shipping"
-              title="COMING SOON."
+              title="Coming soon"
               blurb={`${COMING_SOON.length} model numbers are listed as Coming Soon in the current price list. We show them because you asked what exists — not because you can buy them today.`}
             />
             <ul className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4 lg:grid-cols-6">
@@ -157,7 +157,7 @@ export default async function RecoilPage({ searchParams }: { searchParams: Promi
         <div className="shell grid gap-6 lg:grid-cols-[1.3fr_1fr] lg:items-center">
           <div>
             <p className="eyebrow mb-3">Can&apos;t find a model number?</p>
-            <h2 className="display-2">WE STOCK MORE THAN WE LIST.</h2>
+            <h2 className="display-2">We stock more than we list</h2>
             <p className="mt-4 max-w-lg text-sm leading-relaxed text-ash">
               {PRODUCTS.length} products are live here from the May 2026 price list. RECOIL releases
               new models between editions, and some lines are special order. Send us the model number

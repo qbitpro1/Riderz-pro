@@ -178,7 +178,7 @@ export default async function VehicleAccessoriesPage({
           <div className="shell">
             <SectionHead
               eyebrow="Facelift & body kits"
-              title="MAKE IT LOOK NEW AGAIN."
+              title="Make it look new again"
               href="/body-kits"
               hrefLabel="All conversions"
             />

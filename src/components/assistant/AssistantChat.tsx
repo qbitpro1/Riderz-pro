@@ -10,6 +10,7 @@ import { ASSISTANT_MAX_CHARS, WEB_STARTERS, type AssistantMessage } from "@/lib/
 import type { ShopItem } from "@/lib/catalog/types";
 import { rupees } from "@/lib/format";
 import { EnquiryButton } from "@/components/enquiry/Enquiry";
+import { Icon } from "@/components/ui/Icon";
 
 type Turn = AssistantMessage & { items?: ShopItem[] };
 const KEY = "riderzpro.assistant.v1";
@@ -123,30 +124,54 @@ function Chat({ initialQuestion, compact }: { initialQuestion?: string; compact:
   }
 
   return (
-    <div className={compact ? "flex h-full min-h-0 flex-col" : "flex flex-col gap-4"}>
-      <p className={`text-xs text-dim ${compact ? "border-b border-tint/10 px-4 py-2.5" : ""}`}>
-        {car ? <>Answers are for your <span className="text-chalk">{car.label}</span> (from My Garage). </> : "Tell it your car for parts that fit. "}
-        It only knows Riderzpro&apos;s catalogue and can make mistakes; check the product page before you buy.
+    <div className={compact ? "flex h-full min-h-0 flex-col text-cl-ink" : "flex flex-col gap-4 text-cl-ink"}>
+      <p className={`flex items-start gap-2 rounded-2xl bg-cl-ink/[0.04] px-3 py-2.5 text-[12px] leading-relaxed text-cl-muted ${compact ? "mx-3 mt-3" : ""}`}>
+        <Icon name="shield" size={14} className="mt-0.5 shrink-0" />
+        <span>
+          {car ? <>Answers are for your <span className="font-semibold text-cl-ink">{car.label}</span> (from My Garage). </> : "Tell it your car for parts that fit. "}
+          It only knows Riderzpro&apos;s catalogue and can make mistakes; check the product page before you buy.
+        </span>
       </p>
 
-      <div className={compact ? "min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain px-4 py-4" : "space-y-4"} aria-live="polite">
+      <div className={compact ? "min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain px-3 py-4" : "space-y-4"} aria-live="polite">
         {turns.length === 0 && (
-          <div className="flex flex-wrap gap-2">
-            {WEB_STARTERS.map((s) => (
-              <button key={s} type="button" className="btn btn-outline btn-sm" onClick={() => ask(s)} disabled={busy || enabled === null}>
-                {s}
-              </button>
-            ))}
+          <div className={compact ? "px-1" : ""}>
+            <p className="text-[17px] font-semibold tracking-[-0.02em]">What can I help you find?</p>
+            <p className="mt-0.5 text-[13px] text-cl-muted">Try one of these, or ask in your own words.</p>
+            <ul className="mt-3 flex flex-col items-start gap-2">
+              {WEB_STARTERS.map((s) => (
+                <li key={s} className="max-w-full">
+                  <button
+                    type="button"
+                    className="fs-well group inline-flex min-h-11 max-w-full items-center gap-2 rounded-full py-2 pl-4 pr-3 text-left text-[14px] text-cl-ink transition-[background-color,scale] duration-150 hover:bg-cl-ink/[0.06] active:scale-[0.98] disabled:opacity-50"
+                    onClick={() => ask(s)}
+                    disabled={busy || enabled === null}
+                  >
+                    <span className="min-w-0">{s}</span>
+                    <Icon name="arrow" size={13} className="shrink-0 text-cl-muted transition-transform duration-150 group-hover:translate-x-0.5" />
+                  </button>
+                </li>
+              ))}
+            </ul>
           </div>
         )}
         {turns.map((t, i) =>
           t.role === "user" ? (
-            <div key={i} className="ml-auto max-w-[85%] rounded-sm bg-accent px-4 py-2.5 text-sm text-on-accent">{t.content}</div>
+            <div key={i} className="ml-auto w-fit max-w-[85%] rounded-[20px] rounded-br-md bg-cl-ink px-4 py-2.5 text-[14px] leading-relaxed text-cl-on-ink">
+              {t.content}
+            </div>
           ) : (
-            <div key={i} className="space-y-3">
-              <div className="card max-w-[92%] whitespace-pre-line px-4 py-3 text-sm text-chalk">{t.content}</div>
+            <div key={i} className="space-y-2.5">
+              <div className="flex items-end gap-2">
+                <span className="fs-icon mb-0.5 h-7 w-7 rounded-full" aria-hidden="true">
+                  <Icon name="spark" size={12} />
+                </span>
+                <div className="fs-well max-w-[88%] whitespace-pre-line rounded-[20px] rounded-bl-md px-4 py-3 text-[14px] leading-relaxed text-cl-ink">
+                  {t.content}
+                </div>
+              </div>
               {t.items && t.items.length > 0 && compact && (
-                <ul className="space-y-2">
+                <ul className="space-y-2 pl-9">
                   {t.items.map((item) => (
                     <li key={item.id}>
                       <MiniItem item={item} />
@@ -166,24 +191,42 @@ function Chat({ initialQuestion, compact }: { initialQuestion?: string; compact:
             </div>
           ),
         )}
-        {busy && <p className="text-sm text-dim" role="status">Looking through the catalogue…</p>}
+        {busy && (
+          <div className="flex items-end gap-2" role="status">
+            <span className="fs-icon mb-0.5 h-7 w-7 rounded-full" aria-hidden="true">
+              <Icon name="spark" size={12} />
+            </span>
+            <div className="fs-well rounded-[20px] rounded-bl-md px-4 py-3.5">
+              <span className="fs-typing flex items-center gap-1" aria-hidden="true">
+                <span />
+                <span />
+                <span />
+              </span>
+              <span className="sr-only">Looking through the catalogue…</span>
+            </div>
+          </div>
+        )}
         <div ref={end} />
       </div>
 
-      {error && <p role="alert" className={`text-sm text-danger ${compact ? "px-4 pb-1" : ""}`}>{error}</p>}
+      {error && <p role="alert" className={`text-[13px] text-danger ${compact ? "px-4 pb-1" : ""}`}>{error}</p>}
 
       <form
         onSubmit={(e) => {
           e.preventDefault();
           void ask(text);
         }}
-        className={compact ? "flex gap-2 border-t border-tint/10 px-3 py-3" : "sticky bottom-16 flex gap-2 bg-void py-3 md:bottom-0"}
+        className={
+          compact
+            ? "flex items-center gap-2 border-t border-cl-ink/[0.07] p-3"
+            : "sticky bottom-16 flex items-center gap-2 bg-void/85 py-3 backdrop-blur md:bottom-0"
+        }
       >
         <label htmlFor={inputId} className="sr-only">Ask the assistant</label>
         <input
           id={inputId}
           data-autofocus={compact || undefined}
-          className="field min-w-0 flex-1"
+          className="fs-well fs-field min-h-12 min-w-0 flex-1 rounded-full px-4"
           value={text}
           onChange={(e) => setText(e.target.value)}
           maxLength={ASSISTANT_MAX_CHARS}
@@ -191,10 +234,12 @@ function Chat({ initialQuestion, compact }: { initialQuestion?: string; compact:
           autoComplete="off"
           disabled={enabled === null}
         />
-        <button type="submit" className="btn btn-primary shrink-0" disabled={busy || !text.trim()}>Ask</button>
+        <button type="submit" className="fs-btn h-12 w-12 shrink-0 px-0" disabled={busy || !text.trim()} aria-label="Ask">
+          <Icon name="arrow" size={17} className="-rotate-90" />
+        </button>
       </form>
       {turns.length > 0 && !compact && (
-        <button type="button" className="self-start text-xs text-ash underline underline-offset-4" onClick={() => setTurns([])}>
+        <button type="button" className="self-start text-xs text-cl-muted underline underline-offset-4 hover:text-cl-ink" onClick={() => setTurns([])}>
           Start a new chat
         </button>
       )}
@@ -205,17 +250,18 @@ function Chat({ initialQuestion, compact }: { initialQuestion?: string; compact:
 /** A product row in the small chat window: photo, name, price, opens the product page. */
 function MiniItem({ item }: { item: ShopItem }) {
   return (
-    <Link href={item.href} className="flex items-center gap-3 rounded-sm border border-tint/10 bg-carbon p-2 transition-colors hover:border-accent">
-      <span className={`relative block h-14 w-14 shrink-0 overflow-hidden ${item.image.kind === "remote" && item.image.tone === "light" ? "bg-[#f3f4f5]" : "bg-graphite"}`}>
+    <Link href={item.href} className="fs-well group flex items-center gap-3 rounded-2xl p-2 pr-3 transition-colors hover:bg-cl-ink/[0.06]">
+      <span className={`relative block h-14 w-14 shrink-0 overflow-hidden rounded-xl ${item.image.kind === "remote" && item.image.tone === "light" ? "bg-[#f3f4f5]" : "bg-graphite"}`}>
         <CardImage item={item} sizes="56px" />
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block text-xs font-semibold leading-snug text-chalk line-clamp-2">{item.title}</span>
-        <span className="mt-0.5 block text-xs text-ash tnum">
+        <span className="block text-[13px] font-semibold leading-snug text-cl-ink line-clamp-2">{item.title}</span>
+        <span className="mt-0.5 block text-[12px] text-cl-muted tnum">
           {item.buyable && item.price ? rupees(item.price) : "Price on request"}
           {item.seller ? ` · ${item.seller.name}` : ""}
         </span>
       </span>
+      <Icon name="arrow" size={13} className="shrink-0 text-cl-muted transition-transform duration-150 group-hover:translate-x-0.5" />
     </Link>
   );
 }

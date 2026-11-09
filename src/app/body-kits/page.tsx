@@ -41,7 +41,7 @@ export default function BodyKitsPage() {
     <>
       <PageHero
         eyebrow="Body kits & facelifts"
-        title="MAKE YOUR CAR LOOK NEW AGAIN."
+        title="Make your car look new again"
         blurb="A facelift conversion costs a fraction of changing cars, and there is no depreciation hit, no loan, no paperwork. Same car, current face."
         media="chromeGrille"
         actions={[
@@ -55,7 +55,7 @@ export default function BodyKitsPage() {
         <div className="shell">
           <SectionHead
             eyebrow="Car → current model → desired look"
-            title="POPULAR CONVERSIONS."
+            title="Popular conversions"
             blurb="Pick where you are and where you want to be. Prices below are complete — parts, paint to your colour code, fitting and alignment."
           />
           <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -118,7 +118,7 @@ export default function BodyKitsPage() {
           </Reveal>
           <Reveal delay={80}>
             <p className="eyebrow mb-3">Everything we convert</p>
-            <h2 className="display-2">NOT JUST BUMPERS.</h2>
+            <h2 className="display-2">Not just bumpers</h2>
             <p className="mt-4 max-w-lg text-sm leading-relaxed text-ash">
               We do full front and rear conversions, but also single-item work — a grille swap, a DRL
               upgrade, a set of exhaust tips. Small changes, done properly, often read better than a

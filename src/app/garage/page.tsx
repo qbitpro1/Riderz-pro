@@ -24,7 +24,7 @@ export default function GaragePage() {
     <>
       <PageHero
         eyebrow="Riderzpro Garage"
-        title="INSTALLATION & SERVICE."
+        title="Installation & service"
         blurb="Tell us what your car needs. We call you to confirm the slot and the fitment before any work starts."
         media="mechanicEngine"
         actions={[{ href: "#book", label: "Book an appointment", variant: "primary" }]}
@@ -35,7 +35,7 @@ export default function GaragePage() {
           <div>
             <SectionHead
               eyebrow="What we do"
-              title="WHAT WE CAN DO."
+              title="What we can do"
               blurb="If we cannot do something properly, we say so instead of learning on your car."
             />
             {/* An odd last service spans both columns, so the grid never ends on an empty cell. */}
@@ -65,7 +65,7 @@ export default function GaragePage() {
 
       <section className="section border-y border-tint/8 bg-carbon">
         <div className="shell">
-          <SectionHead eyebrow="Inside the workshop" title="WHERE IT HAPPENS." />
+          <SectionHead eyebrow="Inside the workshop" title="Where it happens" />
           <ul className="grid grid-cols-2 gap-3 lg:grid-cols-4">
             {WORKSHOP_MEDIA.map((m, i) => (
               <li key={m}>
@@ -85,7 +85,7 @@ export default function GaragePage() {
       <section className="section">
         <div className="shell">
             <>
-              <SectionHead eyebrow="Locations" title="VISIT RIDERZPRO." />
+              <SectionHead eyebrow="Locations" title="Visit Riderzpro" />
               <ul className="grid gap-4 md:grid-cols-3">
                 {LOCATIONS.map((l) => (
                   <li key={l.slug} className="card p-5">

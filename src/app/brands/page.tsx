@@ -23,7 +23,7 @@ export default function BrandsPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: ldJson(itemListLd("Brands", BRANDS.map((b) => ({ name: b.name, path: `/brands/${b.slug}` })))) }} />
       <PageHero
         eyebrow="Shop by brand"
-        title="THE BRANDS WE STAND BEHIND."
+        title="The brands we stand behind"
         blurb="Each brand keeps its own store, with its own catalogue and its own sourcing trail. They also all feed one shop — so you can filter across every brand at once, or stay inside just one."
         media="showroomRed"
         size="sm"
@@ -44,7 +44,7 @@ export default function BrandsPage() {
         <div className="shell">
           <SectionHead
             eyebrow="Every brand"
-            title="PICK A BRAND."
+            title="Pick a brand"
             blurb="Brand pages show the whole range with the same filters as the shop. The brand stores go further — sourcing notes, series guides and the manufacturer's own data."
           />
           <BrandStrip />
@@ -55,7 +55,7 @@ export default function BrandsPage() {
         <div className="shell">
           <SectionHead
             eyebrow="Brand stores"
-            title="THE DEEP CATALOGUES."
+            title="The deep catalogues"
             blurb="Two brands are big enough to warrant a store of their own. Both stay exactly where they are — the shop filters are an additional way in, not a replacement."
           />
           <ul className="grid gap-3 md:grid-cols-2">
@@ -89,7 +89,7 @@ export default function BrandsPage() {
         <div className="shell">
           <SectionHead
             eyebrow="Or shop by what it does"
-            title="BRAND IS JUST ONE FILTER."
+            title="Brand is just one filter"
             blurb="Inside a category, brand is just another filter — products are ranked on fit and price rather than on whose name is on the box."
           />
           <ul className="flex flex-wrap gap-2">

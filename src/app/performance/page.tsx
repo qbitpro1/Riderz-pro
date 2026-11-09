@@ -49,7 +49,7 @@ export default function PerformancePage() {
     <>
       <PageHero
         eyebrow="Performance garage"
-        title="MORE POWER. MORE CONTROL."
+        title="More power. More control"
         blurb="Custom maps written on our dyno with your fuel. Intake, exhaust, cooling, braking and suspension set up as a package — because power without the rest is just noise."
         media="engineBay"
         actions={[
@@ -62,7 +62,7 @@ export default function PerformancePage() {
         <div className="shell">
           <SectionHead
             eyebrow="Services"
-            title="WHAT WE ACTUALLY DO."
+            title="What we actually do"
             blurb="Every job ends with a road test and a printed dyno sheet. If a modification does not measure, we do not charge for it."
           />
           <ul className="divide-y divide-tint/8 border-y border-tint/8">
@@ -97,7 +97,7 @@ export default function PerformancePage() {
           </Reveal>
           <Reveal delay={80}>
             <p className="eyebrow mb-3">Our approach</p>
-            <h2 className="display-2">HONEST POWER.</h2>
+            <h2 className="display-2">Honest power</h2>
             <ol className="mt-6 space-y-4">
               {[
                 { t: "Health check first", b: "Compression, boost, fuelling and clutch condition. We refuse maps on tired engines." },
@@ -121,7 +121,7 @@ export default function PerformancePage() {
 
       <section className="section">
         <div className="shell">
-          <SectionHead eyebrow="Performance store" title="PARTS WE FIT." href={groupHref("accessories", "performance")} hrefLabel="All performance" />
+          <SectionHead eyebrow="Performance store" title="Parts we fit" href={groupHref("accessories", "performance")} hrefLabel="All performance" />
           <ul className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-6">
             {perfProducts.map((p) => (
               <li key={p.slug}>

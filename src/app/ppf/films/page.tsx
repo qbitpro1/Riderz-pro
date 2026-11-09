@@ -48,7 +48,7 @@ export default function PpfFilmsPage() {
       {/* comparison table -------------------------------------------- */}
       <section className="section">
         <div className="shell">
-          <SectionHead eyebrow="Side by side" title="COMPARE THE RANGE." />
+          <SectionHead eyebrow="Side by side" title="Compare the range" />
           <div className="overflow-x-auto">
             <table className="w-full min-w-[900px] border-collapse text-sm">
               <thead>
@@ -108,7 +108,7 @@ export default function PpfFilmsPage() {
       {/* finishes ---------------------------------------------------- */}
       <section className="section border-y border-tint/8 bg-carbon">
         <div className="shell">
-          <SectionHead eyebrow="Finishes" title="GLOSS, SATIN, MATTE, COLOUR." />
+          <SectionHead eyebrow="Finishes" title="Gloss, satin, matte, colour" />
           <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {FINISHES.map((f) => (
               <li key={f.finish} className="card p-5">
@@ -128,7 +128,7 @@ export default function PpfFilmsPage() {
       {/* brands ------------------------------------------------------ */}
       <section className="section">
         <div className="shell space-y-6">
-          <SectionHead eyebrow="Brands" title="WHO MAKES THE FILM." />
+          <SectionHead eyebrow="Brands" title="Who makes the film" />
           {PPF_BRANDS.map((brand) => (
             <div key={brand.id} className="card p-5">
               <div className="flex flex-wrap items-start justify-between gap-3">

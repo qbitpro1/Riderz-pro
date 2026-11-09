@@ -90,7 +90,7 @@ export default async function RecoilCategoryPage({
 
       <section className="section border-t border-tint/8 bg-carbon">
         <div className="shell">
-          <SectionHead eyebrow="In this category" title="EVERY PRODUCT TYPE." />
+          <SectionHead eyebrow="In this category" title="Every product type" />
           <ul className="flex flex-wrap gap-2">
             {cat.subcategories.map((s) => (
               <li key={s.slug} className="chip">

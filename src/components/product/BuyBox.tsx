@@ -270,8 +270,8 @@ export function BuyBox({ detail }: { detail: ProductDetail }) {
       {/* Trust row, from facts only */}
       <ul className="mt-4 grid gap-2 text-xs text-ash">
         <TrustItem icon="check" text={`Free shipping on orders over ${rupees(FREE_SHIPPING_OVER)}`} />
-        {detail.delivery && <TrustItem icon="arrow" text={detail.delivery} />}
-        {detail.warranty && <TrustItem icon="shield" text={detail.warranty} />}
+        {detail.delivery && <TrustItem icon="arrow" label="Delivery" text={detail.delivery} />}
+        {detail.warranty && detail.warranty !== "—" && <TrustItem icon="shield" label="Warranty" text={detail.warranty} />}
         {detail.installation && <TrustItem icon="wrench" text="Installation available" />}
       </ul>
 
@@ -304,11 +304,14 @@ export function BuyBox({ detail }: { detail: ProductDetail }) {
   );
 }
 
-function TrustItem({ icon, text }: { icon: "check" | "arrow" | "shield" | "wrench"; text: string }) {
+function TrustItem({ icon, label, text }: { icon: "check" | "arrow" | "shield" | "wrench"; label?: string; text: string }) {
   return (
     <li className="flex items-start gap-2">
       <Icon name={icon} size={14} className="mt-0.5 shrink-0 text-accent" />
-      <span>{text}</span>
+      <span>
+        {label && <span className="font-semibold text-chalk">{label}: </span>}
+        {text}
+      </span>
     </li>
   );
 }

@@ -84,7 +84,7 @@ export default function PartnersPage() {
         <div className="shell">
           <SectionHead
             eyebrow="Bulk upload"
-            title="TRY IT WITH YOUR REAL STOCK LIST."
+            title="Try it with your real stock list"
             blurb="Drop your export in and see what we make of it. Nothing is published — this is a dry run, and you do not need an account to try it."
           />
           <InventoryUploader />
@@ -97,7 +97,7 @@ export default function PartnersPage() {
           <div>
             <SectionHead
               eyebrow="What we need"
-              title="TEN FIELDS. THAT'S IT."
+              title="Ten fields. That's it"
               blurb="We match your column names automatically — 'KM Driven', 'Odometer' and 'Run' all land in the same place. If a column is missing we tell you which one."
             />
             <ul className="grid gap-2 sm:grid-cols-2">
@@ -144,7 +144,7 @@ export default function PartnersPage() {
         <div className="shell">
           <SectionHead
             eyebrow="Six ways in"
-            title="HOWEVER YOU KEEP YOUR STOCK."
+            title="However you keep your stock"
             blurb="Every DMS on the market exports CSV or XML for syndication. We take the file you already produce rather than asking you to build an integration."
           />
           <ul className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
@@ -189,7 +189,7 @@ export default function PartnersPage() {
           <div>
             <SectionHead
               eyebrow="Dealer API"
-              title="PUSH IT STRAIGHT FROM YOUR SYSTEM."
+              title="Push it straight from your system"
               blurb="If you have a website or a DMS that can call an endpoint, you never touch a spreadsheet again."
             />
             <ul className="space-y-2.5">
@@ -241,7 +241,7 @@ export default function PartnersPage() {
         <div className="shell">
           <SectionHead
             eyebrow="Trust system"
-            title="FOUR BADGES. FOUR DIFFERENT MEANINGS."
+            title="Four badges. Four different meanings"
             blurb="Buyers can tell them apart, which is what makes any of them worth having. Two are earned by you; two are awarded by us after we have physically seen the car."
           />
           <ul className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
@@ -271,7 +271,7 @@ export default function PartnersPage() {
       {/* packages --------------------------------------------------- */}
       <section className="section border-y border-tint/8 bg-carbon">
         <div className="shell">
-          <SectionHead eyebrow="Packages" title="SELL MORE CARS. BUILD MORE CUSTOMERS." blurb="Start free. Nothing to pay while we are both proving this works." />
+          <SectionHead eyebrow="Packages" title="Sell more cars. Build more customers" blurb="Start free. Nothing to pay while we are both proving this works." />
           <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             {DEALER_PACKAGES.map((pkg, i) => (
               <li key={pkg.id}>
@@ -298,7 +298,7 @@ export default function PartnersPage() {
       {/* process + freshness ---------------------------------------- */}
       <section className="section">
         <div className="shell">
-          <SectionHead eyebrow="How onboarding works" title="LIVE IN A DAY." />
+          <SectionHead eyebrow="How onboarding works" title="Live in a day" />
           <ol className="grid gap-px overflow-hidden border border-tint/8 bg-tint/8 sm:grid-cols-2 lg:grid-cols-3">
             {STEPS.map((s) => (
               <li key={s.n} className="bg-void p-5">
@@ -339,7 +339,7 @@ export default function PartnersPage() {
           <PartnerSignup />
 
           <div>
-            <SectionHead eyebrow="Where we are recruiting" title="DELHI NCR FIRST." />
+            <SectionHead eyebrow="Where we are recruiting" title="Delhi NCR first" />
             <ul className="space-y-4">
               {DEALER_TARGET_REGIONS.map((region) => (
                 <li key={region.region} className="card p-4">

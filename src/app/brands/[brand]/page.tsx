@@ -113,7 +113,7 @@ export default async function BrandPage({
           <div className="shell">
             <SectionHead
               eyebrow={`${b.name} in the shop`}
-              title="COMPARE IT AGAINST EVERYTHING ELSE."
+              title="Compare it against everything else"
               blurb="The same products sit in the main shop alongside every other brand, so you can judge them on price and fit rather than on the badge."
             />
             <ul className="flex flex-wrap gap-2">
@@ -141,7 +141,7 @@ export default async function BrandPage({
 
       <section className="section">
         <div className="shell">
-          <SectionHead eyebrow="Other brands" title="WHO ELSE WE STOCK." />
+          <SectionHead eyebrow="Other brands" title="Who else we stock" />
           <BrandStrip exclude={[b.slug]} />
         </div>
       </section>

@@ -133,7 +133,7 @@ export default async function BuildDetailPage({ params }: { params: Promise<{ sl
       {shopItems.length > 0 && (
         <section className="section border-y border-tint/8 bg-carbon">
           <div className="shell">
-            <SectionHead eyebrow="Shop the build" title="THE PARTS ON THIS CAR." href="/shop" hrefLabel="Shop all" />
+            <SectionHead eyebrow="Shop the build" title="The parts on this car" href="/shop" hrefLabel="Shop all" />
             <ul className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
               {shopItems.map((p) => (
                 <li key={p.slug}>
@@ -147,7 +147,7 @@ export default async function BuildDetailPage({ params }: { params: Promise<{ sl
 
       <section className="section">
         <div className="shell">
-          <SectionHead eyebrow="More builds" title="KEEP SCROLLING." href="/builds" />
+          <SectionHead eyebrow="More builds" title="Keep scrolling" href="/builds" />
           <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {others.map((b) => (
               <li key={b.slug}>

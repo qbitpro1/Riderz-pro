@@ -44,7 +44,7 @@ floating AI button, and cramped layouts in a few components.
 
 | # | Page | File | Issue | Root cause | Fix | Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | All forms (checkout, help, sign-in, filters) | `globals.css` (`.field`, `.cl-input`, `.fs-field`) | iPhone zooms the page when a field is tapped | Field text 15 px; iOS Safari zooms into fields under 16 px | 16 px below 768 px; 15 px kept from tablet up | Fixed, tested |
+| 1 | All forms (checkout, help, sign-in, filters) | `globals.css` (`.field`, `.cl-input`, `.fs-field`) | iPhone zooms the page when a field is tapped | Field text 15 px; iOS Safari zooms into fields under 16 px | 16 px below 768 px; 15 px kept from tablet up. (At first this only took effect for `.field`: the phone rule sat before the `.cl-input` / `.fs-field` definitions. Moved after them and re-tested: all three are 16 px on phones.) | Fixed, tested |
 | 2 | Cart / checkout | `AssistantFab.tsx` | Ask AI button covered the qty "+" and the right edge of address fields | Fixed button over a dense form page | Hidden on `/cart` below `lg` | Fixed, tested |
 | 3 | Cart | `CartView.tsx` | Product name wrapped one word per line at 320 px | Name, qty, price and remove in one flex row | Phones: 2-row grid (thumb + name / qty · price · remove); `sm+` unchanged via `sm:contents` | Fixed, tested 320 + 1440 |
 | 4 | Cart | `CartView.tsx` | Remove 16×16, qty buttons 36×40, "Empty cart" / "Continue shopping" 16 px tall | Icon-sized buttons; text links | 44 px on phones (desktop sizes unchanged) | Fixed, tested |

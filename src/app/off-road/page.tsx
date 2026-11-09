@@ -61,7 +61,7 @@ export default function OffRoadPage() {
     <>
       <PageHero
         eyebrow="Off-road garage"
-        title="BUILT FOR THE UNPAVED."
+        title="Built for the unpaved"
         blurb="Suspension, protection, recovery and expedition hardware — rated, mounted to the chassis, and proven on cars that have actually been to Ladakh and back."
         media="defenderSaltFlat"
         size="lg"
@@ -118,7 +118,7 @@ export default function OffRoadPage() {
         <div className="shell">
           <SectionHead
             eyebrow="Off-road store"
-            title="RATED GEAR ONLY."
+            title="Rated gear only"
             href="/shop/off-roading"
             hrefLabel="All off-road"
             blurb="Everything here carries a working load rating and a warranty. Nothing decorative, nothing untested."
@@ -137,7 +137,7 @@ export default function OffRoadPage() {
       {offroadBuilds.length > 0 && (
         <section className="section">
           <div className="shell">
-            <SectionHead eyebrow="Finished rigs" title="BUILT AND PROVEN." href="/builds" hrefLabel="All builds" />
+            <SectionHead eyebrow="Finished rigs" title="Built and proven" href="/builds" hrefLabel="All builds" />
             <ul className="grid gap-4 md:grid-cols-2">
               {offroadBuilds.map((b) => (
                 <li key={b.slug}>
@@ -152,7 +152,7 @@ export default function OffRoadPage() {
       <section className="section border-t border-tint/8 bg-carbon">
         <div className="shell grid gap-8 lg:grid-cols-2 lg:items-start">
           <div>
-            <SectionHead eyebrow="Questions" title="BEFORE YOU LIFT IT." />
+            <SectionHead eyebrow="Questions" title="Before you lift it" />
             <Accordion items={FAQ} />
           </div>
           <div className="card p-6">

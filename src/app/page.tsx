@@ -86,17 +86,19 @@ const WHY = [
     title: "We make what we sell",
     body: "Riderzpro is our own registered brand. We manufacture car accessories and sell them directly.",
   },
+  // Each point says something the sections around it do not (fitment, installation and the AI
+  // assistant have their own sections). Sources: docs policies (returns, payments) and the README.
   {
-    title: "Checked against your car",
-    body: "Pick your car once and we show what fits it. Parts without a confirmed fit are not claimed to fit.",
+    title: "Refund if it doesn't fit",
+    body: "If a part we confirmed for your car doesn't fit, we collect it at our cost and refund you in full.",
   },
   {
-    title: "Fitted by people who know them",
-    body: "Installation is available for the products marked with the wrench.",
+    title: "A GST invoice with every order",
+    body: "Your tax invoice is ready in My orders as soon as the order is confirmed.",
   },
   {
-    title: "Help whenever you ask",
-    body: "Our AI assistant answers fitment and product questions any time, and a real person is a call away.",
+    title: "Approved sellers only",
+    body: "Marketplace products come from sellers we check and approve before they can list.",
   },
 ];
 
@@ -221,7 +223,7 @@ export default function HomePage() {
           />
           <div className="grid gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-10">
             <div className="card p-5 md:p-6">
-              <FitmentPicker />
+              <FitmentPicker bare />
             </div>
             <div>
               <p className="eyebrow mb-3">Popular models</p>
@@ -382,7 +384,7 @@ export default function HomePage() {
       {/* 11 — WHY RIDERZPRO ------------------------------------------------ */}
       <section className="section bg-void">
         <div className="shell">
-          <SectionHead eyebrow="Why Riderzpro" title="Made, fitted and backed by us" />
+          <SectionHead eyebrow="Why Riderzpro" title="Made and backed by us" />
           <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {WHY.map((w) => (
               <li key={w.title} className="card p-5">

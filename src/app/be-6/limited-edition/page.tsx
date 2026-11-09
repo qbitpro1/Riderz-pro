@@ -142,7 +142,7 @@ export default function LimitedEditionPage() {
         <div className="shell">
           <SectionHead
             eyebrow="Design philosophy"
-            title="IT HAS TO LOOK MANUFACTURABLE."
+            title="It has to look manufacturable"
             blurb="Futuristic, tactical, premium — but still a car you could get an insurance quote on. Anything we cannot imagine building, we do not draw."
           />
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">

@@ -75,7 +75,7 @@ export default function PpfPage() {
     <>
       <PageHero
         eyebrow="Paint protection film"
-        title="PROTECT WHAT YOU PAID FOR."
+        title="Protect what you paid for"
         blurb="Premium paint protection film engineered to protect your car from stone chips, scratches, road debris and everyday damage — on a ₹10 lakh SUV or a ₹2 crore supercar."
         media="wrapHeatGun"
         actions={[
@@ -156,7 +156,7 @@ export default function PpfPage() {
         <div className="shell">
           <SectionHead
             eyebrow="Choose your coverage"
-            title="FROM DOOR CUPS TO THE WHOLE CAR."
+            title="From door cups to the whole car"
             blurb="Prices shown are indicative for a mid-size SUV on excellent paint. Your car, your coverage and your paint condition all move the number."
           />
           <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -193,14 +193,14 @@ export default function PpfPage() {
         <div className="shell space-y-10">
           <SectionHead
             eyebrow="Whatever you drive"
-            title="ONE STUDIO, EVERY PRICE POINT."
+            title="One studio, every price point"
             blurb="We do not price a Creta like a Cayenne, and we do not pretend PPF is a luxury-only service."
           />
 
           <div className="grid gap-4 lg:grid-cols-3">
             <SegmentCard
               eyebrow="Mid-range"
-              title="PROTECTION FOR EVERYDAY DRIVERS."
+              title="Protection for everyday drivers"
               price={rupees(fromPrice("compact-suv"))}
               media="crossoverTeal"
               blurb="Tata, Hyundai, Kia, Mahindra, Toyota, Honda, Maruti Suzuki, Volkswagen, Skoda, MG, Jeep. Start with the high-impact areas and build up."
@@ -209,7 +209,7 @@ export default function PpfPage() {
             />
             <SegmentCard
               eyebrow="Off-road"
-              title="BUILT FOR THE TRAIL."
+              title="Built for the trail"
               price={rupees(
                 quote({ sizeClass: "full-suv", tier: "premium", areaIds: getPackage("trail")!.areaIds, paintCondition: "excellent" }).low,
               )}
@@ -221,7 +221,7 @@ export default function PpfPage() {
             />
             <SegmentCard
               eyebrow="Signature"
-              title="LUXURY PAINT DESERVES BETTER."
+              title="Luxury paint deserves better"
               price={rupees(
                 quote({ sizeClass: "luxury", tier: "signature", areaIds: [], fullBody: true, paintCondition: "excellent" }).low,
               )}
@@ -240,7 +240,7 @@ export default function PpfPage() {
         <div className="shell">
           <SectionHead
             eyebrow="PPF films"
-            title="THE FILM MATTERS AS MUCH AS THE FITTER."
+            title="The film matters as much as the fitter"
             blurb="Every film we list carries its own manufacturer warranty, with its own conditions. We publish them per product rather than rolling them into one promise."
             href="/ppf/films"
             hrefLabel="All films"
@@ -284,7 +284,7 @@ export default function PpfPage() {
         <div className="shell">
           <SectionHead
             eyebrow="Preparation"
-            title="TEN STEPS BEFORE YOU GET IT BACK."
+            title="Ten steps before you get it back"
             blurb="Film locks in whatever is underneath it. Most of this job happens before any film is cut."
           />
           <ol className="grid gap-px overflow-hidden border border-tint/8 bg-tint/8 sm:grid-cols-2 lg:grid-cols-5">
@@ -302,7 +302,7 @@ export default function PpfPage() {
       {/* before/after ----------------------------------------------- */}
       <section className="section border-y border-tint/8 bg-carbon">
         <div className="shell">
-          <SectionHead eyebrow="Before / after" title="DRAG TO SEE THE DIFFERENCE." />
+          <SectionHead eyebrow="Before / after" title="Drag to see the difference" />
           <div className="grid gap-5 md:grid-cols-2">
             <Reveal>
               <BeforeAfter
@@ -330,7 +330,7 @@ export default function PpfPage() {
       <section className="section">
         <div className="shell grid gap-8 lg:grid-cols-2 lg:items-start">
           <div>
-            <SectionHead eyebrow="What good looks like" title="OUR QUALITY CHECKLIST." blurb="What you should expect from any installer, including us." />
+            <SectionHead eyebrow="What good looks like" title="Our quality checklist" blurb="What you should expect from any installer, including us." />
             <ul className="space-y-2.5">
               {QUALITY_CHECKLIST.map((item) => (
                 <li key={item.claim} className="flex items-start gap-2.5 text-sm text-chalk/85">
@@ -345,7 +345,7 @@ export default function PpfPage() {
           </div>
 
           <div>
-            <SectionHead eyebrow="Why Riderzpro" title="WHAT WE ACTUALLY DO." />
+            <SectionHead eyebrow="Why Riderzpro" title="What we actually do" />
             <ul className="grid gap-2 sm:grid-cols-2">
               {[
                 "Professional installation",
@@ -379,7 +379,7 @@ export default function PpfPage() {
         <div className="shell">
           <SectionHead
             eyebrow="Goes with it"
-            title="PPF ISN'T THE ONLY LAYER."
+            title="PPF isn't the only layer"
             blurb="A ceramic coating over film makes the whole car easier to wash. It is not a substitute for the physical protection film gives you."
           />
           <ul className="cl-scope grid gap-5 md:grid-cols-2 lg:grid-cols-4">
@@ -421,7 +421,7 @@ export default function PpfPage() {
       <section className="section">
         <div className="shell grid gap-8 lg:grid-cols-2 lg:items-start">
           <div>
-            <SectionHead eyebrow="Questions" title="BEFORE YOU BOOK." href="/ppf/guide" hrefLabel="Full guide" />
+            <SectionHead eyebrow="Questions" title="Before you book" href="/ppf/guide" hrefLabel="Full guide" />
             <Accordion items={FAQ} />
           </div>
           <div className="card p-6">

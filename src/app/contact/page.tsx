@@ -62,7 +62,7 @@ export default function ContactPage() {
     <>
       <PageHero
         eyebrow="Contact"
-        title="TALK TO A HUMAN."
+        title="Talk to a human"
         blurb="No ticket queues, no chatbots. Message us and someone from our team replies — usually inside twenty minutes during business hours."
         media="mechanicEngine"
         size="sm"
@@ -111,7 +111,7 @@ export default function ContactPage() {
           <div>
             <SectionHead
               eyebrow="Support"
-              title="EVERYTHING ELSE."
+              title="Everything else"
               blurb={`${SITE.legalName}${SITE.registeredOffice ? ` Registered office: ${SITE.registeredOffice}.` : ""} GSTIN ${SITE.gstin}.`}
             />
             <ul className="space-y-2.5">

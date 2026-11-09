@@ -45,7 +45,7 @@ export default function InteriorsPage() {
     <>
       <PageHero
         eyebrow="Custom interiors studio"
-        title="THE BEST SEAT IN THE CAR."
+        title="The best seat in the car"
         blurb="Leather, alcantara, diamond stitching, ventilation, captain conversions and lighting — pattern-cut and trimmed in our own workshop, not outsourced to a market shop."
         media="cockpitScreen"
         actions={[
@@ -58,7 +58,7 @@ export default function InteriorsPage() {
         <div className="shell">
           <SectionHead
             eyebrow="What we build"
-            title="EVERY SURFACE YOU TOUCH."
+            title="Every surface you touch"
             blurb="Prices are starting points for a mid-size SUV. The final quote depends on hide count, stitch pattern and how much of the cabin comes apart."
           />
           <ul className="grid gap-px overflow-hidden border border-tint/8 bg-tint/8 sm:grid-cols-2 lg:grid-cols-3">
@@ -87,7 +87,7 @@ export default function InteriorsPage() {
           </Reveal>
           <Reveal delay={80}>
             <p className="eyebrow mb-3">Luxury SUV conversion</p>
-            <h2 className="display-2">TURN ROW TWO INTO FIRST CLASS.</h2>
+            <h2 className="display-2">Turn row two into first class</h2>
             <p className="mt-4 text-sm leading-relaxed text-ash">
               Electric recliners with memory, automatic footrests, a partition console with a fridge,
               roof-mounted or headrest screens, alcantara headliner and concealed ambient runs. Built
@@ -123,7 +123,7 @@ export default function InteriorsPage() {
           </div>
           {interiorReviews.length > 0 && (
             <div>
-              <SectionHead eyebrow="Owners" title="AFTER THE REBUILD." />
+              <SectionHead eyebrow="Owners" title="After the rebuild" />
               <ul className="grid gap-4">
                 {interiorReviews.map((r) => (
                   <li key={r.name}>

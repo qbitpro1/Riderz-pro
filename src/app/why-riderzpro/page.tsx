@@ -47,7 +47,7 @@ export default function WhyPage() {
     <>
       <PageHero
         eyebrow="Why Riderzpro"
-        title="IF IT HAS WHEELS, WE CAN HELP."
+        title="If it has wheels, we can help"
         blurb="Buy it, sell it, modify it, protect it, upgrade it or build it. One brand, one standard, one number to call when something isn't right."
         media="garageHeadlights"
         size="sm"
@@ -55,7 +55,7 @@ export default function WhyPage() {
 
       <section className="section">
         <div className="shell">
-          <SectionHead eyebrow="How we work" title="SIX THINGS WE DON'T BEND ON." />
+          <SectionHead eyebrow="How we work" title="Six things we don't bend on" />
           <ul className="grid gap-px overflow-hidden border border-tint/8 bg-tint/8 md:grid-cols-2 lg:grid-cols-3">
             {PRINCIPLES.map((p, i) => (
               <li key={p.title} className="bg-void p-6">
@@ -75,7 +75,7 @@ export default function WhyPage() {
         <div className="shell">
           <SectionHead
             eyebrow="Trust system"
-            title="THE VERIFIED BADGE."
+            title="The verified badge"
             blurb="Nine checks, all of them cleared and signed off, before a car can carry it."
           />
           <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

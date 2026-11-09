@@ -41,7 +41,7 @@ export default function PpfQuotePage() {
     <>
       <PageHero
         eyebrow="PPF quote calculator"
-        title="GET YOUR PPF PRICE."
+        title="Get your PPF price"
         blurb="Car, coverage, film, finish and paint condition. You get an indicative range in a few taps — and an honest one, because we tell you what still has to be confirmed on the car."
         media="wrapHeatGun"
         size="sm"
@@ -65,7 +65,7 @@ export default function PpfQuotePage() {
       <section className="section border-t border-tint/8 bg-carbon">
         <div className="shell grid gap-8 lg:grid-cols-2 lg:items-start">
           <div>
-            <SectionHead eyebrow="What happens next" title="THE PRICE ON SCREEN IS NOT THE QUOTE." />
+            <SectionHead eyebrow="What happens next" title="The price on screen is not the quote" />
             <ol className="space-y-4">
               {[
                 { t: "You send the configuration", b: "Everything you picked arrives with us, itemised." },
