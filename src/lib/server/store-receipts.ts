@@ -5,7 +5,7 @@ import { SITE } from "@/lib/data/site";
 import { rupees } from "@/lib/format";
 import type { VendorSelf } from "@/lib/vendor/types";
 import { ApiError } from "./http";
-import { env, sendEmail, sendSms, smsProvider, tenDigits, type SendResult } from "./messaging";
+import { env, sendEmail, sendSms, tenDigits, type SendResult } from "./messaging";
 import { newId } from "./security";
 import { storeSettings } from "./store-sales";
 import { screenStore } from "./store-screen";
@@ -160,17 +160,10 @@ export async function sendStoreReceipt(
   } else {
     const templateId = env("MSG91_TEMPLATE_STORE_RECEIPT");
     const text = receiptSmsText(r);
-    if (!smsProvider(Boolean(templateId))) {
-      // Not set up (as on a local machine): say so plainly rather than pretend it went.
-      console.warn(`[store-receipt] SMS is not set up; receipt for ${r.order.number} not sent`);
-      if (process.env.NODE_ENV !== "production") console.info(`[sms:dev] would send to ${tenDigits(r.order.customer_phone)}: ${text}`);
-      result = { status: "skipped", providerId: null, reason: "no_provider" };
-    } else {
-      const vars = [r.shop.name, r.order.number, String(r.order.total), r.order.payment_status === "paid" ? "paid" : "pay at counter"].map((v) =>
-        v.replace(/\s+/g, " ").trim().slice(0, 30),
-      );
-      result = await sendSms({ to: r.order.customer_phone, text, templateId: templateId || undefined, vars, tag: "store_receipt" });
-    }
+    const vars = [r.shop.name, r.order.number, String(r.order.total), r.order.payment_status === "paid" ? "paid" : "pay at counter"].map((v) =>
+      v.replace(/\s+/g, " ").trim().slice(0, 30),
+    );
+    result = await sendSms({ to: r.order.customer_phone, text, templateId: templateId || undefined, vars, tag: "store_receipt" });
   }
 
   await sql("INSERT INTO store_receipts (id, order_id, vendor_id, channel, status, reason) VALUES ($1,$2,$3,$4,$5,$6)", [

@@ -2,12 +2,19 @@ import "server-only";
 
 import { sql, sqlOne } from "@/lib/db/client";
 import { newId } from "./security";
+import type { EmailProvider, ProviderAnswer, SmsProvider } from "./messaging/types";
+import { Msg91SmsProvider, sendMsg91Flow, sendMsg91Otp, tenDigits } from "./messaging/msg91";
+import { ResendEmailProvider, sendResendEmail } from "./messaging/resend";
+import { sendTwilioSms, TwilioSmsProvider } from "./messaging/twilio";
+
+export type { EmailProvider, ProviderAnswer, SmsProvider } from "./messaging/types";
+export { tenDigits } from "./messaging/msg91";
 
 /**
  * EMAIL AND SMS
  *
  * One place for the providers, shared by sign-in codes (otp.ts), order emails (order-emails.ts) and
- * delivery alerts (rider arriving / arrived, job offers).
+ * delivery alerts (rider arriving / arrived, job offers, shop receipt).
  *
  *   development   messages are printed in the server console ([mail:dev], [sms:dev]); with
  *                 OTP_SEND_IN_DEV=true, channels whose provider keys are set send for real
@@ -26,48 +33,43 @@ import { newId } from "./security";
 export const env = (k: string) => process.env[k]?.trim() || "";
 const isProduction = () => process.env.NODE_ENV === "production";
 
-/* --------------------------------------------------------------- providers */
+/* --------------------------------------------------------------- modular provider instances */
 
-export function emailProvider(from: string): "resend" | null {
+const msg91Provider = new Msg91SmsProvider();
+const twilioProvider = new TwilioSmsProvider();
+const resendProvider = new ResendEmailProvider();
+
+export function getSmsProvider(msg91Ready = true): SmsProvider | null {
+  const p = env("OTP_SMS_PROVIDER");
+  if (p === "msg91") return msg91Provider.isReady() && msg91Ready ? msg91Provider : null;
+  if (p === "twilio") return twilioProvider.isReady() ? twilioProvider : null;
+  if (msg91Provider.isReady() && msg91Ready) return msg91Provider;
+  if (twilioProvider.isReady()) return twilioProvider;
+  return null;
+}
+
+export function getEmailProvider(from: string): EmailProvider | null {
   const p = env("OTP_EMAIL_PROVIDER");
   if (p && p !== "resend") return null;
-  return env("RESEND_API_KEY") && from ? "resend" : null;
+  return resendProvider.isReady(from) ? resendProvider : null;
+}
+
+/* --------------------------------------------------------------- provider checks */
+
+export function emailProvider(from: string): "resend" | null {
+  return getEmailProvider(from)?.name ?? null;
 }
 
 /** `msg91Ready`: whether MSG91 has what this message needs (codes also need MSG91_OTP_TEMPLATE_ID). */
 export function smsProvider(msg91Ready: boolean): "msg91" | "twilio" | null {
-  const msg91 = Boolean(env("MSG91_AUTH_KEY")) && msg91Ready;
-  const twilio = Boolean(env("TWILIO_ACCOUNT_SID") && env("TWILIO_AUTH_TOKEN") && env("TWILIO_FROM"));
-  const p = env("OTP_SMS_PROVIDER");
-  if (p === "msg91") return msg91 ? "msg91" : null;
-  if (p === "twilio") return twilio ? "twilio" : null;
-  return msg91 ? "msg91" : twilio ? "twilio" : null;
+  return getSmsProvider(msg91Ready)?.name ?? null;
 }
 
 /** In development: send for real only when asked to (OTP_SEND_IN_DEV=true) and a provider is set. */
 export const printInsteadOfSending = (hasProvider: boolean) =>
   !isProduction() && (env("OTP_SEND_IN_DEV") !== "true" || !hasProvider);
 
-/** What a provider answered. `id` is the provider's message id when it gave one. */
-export type ProviderAnswer = { ok: boolean; status: number; id: string | null };
-
-const TIMEOUT_MS = 10_000;
-
-async function answer(res: Response, idOf: (body: Record<string, unknown>) => unknown): Promise<ProviderAnswer> {
-  let id: string | null = null;
-  if (res.ok) {
-    try {
-      const v = idOf((await res.json()) as Record<string, unknown>);
-      id = typeof v === "string" ? v.slice(0, 120) : null;
-    } catch {
-      id = null;
-    }
-  }
-  return { ok: res.ok, status: res.status, id };
-}
-
-/** Indian mobile to the 10 digits we store (accepts +91 / 91 / 0 prefixes). */
-export const tenDigits = (mobile: string) => mobile.replace(/\D/g, "").slice(-10);
+/* --------------------------------------------------------------- provider delegates */
 
 export async function resendEmail(m: {
   from: string;
@@ -77,48 +79,28 @@ export async function resendEmail(m: {
   html?: string;
   replyTo?: string;
 }): Promise<ProviderAnswer> {
-  const res = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: { Authorization: `Bearer ${env("RESEND_API_KEY")}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ from: m.from, to: [m.to], subject: m.subject, text: m.text, html: m.html, reply_to: m.replyTo }),
-    signal: AbortSignal.timeout(TIMEOUT_MS),
-  });
-  return answer(res, (b) => b.id);
+  return sendResendEmail(m);
 }
 
-/** MSG91's OTP API: the template holds the text, with an ##OTP## variable. */
-export async function msg91Otp(m: { templateId: string; mobile: string; otp: string; expiryMinutes: number }): Promise<ProviderAnswer> {
-  const res = await fetch(
-    "https://control.msg91.com/api/v5/otp?" +
-      new URLSearchParams({ template_id: m.templateId, mobile: `91${m.mobile}`, otp: m.otp, otp_expiry: String(m.expiryMinutes) }),
-    { method: "POST", headers: { authkey: env("MSG91_AUTH_KEY"), "Content-Type": "application/json" }, signal: AbortSignal.timeout(TIMEOUT_MS) },
-  );
-  return answer(res, (b) => b.request_id ?? b.message);
+export async function msg91Otp(m: {
+  templateId: string;
+  mobile: string;
+  otp: string;
+  expiryMinutes: number;
+}): Promise<ProviderAnswer> {
+  return sendMsg91Otp(m);
 }
 
-/** MSG91's Flow API for every other DLT template. Variables are named var1, var2 … in the flow. */
-export async function msg91Flow(m: { templateId: string; mobile: string; vars: Record<string, string> }): Promise<ProviderAnswer> {
-  const res = await fetch("https://control.msg91.com/api/v5/flow", {
-    method: "POST",
-    headers: { authkey: env("MSG91_AUTH_KEY"), "Content-Type": "application/json", accept: "application/json" },
-    body: JSON.stringify({ template_id: m.templateId, short_url: "0", recipients: [{ mobiles: `91${m.mobile}`, ...m.vars }] }),
-    signal: AbortSignal.timeout(TIMEOUT_MS),
-  });
-  return answer(res, (b) => b.message);
+export async function msg91Flow(m: {
+  templateId: string;
+  mobile: string;
+  vars: Record<string, string>;
+}): Promise<ProviderAnswer> {
+  return sendMsg91Flow(m);
 }
 
 export async function twilioSms(m: { mobile: string; text: string }): Promise<ProviderAnswer> {
-  const sid = env("TWILIO_ACCOUNT_SID");
-  const res = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${encodeURIComponent(sid)}/Messages.json`, {
-    method: "POST",
-    headers: {
-      Authorization: "Basic " + Buffer.from(`${sid}:${env("TWILIO_AUTH_TOKEN")}`).toString("base64"),
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: new URLSearchParams({ To: `+91${m.mobile}`, From: env("TWILIO_FROM"), Body: m.text }),
-    signal: AbortSignal.timeout(TIMEOUT_MS),
-  });
-  return answer(res, (b) => b.sid);
+  return sendTwilioSms(m);
 }
 
 /* ------------------------------------------------------- general messages */
@@ -194,7 +176,8 @@ export async function sendSms(m: { to: string; text: string; templateId?: string
         console.warn(`[sms] no MSG91 template id for ${m.tag ?? "this message"}; message skipped`);
         return { status: "skipped", providerId: null, reason: "no_template" };
       }
-      const vars = Object.fromEntries((m.vars ?? []).map((v, i) => [`var${i + 1}`, v]));
+      const cleanVars = (m.vars ?? []).map((v) => v.replace(/\s+/g, " ").trim().slice(0, 30));
+      const vars = Object.fromEntries(cleanVars.map((v, i) => [`var${i + 1}`, v]));
       return fromAnswer("sms", await msg91Flow({ templateId: m.templateId, mobile, vars }));
     }
     return fromAnswer("sms", await twilioSms({ mobile, text: m.text }));
@@ -225,6 +208,10 @@ export const SMS_TEMPLATES = {
   rider_offer: {
     env: "MSG91_TEMPLATE_RIDER_OFFER",
     text: "New Riderzpro delivery near {#var#}. Open the rider app to accept.",
+  },
+  store_receipt: {
+    env: "MSG91_TEMPLATE_STORE_RECEIPT",
+    text: "{#var#} receipt: order {#var#}, Rs {#var#}, {#var#}. Thank you for shopping with us.",
   },
 } as const;
 export type SmsTemplate = keyof typeof SMS_TEMPLATES;

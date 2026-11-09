@@ -104,12 +104,19 @@ export async function sendOtp(opts: { vendorId: string | null; channel: OtpChann
     opts.target,
     opts.purpose,
   ]);
+  const otpId = newId("otp");
   await sql(
     `INSERT INTO vendor_otps (id, vendor_id, channel, target, purpose, code_hash, expires_at)
      VALUES ($1, $2, $3, $4, $5, $6, now() + make_interval(mins => $7))`,
-    [newId("otp"), opts.vendorId, opts.channel, opts.target, opts.purpose, codeHash(opts.target, opts.purpose, code), TTL_MINUTES],
+    [otpId, opts.vendorId, opts.channel, opts.target, opts.purpose, codeHash(opts.target, opts.purpose, code), TTL_MINUTES],
   );
-  await deliver(opts.channel, opts.target, code, opts.purpose);
+  try {
+    await deliver(opts.channel, opts.target, code, opts.purpose);
+  } catch (err) {
+    // Delivery failed: consume the un-delivered code so it cannot be guessed.
+    await sql("UPDATE vendor_otps SET consumed_at = now() WHERE id = $1", [otpId]).catch(() => {});
+    throw err;
+  }
 }
 
 /**

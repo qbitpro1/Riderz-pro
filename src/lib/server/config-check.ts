@@ -47,7 +47,21 @@ export function checkConfig(): ConfigReport {
   if (features.payments && !features.paymentWebhook) warnings.push("Razorpay keys set but RAZORPAY_WEBHOOK_SECRET isn't: payments from a closed tab are only found by the unpaid-order check.");
   if (features.payments && env("RAZORPAY_KEY_ID").startsWith("rzp_test_")) warnings.push("Razorpay is in TEST mode (rzp_test_ key): no real money is taken.");
   if (!features.email) warnings.push("Email is off (RESEND_API_KEY + sender): no sign-in codes or order emails by email.");
+  else if (!env("ORDERS_EMAIL_FROM")) warnings.push("ORDERS_EMAIL_FROM is not set: order confirmation emails will fall back to OTP_EMAIL_FROM.");
   if (!features.sms) warnings.push("SMS is off (MSG91 or Twilio): mobile sign-in codes and delivery alerts can't be sent.");
+  else if (env("MSG91_AUTH_KEY")) {
+    const missingTemplates = [
+      "MSG91_OTP_TEMPLATE_ID",
+      "MSG91_TEMPLATE_ORDER_CONFIRMED",
+      "MSG91_TEMPLATE_RIDER_OFFER",
+      "MSG91_TEMPLATE_RIDER_ARRIVING",
+      "MSG91_TEMPLATE_RIDER_ARRIVED",
+      "MSG91_TEMPLATE_STORE_RECEIPT",
+    ].filter((k) => !env(k));
+    if (missingTemplates.length > 0) {
+      warnings.push(`MSG91 templates pending DLT approval: ${missingTemplates.join(", ")} (SMS for those events will be skipped until set).`);
+    }
+  }
   const speech = speechConfigWarning();
   if (speech) warnings.push(speech);
   if (!features.cron) warnings.push("CRON_SECRET not set: schedule /api/cron/housekeeping hourly (see docs/DEPLOY.md); until then it only runs when the site is busy.");

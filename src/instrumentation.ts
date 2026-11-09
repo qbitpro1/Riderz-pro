@@ -4,7 +4,16 @@
  * order; everything that is merely off is listed once in the log.
  */
 export async function register() {
-  if (process.env.NEXT_RUNTIME !== "nodejs" || process.env.NODE_ENV !== "production") return;
+  if (process.env.NEXT_RUNTIME === "nodejs") {
+    // Node-only work (database), imported inside this check so the Edge build never includes it.
+    const { afterStart } = await import("./instrumentation-node");
+    await checkSettings();
+    afterStart();
+  }
+}
+
+async function checkSettings() {
+  if (process.env.NODE_ENV !== "production") return;
   const { checkConfig } = await import("./lib/server/config-check");
   const { problems, warnings, features } = checkConfig();
   const on = Object.entries(features).filter(([, v]) => v).map(([k]) => k);
