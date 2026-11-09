@@ -6,42 +6,56 @@ RECOIL, Blaupunkt and Autoform across eight departments, with fitment checks per
 the company's garages, and a marketplace of approved sellers who can also run an **Offline Store**
 screen in their own shop.
 
-## Current status (5 Nov 2026)
+## Current status (9 Nov 2026)
 
-- `main` is complete and passes lint, typecheck and a production build.
-- **Next step:** an internal test site, `test.riderzpro.com`, running `main`. It uses the production
-  database from day one, because the first real sellers (Indus Enterprises) set up their portal there
-  and keep that data on riderzpro.com. The team works against it while the go-live list below is
-  finished.
-- **Then:** riderzpro.com, after everything under [Before going live](#before-going-live-on-riderzprocom)
-  is done.
+- **Live:** riderzpro.com runs the `old-deploy` branch on the team's Ubuntu server behind nginx
+  (runbook: `docs/DEPLOY.md`, sections 6–10). Data on the live site is real: the first sellers,
+  starting with Indus Enterprises, keep what they enter there. Never reset that database.
+- **`main` is ahead of the live site.** On 9 Nov it took in the live branch, Sathwik's payments and
+  deploy work and Harshitha's seller-portal work (see below), and was audited:
+  - typecheck, lint and production build pass;
+  - all 475 pages load with no server errors;
+  - test scripts pass: payments 29/29, invoices 22/22, payment signatures 18/18, SMS/OTP 18/18;
+  - seller, shop-screen, customer and admin journeys tested in a browser.
+- **Next release:** Sathwik moves `old-deploy` up to `main` once Razorpay test keys work on the
+  server (from then on checkout is online-only), then redeploys and runs the smoke test.
+- **Not merged yet:** Sathese's `customer-site-updates` (needs changes, see "Code still to do") and
+  Vamsi's PR #3 (waits for an owner decision).
 - This repo replaces the old riderzpro.com (old repo `Viswanath5177/Riderzpro`, no real customers).
 
-### What's new since V0.4 (Nov 2026)
+### What's new in November 2026
 
 - **Free AI, no API key needed.**
   - Ask AI on the website.
   - Salesman AI on the shop screen: Basic mode free; Full mode on Claude when a key is set.
 - **Offline Store, run by the shop owner.**
   - Products show on the shop screen within seconds of saving. No Riderzpro review for the shop
-    screen; the website still reviews them.
+    screen; products rejected by admin are hidden from it and can't be bought.
   - Shop categories and sub-categories that the seller makes (e.g. Mats → Autoform, GFX Pro).
-    Indus Enterprises' 13 categories are set up.
-  - "Bestseller" tag per category.
-  - "Goes well with it" suggestions after something is added (car cover → mats), from both the
-    screen and Salesman AI.
+    Indus Enterprises gets its 14 categories automatically when approved or set up.
+  - "Bestseller" tag per category; "goes well with it" suggestions on the screen and from Salesman AI.
   - Sellers can delete any of their products; past orders keep their details.
-- **Deployment audit fixes:**
+  - Search looks in all categories.
+- **Salesman AI.**
+  - A seller can set a **lowest price** per product; bargaining never goes below it.
+  - Basic mode understands Hinglish, vague and price-complaint questions, "what goes with it?" and
+    "compare the two".
+  - Mic in Salesman AI and search. Without browser speech recognition (e.g. the Jio TV box) it records
+    and turns speech into text on the server through Sarvam AI (`SPEECH_TO_TEXT_PROVIDER=sarvam`,
+    `SARVAM_API_KEY`); off until a key is set. The mic needs the https address.
+- **Screens.**
+  - Phones: seller portal and shop screen; the seller's bottom bar has **My shop**.
+  - 32-inch shop TVs (browsers reporting 960×540): welcome, browse, product page, order, checkout,
+    review, compare and dialogs all fit. The shop screen also works over the shop's Wi-Fi.
+- **Checkout and money.**
+  - **Online payment only** (Razorpay). WhatsApp ordering is gone from checkout and the server.
+  - **No commission on Offline Store screen sales**, including older unpaid ones (migration 019).
   - Order lines keep their own GST rate, HSN and warranty.
-  - Stock edits can't overwrite a newer stock count.
-  - Rate limits on orders, shop-screen unlock and rider codes.
-  - Admin CSV export locked to admins.
-  - Fake ratings removed from search-engine data.
-  - Copy fixes.
-- **Phones:**
-  - The seller portal and the shop screen work on a phone.
-  - The seller's bottom bar has **My shop** (the Offline Store).
-  - The product list, product form and category manager fit a small screen.
+- **Sign-in codes, SMS and email.** MSG91, Twilio and Resend are separate modules; MSG91 errors that
+  answer "200" are caught; a code that fails to send is cancelled at once; start-up warns about DLT
+  templates still missing.
+- **Security.** Content-Security-Policy header (report-only for now, `CSP_MODE`), zod 4, rate limits on
+  orders, shop-screen unlock and rider codes, admin CSV export locked to admins.
 
 ## What the site does
 
@@ -49,7 +63,7 @@ screen in their own shop.
 | --- | --- | --- |
 | Shop | House catalogue, marketplace items, fitment by car (My Garage), wishlist, collections, search | `/shop`, `/products/[slug]`, `/sellers/[slug]` |
 | Ask AI | Free shopping help over our own catalogue (Claude optional) | `/assistant` |
-| Checkout | Server-priced orders; pay online (Razorpay) or order on WhatsApp; coupons; "Detect my location" | `/cart`, `/api/orders` |
+| Checkout | Server-priced orders; online payment only (Razorpay); coupons; "Detect my location" | `/cart`, `/api/orders` |
 | Customer accounts | Sign-in with a mobile/email code, orders with live tracking, GST invoices, addresses, help desk | `/account` |
 | Sellers | Sign-up, KYC onboarding, products, stock, pricing, orders, invoices, payouts, notifications | `/vendor` |
 | Offline Store | Shop-floor screen per seller: shop categories, Bestseller tags, suggestions, Salesman AI with seller-limited bargaining, pay on the screen or at the counter, receipts by SMS | `/store/[slug]`, set up in `/vendor/dashboard/store-screen` |
@@ -64,7 +78,7 @@ screen in their own shop.
 - Customers browse by the seller's own categories, compare products and add them to an order.
 - They pay by UPI on the screen or at the counter.
 - Salesman AI answers questions in English or Hinglish, suggests products that go well together and
-  can bargain within the limit the seller sets.
+  can bargain within the limit the seller sets, never below a product's lowest price.
 - The seller manages everything from the portal, on a phone too:
   - products and stock;
   - categories (Bestseller, suggestions);
@@ -72,106 +86,78 @@ screen in their own shop.
   - payment options;
   - the unlock code.
 
-## Before going live on riderzpro.com
+## Before customers can order on riderzpro.com
 
-Who does what is in [`docs/team/`](docs/team/README.md); the step-by-step deploy is
+The task list per person is kept with the team (latest: task update of 9 Nov 2026). Deploy steps:
 [`docs/DEPLOY.md`](docs/DEPLOY.md).
 
-### Sign-in codes (OTP) and SMS
+### Sign-in codes (OTP), SMS and email (Amrutha)
 
+- [x] Code: MSG91/Resend/Twilio modules, error handling, cancel undelivered codes, test suite.
 - [ ] Rotate the Resend API key and the Twilio auth token (both were shared in a chat).
-- [ ] Choose the SMS provider (MSG91 recommended). The Twilio trial has no number and can't send.
-- [ ] DLT registration (TRAI). Approval takes days, so start early:
-  - register the company as an entity;
-  - register a sender ID;
-  - register one template each for the OTP, order confirmed, rider offer, rider arriving, rider
-    arrived and shop receipt messages.
-- [ ] Put the keys and template IDs in the host settings: `MSG91_AUTH_KEY`, `MSG91_OTP_TEMPLATE_ID`,
-  `MSG91_TEMPLATE_*`.
-- [ ] Without email or SMS, customer, rider and new-seller sign-in stays off. At least one must work.
-
-### Email
-
-- [ ] Verify riderzpro.com in Resend by adding its SPF and DKIM records to the DNS.
-- [ ] Set `RESEND_API_KEY`, `OTP_EMAIL_FROM` and `ORDERS_EMAIL_FROM`.
+- [ ] MSG91 account and `MSG91_AUTH_KEY`.
+- [ ] DLT registration (TRAI): company, sender ID, one template each for OTP, order confirmed, rider
+  offer, rider arriving, rider arrived and shop receipt. Waiting for approval.
+- [ ] Resend: verify riderzpro.com (SPF/DKIM), set `OTP_EMAIL_FROM` and `ORDERS_EMAIL_FROM`.
+- [ ] Keys and template IDs to Sathwik for the server (password manager only).
 - [ ] Confirm the support email and phone printed on emails and invoices.
 
-### Payments and GST
+### Payments and GST (Sathwik)
 
-- [ ] Razorpay:
-  - test keys on the test site;
-  - complete account activation (KYC);
-  - live keys on production only.
-- [ ] Razorpay webhook for each site, with the events listed in `docs/DEPLOY.md`.
-- [ ] Check the GST invoice details (GSTIN, address, HSN rates) with the accountant.
-- [ ] Decide commission on shop-screen sales paid at the counter. Today it is recorded, not charged.
+- [x] Online-only checkout and zero commission on shop-screen sales (on `main`).
+- [ ] Razorpay: test keys and webhook on the server, account activation (KYC), live keys at go-live.
+- [ ] Real payment test: card and UPI, order turns Paid, invoice opens, refund ₹1.
+- [ ] GST invoice details (GSTIN, HSN rates) checked with the accountant.
+- [ ] **Registered office address** for GST invoices and the Contact page: to be shared by the owner.
 
-### Database
+### Server (Sathwik)
 
-**Client data entered on `test.riderzpro.com` is real.** The first sellers, starting with
-Indus Enterprises, set up their portal and Offline Store there and must keep it on riderzpro.com from
-day one. So the test site runs on the **production database** from its first day, and riderzpro.com
-later points at the same database. The data lives in that database, not in git; nothing is
-re-entered and nothing is wiped.
+- [ ] Move `old-deploy` up to `main` and redeploy (after Razorpay test keys work).
+- [ ] Settings: keep the current `VENDOR_DATA_KEY` (a new key would make saved bank details unreadable),
+  `ADMIN_USER`, `ADMIN_PASSWORD`, `CRON_SECRET`, `NEXT_PUBLIC_SITE_URL`, the keys above; optionally
+  `ANTHROPIC_API_KEY`, `SALESMAN_FULL_AI_SHOPS`, `SPEECH_TO_TEXT_PROVIDER` + `SARVAM_API_KEY`.
+- [ ] The server must run in production mode (`npm run build` then `npm start`): in development the
+  sign-in code is shown in the browser.
+- [ ] nginx: real visitor IP (`X-Real-IP`) and a 5 MB upload limit; hourly cleanup cron; uptime
+  check on `/api/health` (runbook sections 7, 8, 10).
+- [ ] After a week of report-only with no reports, set `CSP_MODE=enforce` and rebuild.
 
-- [ ] One new, empty PostgreSQL database for test.riderzpro.com, kept as the production database.
-  Use the pooled connection string; non-Neon/Supabase hosts need `?sslmode=require`.
-- [ ] Daily backups with point-in-time restore on it from day one.
-- [ ] Final `VENDOR_DATA_KEY` set from day one:
-  - make it with `openssl rand -base64 32`;
-  - save it in the password manager;
-  - never change it (it locks sellers' bank details and PAN).
-- [ ] Never reset this database. For experiments, use a separate throwaway database or a local copy.
-- [ ] Indus Enterprises signs up as a normal seller with its real details, and an admin approves
-  it. On approval it gets its shop categories automatically:
-  - Seat Cover, Mats (with Autoform and GFX Pro), Speaker and the rest;
-  - Car Cover, tagged Bestseller.
+### Database and catalogue (Muni Shankar, Vamsi)
 
-  The `/admin/vendors` demo setup does the same, but it names the account "(demo)" and fills in
-  placeholder KYC details, so use it only for demos.
-- [ ] Remove or archive the starter demo products the client doesn't sell (SKUs starting `DEMO-`).
-- [ ] Orders placed with Razorpay test keys stay in the order history. Mark them clearly or cancel them
-  before going live.
-
-### Hosting and domain
-
-- [ ] Hosting: Vercel recommended.
-  - The hourly job needs the **Pro** plan.
-  - On Hobby, set the job to daily and call `/api/cron/housekeeping` hourly from an uptime service.
-- [ ] Settings on each site:
-  - `NEXT_PUBLIC_SITE_URL`, `ADMIN_USER`, `ADMIN_PASSWORD`, `CRON_SECRET`;
-  - the keys above;
-  - optionally `ANTHROPIC_API_KEY` and `SALESMAN_FULL_AI_SHOPS`.
-- [ ] Uptime check on `/api/health`.
-- [ ] Maps:
-  - tile provider address (`NEXT_PUBLIC_MAP_TILES_URL`);
-  - a contact email for OpenStreetMap services;
-  - optionally an own routing server.
-- [ ] Go-live day: point riderzpro.com and www at the new host, keep the email DNS records, and keep
-  the old site on a spare address for a week.
-- [ ] Run the smoke test in `docs/DEPLOY.md` on the test site, then on production right after the
-  switch.
+- [ ] Confirm which PostgreSQL the live site uses; daily backups with point-in-time restore and one
+  test restore.
+- [ ] Save the current `VENDOR_DATA_KEY` in the password manager.
+- [ ] Indus Enterprises' real catalogue in the live database, filed into its shop categories; then
+  remove the `DEMO-` sample products once.
+- [ ] Home page photos stored in our own files table instead of loading from Unsplash.
+- [ ] Cancel or mark test orders before the public launch.
 
 ### Code still to do
 
-- [ ] Keep search engines off the test site. Today `robots.txt` allows everything on every address.
-- [ ] Owner decisions on content that isn't real yet:
-  - testimonials, figures ("12,400+ builds", "4.8/5") and garage locations in Bengaluru, Hyderabad
-    and Pune;
-  - star ratings shown on house products;
-  - 16 hard-coded used cars;
-  - the dealer form on `/partners`, which doesn't save anything yet.
-- [ ] Replace the Unsplash stock photos on the home page with our own.
-- [ ] Merge `chore/zod-4` (zod 4 upgrade; clears the last high-severity `npm audit` item).
-- [ ] Add a Content-Security-Policy header.
-- [ ] Decide:
-  - auto-cancelling old unpaid WhatsApp orders (today only quantity limits);
-  - whether products rejected by admin should leave the shop screen.
-- [ ] Not built yet, waiting on the owner:
-  - header "Deliver to" picker;
-  - reviews and warranty claims;
-  - installation bookings;
-  - mobile app.
+- [ ] **Sathese (`customer-site-updates`)**: update to `main` and open a PR into `main`:
+  - keep `main`'s online-only checkout (remove "place order and pay later") and drop the duplicate
+    zod 4 change;
+  - Google Translate in the language menu: **approved**; add a line about it to the privacy policy;
+  - invoices keep an address until the registered office address is shared.
+- [ ] **Vamsi (PR #3)**: waits for the owner's decision on a sellers-only shop. Either way, split out the
+  seller JSON catalogue upload, account carts and `DATABASE_SCHEMA` option into their own PR, without
+  the start-up deletion of `DEMO-` products; run `npm run build`.
+- [ ] **Hima Bindu**: `/partners` dealer form (saves nothing today), remove used cars and "sell your car"
+  (`/used-cars`, `/cars`, `/sell`, EMI calculator, links, sitemap), remove WhatsApp from admin and
+  other pages, admin panel test.
+- [ ] **Harshitha**: Indus go-live with real KYC; Salesman AI bundle offers (free fitting, add-on
+  discounts), its log and test conversations; test the shop TV mic on the https site.
+- [ ] Demo content still on `main` until those branches land: garage locations, "12,400+ builds",
+  WhatsApp buttons outside checkout.
+- [ ] Delete the old `chore/zod-4` branch (zod 4 is on `main`).
+- [ ] Not built yet: header "Deliver to" picker, reviews and warranty claims, installation bookings,
+  mobile app.
+
+### Owner decisions
+
+- [x] Google Translate on the customer site: **yes**.
+- [ ] Registered office address: to be shared.
+- [ ] Sellers-only shop (Vamsi's PR #3): pending.
 
 ## Stack
 
@@ -179,7 +165,7 @@ re-entered and nothing is wiped.
   `src/app/globals.css`), zod, lucide-react, Leaflet.
 - PostgreSQL through `DATABASE_URL` (`pg`). In development without it, an embedded PGlite database in
   `.data/pglite`.
-  - Tables are created and upgraded on start (`src/lib/db/migrations.ts`, 001–018).
+  - Tables are created and upgraded on start (`src/lib/db/migrations.ts`, 001–019).
   - Migrations are append-only.
 - External services, each switched on by its settings:
   - Razorpay;
@@ -210,14 +196,18 @@ No settings are needed in development:
 
 Copy `.env.example` to `.env.local` to set anything; every setting is described there.
 
-Before `npm run build`:
+Before `npm run build` (it uses webpack, `next build --webpack`):
 - stop the dev server (it locks the embedded database);
-- delete `.next/dev`.
+- after a build, delete `.next` before `npm run dev` again, or the dev styles can be stale.
+
+Import zod from `@/lib/zod`, not from `"zod"` (zod 4 with the old messages). After merging anything
+that changes `package.json`, run `npm install` and commit the updated `package-lock.json`.
 
 Tests (scripted, no real money or messages):
 - `node scripts/test-payments-signature.mjs`
 - `node scripts/test-invoice.mjs`
 - `node scripts/test-payments.mjs` (starts its own dev server on :3102 with a mock Razorpay)
+- `node scripts/test-otp-sms-notifications.mjs`
 
 ## Architecture rules
 
@@ -248,14 +238,14 @@ Tests (scripted, no real money or messages):
 
 ## Branches and history
 
-- `main` is what goes live. New work goes on its own branch and is merged when the owner says it's
-  ready.
-- `old-deploy`: a frozen copy of `main` as it was on 5 Nov 2026, before the test site.
-  - Never delete it or push to it.
-  - Tag `old-deploy-2026-11-05` marks the same commit.
-  - A copy of the development database from that day is kept locally in `.data/pglite-old-deploy`
-    (not in git).
-- Open branch: `chore/zod-4` (zod 4 upgrade, not merged yet).
+- `main`: development. **Start every task from `main` and open a Pull Request into `main`:**
+  `git fetch origin && git checkout -b <your-name>/<task> origin/main`. One teammate reviews it before
+  it is merged. Nobody pushes straight to `main` or `old-deploy`.
+- `old-deploy`: **the live site.** For each release, Sathwik moves it up to `main` and redeploys.
+  Never delete it. Tag `old-deploy-2026-11-05` marks where it started.
+- Open team branches (9 Nov 2026): `customer-site-updates` (Sathese), `vamsi` (PR #3),
+  `sathwik/deploy-and-payments` and `harshitha/seller-portal-tasks` (both already merged into `main`;
+  close PR #2 without merging it into `old-deploy`: it lacks a shop-checkout fix that is on `main`).
 - Versions are tagged:
   - `v0.2`: Riderzpro rebrand and accessories store;
   - `v0.3`: seller portal, marketplace, Offline Store;
@@ -264,7 +254,6 @@ Tests (scripted, no real money or messages):
     - Razorpay and GST invoices;
     - coupons, admin team and reports;
     - AI and launch readiness.
-- November 2026 work (free AI, owner-run Offline Store, deployment audit, phones) is on `main`.
 - Detailed log up to 18 Oct 2026: `docs/WORK_UPDATE.md`.
 
 ## Docs
