@@ -78,11 +78,15 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
           <Stat
             label="Payment method"
             value={`${r.orders.byMethod.online ?? 0} online`}
-            note={`${r.orders.byMethod.whatsapp ?? 0} WhatsApp${r.orders.byMethod.cod ? ` · ${r.orders.byMethod.cod} cash` : ""}`}
+            note={[
+              r.orders.byMethod.counter ? `${r.orders.byMethod.counter} at shop counter` : "",
+              r.orders.byMethod.cod ? `${r.orders.byMethod.cod} cash` : "",
+              r.orders.byMethod.whatsapp ? `${r.orders.byMethod.whatsapp} WhatsApp (older orders)` : "",
+            ].filter(Boolean).join(" · ") || undefined}
           />
         </div>
 
-        <h2 className="eyebrow mb-3 mt-10">Marketplace commission (parts delivered in the range, paid through Riderzpro)</h2>
+        <h2 className="eyebrow mb-3 mt-10">Marketplace commission (parts delivered in the range, paid through Riderzpro; shop-screen sales 0%)</h2>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <Stat label="Delivered seller sales" value={rupees(r.marketplace.deliveredGross)} />
           <Stat label="Commission" value={rupees(r.marketplace.commission)} />
@@ -91,8 +95,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
         </div>
         {r.marketplace.counterGross > 0 && (
           <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <Stat label="Paid at sellers' counters" value={rupees(r.marketplace.counterGross)} note="shop screen orders; the seller has the money" />
-            <Stat label="Commission on counter sales" value={rupees(r.marketplace.counterCommission)} note="not collected yet: billing rule to be decided" />
+            <Stat label="Paid at sellers' counters" value={rupees(r.marketplace.counterGross)} note="shop screen orders; the seller has the money. No commission on counter sales (0%)" />
           </div>
         )}
 

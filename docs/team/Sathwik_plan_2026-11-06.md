@@ -56,16 +56,20 @@ Do these in order. Steps 1 to 4 use today's `old-deploy` and don't depend on thi
 - Ask AI no longer tells customers to order on WhatsApp.
 - `scripts/test-payments.mjs` now expects online-only behaviour.
 
-## Still open on commission (#10)
+## Commission (#10): done
 
-New shop-screen sales save a 0% rate, but three things remain:
+Shop-screen sales carry no commission. What changed:
 
-- Shop-screen orders placed **before** this release keep their saved rate, and any not yet paid out
-  would still have commission deducted. Count them with:
+- New shop-screen sales save a 0% rate (`src/lib/server/store-sales.ts`).
+- Migration `019_store_sales_zero_commission` sets the rate to 0 on older shop-screen orders
+  (`orders.channel = 'store'`) that are **not yet in a payout** (`payout_id IS NULL`). Commission, its GST
+  and the seller's net are worked out from the rate at payout time, so the rate is the only stored figure.
+  Orders already paid out keep what was paid. Re-running it changes nothing. It changes live data on
+  deploy, so have it reviewed. To see what it will touch beforehand:
   `SELECT count(*), sum(vo.subtotal) FROM vendor_orders vo JOIN orders o ON o.id = vo.order_id WHERE o.channel = 'store' AND vo.commission_rate <> 0 AND vo.payout_id IS NULL;`
-  If any exist, zero them with a new migration, which changes live data, so have it reviewed.
-- Admin Reports still shows "Commission on counter sales … billing rule to be decided".
-- The seller Payments page still describes commission on every order.
+- Admin Reports: the "Commission on counter sales … billing rule to be decided" card is gone; counter
+  sales now say "No commission on counter sales (0%)". WhatsApp counts show as "WhatsApp (older orders)".
+- Seller Payments page: says commission applies to online orders only and shop sales have none.
 
 ## For teammates
 
