@@ -45,8 +45,9 @@ function VerifyRow({
     }
   }
 
-  async function verify(e: FormEvent) {
-    e.preventDefault();
+  // Not a <form>: this row sits inside the step's own form, and a nested form is invalid HTML (the
+  // browser would submit the outer form instead, reloading the page without checking the code).
+  async function verify() {
     if (!/^[0-9]{6}$/.test(code)) {
       setError("Enter the 6-digit code.");
       return;
@@ -85,7 +86,7 @@ function VerifyRow({
         <p className="mt-3 text-xs leading-relaxed text-ash">We&apos;ll confirm this during review. Nothing to do for now.</p>
       )}
       {!verified && deliverable && sent && (
-        <form onSubmit={verify} className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-end">
+        <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-end">
           <div className="flex-1">
             <label htmlFor={id} className="label">
               Code sent to {sent}
@@ -97,15 +98,21 @@ function VerifyRow({
               maxLength={6}
               value={code}
               onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  void verify();
+                }
+              }}
               className="field"
               aria-invalid={error ? true : undefined}
               aria-describedby={error ? `${id}-err` : undefined}
             />
           </div>
-          <button type="submit" disabled={busy !== null} className="btn btn-primary">
+          <button type="button" onClick={() => void verify()} disabled={busy !== null} className="btn btn-primary">
             {busy === "verify" ? "Checking…" : "Verify"}
           </button>
-        </form>
+        </div>
       )}
       {error && (
         <p id={`${id}-err`} role="alert" className="mt-2 text-xs text-danger">

@@ -76,6 +76,7 @@ async function embeddedDriver(): Promise<Driver> {
   const fs = await import("node:fs");
   const dir = path.join(process.cwd(), ".data", "pglite");
   fs.mkdirSync(dir, { recursive: true });
+  claimEmbeddedDatabase(fs, path.join(process.cwd(), ".data", "pglite.lock"));
   const db = new PGlite(dir);
   await db.waitReady;
   // PGlite serves one query at a time; queue them so a transaction is never interleaved.
@@ -106,6 +107,44 @@ async function embeddedDriver(): Promise<Driver> {
   };
 }
 
+/**
+ * The embedded database can only be opened by one process. A second `npm run dev` (or a test
+ * script) opening the same .data/pglite at the same time sees half-written tables ("relation
+ * already exists") and can damage it. The first process writes its pid to .data/pglite.lock;
+ * any other live process is refused with a message saying what to do.
+ */
+function claimEmbeddedDatabase(fs: typeof import("node:fs"), lockFile: string) {
+  const alive = (pid: number) => {
+    try {
+      process.kill(pid, 0);
+      return true;
+    } catch (err) {
+      // EPERM: the process exists but belongs to someone else.
+      return (err as NodeJS.ErrnoException).code === "EPERM";
+    }
+  };
+  try {
+    const owner = Number(fs.readFileSync(lockFile, "utf8").trim());
+    if (owner && owner !== process.pid && alive(owner)) {
+      throw new Error(
+        `The local database (.data/pglite) is already open in another process (pid ${owner}). ` +
+          "Only one dev server can use it: stop the other one (close its terminal, or end that node.exe), then start again.",
+      );
+    }
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code !== "ENOENT") throw err;
+  }
+  fs.writeFileSync(lockFile, String(process.pid));
+  const release = () => {
+    try {
+      if (fs.readFileSync(lockFile, "utf8").trim() === String(process.pid)) fs.unlinkSync(lockFile);
+    } catch {
+      /* already gone */
+    }
+  };
+  process.once("exit", release);
+}
+
 async function migrate(driver: Driver): Promise<void> {
   await driver.transaction(async (q, exec) => {
     await q(`CREATE TABLE IF NOT EXISTS schema_migrations (
@@ -134,7 +173,20 @@ function driver(): Promise<Driver> {
       if (url) d = await postgresDriver(url);
       else if (process.env.NODE_ENV !== "production") d = await embeddedDriver();
       else throw new DatabaseNotConfigured();
-      await migrate(d);
+      try {
+        await migrate(d);
+      } catch (err) {
+        // A local database whose tables exist but whose migration record doesn't (an earlier run was
+        // stopped while it was being set up, or the folder came from an older copy of the app).
+        if (!url && /already exists/.test(err instanceof Error ? err.message : "")) {
+          const hint =
+            "The local database in .data/pglite is out of step with the app (an earlier start was probably interrupted). " +
+            "It only holds local test data: stop the dev server, delete the .data/pglite folder, and start again.";
+          console.error(`[db] ${hint}`);
+          throw new Error(`${err instanceof Error ? err.message : String(err)}. ${hint}`);
+        }
+        throw err;
+      }
       return d;
     })();
     store.__rzpDb.catch(() => {
