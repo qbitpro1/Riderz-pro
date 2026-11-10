@@ -84,7 +84,7 @@ async function seed(db) {
   // Leave no earlier unpaid test orders around to be released mid-run.
   await db.query(
     `UPDATE orders SET status = 'cancelled', payment_status = 'failed'
-      WHERE payment_method = 'online' AND status = 'placed' AND customer_phone = '9123400000'`,
+      WHERE payment_method = 'online' AND status = 'placed' AND customer_phone LIKE '91234%'`,
   );
 }
 
@@ -186,7 +186,7 @@ async function call(method, p, body, headers = {}) {
       ...(method !== "GET" ? { Origin: BASE } : {}),
       ...headers,
     },
-    body: body === undefined ? undefined : typeof body === "string" ? body : JSON.stringify(body),
+    body: body === undefined ? undefined : typeof body === "string" ? body : JSON.stringify(body && body.customer ? { ...body, customer: { ...body.customer, mobile: nextMobile() } } : body),
   });
   let data = null;
   try {
@@ -197,13 +197,16 @@ async function call(method, p, body, headers = {}) {
   return { status: res.status, data };
 }
 
+// A fresh mobile per order keeps the per-mobile order rate limit out of the way (same idea as the IP above).
+let mobileSeq = Number(String(Date.now()).slice(-4)) * 10;
+const nextMobile = () => `91234${String(mobileSeq++ % 100000).padStart(5, "0")}`;
 const customer = { name: "Pay Tester", mobile: "9123400000", email: "pay@example.test", address: "12 Test Street, Sector 5", city: "Gurugram", state: "Haryana", pincode: "122001" };
 const line = (qty) => ({ id: `vendor:${SLUG}`, qty, install: false });
 const placeOnline = (qty, extra = {}) => call("POST", "/api/orders", { customer, lines: [line(qty)], paymentMethod: "online", ...extra });
 
-/** Stock left, read from the "Only N left" answer to an impossible order (places nothing). */
+/** Stock left, read from the "Only N left" answer to an impossible order (places nothing). 10 is within the WhatsApp quantity limit and above STOCK. */
 async function stockLeft() {
-  const r = await call("POST", "/api/orders", { customer, lines: [line(99)] });
+  const r = await call("POST", "/api/orders", { customer, lines: [line(10)] });
   assert.equal(r.status, 409, `stock probe: ${JSON.stringify(r.data)}`);
   const m = r.data.message.match(/Only (\d+) of/);
   return m ? Number(m[1]) : 0;
