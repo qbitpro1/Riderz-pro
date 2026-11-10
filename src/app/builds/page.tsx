@@ -5,7 +5,8 @@ import { BuildCard, ReviewCard } from "@/components/community/Cards";
 import { SectionHead } from "@/components/ui/Section";
 import { Icon } from "@/components/ui/Icon";
 import { Reveal } from "@/components/ui/Reveal";
-import { BUILDS, REVIEWS } from "@/lib/data/community";
+import { BUILDS } from "@/lib/data/community";
+import { approvedReviews } from "@/lib/server/reviews";
 import { whatsapp } from "@/lib/data/site";
 import { pageMeta } from "@/lib/data/seo";
 
@@ -16,7 +17,8 @@ export const metadata: Metadata = pageMeta({
   path: "/builds",
 });
 
-export default function BuildsPage() {
+export default async function BuildsPage() {
+  const REVIEWS = await approvedReviews(6);
   return (
     <>
       <PageHero
@@ -65,18 +67,20 @@ export default function BuildsPage() {
         </div>
       </section>
 
+      {REVIEWS.length > 0 && (
       <section className="section border-t border-tint/8 bg-carbon">
         <div className="shell">
           <SectionHead eyebrow="Owners" title="WHAT THEY SAY AFTER." />
           <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {REVIEWS.map((r) => (
-              <li key={r.name}>
+              <li key={r.id}>
                 <ReviewCard review={r} />
               </li>
             ))}
           </ul>
         </div>
       </section>
+      )}
     </>
   );
 }

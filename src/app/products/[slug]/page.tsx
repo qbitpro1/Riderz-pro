@@ -12,6 +12,8 @@ import { SITE } from "@/lib/data/site";
 import { DEPARTMENT_BY_SLUG, departmentHref, groupHref } from "@/lib/data/taxonomy";
 import { MEDIA } from "@/lib/media";
 import { getProductDetail, relatedProducts } from "@/lib/server/catalog";
+import { productReviews } from "@/lib/server/reviews";
+import { ReviewCard } from "@/components/community/Cards";
 import { productHref, type ProductDetail, type ProductImage } from "@/lib/store/types";
 
 // Products come from the database (catalog_products): each page is rendered on request, and a
@@ -90,7 +92,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const detail = await getProductDetail(slug);
   if (!detail) notFound();
 
-  const related = await relatedProducts(slug, 8);
+  const [related, reviews] = await Promise.all([relatedProducts(slug, 8), productReviews(slug, 6)]);
   const department = DEPARTMENT_BY_SLUG[detail.department];
 
   // A held-back or coming-soon product cannot be bought, so it advertises no price or availability.
@@ -101,7 +103,9 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       ? "https://schema.org/PreOrder"
       : detail.availability === "made-to-order"
         ? "https://schema.org/BackOrder"
-        : "https://schema.org/InStock";
+        : detail.availability === "out-of-stock"
+          ? "https://schema.org/OutOfStock"
+          : "https://schema.org/InStock";
 
   const offers = sellable ? offersLd(detail, availabilityUrl, `${SITE.url}${productHref(slug)}`) : null;
 
@@ -114,8 +118,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     ...(detail.summary ? { description: detail.summary } : {}),
     ...(detail.images.length ? { image: detail.images.map(imageUrl) } : {}),
     ...(offers ? { offers } : {}),
-    // No aggregateRating: there is no review system yet, so the catalogue's star counts can't be
-    // offered to search engines as real reviews. Add it back once reviews are collected.
+    // Only approved customer reviews (src/lib/server/reviews.ts) make a rating.
+    ...(detail.rating !== null && detail.reviews ? { aggregateRating: { "@type": "AggregateRating", ratingValue: detail.rating, reviewCount: detail.reviews } } : {}),
   };
 
   return (
@@ -154,6 +158,23 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           <ProductDetails detail={detail} />
         </div>
       </section>
+
+      {reviews.length > 0 && (
+        <section className="section border-t border-tint/8" aria-labelledby="reviews-title">
+          <div className="shell">
+            <h2 id="reviews-title" className="eyebrow">
+              Customer reviews · {detail.rating?.toFixed(1)} / 5 from {detail.reviews} review{detail.reviews === 1 ? "" : "s"}
+            </h2>
+            <ul className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {reviews.map((r) => (
+                <li key={r.id}>
+                  <ReviewCard review={r} />
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
 
       {related.length > 0 && (
         <section className="section border-t border-tint/8 bg-carbon">

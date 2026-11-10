@@ -20,7 +20,7 @@ import {
   oeHref,
   type DepartmentSlug,
 } from "@/lib/data/taxonomy";
-import { REVIEWS, STATS } from "@/lib/data/community";
+import { approvedReviews, siteStats } from "@/lib/server/reviews";
 import { LANDING_MODELS } from "@/lib/data/vehicles";
 import { LOCATIONS, SITE } from "@/lib/data/site";
 import { rupees } from "@/lib/format";
@@ -105,7 +105,7 @@ const WHY = [
 
 export default async function HomePage() {
   /* ---- everything below is computed from the catalogue in the database; nothing is typed in ---- */
-  const CATALOG = await getCatalog();
+  const [CATALOG, REVIEWS, STATS] = await Promise.all([getCatalog(), approvedReviews(6), siteStats()]);
   const lowest = new Map<DepartmentSlug, number>();
   const groupCount = new Map<string, number>();
   for (const i of CATALOG) {
@@ -401,31 +401,33 @@ export default async function HomePage() {
                 </li>
               ))}
             </ul>
-            <dl className="grid grid-cols-2 content-start gap-x-4 gap-y-6">
+            {STATS.length > 0 && <dl className="grid grid-cols-2 content-start gap-x-4 gap-y-6">
               {STATS.map((s) => (
                 <div key={s.label} className="border-t border-tint/15 pt-3">
                   <dd className="font-display text-3xl font-extrabold tnum">{s.value}</dd>
                   <dt className="mt-1 text-xs text-dim">{s.label}</dt>
                 </div>
               ))}
-            </dl>
+            </dl>}
           </div>
         </div>
       </section>
 
-      {/* 12 — REVIEWS ------------------------------------------------------ */}
+      {/* 12 — REVIEWS (approved customer reviews only; hidden until there are some) ---- */}
+      {REVIEWS.length > 0 && (
       <section className="section bg-carbon">
         <div className="shell">
           <SectionHead eyebrow="Reviews" title="What customers say" />
           <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {REVIEWS.slice(0, 6).map((r) => (
-              <li key={r.name}>
+            {REVIEWS.map((r) => (
+              <li key={r.id}>
                 <ReviewCard review={r} />
               </li>
             ))}
           </ul>
         </div>
       </section>
+      )}
 
       {/* 13 — STORES ------------------------------------------------------- */}
       <section className="section bg-void">

@@ -6,7 +6,7 @@ import { Icon } from "@/components/ui/Icon";
 import { Reveal } from "@/components/ui/Reveal";
 import { ReviewCard } from "@/components/community/Cards";
 import { TRUST_POINTS, whatsapp } from "@/lib/data/site";
-import { REVIEWS, STATS } from "@/lib/data/community";
+import { approvedReviews, siteStats } from "@/lib/server/reviews";
 import { pageMeta } from "@/lib/data/seo";
 
 export const metadata: Metadata = pageMeta({
@@ -43,7 +43,8 @@ const PRINCIPLES = [
   },
 ];
 
-export default function WhyPage() {
+export default async function WhyPage() {
+  const [REVIEWS, STATS] = await Promise.all([approvedReviews(6), siteStats()]);
   return (
     <>
       <PageHero
@@ -53,14 +54,14 @@ export default function WhyPage() {
         media="garageHeadlights"
         size="sm"
       >
-        <dl className="mt-8 grid max-w-2xl grid-cols-2 gap-x-6 gap-y-5 border-t border-tint/12 pt-6 md:grid-cols-4">
+        {STATS.length > 0 && <dl className="mt-8 grid max-w-2xl grid-cols-2 gap-x-6 gap-y-5 border-t border-tint/12 pt-6 md:grid-cols-4">
           {STATS.map((s) => (
             <div key={s.label}>
               <dd className="font-display text-2xl font-extrabold tnum">{s.value}</dd>
               <dt className="mt-1 text-[11px] uppercase tracking-[0.14em] text-dim">{s.label}</dt>
             </div>
           ))}
-        </dl>
+        </dl>}
       </PageHero>
 
       <section className="section">
@@ -104,14 +105,18 @@ export default function WhyPage() {
 
       <section className="section">
         <div className="shell">
-          <SectionHead eyebrow="Customers" title="JUDGE US ON THIS." />
-          <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {REVIEWS.map((r) => (
-              <li key={r.name}>
-                <ReviewCard review={r} />
-              </li>
-            ))}
-          </ul>
+          {REVIEWS.length > 0 && (
+            <>
+              <SectionHead eyebrow="Customers" title="JUDGE US ON THIS." />
+              <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {REVIEWS.map((r) => (
+                  <li key={r.id}>
+                    <ReviewCard review={r} />
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
 
           <div className="card mt-8 flex flex-col items-start justify-between gap-4 p-6 md:flex-row md:items-center">
             <div>

@@ -531,6 +531,7 @@ await step("catalogue: products come from the database; admin price change shows
   ctx.house = row;
   const price = 777 + (Number(RUN) % 100);
   await admin.expect(200, "PUT", `/api/admin/products/${HOUSE}`, { price, mrp: row.mrp, stock: 2, status: "live" });
+  await sleep(1100); // other server processes see a change within a second (src/lib/server/catalog.ts)
   const page = await cust.call("GET", `/products/${HOUSE}`);
   assert.ok(page.text.includes(`₹${price}`) || page.text.includes(String(price)), "product page shows the new price");
   const search = await cust.expect(200, "GET", "/search-index.json");
@@ -557,14 +558,59 @@ await step("catalogue: orders take counted stock; sold out is refused; a cancel 
 
 await step("catalogue: hidden products leave the shop and their page; restored afterwards", async () => {
   await admin.expect(200, "PUT", `/api/admin/products/${HOUSE}`, { price: ctx.house.price, mrp: ctx.house.mrp, stock: ctx.house.stock, status: "hidden" });
+  await sleep(1100);
   assert.equal((await cust.call("GET", `/products/${HOUSE}`)).status, 404);
   const search = await cust.expect(200, "GET", "/search-index.json");
   assert.ok(!JSON.stringify(search).includes(`/products/${HOUSE}"`), "not in search");
   assert.equal((await houseOrder(1)).status, 400, "can't be ordered");
   await admin.expect(200, "PUT", `/api/admin/products/${HOUSE}`, { price: ctx.house.price, mrp: ctx.house.mrp, stock: ctx.house.stock, status: "live" });
+  await sleep(1100);
   assert.equal((await cust.call("GET", `/products/${HOUSE}`)).status, 200);
   const bad = await admin.call("PUT", `/api/admin/products/${HOUSE}`, { price: 5000, mrp: 100, stock: null, status: "live" });
   assert.equal(bad.status, 400, "price above MRP refused");
+});
+
+/* ---------------------------------------------------------------- reviews */
+
+await step("reviews: only delivered orders can be reviewed, once; nothing shows before approval", async () => {
+  const page = await cust.call("GET", `/account/orders/${ctx.orderNumber}`);
+  assert.ok(page.text.includes("Review your order"), "delivered order offers a review");
+  const body = `Seat covers fitted perfectly, run ${RUN}. Delivery was quick.`;
+  await cust.expect(201, "POST", "/api/account/reviews", { orderNumber: ctx.orderNumber, productSlug: null, rating: 5, title: "Great fit", body, name: "Test Customer", city: "Bengaluru", vehicle: "Mahindra Thar" });
+  const again = await cust.call("POST", "/api/account/reviews", { orderNumber: ctx.orderNumber, productSlug: null, rating: 5, body, name: "Test Customer" });
+  assert.equal(again.status, 409, "one review per order");
+  const notMine = await client("stranger2").call("POST", "/api/account/reviews", { orderNumber: ctx.orderNumber, productSlug: null, rating: 1, body: "never bought anything here", name: "Fake" });
+  assert.equal(notMine.status, 401, "signed-in customers only");
+  const home = await cust.call("GET", "/");
+  assert.ok(!home.text.includes(`run ${RUN}`), "not on the site before approval");
+  ctx.reviewBody = body;
+});
+
+await step("reviews: a Riderzpro product review after the order is completed; ratings follow approvals", async () => {
+  const r = await houseOrder(1);
+  assert.equal(r.status, 201, r.text.slice(0, 200));
+  const number = r.json.order.number;
+  // The order was placed on another mobile; it still joins the signed-in account.
+  const early = await cust.call("POST", "/api/account/reviews", { orderNumber: number, productSlug: HOUSE, rating: 4, body: "Good leather, stitching is neat.", name: "Test Customer" });
+  assert.equal(early.status, 409, "not before the order is completed");
+  const o = (await admin.expect(200, "GET", `/api/admin/orders?q=${number}`)).orders.find((x) => x.number === number);
+  await admin.expect(200, "POST", `/api/admin/orders/${o.id}/order-status`, { to: "confirmed" });
+  await admin.expect(200, "POST", `/api/admin/orders/${o.id}/order-status`, { to: "completed" });
+  await cust.expect(201, "POST", "/api/account/reviews", { orderNumber: number, productSlug: HOUSE, rating: 4, title: "Neat stitching", body: `Good leather, stitching is neat. ${RUN}`, name: "Test Customer" });
+
+  const pending = await admin.expect(200, "GET", "/api/admin/reviews?status=pending");
+  const mine = pending.items.filter((x) => x.body.includes(RUN));
+  assert.equal(mine.length, 2, "both reviews wait for the admin");
+  for (const m of mine) await admin.expect(200, "POST", `/api/admin/reviews/${m.id}`, { action: "approve" });
+  await sleep(1100);
+
+  const home = await cust.call("GET", "/");
+  assert.ok(home.text.includes(`run ${RUN}`), "approved review on the home page");
+  const product = await cust.call("GET", `/products/${HOUSE}`);
+  assert.ok(product.text.includes("Customer reviews"), "product page lists its reviews");
+  assert.ok(product.text.includes("aggregateRating"), "rating offered to search engines");
+  const why = await cust.call("GET", "/why-riderzpro");
+  assert.ok(why.text.includes("Average rating"), "site stats include the real average rating");
 });
 
 console.log(`\n${passed} passed, ${failures.length} failed`);

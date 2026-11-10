@@ -10,7 +10,7 @@ import { ReviewCard } from "@/components/community/Cards";
 import { Accordion } from "@/components/ui/Accordion";
 import { AUDIO_PACKAGES } from "@/lib/data/services";
 import { catalogFor } from "@/lib/server/catalog";
-import { REVIEWS } from "@/lib/data/community";
+import { approvedReviews } from "@/lib/server/reviews";
 import { rupees } from "@/lib/format";
 import { whatsapp } from "@/lib/data/site";
 import { pageMeta } from "@/lib/data/seo";
@@ -43,7 +43,7 @@ const FAQ = [
 
 export default async function AudioPage() {
   const audioProducts = (await catalogFor("riderzpro")).filter((i) => i.category === "multimedia");
-  const audioReviews = REVIEWS.filter((r) => r.service.toLowerCase().includes("audio"));
+  const audioReviews = (await approvedReviews(50)).filter((r) => r.department === "multimedia").slice(0, 3);
 
   return (
     <>
@@ -188,16 +188,16 @@ export default async function AudioPage() {
             <SectionHead eyebrow="Questions" title="AUDIO FAQs." />
             <Accordion items={FAQ} />
           </div>
-          <div>
+          {audioReviews.length > 0 && <div>
             <SectionHead eyebrow="Owners" title="AFTER THE BUILD." />
             <ul className="grid gap-4">
               {audioReviews.map((r) => (
-                <li key={r.name}>
+                <li key={r.id}>
                   <ReviewCard review={r} />
                 </li>
               ))}
             </ul>
-          </div>
+          </div>}
         </div>
       </section>
     </>

@@ -5,6 +5,8 @@ import { AccountShell } from "@/components/account/AccountShell";
 import { LiveTracking } from "@/components/tracking/LiveTracking";
 import { customerOrderDetail, customerPage } from "@/lib/server/customers";
 import { customerOrderPayment } from "@/lib/server/payments";
+import { reviewTargets } from "@/lib/server/reviews";
+import { ReviewForm } from "@/components/account/ReviewForm";
 import { rupees } from "@/lib/format";
 import { whatsapp } from "@/lib/data/site";
 import { ORDER_STATUS_TEXT, PART_STATUS_LABELS, PART_STEPS, fmtDay, type AccountOrderPart } from "@/lib/account/types";
@@ -19,7 +21,7 @@ export default async function OrderPage({ params }: Params) {
   const me = await customerPage(`/account/orders/${encodeURIComponent(number)}`);
   const order = /^RZP-[A-Z0-9]{6}$/.test(number) ? await customerOrderDetail(me.id, number) : null;
   if (!order) notFound();
-  const payment = await customerOrderPayment(me.id, order.number);
+  const [payment, review] = await Promise.all([customerOrderPayment(me.id, order.number), reviewTargets(me.id, order.number)]);
   // Live map while a Riderzpro rider has the delivery (it polls, and stops once delivered).
   const riding = order.parts.some((p) => p.rider?.status === "accepted" || p.rider?.status === "picked_up");
 
@@ -41,6 +43,9 @@ export default async function OrderPage({ params }: Params) {
           {order.parts.map((p) => (
             <Part key={p.key} part={p} orderStatus={order.status} />
           ))}
+          {review && review.targets.length > 0 && (
+            <ReviewForm orderNumber={order.number} targets={review.targets} defaultName={me.name ?? order.name} defaultVehicle={me.car?.label ?? ""} />
+          )}
         </div>
 
         <aside className="space-y-4">

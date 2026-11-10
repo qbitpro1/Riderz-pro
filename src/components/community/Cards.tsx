@@ -3,7 +3,8 @@ import { Photo } from "@/components/ui/Photo";
 import { Icon } from "@/components/ui/Icon";
 import { Stars } from "@/components/ui/Section";
 import { rupees } from "@/lib/format";
-import type { Build, Review } from "@/lib/data/community";
+import type { Build } from "@/lib/data/community";
+import type { PublicReview } from "@/lib/reviews/types";
 
 export function BuildCard({
   build,
@@ -55,25 +56,25 @@ export function BuildCard({
   );
 }
 
-export function ReviewCard({ review }: { review: Review }) {
+export function ReviewCard({ review }: { review: PublicReview }) {
+  const initials = review.name.split(/\s+/).map((w) => w[0]).join("").slice(0, 2).toUpperCase();
   return (
     <article className="card flex h-full flex-col p-5">
       <Stars rating={review.rating} />
-      <blockquote className="mt-4 flex-1 text-sm leading-relaxed text-chalk/90">
+      {review.title && <p className="mt-3 font-semibold text-chalk">{review.title}</p>}
+      <blockquote className="mt-3 flex-1 text-sm leading-relaxed text-chalk/90">
         “{review.body}”
       </blockquote>
       <div className="mt-5 flex items-center gap-3 border-t border-tint/8 pt-4">
-        <div className="relative h-11 w-11 shrink-0 overflow-hidden bg-graphite">
-          <Photo media={review.image} sizes="44px" />
-        </div>
+        <span aria-hidden className="grid h-11 w-11 shrink-0 place-items-center bg-graphite font-display text-sm font-bold text-chalk">{initials}</span>
         <div className="min-w-0">
           <p className="truncate text-sm font-semibold">{review.name}</p>
           <p className="truncate text-[11px] text-dim">
-            {review.vehicle} · {review.service}
+            {[review.vehicle, review.about].filter(Boolean).join(" · ")}
           </p>
         </div>
-        <span className="ml-auto shrink-0 text-[10px] uppercase tracking-[0.12em] text-dim">
-          {review.city}
+        <span className="ml-auto shrink-0 text-right text-[10px] uppercase tracking-[0.12em] text-dim">
+          {review.city ?? review.date}
         </span>
       </div>
     </article>

@@ -7,7 +7,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { Accordion } from "@/components/ui/Accordion";
 import { ReviewCard } from "@/components/community/Cards";
 import { INTERIOR_SERVICES } from "@/lib/data/services";
-import { REVIEWS } from "@/lib/data/community";
+import { approvedReviews } from "@/lib/server/reviews";
 import { rupees } from "@/lib/format";
 import { whatsapp } from "@/lib/data/site";
 import { pageMeta } from "@/lib/data/seo";
@@ -38,8 +38,8 @@ const FAQ = [
   },
 ];
 
-export default function InteriorsPage() {
-  const interiorReviews = REVIEWS.filter((r) => r.service.toLowerCase().includes("interior"));
+export default async function InteriorsPage() {
+  const interiorReviews = (await approvedReviews(50)).filter((r) => r.department === "interior").slice(0, 3);
 
   return (
     <>
@@ -127,16 +127,16 @@ export default function InteriorsPage() {
             <SectionHead eyebrow="Questions" title="INTERIOR FAQs." />
             <Accordion items={FAQ} />
           </div>
-          <div>
+          {interiorReviews.length > 0 && <div>
             <SectionHead eyebrow="Owners" title="AFTER THE REBUILD." />
             <ul className="grid gap-4">
               {interiorReviews.map((r) => (
-                <li key={r.name}>
+                <li key={r.id}>
                   <ReviewCard review={r} />
                 </li>
               ))}
             </ul>
-          </div>
+          </div>}
         </div>
       </section>
     </>

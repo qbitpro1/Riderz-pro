@@ -17,8 +17,9 @@ import { audit } from "./vendors";
  * is not in the database yet is added (on start-up and on the first read); rows already there are
  * never overwritten, so the admin's price, MRP, stock and live/hidden choices stay.
  *
- * Reads go through a snapshot held in memory for a few seconds (the catalogue is read on almost
- * every page); every change made here drops it at once.
+ * Reads go through a snapshot held in memory (the catalogue is read on almost every page). It is
+ * rebuilt when the database says something changed (checked at most once a second), so an edit
+ * shows everywhere, on every server, within a second.
  *
  *   stock NULL  not counted: made to order, or the supplier's stock (the price list's availability)
  *   stock n     units on hand: orders take them, cancellations put them back; 0 shows "Out of stock"
@@ -51,13 +52,24 @@ export type CatalogSnapshot = {
   liveGroups: Record<string, string[]>;
 };
 
-const TTL_MS = 10_000;
+/** How often (at most) the snapshot asks the database whether anything changed. */
+const CHECK_MS = 1_000;
 
 // Next.js can load this module more than once in one server (pages and API routes are bundled apart),
-// so the snapshot lives on globalThis: an admin's change clears it for every page in this process.
-// Other server instances pick the change up within TTL_MS.
-type Shared = { cached: { at: number; snap: Promise<CatalogSnapshot> } | null; importedOnce: boolean };
+// so the snapshot lives on globalThis. Other processes and server instances notice a change through
+// the version stamp (the latest product or review change), checked at most once a second.
+type Cached = { version: string; checkedAt: number; snap: Promise<CatalogSnapshot> };
+type Shared = { cached: Cached | null; importedOnce: boolean };
 const shared: Shared = ((globalThis as { __riderzproCatalog?: Shared }).__riderzproCatalog ??= { cached: null, importedOnce: false });
+
+/** Changes whenever a product row or a review decision changes. */
+async function catalogVersion(): Promise<string> {
+  const r = await sql<{ v: string }>(
+    `SELECT concat((SELECT max(updated_at) FROM catalog_products), '|', (SELECT count(*) FROM catalog_products), '|',
+                   (SELECT max(decided_at) FROM reviews)) AS v`,
+  );
+  return r[0]?.v ?? "";
+}
 
 /** Forget the snapshot (after any change to catalog_products or reviews). */
 export function invalidateCatalog() {
@@ -178,15 +190,21 @@ async function load(): Promise<CatalogSnapshot> {
   };
 }
 
-export function catalogSnapshot(): Promise<CatalogSnapshot> {
-  if (!shared.cached || Date.now() - shared.cached.at > TTL_MS) {
-    const snap = load();
-    shared.cached = { at: Date.now(), snap };
-    snap.catch(() => {
-      if (shared.cached?.snap === snap) shared.cached = null;
-    });
+export async function catalogSnapshot(): Promise<CatalogSnapshot> {
+  const now = Date.now();
+  const c = shared.cached;
+  if (c && now - c.checkedAt < CHECK_MS) return c.snap;
+  const version = await catalogVersion();
+  if (shared.cached && shared.cached.version === version) {
+    shared.cached.checkedAt = now;
+    return shared.cached.snap;
   }
-  return shared.cached.snap;
+  const snap = load();
+  shared.cached = { version, checkedAt: now, snap };
+  snap.catch(() => {
+    if (shared.cached?.snap === snap) shared.cached = null;
+  });
+  return snap;
 }
 
 export const getCatalog = async () => (await catalogSnapshot()).items;

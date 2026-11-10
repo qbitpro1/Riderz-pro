@@ -8,7 +8,7 @@ import { Photo } from "@/components/ui/Photo";
 import { Reveal } from "@/components/ui/Reveal";
 import { GARAGE_SERVICES } from "@/lib/data/services";
 import { LOCATIONS, SITE } from "@/lib/data/site";
-import { STATS } from "@/lib/data/community";
+import { siteStats } from "@/lib/server/reviews";
 import { pageMeta } from "@/lib/data/seo";
 
 export const metadata: Metadata = pageMeta({
@@ -20,7 +20,8 @@ export const metadata: Metadata = pageMeta({
 
 const WORKSHOP_MEDIA = ["mechanicEngine", "garageSpotlit", "washBay", "detailingPolish"] as const;
 
-export default function GaragePage() {
+export default async function GaragePage() {
+  const STATS = await siteStats();
   return (
     <>
       <PageHero
@@ -30,14 +31,14 @@ export default function GaragePage() {
         media="mechanicEngine"
         actions={[{ href: "#book", label: "Book an appointment", variant: "primary" }]}
       >
-        <dl className="mt-8 grid max-w-2xl grid-cols-2 gap-x-6 gap-y-5 border-t border-tint/12 pt-6 md:grid-cols-4">
+        {STATS.length > 0 && <dl className="mt-8 grid max-w-2xl grid-cols-2 gap-x-6 gap-y-5 border-t border-tint/12 pt-6 md:grid-cols-4">
           {STATS.map((s) => (
             <div key={s.label}>
               <dd className="font-display text-2xl font-extrabold tnum">{s.value}</dd>
               <dt className="mt-1 text-[11px] uppercase tracking-[0.14em] text-dim">{s.label}</dt>
             </div>
           ))}
-        </dl>
+        </dl>}
       </PageHero>
 
       <section className="section">

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { sqlOne } from "@/lib/db/client";
 import {
   BadgeCheck,
   Banknote,
@@ -44,7 +45,12 @@ type Tile = { href: string; title: string; text: string; icon: LucideIcon; perm:
 export default async function AdminHub({ searchParams }: { searchParams: Promise<{ denied?: string }> }) {
   const me = await adminPage(null, "/admin");
   const { denied } = await searchParams;
-  const [counts, customerMessages, riders] = await Promise.all([adminCounts(), openCustomerTickets(), riderCounts()]);
+  const [counts, customerMessages, riders, reviewsWaiting] = await Promise.all([
+    adminCounts(),
+    openCustomerTickets(),
+    riderCounts(),
+    sqlOne<{ n: number }>("SELECT count(*)::int AS n FROM reviews WHERE status = 'pending'").then((r) => r?.n ?? null, () => null),
+  ]);
   const marketplace: Tile[] = [
     { href: "/admin/vendors", perm: "sellers", title: "Seller KYC", text: "Applications, documents, approve or reject.", icon: Users, count: counts?.kyc },
     { href: "/admin/vendor-products", perm: "sellers", title: "Seller products", text: "Approve new products and edits to live ones.", icon: PackageCheck, count: counts?.products },
@@ -55,6 +61,7 @@ export default async function AdminHub({ searchParams }: { searchParams: Promise
     { href: "/admin/customers", perm: "customers", title: "Customers", text: "Accounts, their orders, addresses and messages.", icon: Contact },
     { href: "/admin/reports", perm: "reports", title: "Reports", text: "Sales, commission, payments and riders by date; orders CSV.", icon: ChartColumn },
     { href: "/admin/coupons", perm: "coupons", title: "Coupons", text: "Checkout codes and the public Offers page.", icon: TicketPercent },
+    { href: "/admin/reviews", perm: "support", title: "Reviews", text: "Approve customer reviews before they show on the site.", icon: MessagesSquare, count: reviewsWaiting },
     { href: "/admin/customer-support", perm: "support", title: "Customer messages", text: "Help-desk messages from shoppers.", icon: MessagesSquare, count: customerMessages },
   ];
   const delivery: Tile[] = [
