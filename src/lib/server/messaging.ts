@@ -230,7 +230,7 @@ export function sendTemplateSms(template: SmsTemplate, to: string, vars: string[
 
 /* ----------------------------------------------------------- once per event */
 
-export type MessageKind = "order_confirmation" | SmsTemplate;
+export type MessageKind = "order_confirmation" | "vendor_approved" | SmsTemplate;
 export type MessageChannel = "email" | "sms";
 
 /** Tries again after a failure, or after a send that never finished (server stopped mid-way). */

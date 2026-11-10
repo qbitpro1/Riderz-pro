@@ -10,6 +10,7 @@ import { seal, unseal } from "./security";
 import { endAllSessions } from "./session";
 import { audit, notifyVendor, toVendorSelf, vendorById } from "./vendors";
 import { addAdminHoldMessage } from "./vendor-hold";
+import { sendVendorApprovedEmail } from "./vendor-emails";
 import { toVendorProduct, type VendorProductRow } from "./vendor-products";
 import {
   DOCUMENT_LABELS,
@@ -322,7 +323,7 @@ export const vendorDecisionSchema = z.discriminatedUnion("action", [
 ]);
 export type VendorDecision = z.infer<typeof vendorDecisionSchema>;
 
-export async function decideVendor(vendorId: string, input: VendorDecision, actor: string, ip: string): Promise<{ status: VendorStatus }> {
+export async function decideVendor(vendorId: string, input: VendorDecision, actor: string, ip: string): Promise<{ status: VendorStatus; email?: string }> {
   const row = await vendorById(vendorId);
   if (!row) throw new ApiError(404, "not_found", "Seller not found.");
   const by = { type: "admin" as const, id: actor };
@@ -434,8 +435,10 @@ export async function decideVendor(vendorId: string, input: VendorDecision, acto
 
   // Rejection revokes sessions so a stale dashboard tab stops working at once.
   if (input.action === "reject") await endAllSessions(vendorId);
+  // After the commit: "your account is active, you can sign in". Never undoes the approval if it fails.
+  const email = input.action === "approve" ? (await sendVendorApprovedEmail(vendorId)).status : undefined;
   const after = await vendorById(vendorId);
-  return { status: after?.status ?? row.status };
+  return { status: after?.status ?? row.status, ...(email ? { email } : {}) };
 }
 
 /* ============================================================ product queue */

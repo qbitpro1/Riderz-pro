@@ -105,8 +105,12 @@ export default function VendorReview({ review, holdMessages }: { review: Review;
     setMsg(null);
     setFieldErrors({});
     try {
-      await api(`/api/admin/vendors/${vendor.id}/decision`, { body });
-      setMsg({ tone: "ok", text: done });
+      const r = await api<{ email?: string }>(`/api/admin/vendors/${vendor.id}/decision`, { body });
+      const mail =
+        r.email === "sent" ? " Activation email sent to the seller." :
+        r.email === "dev" ? " Activation email printed in the server console (development)." :
+        r.email ? " The activation email could not be sent (check the email settings); the seller also sees it in their notifications." : "";
+      setMsg({ tone: "ok", text: done + mail });
       setDialog(null);
       router.refresh();
     } catch (e) {

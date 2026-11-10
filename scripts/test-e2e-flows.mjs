@@ -237,6 +237,13 @@ await step("seller: KYC documents uploaded and application submitted", async () 
   assert.equal(me.vendor.status, "submitted");
 });
 
+await step("seller: can't add products or sell before the admin approves the account", async () => {
+  const r = await seller.call("POST", "/api/vendor/products", { content: { title: "Too early" }, commercial: { sku: "EARLY-1", mrp: 100, price: 100, stock: 1, lowStockAt: 0 }, submit: false });
+  assert.equal(r.status, 403, `got ${r.status}`);
+  const store = await cust.call("GET", `/sellers/e2e-store-${RUN}`);
+  assert.equal(store.status, 404, "store page not public before approval");
+});
+
 /* ---------------------------------------------------------------- admin */
 
 await step("admin: application shows in the KYC queue with its documents", async () => {
@@ -255,9 +262,16 @@ await step("admin: application shows in the KYC queue with its documents", async
 
 await step("admin: start review and approve the seller", async () => {
   await admin.expect(200, "POST", `/api/admin/vendors/${ctx.vendorId}/decision`, { action: "start_review" });
-  await admin.expect(200, "POST", `/api/admin/vendors/${ctx.vendorId}/decision`, { action: "approve", commissionRate: 10, tier: "standard" });
+  const from = logLines();
+  const decision = await admin.expect(200, "POST", `/api/admin/vendors/${ctx.vendorId}/decision`, { action: "approve", commissionRate: 10, tier: "standard" });
   const me = await seller.expect(200, "GET", "/api/vendor/me");
   assert.equal(me.vendor.status, "approved");
+  assert.ok(["sent", "dev"].includes(decision.email), `activation email: ${decision.email}`);
+  const mail = readFileSync(LOG, "utf8").split("\n").slice(from).join("\n");
+  assert.ok(mail.includes(`[mail:dev] to ${sellerEmail}: Your Riderzpro seller account is active`), "activation email to the seller");
+  assert.ok(mail.includes("/vendor/auth"), "email has the sign-in link");
+  const again = await admin.call("POST", `/api/admin/vendors/${ctx.vendorId}/decision`, { action: "approve", commissionRate: 10, tier: "standard" });
+  assert.equal(again.status, 409, "can't approve twice (and no second email)");
 });
 
 await step("seller: product created, submitted, approved by admin, live", async () => {
@@ -274,6 +288,32 @@ await step("seller: product created, submitted, approved by admin, live", async 
   await admin.expect(200, "POST", `/api/admin/vendor-products/${p.product.id}/decision`, { action: "approve" });
   const list = await seller.expect(200, "GET", "/api/vendor/products");
   assert.equal(list.products.find((x) => x.id === p.product.id)?.status, "live");
+});
+
+await step("seller products: hidden until approved; edits to a live product wait for review", async () => {
+  const photo = await seller.expect(201, "POST", "/api/vendor/files", undefined, { form: upload("product_image", PNG, "p2.png", "image/png") });
+  const content = {
+    title: `E2E Floor Mat ${RUN}`, brand: "E2E Brand", department: "interior", groupSlug: "floor-mats", partType: "aftermarket",
+    hsn: "8708", gstRate: 18, warrantyMonths: 6, summary: "Test mat", highlights: [], specs: [], fitment: ["universal"], images: [photo.file.id],
+  };
+  const p = (await seller.expect(201, "POST", "/api/vendor/products", { content, commercial: { sku: `E2EM-${RUN}`, mrp: 1200, price: 999, stock: 5, lowStockAt: 1 }, submit: false })).product;
+  const url = `/sellers/e2e-store-${RUN}/${p.slug}`;
+  const order = (lines) => cust.call("POST", "/api/orders", { customer: { name: "Test Customer", mobile: mobile(30), address: "12 MG Road, Indiranagar", city: "Bengaluru", state: "Karnataka", pincode: "560038" }, lines, paymentMethod: "whatsapp" });
+  assert.equal((await cust.call("GET", url)).status, 404, "draft not public");
+  await seller.expect(200, "PATCH", `/api/vendor/products/${p.id}`, { submit: true });
+  assert.equal((await cust.call("GET", url)).status, 404, "waiting for review: not public");
+  assert.ok(!(await cust.call("GET", "/shop/interior")).text.includes(p.slug), "not in the shop");
+  assert.equal((await order([{ id: `vendor:${p.slug}`, qty: 1, install: false }])).status, 409, "can't be ordered");
+  const queue = await admin.expect(200, "GET", "/api/admin/vendor-products");
+  assert.ok(JSON.stringify(queue).includes(p.id), "in the admin's product queue");
+  await admin.expect(200, "POST", `/api/admin/vendor-products/${p.id}/decision`, { action: "approve" });
+  const live = await cust.call("GET", url);
+  assert.equal(live.status, 200, "public once approved");
+  await seller.expect(200, "PATCH", `/api/vendor/products/${p.id}`, { content: { title: `E2E Floor Mat ${RUN} PRO MAX` } });
+  const still = await cust.call("GET", url);
+  assert.ok(!still.text.includes("PRO MAX"), "edited title waits for review");
+  await admin.expect(200, "POST", `/api/admin/vendor-products/${p.id}/decision`, { action: "approve" });
+  assert.ok((await cust.call("GET", url)).text.includes("PRO MAX"), "approved edit is live");
 });
 
 await step("customer: order for the seller's product (WhatsApp) saved to the account", async () => {
