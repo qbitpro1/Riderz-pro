@@ -1,5 +1,6 @@
 "use client";
 
+import { recordLead } from "@/lib/client/leads";
 import { useState } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { whatsapp } from "@/lib/data/site";
@@ -47,6 +48,7 @@ export function Waitlist() {
       form.budget && `Budget: ${form.budget}`,
     ].filter(Boolean);
     window.open(whatsapp(lines.join("\n")), "_blank", "noopener,noreferrer");
+    recordLead("be6_waitlist", { name: form.name, phone: form.phone, email: form.email, city: form.city, details: { currentCar: form.currentCar, buyingBe6: form.buyingBe6, wantsEdition: form.wantsEdition, budget: form.budget } }, lines.join("\n"));
     setSent(true);
   }
 

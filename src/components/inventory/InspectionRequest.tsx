@@ -1,5 +1,6 @@
 "use client";
 
+import { recordLead } from "@/lib/client/leads";
 import { useState } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { whatsapp } from "@/lib/data/site";
@@ -42,7 +43,9 @@ export function InspectionRequest({ vehicle, city }: { vehicle: string; city: st
       className="border border-tint/10 bg-tint/3 p-4"
       onSubmit={(e) => {
         e.preventDefault();
-        if (ready) window.open(whatsapp(message), "_blank", "noopener,noreferrer");
+        if (!ready) return;
+        window.open(whatsapp(message), "_blank", "noopener,noreferrer");
+        recordLead("car_inspection", { name, phone, city: location, details: { vehicle, date: date || "flexible" } }, message);
       }}
     >
       <div className="flex items-start justify-between gap-3">

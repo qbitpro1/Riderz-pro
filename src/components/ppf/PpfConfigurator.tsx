@@ -1,5 +1,6 @@
 "use client";
 
+import { recordLead } from "@/lib/client/leads";
 import { useMemo, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { rupees } from "@/lib/format";
@@ -395,6 +396,7 @@ export function PpfConfigurator({ films }: { films: PublishedFilm[] }) {
             href={whatsapp(message)}
             target="_blank"
             rel="noreferrer noopener"
+            onClick={() => recordLead("quote_ppf", { details: { vehicle: vehicleLabel } }, message)}
             className={`btn btn-block mt-5 ${nothingSelected ? "btn-outline pointer-events-none opacity-40" : "btn-accent"}`}
           >
             <Icon name="whatsapp" size={16} />
@@ -404,6 +406,7 @@ export function PpfConfigurator({ films }: { films: PublishedFilm[] }) {
             href={whatsapp(`${message}\n\nI'd also like to book the installation.`)}
             target="_blank"
             rel="noreferrer noopener"
+            onClick={() => recordLead("quote_ppf", { details: { vehicle: vehicleLabel, booking: "yes" } }, `${message}\n\nI'd also like to book the installation.`)}
             className={`btn btn-outline btn-block mt-3 ${nothingSelected ? "pointer-events-none opacity-40" : ""}`}
           >
             Book installation

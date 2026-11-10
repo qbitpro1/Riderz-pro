@@ -1,5 +1,6 @@
 "use client";
 
+import { recordLead } from "@/lib/client/leads";
 import { useState } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { LOCATIONS, whatsapp } from "@/lib/data/site";
@@ -35,7 +36,9 @@ export function BookingForm({ defaultService }: { defaultService?: string }) {
       className="card p-5 md:p-6"
       onSubmit={(e) => {
         e.preventDefault();
-        if (ready) window.open(whatsapp(message), "_blank", "noopener,noreferrer");
+        if (!ready) return;
+        window.open(whatsapp(message), "_blank", "noopener,noreferrer");
+        recordLead("garage_booking", { name, phone, city: branch?.city, details: { car, service, date: date || "flexible", location: branch?.name, notes } }, message);
       }}
     >
       <p className="eyebrow mb-1">Riderzpro Garage</p>

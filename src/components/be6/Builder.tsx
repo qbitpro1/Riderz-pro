@@ -1,5 +1,6 @@
 "use client";
 
+import { recordLead } from "@/lib/client/leads";
 import Link from "next/link";
 import { useState } from "react";
 import { useBe6Build } from "./BuildState";
@@ -38,6 +39,8 @@ export function Builder() {
   const total = factory + selected.upgradeTotal;
 
   const conceptCount = UPGRADES.filter((u) => !STAGE_COPY[u.stage].sellable).length;
+
+  const quoteMessage = `Hi Riderzpro — I'd like a quote on a BE 6 SPORTEQ ${selected.variant.name} (${selected.battery.label}) with ${selected.upgrades.length} Riderzpro upgrade(s). Estimated build value ${lakh(total)}.`;
 
   return (
     <div className="grid gap-6 lg:grid-cols-[1fr_22rem] lg:items-start">
@@ -196,11 +199,10 @@ export function Builder() {
               SAVE MY BUILD
             </button>
             <a
-              href={whatsapp(
-                `Hi Riderzpro — I'd like a quote on a BE 6 SPORTEQ ${selected.variant.name} (${selected.battery.label}) with ${selected.upgrades.length} Riderzpro upgrade(s). Estimated build value ${lakh(total)}.`,
-              )}
+              href={whatsapp(quoteMessage)}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => recordLead("quote_be6", { details: { variant: selected.variant.name, battery: selected.battery.label, upgrades: selected.upgrades.length, estimate: total } }, quoteMessage)}
               className="btn btn-whatsapp btn-block"
             >
               <Icon name="whatsapp" size={16} />

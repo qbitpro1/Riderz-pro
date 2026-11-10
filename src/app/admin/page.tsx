@@ -25,6 +25,7 @@ import {
   ChartColumn,
   ScrollText,
   Wrench,
+  Inbox,
   type LucideIcon,
 } from "lucide-react";
 import { adminCounts } from "@/lib/server/admin-vendors";
@@ -46,11 +47,12 @@ type Tile = { href: string; title: string; text: string; icon: LucideIcon; perm:
 export default async function AdminHub({ searchParams }: { searchParams: Promise<{ denied?: string }> }) {
   const me = await adminPage(null, "/admin");
   const { denied } = await searchParams;
-  const [counts, customerMessages, riders, reviewsWaiting] = await Promise.all([
+  const [counts, customerMessages, riders, reviewsWaiting, leadsNew] = await Promise.all([
     adminCounts(),
     openCustomerTickets(),
     riderCounts(),
     sqlOne<{ n: number }>("SELECT count(*)::int AS n FROM reviews WHERE status = 'pending'").then((r) => r?.n ?? null, () => null),
+    sqlOne<{ n: number }>("SELECT count(*)::int AS n FROM leads WHERE status = 'new'").then((r) => r?.n ?? null, () => null),
   ]);
   const marketplace: Tile[] = [
     { href: "/admin/vendors", perm: "sellers", title: "Seller KYC", text: "Applications, documents, approve or reject.", icon: Users, count: counts?.kyc },
@@ -62,6 +64,7 @@ export default async function AdminHub({ searchParams }: { searchParams: Promise
     { href: "/admin/customers", perm: "customers", title: "Customers", text: "Accounts, their orders, addresses and messages.", icon: Contact },
     { href: "/admin/reports", perm: "reports", title: "Reports", text: "Sales, commission, payments and riders by date; orders CSV.", icon: ChartColumn },
     { href: "/admin/coupons", perm: "coupons", title: "Coupons", text: "Checkout codes and the public Offers page.", icon: TicketPercent },
+    { href: "/admin/leads", perm: "support", title: "Requests", text: "Garage bookings, inspections, quotes and sign-ups from the site's forms.", icon: Inbox, count: leadsNew },
     { href: "/admin/reviews", perm: "support", title: "Reviews", text: "Approve customer reviews before they show on the site.", icon: MessagesSquare, count: reviewsWaiting },
     { href: "/admin/customer-support", perm: "support", title: "Customer messages", text: "Help-desk messages from shoppers.", icon: MessagesSquare, count: customerMessages },
   ];

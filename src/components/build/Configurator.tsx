@@ -1,5 +1,6 @@
 "use client";
 
+import { recordLead } from "@/lib/client/leads";
 import { useMemo, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { rupees } from "@/lib/format";
@@ -275,6 +276,7 @@ function Build({ garage }: { garage: Garage | null }) {
             href={whatsapp(quoteMessage)}
             target="_blank"
             rel="noreferrer noopener"
+            onClick={() => recordLead("quote_build", {}, quoteMessage)}
             className={`btn btn-block mt-5 ${selected.length ? "btn-accent" : "btn-outline pointer-events-none opacity-40"}`}
           >
             Request my build

@@ -1,5 +1,6 @@
 "use client";
 
+import { recordLead } from "@/lib/client/leads";
 import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
@@ -62,6 +63,8 @@ export function AutoformSelector({ designs }: { designs: DesignCard[] }) {
       return pa - pb;
     });
   }, [designs, style, budget, rows]);
+
+  const helpMessage = `Hi Riderzpro, I want Autoform seat covers${vehicle ? ` for my ${vehicle}` : ""}. Seat layout: ${rows === 2 ? "5-seater" : "6/7-seater"}.`;
 
   return (
     <div>
@@ -227,11 +230,10 @@ export function AutoformSelector({ designs }: { designs: DesignCard[] }) {
           Not sure which design suits your interior? Send us a photo of your seats.
         </p>
         <a
-          href={whatsapp(
-            `Hi Riderzpro, I want Autoform seat covers${vehicle ? ` for my ${vehicle}` : ""}. Seat layout: ${rows === 2 ? "5-seater" : "6/7-seater"}.`,
-          )}
+          href={whatsapp(helpMessage)}
           target="_blank"
           rel="noreferrer noopener"
+          onClick={() => recordLead("quote_autoform", { details: { vehicle, rows } }, helpMessage)}
           className="btn btn-whatsapp btn-sm"
         >
           <Icon name="whatsapp" size={15} />

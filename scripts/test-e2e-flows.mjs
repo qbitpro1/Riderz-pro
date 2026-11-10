@@ -705,6 +705,24 @@ await step("builds: no sample builds; a live build shows with its photo", async 
   assert.equal((await cust.call("GET", `/builds/${created.slug}`)).status, 404, "archived build is gone");
 });
 
+/* ------------------------------------------------- WhatsApp forms are saved too */
+
+await step("requests: a WhatsApp form is saved for the admin and can be marked contacted", async () => {
+  const guest = client("lead-guest");
+  await guest.expect(201, "POST", "/api/leads", {
+    kind: "garage_booking", name: `Lead ${RUN}`, phone: "9876543210", city: "Bengaluru",
+    details: { car: "Toyota Fortuner", service: "PPF" }, message: `Hi Riderzpro, I'd like to book an appointment. ${RUN}`, page: "/contact",
+  });
+  const bad = await guest.call("POST", "/api/leads", { kind: "not_a_kind", message: "x" });
+  assert.equal(bad.status, 400, "unknown form refused");
+  const list = await admin.expect(200, "GET", "/api/admin/leads?status=new");
+  const lead = list.items.find((l) => l.name === `Lead ${RUN}`);
+  assert.ok(lead && lead.details.car === "Toyota Fortuner", "in the admin's requests with its details");
+  await admin.expect(200, "POST", `/api/admin/leads/${lead.id}`, { status: "contacted", note: "Called back" });
+  const after = await admin.expect(200, "GET", "/api/admin/leads?status=contacted");
+  assert.ok(after.items.some((l) => l.id === lead.id && l.note === "Called back"));
+});
+
 console.log(`\n${passed} passed, ${failures.length} failed`);
 if (failures.length) {
   console.log(failures.map((f) => `  - ${f}`).join("\n"));

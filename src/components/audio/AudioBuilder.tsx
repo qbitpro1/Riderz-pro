@@ -1,5 +1,6 @@
 "use client";
 
+import { recordLead } from "@/lib/client/leads";
 import { useMemo, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { rupees } from "@/lib/format";
@@ -87,6 +88,7 @@ export function AudioBuilder() {
             href={whatsapp(message)}
             target="_blank"
             rel="noreferrer noopener"
+            onClick={() => recordLead("quote_audio", {}, message)}
             className="btn btn-accent btn-block mt-5"
           >
             <Icon name="whatsapp" size={16} />

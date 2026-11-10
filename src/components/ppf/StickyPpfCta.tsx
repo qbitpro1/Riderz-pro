@@ -1,5 +1,6 @@
 "use client";
 
+import { recordLead } from "@/lib/client/leads";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
@@ -39,7 +40,7 @@ export function StickyPpfCta({ vehicle }: { vehicle?: string }) {
         <Link href="/ppf/quote" className="btn btn-accent btn-sm">
           Get quote
         </Link>
-        <a href={whatsapp(message)} target="_blank" rel="noreferrer noopener" className="btn btn-whatsapp btn-sm">
+        <a href={whatsapp(message)} target="_blank" rel="noreferrer noopener" onClick={() => recordLead("quote_ppf", {}, message)} className="btn btn-whatsapp btn-sm">
           <Icon name="whatsapp" size={14} />
           WhatsApp
         </a>
@@ -47,6 +48,7 @@ export function StickyPpfCta({ vehicle }: { vehicle?: string }) {
           href={whatsapp(`${message} I'd like to book installation.`)}
           target="_blank"
           rel="noreferrer noopener"
+          onClick={() => recordLead("quote_ppf", { details: { booking: "yes" } }, `${message} I'd like to book installation.`)}
           className="btn btn-outline btn-sm"
         >
           Book now

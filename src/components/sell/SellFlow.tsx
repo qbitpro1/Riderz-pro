@@ -1,5 +1,6 @@
 "use client";
 
+import { recordLead } from "@/lib/client/leads";
 import { useMemo, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { lakh } from "@/lib/format";
@@ -355,6 +356,7 @@ export function SellFlow() {
               href={whatsapp(message)}
               target="_blank"
               rel="noreferrer noopener"
+              onClick={() => recordLead("sell_car", { name, phone, city, details: { registration: reg, brand: brandSlug, model: modelSlug, variant, year, km, owner, condition, photos, date } }, message)}
               className="btn btn-whatsapp btn-block mt-5"
             >
               <Icon name="whatsapp" size={16} />

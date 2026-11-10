@@ -29,7 +29,7 @@ export function PageHero({
   return (
     <section data-theme="dark" className="relative overflow-hidden border-b border-tint/8">
       <div className="absolute inset-0">
-        <Photo media={media} sizes="100vw" priority quality={70} position={position} />
+        <Photo media={media} sizes="100vw" priority quality={68} position={position} />
         <div className="absolute inset-0 scrim" />
         <div className="absolute inset-0 grid-lines opacity-30" />
       </div>

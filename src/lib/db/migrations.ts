@@ -1187,4 +1187,32 @@ ALTER TABLE files ADD CONSTRAINT files_kind_check
   CHECK (kind IN ('doc_pan','doc_gst','doc_cheque','doc_trade_license','doc_brand_auth','doc_hold_reply','logo','banner','product_image','car_photo','build_photo'));
 `,
   },
+  {
+    // Requests from the site's WhatsApp forms (src/lib/server/leads.ts): garage bookings, used-car
+    // inspections, partner sign-ups, the BE 6 waitlist, selling a car and the quote builders. Saved
+    // before WhatsApp opens, so the team has every request in /admin/leads even if the message is
+    // never sent.
+    id: "023_leads",
+    sql: `
+CREATE TABLE leads (
+  id          text PRIMARY KEY,
+  kind        text NOT NULL,
+  name        text,
+  phone       text,
+  email       text,
+  city        text,
+  details     jsonb NOT NULL DEFAULT '{}'::jsonb,
+  message     text NOT NULL,
+  page        text,
+  customer_id text REFERENCES customers(id) ON DELETE SET NULL,
+  status      text NOT NULL DEFAULT 'new' CHECK (status IN ('new','contacted','closed')),
+  note        text,
+  handled_by  text,
+  created_at  timestamptz NOT NULL DEFAULT now(),
+  updated_at  timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX leads_status_idx ON leads (status, created_at DESC);
+CREATE INDEX leads_kind_idx ON leads (kind, created_at DESC);
+`,
+  },
 ];

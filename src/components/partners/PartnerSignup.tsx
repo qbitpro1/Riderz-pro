@@ -1,5 +1,6 @@
 "use client";
 
+import { recordLead } from "@/lib/client/leads";
 import { useState } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { whatsapp } from "@/lib/data/site";
@@ -63,7 +64,9 @@ export function PartnerSignup() {
       className="card scroll-mt-24 p-5 md:p-6"
       onSubmit={(e) => {
         e.preventDefault();
-        if (ready) window.open(whatsapp(message), "_blank", "noopener,noreferrer");
+        if (!ready) return;
+        window.open(whatsapp(message), "_blank", "noopener,noreferrer");
+        recordLead("partner", { name: contact, phone, email, city, details: { business, gstin, type, address, website, stock, system } }, message);
       }}
     >
       <p className="eyebrow mb-1">Become a partner</p>

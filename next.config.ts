@@ -24,6 +24,10 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     optimizePackageImports: [],
+    // Turbopack's on-disk dev cache, reused across `next dev` restarts, sent the browser into an
+    // endless reload loop ("✓ Compiled" on every page load) after a restart with an existing .next.
+    // Dev only: production builds are unaffected; the first page after a restart compiles a bit slower.
+    turbopackFileSystemCacheForDev: false,
   },
   // Baseline security headers on every route. No full CSP on purpose: the site
   // relies on inline scripts and a CSP would break them. HSTS in production only (local dev is
