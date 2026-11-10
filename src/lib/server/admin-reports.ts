@@ -249,3 +249,157 @@ export async function ordersCsv(range: ReportRange): Promise<string[][]> {
     ...rows.map((r) => [r.number, when(r.created_at), r.status, r.customer_name, r.city, r.state, r.pincode, String(r.subtotal), String(r.shipping), String(r.discount), r.coupon_code ?? "", String(r.total), r.payment_method, r.payment_status, r.invoice ?? ""]),
   ];
 }
+
+/* --------------------------------------------------------- seller reports */
+
+export type SellerReportRow = {
+  id: string;
+  storeName: string;
+  slug: string | null;
+  status: string;
+  commissionRate: number | null;
+  /** Seller parts on orders placed in the range (not cancelled, not awaiting online payment). */
+  orders: number;
+  units: number;
+  gross: number;
+  cancelled: number;
+  /** Parts delivered in the range, paid through Riderzpro. */
+  delivered: number;
+  commission: number;
+  commissionGst: number;
+  net: number;
+  /** Parts delivered in the range and paid at the seller's own counter. */
+  counter: number;
+  /** Payouts marked paid in the range. */
+  paidOut: number;
+  productsLive: number;
+};
+
+export type SellerReport = {
+  range: ReportRange;
+  vendorId: string | null;
+  sellers: SellerReportRow[];
+  summary: Omit<SellerReportRow, "id" | "storeName" | "slug" | "status" | "commissionRate"> & { sellers: number };
+  /** For one seller only: their sales by day and best products in the range. */
+  daily: { day: string; orders: number; total: number }[];
+  topProducts: { title: string; qty: number; amount: number }[];
+};
+
+/** Every seller to choose from in the reports dropdown (approved or frozen, plus any with past orders). */
+export async function reportSellerOptions(): Promise<{ id: string; storeName: string; status: string }[]> {
+  return sql<{ id: string; storeName: string; status: string }>(
+    `SELECT v.id, COALESCE(v.store_name, v.full_name) AS "storeName", v.status FROM vendors v
+      WHERE v.status IN ('approved','suspended') OR EXISTS (SELECT 1 FROM vendor_orders vo WHERE vo.vendor_id = v.id)
+      ORDER BY lower(COALESCE(v.store_name, v.full_name))`,
+  );
+}
+
+/**
+ * Sales for every seller, or for one (`vendorId`). [from, to] are India dates, both included.
+ * Totals use the same rules as the seller's own dashboard: unpaid online orders are left out.
+ */
+export async function sellerReport(range: ReportRange, vendorId: string | null = null): Promise<SellerReport> {
+  const p = [`${range.from}T00:00:00+05:30`, `${range.to}T23:59:59.999+05:30`, vendorId];
+  const PAID = "NOT (o.payment_method = 'online' AND o.payment_status IN ('pending','failed'))";
+  const ONE = "($3::text IS NULL OR v.id = $3)";
+
+  const [vendors, placed, delivered, payouts, daily, top] = await Promise.all([
+    sql<{ id: string; store_name: string | null; full_name: string; slug: string | null; status: string; commission_rate: string | null; live: number }>(
+      `SELECT v.id, v.store_name, v.full_name, v.slug, v.status, v.commission_rate,
+              (SELECT count(*)::int FROM vendor_products p WHERE p.vendor_id = v.id AND p.status = 'live') AS live
+         FROM vendors v
+        WHERE ($1::text IS NULL OR v.id = $1) AND (v.status IN ('approved','suspended') OR EXISTS (SELECT 1 FROM vendor_orders vo WHERE vo.vendor_id = v.id))`,
+      [vendorId],
+    ),
+    sql<{ vendor_id: string; orders: number; gross: number; cancelled: number; units: number }>(
+      `SELECT vo.vendor_id,
+              count(*) FILTER (WHERE vo.status NOT IN ('cancelled','returned'))::int AS orders,
+              COALESCE(sum(vo.subtotal) FILTER (WHERE vo.status NOT IN ('cancelled','returned')), 0)::int AS gross,
+              count(*) FILTER (WHERE vo.status IN ('cancelled','returned'))::int AS cancelled,
+              COALESCE(sum((SELECT sum(i.qty) FROM order_items i WHERE i.vendor_order_id = vo.id)) FILTER (WHERE vo.status NOT IN ('cancelled','returned')), 0)::int AS units
+         FROM vendor_orders vo JOIN orders o ON o.id = vo.order_id JOIN vendors v ON v.id = vo.vendor_id
+        WHERE o.created_at BETWEEN $1 AND $2 AND ${PAID} AND ${ONE}
+        GROUP BY vo.vendor_id`,
+      p,
+    ),
+    sql<{ vendor_id: string; subtotal: number; commission_rate: string; collected_by: "platform" | "seller" }>(
+      `SELECT vo.vendor_id, vo.subtotal, vo.commission_rate, vo.collected_by
+         FROM vendor_orders vo JOIN vendors v ON v.id = vo.vendor_id
+        WHERE vo.status = 'delivered' AND vo.delivered_at BETWEEN $1 AND $2 AND ${ONE}`,
+      p,
+    ),
+    sql<{ vendor_id: string; net: number }>(
+      `SELECT pa.vendor_id, COALESCE(sum(pa.net),0)::int AS net FROM vendor_payouts pa JOIN vendors v ON v.id = pa.vendor_id
+        WHERE pa.status = 'paid' AND pa.paid_at BETWEEN $1 AND $2 AND ${ONE} GROUP BY pa.vendor_id`,
+      p,
+    ),
+    vendorId
+      ? sql<{ day: string; n: number; total: number }>(
+          `SELECT to_char(o.created_at AT TIME ZONE 'Asia/Kolkata', 'YYYY-MM-DD') AS day, count(*)::int AS n, COALESCE(sum(vo.subtotal),0)::int AS total
+             FROM vendor_orders vo JOIN orders o ON o.id = vo.order_id JOIN vendors v ON v.id = vo.vendor_id
+            WHERE o.created_at BETWEEN $1 AND $2 AND ${PAID} AND ${ONE} AND vo.status NOT IN ('cancelled','returned')
+            GROUP BY 1 ORDER BY 1`,
+          p,
+        )
+      : Promise.resolve([]),
+    vendorId
+      ? sql<{ title: string; qty: number; amount: number }>(
+          `SELECT i.title, sum(i.qty)::int AS qty, sum(i.line_total)::int AS amount
+             FROM order_items i JOIN vendor_orders vo ON vo.id = i.vendor_order_id JOIN orders o ON o.id = vo.order_id JOIN vendors v ON v.id = vo.vendor_id
+            WHERE o.created_at BETWEEN $1 AND $2 AND ${PAID} AND ${ONE} AND vo.status NOT IN ('cancelled','returned')
+            GROUP BY i.title ORDER BY amount DESC LIMIT 10`,
+          p,
+        )
+      : Promise.resolve([]),
+  ]);
+
+  const placedBy = new Map(placed.map((r) => [r.vendor_id, r]));
+  const paidBy = new Map(payouts.map((r) => [r.vendor_id, r.net]));
+  const rows: SellerReportRow[] = vendors.map((v) => {
+    const pl = placedBy.get(v.id);
+    const mine = delivered.filter((d) => d.vendor_id === v.id);
+    const settled = mine.filter((d) => d.collected_by !== "seller").map((d) => settlementFor(d.subtotal, Number(d.commission_rate)));
+    const sum = (k: "gross" | "commission" | "commissionGst" | "net") => settled.reduce((n, s) => n + s[k], 0);
+    return {
+      id: v.id,
+      storeName: v.store_name ?? v.full_name,
+      slug: v.slug,
+      status: v.status,
+      commissionRate: v.commission_rate === null ? null : Number(v.commission_rate),
+      orders: pl?.orders ?? 0,
+      units: pl?.units ?? 0,
+      gross: pl?.gross ?? 0,
+      cancelled: pl?.cancelled ?? 0,
+      delivered: sum("gross"),
+      commission: sum("commission"),
+      commissionGst: sum("commissionGst"),
+      net: sum("net"),
+      counter: mine.filter((d) => d.collected_by === "seller").reduce((n, d) => n + d.subtotal, 0),
+      paidOut: paidBy.get(v.id) ?? 0,
+      productsLive: v.live,
+    };
+  });
+  rows.sort((a, b) => b.gross - a.gross || a.storeName.localeCompare(b.storeName));
+  const total = (k: keyof SellerReport["summary"]) => rows.reduce((n, r) => n + (r[k as keyof SellerReportRow] as number), 0);
+  return {
+    range,
+    vendorId,
+    sellers: rows,
+    summary: {
+      sellers: rows.length,
+      orders: total("orders"),
+      units: total("units"),
+      gross: total("gross"),
+      cancelled: total("cancelled"),
+      delivered: total("delivered"),
+      commission: total("commission"),
+      commissionGst: total("commissionGst"),
+      net: total("net"),
+      counter: total("counter"),
+      paidOut: total("paidOut"),
+      productsLive: total("productsLive"),
+    },
+    daily: daily.map((d) => ({ day: d.day, orders: d.n, total: d.total })),
+    topProducts: top,
+  };
+}

@@ -24,6 +24,7 @@ import {
 import { Logo } from "@/components/brand/Logo";
 import { api } from "@/lib/vendor/client";
 import { offlineStoreHref, storeHref } from "@/lib/vendor/types";
+import { FrozenAccountLock, type HoldMessageView } from "@/components/vendor/hold/HoldThread";
 
 type Props = {
   storeName: string;
@@ -32,12 +33,14 @@ type Props = {
   status: "approved" | "suspended";
   unreadNotifications: number;
   newOrders: number;
+  /** While frozen (suspended): the conversation with the admin, shown in place of every page. */
+  holdMessages: HoldMessageView[] | null;
   children: ReactNode;
 };
 
 type Item = { href: string; label: string; icon: LucideIcon; badge?: number };
 
-export function DashboardShell({ storeName, slug, tier, status, unreadNotifications, newOrders, children }: Props) {
+export function DashboardShell({ storeName, slug, tier, status, unreadNotifications, newOrders, holdMessages, children }: Props) {
   const pathname = usePathname();
   const [more, setMore] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
@@ -206,13 +209,9 @@ export function DashboardShell({ storeName, slug, tier, status, unreadNotificati
             </div>
           </header>
 
-          {status === "suspended" && (
-            <div role="alert" className="border-b border-danger/40 bg-danger/10 px-4 py-3 text-sm font-semibold text-danger md:px-6">
-              Your store is suspended: your products are hidden from the Riderzpro website and the Offline Store screen is closed, and changes are disabled. Contact seller support.
-            </div>
-          )}
-
-          <div className="px-4 py-5 pb-28 md:px-6 md:py-6 lg:pb-10">{children}</div>
+          <div className="px-4 py-5 pb-28 md:px-6 md:py-6 lg:pb-10">
+            {status === "suspended" ? <FrozenAccountLock initialMessages={holdMessages ?? []} /> : children}
+          </div>
         </div>
       </div>
 

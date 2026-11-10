@@ -10,6 +10,7 @@ import { api, ApiFailure } from "@/lib/vendor/client";
 import { ONBOARDING_STEPS, VENDOR_TIERS, type OnboardingSectionId } from "@/lib/vendor/types";
 import { maskTail } from "@/lib/vendor/validators";
 import { Field, fmtDate, fmtSize, Modal, Notice, StatusBadge } from "./ui";
+import { AdminHoldPanel, type HoldMessageView } from "@/components/vendor/hold/HoldThread";
 
 type Reveal = { field: "bank" | "pan"; value: string; holder?: string | null; ifsc?: string | null };
 
@@ -39,13 +40,15 @@ const ACTION_LABEL: Record<string, string> = {
   "kyc.approve": "Approved",
   "kyc.request_changes": "Changes requested",
   "kyc.reject": "Rejected",
-  "kyc.suspend": "Suspended",
-  "kyc.reinstate": "Reinstated",
+  "kyc.suspend": "Frozen",
+  "kyc.reinstate": "Freeze lifted",
+  "hold.reply": "Seller replied (frozen)",
+  "hold.admin_reply": "Messaged frozen seller",
   "kyc.reveal_bank": "Bank number revealed",
   "kyc.reveal_pan": "PAN revealed",
 };
 
-export default function VendorReview({ review }: { review: Review }) {
+export default function VendorReview({ review, holdMessages }: { review: Review; holdMessages: HoldMessageView[] }) {
   const router = useRouter();
   const { vendor, checks } = review;
   const o = vendor.onboarding;
@@ -173,11 +176,12 @@ export default function VendorReview({ review }: { review: Review }) {
         </div>
       ) : null}
       {status === "rejected" && vendor.rejectionReason ? <div className="mt-4"><Notice tone="error">Rejected: {vendor.rejectionReason}</Notice></div> : null}
-      {status === "suspended" && vendor.rejectionReason ? <div className="mt-4"><Notice tone="error">Suspended: {vendor.rejectionReason}</Notice></div> : null}
+      {status === "suspended" && vendor.rejectionReason ? <div className="mt-4"><Notice tone="error">Frozen: {vendor.rejectionReason}</Notice></div> : null}
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_22rem]">
         {/* ------------------------------------------------ application */}
         <div className="space-y-4">
+          <AdminHoldPanel key={holdMessages.length + status} vendorId={vendor.id} frozen={status === "suspended"} initialMessages={holdMessages} />
           <Section id="account" title="1 · Account" flagged={flagged.has("account")}>
             <KV label="Full name">{vendor.fullName}</KV>
             <KV label="Business type">{vendor.businessType}</KV>
@@ -388,11 +392,11 @@ export default function VendorReview({ review }: { review: Review }) {
             {status === "approved" ? (
               <div className="space-y-2">
                 <p className="text-sm text-ash">Commission {vendor.commissionRate ?? "—"}% · {vendor.tier ?? "—"} tier</p>
-                <button type="button" className="btn btn-outline btn-block border-danger/50 text-danger" disabled={busy} onClick={() => setDialog("suspend")}>Suspend seller</button>
+                <button type="button" className="btn btn-outline btn-block border-danger/50 text-danger" disabled={busy} onClick={() => setDialog("suspend")}>Freeze account</button>
               </div>
             ) : null}
             {status === "suspended" ? (
-              <button type="button" className="btn btn-primary btn-block" disabled={busy} onClick={() => decide({ action: "reinstate" }, "Seller reinstated.")}>Reinstate seller</button>
+              <button type="button" className="btn btn-primary btn-block" disabled={busy} onClick={() => decide({ action: "reinstate" }, "Freeze lifted. The seller is active again.")}>Lift freeze</button>
             ) : null}
             {status === "draft" || status === "rejected" ? <p className="text-sm text-ash">{status === "draft" ? "Not submitted yet." : "This application is closed."}</p> : null}
           </section>
@@ -451,11 +455,11 @@ export default function VendorReview({ review }: { review: Review }) {
         </div>
       </Modal>
 
-      <Modal open={dialog === "reject" || dialog === "suspend"} title={dialog === "suspend" ? "Suspend seller" : "Reject application"} onClose={closeDialog}>
+      <Modal open={dialog === "reject" || dialog === "suspend"} title={dialog === "suspend" ? "Freeze seller account" : "Reject application"} onClose={closeDialog}>
         <p className="mb-3 text-sm text-ash">
-          {dialog === "suspend" ? "Their products leave the shop at once and the portal turns read-only. The reason is shown to the seller." : "The seller is signed out everywhere and sees this reason."}
+          {dialog === "suspend" ? "Their products leave the shop at once and their dashboard locks, showing this message. They can reply here with documents; lift the freeze when it's resolved." : "The seller is signed out everywhere and sees this reason."}
         </p>
-        <Field label="Reason" error={fieldErrors.reason}>
+        <Field label={dialog === "suspend" ? "Message to the seller" : "Reason"} error={fieldErrors.reason}>
           <textarea data-autofocus className="field min-h-24 py-2" value={reason} onChange={(e) => setReason(e.target.value)} maxLength={1000} />
         </Field>
         <div className="mt-5 flex justify-end gap-2">
@@ -464,9 +468,9 @@ export default function VendorReview({ review }: { review: Review }) {
             type="button"
             className="btn btn-primary btn-sm"
             disabled={busy}
-            onClick={() => decide({ action: dialog === "suspend" ? "suspend" : "reject", reason }, dialog === "suspend" ? "Seller suspended." : "Application rejected.")}
+            onClick={() => decide({ action: dialog === "suspend" ? "suspend" : "reject", reason }, dialog === "suspend" ? "Account frozen. The seller sees your message." : "Application rejected.")}
           >
-            {dialog === "suspend" ? "Suspend" : "Reject"}
+            {dialog === "suspend" ? "Freeze" : "Reject"}
           </button>
         </div>
       </Modal>

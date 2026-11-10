@@ -28,7 +28,7 @@ export function StatusBadge({ status, label }: { status: string; label?: string 
   const tone = TONES[status] ?? "border-tint/10 bg-steel text-ash";
   return (
     <span className={`inline-flex items-center rounded-[2px] border px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.1em] ${tone}`}>
-      {label ?? status.replace(/_/g, " ")}
+      {label ?? (status === "suspended" ? "frozen" : status.replace(/_/g, " "))}
     </span>
   );
 }

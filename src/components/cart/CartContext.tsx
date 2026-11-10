@@ -10,6 +10,8 @@ import {
   type ReactNode,
 } from "react";
 import { readStored } from "@/lib/storage";
+import { api } from "@/lib/vendor/client";
+import { SIGNED_OUT_EVENT, useAccount } from "@/components/account/AccountContext";
 import type { CartLine } from "@/lib/store/types";
 import { CartDrawer } from "./CartDrawer";
 
@@ -107,6 +109,53 @@ export function CartProvider({ children }: { children: ReactNode }) {
       /* storage full or blocked — cart simply doesn't persist */
     }
   }, [lines, ready]);
+
+  // Signed in: the cart is also saved to the account (GET/PUT /api/account/cart), so it follows the
+  // customer to other devices. On first sync this browser's lines are merged into the saved ones.
+  const { customer, ready: accountReady } = useAccount();
+  const [syncedFor, setSyncedFor] = useState<string | null>(null);
+  useEffect(() => {
+    if (!ready || !accountReady || !customer || syncedFor === customer.id) return;
+    let alive = true;
+    const id = customer.id;
+    api<{ lines: CartLine[] }>("/api/account/cart")
+      .then((r) => {
+        if (!alive) return;
+        const saved = parseLines(JSON.stringify(r.lines)) ?? [];
+        setLines((local) => {
+          const merged = new Map(saved.map((l) => [l.id, l]));
+          for (const l of local) {
+            const s = merged.get(l.id);
+            merged.set(l.id, s ? { ...l, qty: Math.max(s.qty, l.qty) } : l);
+          }
+          return [...merged.values()].slice(0, 50);
+        });
+        setSyncedFor(id);
+      })
+      .catch(() => {
+        /* accounts unavailable: the browser cart still works */
+      });
+    return () => {
+      alive = false;
+    };
+  }, [ready, accountReady, customer, syncedFor]);
+
+  useEffect(() => {
+    if (!syncedFor || customer?.id !== syncedFor) return;
+    const t = setTimeout(() => {
+      api("/api/account/cart", { method: "PUT", body: { lines: lines.slice(0, 50) } }).catch(() => {});
+    }, 500);
+    return () => clearTimeout(t);
+  }, [lines, syncedFor, customer]);
+
+  useEffect(() => {
+    const onSignedOut = () => {
+      setSyncedFor(null);
+      setLines([]);
+    };
+    window.addEventListener(SIGNED_OUT_EVENT, onSignedOut);
+    return () => window.removeEventListener(SIGNED_OUT_EVENT, onSignedOut);
+  }, []);
 
   const openCart = useCallback(() => setDrawerOpen(true), []);
   const closeCart = useCallback(() => setDrawerOpen(false), []);

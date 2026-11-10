@@ -43,6 +43,9 @@ const AccountContext = createContext<AccountState>({
 
 export const useAccount = () => useContext(AccountContext);
 
+/** Fired on this window when the customer signs out or deletes their account. */
+export const SIGNED_OUT_EVENT = "riderzpro:signed-out";
+
 /** Routes with their own sign-in, where the shopper account is not used. */
 const OWN_SIGN_IN = ["/vendor/dashboard", "/store", "/rider"];
 const ownSignIn = (path: string) => OWN_SIGN_IN.some((p) => path === p || path.startsWith(`${p}/`));
@@ -106,6 +109,8 @@ export function AccountProvider({ children }: { children: ReactNode }) {
       replaceWishlist([]);
       writeGarage(null);
       writeSynced(null);
+      // The cart is saved to the account; this browser's copy goes with the sign-out (CartContext).
+      window.dispatchEvent(new Event(SIGNED_OUT_EVENT));
     } finally {
       signingOut = false;
     }

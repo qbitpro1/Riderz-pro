@@ -9,6 +9,7 @@ import { bankPayloadSchema } from "./vendor-account";
 import { seal, unseal } from "./security";
 import { endAllSessions } from "./session";
 import { audit, notifyVendor, toVendorSelf, vendorById } from "./vendors";
+import { addAdminHoldMessage } from "./vendor-hold";
 import { toVendorProduct, type VendorProductRow } from "./vendor-products";
 import {
   DOCUMENT_LABELS,
@@ -398,13 +399,15 @@ export async function decideVendor(vendorId: string, input: VendorDecision, acto
       case "suspend": {
         await move(["approved"], "status = 'suspended', status_before_suspension = 'approved', rejection_reason = $3", [input.reason]);
         await audit(by, "kyc.suspend", { vendorId, ip, detail: { reason: input.reason } }, q);
+        // The message opens the freeze conversation the seller sees on their locked dashboard.
+        await addAdminHoldMessage(vendorId, actor, input.reason, q);
         await notifyVendor(
           vendorId,
           {
             type: "account",
-            title: "Your store is suspended",
-            body: `Your Offline Store screen is closed and your products are hidden until this is resolved. Reason: ${input.reason}. Contact seller support to discuss.`,
-            link: "/vendor/dashboard/support",
+            title: "Your account is frozen",
+            body: `Your Offline Store screen is closed and your products are hidden until this is resolved. Message from Riderzpro: ${input.reason}. Reply with any documents from your dashboard.`,
+            link: "/vendor/dashboard",
           },
           q,
         );
@@ -413,6 +416,7 @@ export async function decideVendor(vendorId: string, input: VendorDecision, acto
       case "reinstate": {
         await move(["suspended"], "status = 'approved', status_before_suspension = NULL, rejection_reason = NULL", []);
         await audit(by, "kyc.reinstate", { vendorId, ip }, q);
+        await addAdminHoldMessage(vendorId, actor, "Freeze lifted. Your store is active again.", q);
         await notifyVendor(
           vendorId,
           {

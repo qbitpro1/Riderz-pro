@@ -9,6 +9,7 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
+    "test:e2e": "node scripts/test-e2e-flows.mjs",
     "sync:recoil": "node scripts/sync-recoil-manufacturer.mjs",
     "verify:recoil": "node scripts/verify-price-list.mjs",
     "import:recoil": "node scripts/import-recoil.mjs",

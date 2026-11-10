@@ -23,6 +23,8 @@ export type FileKind =
   | "doc_cheque"
   | "doc_trade_license"
   | "doc_brand_auth"
+  /** A document a frozen seller sends with a reply to the admin (src/lib/server/vendor-hold.ts). */
+  | "doc_hold_reply"
   | "logo"
   | "banner"
   | "product_image";
@@ -33,6 +35,7 @@ export const FILE_KINDS: FileKind[] = [
   "doc_cheque",
   "doc_trade_license",
   "doc_brand_auth",
+  "doc_hold_reply",
   "logo",
   "banner",
   "product_image",

@@ -28,6 +28,8 @@ export const POST = route(async (req: Request) => {
   const allowed =
     kind === "product_image"
       ? CAN_SELL.includes(vendor.status)
+      : kind === "doc_hold_reply"
+        ? vendor.status === "suspended"
       : isDocument(kind)
         ? CAN_EDIT_ONBOARDING.includes(vendor.status)
         : CAN_EDIT_ONBOARDING.includes(vendor.status) || CAN_SELL.includes(vendor.status);

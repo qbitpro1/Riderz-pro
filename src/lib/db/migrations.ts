@@ -1015,4 +1015,47 @@ UPDATE order_items i SET hsn = p.hsn, gst_rate = p.gst_rate, warranty_months = p
  WHERE i.product_kind = 'vendor' AND p.id = i.product_ref;
 `,
   },
+  {
+    // customer_carts      a signed-in shopper's cart, so it follows them across devices
+    //                     (src/lib/server/customer-cart.ts). Lines are the browser's own, checked on read.
+    // vendor_hold_messages the conversation while a seller's account is frozen (suspended): the admin's
+    //                     message, the seller's replies with supporting documents, and the admin's answers
+    //                     (src/lib/server/vendor-hold.ts). Files of kind doc_hold_reply belong to a reply.
+    id: "019_customer_cart_vendor_hold",
+    sql: `
+CREATE TABLE customer_carts (
+  customer_id text PRIMARY KEY REFERENCES customers(id) ON DELETE CASCADE,
+  lines       jsonb NOT NULL DEFAULT '[]'::jsonb,
+  updated_at  timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE TABLE vendor_hold_messages (
+  id         text PRIMARY KEY,
+  vendor_id  text NOT NULL REFERENCES vendors(id) ON DELETE CASCADE,
+  sender     text NOT NULL CHECK (sender IN ('admin','vendor')),
+  author     text NOT NULL,
+  body       text NOT NULL,
+  file_ids   text[] NOT NULL DEFAULT '{}',
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX vendor_hold_messages_vendor_idx ON vendor_hold_messages (vendor_id, created_at);
+
+-- Freezes made before this table existed keep their message as the first one.
+INSERT INTO vendor_hold_messages (id, vendor_id, sender, author, body, created_at)
+SELECT 'vhm_' || substr(md5(id), 1, 22), id, 'admin', COALESCE(approved_by, 'admin'), rejection_reason, updated_at
+  FROM vendors WHERE status = 'suspended' AND rejection_reason IS NOT NULL;
+
+DO $$
+DECLARE c text;
+BEGIN
+  FOR c IN SELECT conname FROM pg_constraint
+            WHERE conrelid = 'files'::regclass AND contype = 'c' AND pg_get_constraintdef(oid) LIKE '%kind%'
+  LOOP
+    EXECUTE 'ALTER TABLE files DROP CONSTRAINT ' || quote_ident(c);
+  END LOOP;
+END $$;
+ALTER TABLE files ADD CONSTRAINT files_kind_check
+  CHECK (kind IN ('doc_pan','doc_gst','doc_cheque','doc_trade_license','doc_brand_auth','doc_hold_reply','logo','banner','product_image'));
+`,
+  },
 ];

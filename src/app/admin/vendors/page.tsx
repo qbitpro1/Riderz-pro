@@ -22,7 +22,7 @@ const TABS: { id: VendorFilter; label: string }[] = [
   { id: "under_review", label: "Under review" },
   { id: "changes_requested", label: "Changes requested" },
   { id: "approved", label: "Approved" },
-  { id: "suspended", label: "Suspended" },
+  { id: "suspended", label: "Frozen" },
   { id: "rejected", label: "Rejected" },
   { id: "all", label: "All" },
 ];
