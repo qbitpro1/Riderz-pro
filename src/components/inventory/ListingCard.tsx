@@ -23,7 +23,7 @@ export function ListingCard({
           listing.image.media ? (
             <Photo media={listing.image.media} sizes={sizes} className="zoom" alt={listing.image.alt} />
           ) : (
-            <Image src={listing.image.url!} alt={listing.image.alt} fill sizes={sizes} className="zoom object-cover" />
+            <Image src={listing.image.url!} alt={listing.image.alt} fill sizes={sizes} unoptimized={listing.image.url!.startsWith("/api/")} className="zoom object-cover" />
           )
         ) : (
           <span className="flex h-full flex-col items-center justify-center gap-2 p-4 text-center">

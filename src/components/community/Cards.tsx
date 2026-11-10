@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Photo } from "@/components/ui/Photo";
+import { UploadedPhoto } from "@/components/ui/UploadedPhoto";
 import { Icon } from "@/components/ui/Icon";
 import { Stars } from "@/components/ui/Section";
 import { rupees } from "@/lib/format";
@@ -17,7 +17,7 @@ export function BuildCard({
     <article className="card card-hover group h-full">
       <Link href={`/builds/${build.slug}`} className="block">
         <div data-theme="dark" className="relative aspect-[4/5] overflow-hidden bg-graphite">
-          <Photo media={build.image} sizes={sizes} className="zoom" />
+          {build.photos[0] && <UploadedPhoto src={build.photos[0]} alt={`${build.title}, ${build.vehicle}`} sizes={sizes} className="zoom" />}
           <div className="absolute inset-0 scrim" />
 
           <span className="absolute left-3 top-3 chip border-accent/35 bg-accent/12 text-accent">
@@ -41,8 +41,12 @@ export function BuildCard({
 
             <div className="mt-4 flex items-end justify-between gap-3 border-t border-tint/12 pt-3">
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-dim">Build cost</p>
-                <p className="font-display text-lg font-extrabold tnum">{rupees(build.cost)}</p>
+                {build.cost !== null && (
+                  <>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-dim">Build cost</p>
+                    <p className="font-display text-lg font-extrabold tnum">{rupees(build.cost)}</p>
+                  </>
+                )}
               </div>
               <span className="flex items-center gap-1.5 font-display text-[11px] font-bold uppercase tracking-[0.14em] text-accent">
                 See the build

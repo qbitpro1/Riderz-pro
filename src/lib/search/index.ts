@@ -1,9 +1,9 @@
 import "server-only";
 
-import { CARS } from "@/lib/data/cars";
+import { publicCars } from "@/lib/server/cars";
 import { DEPARTMENTS, departmentHref } from "@/lib/data/taxonomy";
 import { AUDIO_PACKAGES, DETAIL_SERVICES, FACELIFT_CONVERSIONS } from "@/lib/data/services";
-import { BUILDS } from "@/lib/data/community";
+import { liveBuilds } from "@/lib/server/builds";
 import { LANDING_MODELS, findModelBySlug } from "@/lib/data/vehicles";
 import { BRANDS, type CatalogItem } from "@/lib/catalog";
 import { catalogSnapshot } from "@/lib/server/catalog";
@@ -42,7 +42,8 @@ function productEntry(i: CatalogItem): SearchEntry {
 
 /** The whole search index, built from the database (products) and the site's own pages. */
 export async function buildSearchIndex(): Promise<SearchIndex> {
-  const { items: CATALOG, byBrand: CATALOG_BY_BRAND } = await catalogSnapshot();
+  const [{ items: CATALOG, byBrand: CATALOG_BY_BRAND }, allCars, BUILDS] = await Promise.all([catalogSnapshot(), publicCars(), liveBuilds()]);
+  const CARS = allCars.filter((c) => c.status === "live");
   const SEARCH_INDEX: SearchEntry[] = [
   // Brands come first in construction order so an exact brand name — "recoil",
   // "autoform", "blaupunkt" — always has a destination, whether or not that
@@ -65,7 +66,7 @@ export async function buildSearchIndex(): Promise<SearchIndex> {
     meta: `${lakh(c.price)} · ${c.city}`,
     href: `/cars/${c.slug}`,
     keywords: norm(
-      `${c.brand} ${c.model} ${c.variant} ${c.body} ${c.fuel} ${c.transmission} ${c.city} ${c.condition} used car buy`,
+      `${c.brand} ${c.model} ${c.variant} ${c.body} ${c.fuel} ${c.transmission} ${c.city} used car buy`,
     ),
   })),
   ...CATALOG.map(productEntry),
@@ -143,7 +144,7 @@ export async function buildSearchIndex(): Promise<SearchIndex> {
     id: `build-${b.slug}`,
     kind: "Build" as const,
     title: b.title,
-    meta: `${b.vehicle} · ${rupees(b.cost)}`,
+    meta: b.cost !== null ? `${b.vehicle} · ${rupees(b.cost)}` : b.vehicle,
     href: `/builds/${b.slug}`,
     keywords: norm(`${b.title} ${b.vehicle} ${b.tag} build modified`),
   })),

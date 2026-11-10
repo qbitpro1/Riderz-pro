@@ -1,5 +1,6 @@
 import "server-only";
-import { CARS, type Car } from "@/lib/data/cars";
+import type { Car } from "@/lib/data/cars";
+import { carRowsForInventory } from "@/lib/server/cars";
 import inspectionFile from "../../../../data/inventory/inspections.json";
 import { buildDescription, scoreConfidence, slugFor } from "../normalize";
 import { emptyCondition, type Inspection, type Listing, type Transmission } from "../types";
@@ -9,26 +10,19 @@ import type { Connector } from "./index";
 const INSPECTIONS = (inspectionFile as { inspections: Record<string, Inspection> }).inspections;
 
 /**
- * Riderzpro's own inventory — cars we hold, photograph and inspect ourselves.
- * Level 3 in the source hierarchy and the only source that can ever carry the
- * RIDERZPRO VERIFIED badge.
- *
- * The records currently here are the sample cars written during the design
- * build. They are flagged `demo: true` so the dashboard never counts them as
- * live inventory and no page can pass them off as real stock. Replace them
- * with genuine entries — or point this connector at the admin database — and
- * the flag goes away.
+ * Riderzpro's own inventory: cars we hold, photograph and inspect ourselves, added by the team in
+ * /admin/cars (car_listings). Level 3 in the source hierarchy and the only source that can ever carry
+ * the RIDERZPRO VERIFIED badge (and only with an inspection on file). Live cars are ACTIVE; sold ones
+ * stay listed as sold.
  */
-
-const DEMO = true;
-
 export const riderzproDirect: Connector = {
   sourceId: "riderzpro-direct",
-  pull: () => CARS.map(toListing),
+  pull: async () => (await carRowsForInventory()).map(toListing),
 };
 
 function toListing(car: Car): Listing {
   const now = new Date().toISOString();
+  const listedAt = car.createdAt;
   const id = `mb-${car.slug}`;
   // A car is verified because an engineer inspected it and filed a report —
   // never because a data file has a boolean called `verified` set to true.
@@ -51,14 +45,14 @@ function toListing(car: Car): Listing {
     engineCc: null,
     power: car.power,
     km: car.km,
-    owners: ownersFrom(car.owner),
+    owners: car.owners,
     bodyType: car.body as Listing["bodyType"],
-    colour: null,
+    colour: car.colour,
     seats: null,
     drivetrain: car.drivetrain,
 
     price: car.price,
-    priceHistory: [{ at: now, price: car.price }],
+    priceHistory: [{ at: listedAt, price: car.price }],
     financeAvailable: car.financing,
     officialFinanceQuote: false,
 
@@ -84,16 +78,16 @@ function toListing(car: Car): Listing {
       },
     ],
     primarySourceId: "riderzpro-direct",
-    status: "ACTIVE",
+    status: car.status === "sold" ? "SOLD_UNAVAILABLE" : "ACTIVE",
     verification: inspection ? "RIDERZPRO_VERIFIED" : "SOURCE_LISTING",
     confidence: "HIGH",
-    demo: DEMO,
+    demo: false,
 
     description: "",
     highlights: car.highlights,
-    modifications: car.modifications ?? null,
-    images: car.images.map((media, i) => ({
-      media,
+    modifications: car.modifications.length ? car.modifications : null,
+    images: car.photos.map((url, i) => ({
+      url,
       alt: `${car.year} ${car.brand} ${car.model} ${car.variant}`,
       slot: (["front-3q", "rear-3q", "interior", "side"] as const)[i] ?? "detail",
       licence: "riderzpro-own" as const,
@@ -111,9 +105,9 @@ function toListing(car: Car): Listing {
     },
     inspection,
 
-    discoveredAt: now,
+    discoveredAt: listedAt,
     lastVerifiedAt: now,
-    listedAt: now,
+    listedAt,
     archivedAt: null,
   };
 
@@ -121,11 +115,6 @@ function toListing(car: Car): Listing {
   listing.confidence = scoreConfidence(listing);
   listing.slug = car.slug || slugFor(listing);
   return listing;
-}
-
-function ownersFrom(owner: string): number | null {
-  const m = owner.match(/(\d+)/);
-  return m ? Number(m[1]) : null;
 }
 
 /** The price list says "Automatic"; the variant name usually says which kind. */

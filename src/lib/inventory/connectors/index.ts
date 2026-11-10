@@ -13,7 +13,7 @@ import { blockedConnector } from "./blocked";
 export type Connector = {
   sourceId: string;
   /** Returns listings this source is permitted to contribute. */
-  pull: () => Listing[];
+  pull: () => Listing[] | Promise<Listing[]>;
 };
 
 export const CONNECTORS: Connector[] = [
@@ -32,14 +32,14 @@ export type PullResult = {
 };
 
 /** Runs every connector through the compliance gate and collects the results. */
-export function pullAll(): PullResult[] {
-  return CONNECTORS.map((connector) => {
+export async function pullAll(): Promise<PullResult[]> {
+  return Promise.all(CONNECTORS.map(async (connector) => {
     const gate = importAllowed(connector.sourceId);
     if (!gate.allowed) {
       return { sourceId: connector.sourceId, listings: [], skipped: true, reason: gate.reason };
     }
     try {
-      return { sourceId: connector.sourceId, listings: connector.pull(), skipped: false, reason: null };
+      return { sourceId: connector.sourceId, listings: await connector.pull(), skipped: false, reason: null };
     } catch (error) {
       return {
         sourceId: connector.sourceId,
@@ -48,5 +48,5 @@ export function pullAll(): PullResult[] {
         reason: error instanceof Error ? error.message : String(error),
       };
     }
-  });
+  }));
 }

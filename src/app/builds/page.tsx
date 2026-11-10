@@ -5,7 +5,7 @@ import { BuildCard, ReviewCard } from "@/components/community/Cards";
 import { SectionHead } from "@/components/ui/Section";
 import { Icon } from "@/components/ui/Icon";
 import { Reveal } from "@/components/ui/Reveal";
-import { BUILDS } from "@/lib/data/community";
+import { liveBuilds } from "@/lib/server/builds";
 import { approvedReviews } from "@/lib/server/reviews";
 import { whatsapp } from "@/lib/data/site";
 import { pageMeta } from "@/lib/data/seo";
@@ -18,7 +18,7 @@ export const metadata: Metadata = pageMeta({
 });
 
 export default async function BuildsPage() {
-  const REVIEWS = await approvedReviews(6);
+  const [REVIEWS, BUILDS] = await Promise.all([approvedReviews(6), liveBuilds()]);
   return (
     <>
       <PageHero
@@ -31,6 +31,9 @@ export default async function BuildsPage() {
 
       <section className="section">
         <div className="shell">
+          {BUILDS.length === 0 && (
+            <p className="text-sm text-ash">Finished builds are added here by our team as they leave the garage. Check back soon.</p>
+          )}
           <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {BUILDS.map((b, i) => (
               <li key={b.slug}>

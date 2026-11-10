@@ -6,7 +6,7 @@ import { EmiCalculator } from "@/components/finance/EmiCalculator";
 import { SectionHead } from "@/components/ui/Section";
 import { Icon } from "@/components/ui/Icon";
 import { toCardData } from "@/lib/inventory/card-data";
-import { BROWSABLE, FACETS, KM_BANDS, PRICE_BANDS, SPECIAL_FILTERS } from "@/lib/inventory/store";
+import { browsable, facetsFor, KM_BANDS, PRICE_BANDS, SPECIAL_FILTERS } from "@/lib/inventory/store";
 import { SEARCH_EXAMPLES } from "@/lib/inventory/query";
 import { TRUST_POINTS, whatsapp } from "@/lib/data/site";
 import { pageMeta } from "@/lib/data/seo";
@@ -27,7 +27,11 @@ const COLLECTIONS = [
   { label: "Single owner", note: "Cleanest paperwork" },
 ];
 
-export default function CarsPage() {
+export const dynamic = "force-dynamic";
+
+export default async function CarsPage() {
+  const BROWSABLE = await browsable();
+  const FACETS = facetsFor(BROWSABLE);
   const cards = BROWSABLE.map(toCardData);
   const specialFilters = Object.entries(SPECIAL_FILTERS).map(([key, f]) => ({
     key,

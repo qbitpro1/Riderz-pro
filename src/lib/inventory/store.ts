@@ -5,6 +5,7 @@ import { applyStaleness, bucketFor, priceChange } from "./freshness";
 import { SOURCES, getSource } from "./sources";
 import { verifiedBadgeAllowed } from "./compliance";
 import type { ImportLogEntry, InventorySnapshot, Listing } from "./types";
+import { carsVersion } from "@/lib/server/cars";
 
 /**
  * The inventory store.
@@ -16,9 +17,9 @@ import type { ImportLogEntry, InventorySnapshot, Listing } from "./types";
  * changes.
  */
 
-function buildSnapshot(): InventorySnapshot {
+async function buildSnapshot(): Promise<InventorySnapshot> {
   const now = Date.now();
-  const pulls = pullAll();
+  const pulls = await pullAll();
 
   const raw = pulls.flatMap((p) => p.listings);
   const { merged } = deduplicate(raw);
@@ -90,29 +91,43 @@ function buildSnapshot(): InventorySnapshot {
   };
 }
 
-export const SNAPSHOT: InventorySnapshot = buildSnapshot();
+// Rebuilt when the team's cars change (checked at most once a second; shared across module copies).
+type Shared = { version: string; checkedAt: number; snap: Promise<InventorySnapshot> } | null;
+const holder = ((globalThis as { __riderzproInventory?: { cur: Shared } }).__riderzproInventory ??= { cur: null });
 
 /** Everything, including archived records — the dashboard wants the full set. */
-export const ALL_LISTINGS = SNAPSHOT.listings;
+export async function inventorySnapshot(): Promise<InventorySnapshot> {
+  const now = Date.now();
+  if (holder.cur && now - holder.cur.checkedAt < 1000) return holder.cur.snap;
+  const version = await carsVersion().catch(() => "none");
+  if (holder.cur && holder.cur.version === version) {
+    holder.cur.checkedAt = now;
+    return holder.cur.snap;
+  }
+  const snap = buildSnapshot();
+  holder.cur = { version, checkedAt: now, snap };
+  snap.catch(() => {
+    if (holder.cur?.snap === snap) holder.cur = null;
+  });
+  return snap;
+}
 
 /** What a customer may browse: nothing archived, nothing sold. */
-export const BROWSABLE = ALL_LISTINGS.filter((l) => l.status !== "ARCHIVED" && l.status !== "SOLD_UNAVAILABLE");
+export async function browsable(): Promise<Listing[]> {
+  return (await inventorySnapshot()).listings.filter((l) => l.status !== "ARCHIVED" && l.status !== "SOLD_UNAVAILABLE");
+}
 
-export function getListing(slug: string): Listing | undefined {
-  return ALL_LISTINGS.find((l) => l.slug === slug);
+export async function getListing(slug: string): Promise<Listing | undefined> {
+  return (await inventorySnapshot()).listings.find((l) => l.slug === slug);
 }
 
 /** Newest verified listing first — the ordering the Latest Cars page uses. */
-export function latestFirst(listings: Listing[] = BROWSABLE): Listing[] {
+export function latestFirst(listings: Listing[]): Listing[] {
   return [...listings].sort((a, b) => new Date(b.discoveredAt).getTime() - new Date(a.discoveredAt).getTime());
 }
 
-export function justLanded(limit = 12): Listing[] {
-  return latestFirst().slice(0, limit);
-}
-
-export function relatedListings(listing: Listing, limit = 3): Listing[] {
-  return BROWSABLE.filter((l) => l.id !== listing.id)
+export function relatedListings(listing: Listing, pool: Listing[], limit = 3): Listing[] {
+  return pool.filter((l) => l.id !== listing.id)
     .map((l) => {
       let score = 0;
       if (l.bodyType === listing.bodyType) score += 3;
@@ -130,15 +145,18 @@ export function relatedListings(listing: Listing, limit = 3): Listing[] {
 
 const uniq = <T>(v: T[]) => [...new Set(v)].filter(Boolean) as NonNullable<T>[];
 
-export const FACETS = {
-  makes: uniq(BROWSABLE.map((l) => l.make)).sort(),
-  bodyTypes: uniq(BROWSABLE.map((l) => l.bodyType)).sort(),
-  fuels: uniq(BROWSABLE.map((l) => l.fuel)).sort(),
-  transmissions: uniq(BROWSABLE.map((l) => l.transmission)).sort(),
-  cities: uniq(BROWSABLE.map((l) => l.city)).sort(),
-  drivetrains: uniq(BROWSABLE.map((l) => l.drivetrain)).sort(),
-  years: uniq(BROWSABLE.map((l) => l.year)).sort((a, b) => b - a),
-};
+/** The browse filters, from the cars on offer. */
+export function facetsFor(listings: Listing[]) {
+  return {
+    makes: uniq(listings.map((l) => l.make)).sort(),
+    bodyTypes: uniq(listings.map((l) => l.bodyType)).sort(),
+    fuels: uniq(listings.map((l) => l.fuel)).sort(),
+    transmissions: uniq(listings.map((l) => l.transmission)).sort(),
+    cities: uniq(listings.map((l) => l.city)).sort(),
+    drivetrains: uniq(listings.map((l) => l.drivetrain)).sort(),
+    years: uniq(listings.map((l) => l.year)).sort((a, b) => b - a),
+  };
+}
 
 export const PRICE_BANDS = [
   { label: "Under ₹3L", min: 0, max: 3_00_000 },

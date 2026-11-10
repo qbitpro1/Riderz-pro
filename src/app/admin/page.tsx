@@ -24,6 +24,7 @@ import {
   Contact,
   ChartColumn,
   ScrollText,
+  Wrench,
   type LucideIcon,
 } from "lucide-react";
 import { adminCounts } from "@/lib/server/admin-vendors";
@@ -75,6 +76,8 @@ export default async function AdminHub({ searchParams }: { searchParams: Promise
   ];
   const site: Tile[] = [
     { href: "/admin/products", perm: "catalog", title: "Products", text: "Riderzpro's catalogue: prices, stock, live or hidden.", icon: Boxes },
+    { href: "/admin/cars", perm: "catalog", title: "Cars for sale", text: "Add, edit and mark sold Riderzpro's own cars.", icon: CarFront },
+    { href: "/admin/builds", perm: "catalog", title: "Builds", text: "Finished customer builds for the showcase.", icon: Wrench },
     { href: "/admin/catalog", perm: "catalog", title: "Catalogue report", text: "House catalogue import and data quality.", icon: ClipboardList },
     { href: "/admin/inventory", perm: "catalog", title: "Inventory", text: "Used-car sources, freshness and compliance.", icon: Boxes },
     { href: "/admin/launch", perm: "catalog", title: "Launch readiness", text: "What is live, held back, and what unblocks it.", icon: Rocket },

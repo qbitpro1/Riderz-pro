@@ -29,7 +29,6 @@ import {
   SUMMARY as BLAUPUNKT_SUMMARY,
   VERIFICATION_QUEUE as BLAUPUNKT_QUEUE,
 } from "@/lib/data/blaupunkt";
-import { CARS } from "@/lib/data/cars";
 import { SOURCES } from "@/lib/inventory/sources";
 import { BRANDS, type BrandSlug } from "./brands";
 import { FILE_CATALOG as CATALOG } from "./file-source";
@@ -209,7 +208,8 @@ export const READINESS = {
     mats: MATS.length,
   },
   cars: {
-    listed: CARS.length,
+    // Cars are in the database now (/admin/cars); this report covers the price lists only.
+    listed: 0,
     liveSources: SOURCES.filter((s) => s.status === "LIVE").length,
     blockedSources: SOURCES.filter((s) => s.status === "BLOCKED_NO_LICENCE").length,
   },

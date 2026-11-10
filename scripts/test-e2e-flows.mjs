@@ -613,6 +613,58 @@ await step("reviews: a Riderzpro product review after the order is completed; ra
   assert.ok(why.text.includes("Average rating"), "site stats include the real average rating");
 });
 
+/* ---------------------------------------------------- cars and builds (database) */
+
+const adminUpload = (kind) => admin.expect(201, "POST", "/api/admin/uploads", undefined, { form: upload(kind, PNG, "photo.png", "image/png") });
+
+await step("cars: no sample cars; a draft is private, live is for sale with its photo, sold shows sold", async () => {
+  const shop = await cust.call("GET", "/cars");
+  assert.equal(shop.status, 200);
+  assert.ok(!shop.text.includes("2022-mahindra-thar-lx-4x4-hard-top"), "the old sample cars are gone");
+  const photo = await adminUpload("car_photo");
+  const car = {
+    status: "draft", make: "Mahindra", model: "Thar", variant: `LX ${RUN}`, year: 2022, price: 1575000, km: 32000, fuel: "Diesel", transmission: "Manual",
+    owners: 1, city: "Bengaluru", state: "Karnataka", body: "Off-Roader", engine: "2.2L mHawk", power: null, drivetrain: "4WD", colour: "Red",
+    registration: "KA-03", insurance: null, serviceHistory: "Full dealer history", note: "One owner, never off-roaded hard, all papers in order.",
+    highlights: ["New tyres"], modifications: [], photoIds: [photo.file.id], financing: true, featured: false,
+  };
+  const noPhoto = await admin.call("POST", "/api/admin/cars", { ...car, status: "live", photoIds: [] });
+  assert.equal(noPhoto.status, 400, "live needs a photo");
+  const created = (await admin.expect(201, "POST", "/api/admin/cars", car)).car;
+  assert.equal((await cust.call("GET", `/cars/${created.slug}`)).status, 404, "draft not public");
+  assert.notEqual((await cust.call("GET", `/api/files/${photo.file.id}`)).status, 200, "draft photo not public");
+  await admin.expect(200, "PUT", `/api/admin/cars/${created.id}`, { ...car, status: "live" });
+  await sleep(1100);
+  const page = await cust.call("GET", `/cars/${created.slug}`);
+  assert.equal(page.status, 200);
+  assert.ok(page.text.includes(`LX ${RUN}`), "car page shows it");
+  assert.equal((await cust.call("GET", `/api/files/${photo.file.id}`)).status, 200, "photo public once live");
+  assert.ok((await cust.call("GET", "/cars")).text.includes(created.slug), "listed on /cars");
+  assert.ok(JSON.stringify(await cust.expect(200, "GET", "/search-index.json")).includes(created.slug), "in search");
+  await admin.expect(200, "PUT", `/api/admin/cars/${created.id}`, { ...car, status: "sold" });
+  await sleep(1100);
+  const sold = await cust.call("GET", `/cars/${created.slug}`);
+  assert.ok(sold.text.includes("This car has been sold"), "sold car says so");
+  assert.ok(!(await cust.call("GET", "/cars")).text.includes(created.slug), "not browsable once sold");
+  await admin.expect(200, "PUT", `/api/admin/cars/${created.id}`, { ...car, status: "archived" });
+});
+
+await step("builds: no sample builds; a live build shows with its photo", async () => {
+  const before = await cust.call("GET", "/builds");
+  assert.ok(!before.text.includes("PROJECT DUST"), "the old sample builds are gone");
+  const photo = await adminUpload("build_photo");
+  const build = { status: "live", title: `Trail ${RUN}`, vehicle: "2023 Mahindra Thar", owner: null, city: "Bengaluru", cost: 250000, weeks: 3,
+    brief: "Lift, lights and recovery gear for weekend trails.", tag: "Off-Road", mods: [{ group: "Suspension", items: ["2-inch lift"] }], shop: [HOUSE], photoIds: [photo.file.id] };
+  const created = (await admin.expect(201, "POST", "/api/admin/builds", build)).build;
+  await sleep(200);
+  const page = await cust.call("GET", `/builds/${created.slug}`);
+  assert.equal(page.status, 200);
+  assert.ok(page.text.includes(`Trail ${RUN}`.toUpperCase()) || page.text.includes(`Trail ${RUN}`));
+  assert.ok((await cust.call("GET", "/off-road")).text.includes(created.slug), "off-road page lists it");
+  await admin.expect(200, "PUT", `/api/admin/builds/${created.id}`, { ...build, status: "archived" });
+  assert.equal((await cust.call("GET", `/builds/${created.slug}`)).status, 404, "archived build is gone");
+});
+
 console.log(`\n${passed} passed, ${failures.length} failed`);
 if (failures.length) {
   console.log(failures.map((f) => `  - ${f}`).join("\n"));

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Photo } from "@/components/ui/Photo";
+import { UploadedPhoto } from "@/components/ui/UploadedPhoto";
 import { Icon } from "@/components/ui/Icon";
 import { emiFrom, km as fmtKm, lakh } from "@/lib/format";
 import type { Car } from "@/lib/data/cars";
@@ -8,17 +8,12 @@ export function CarCard({ car, sizes = "(min-width:1024px) 33vw, (min-width:640p
   return (
     <article className="card card-hover flex h-full flex-col">
       <Link href={`/cars/${car.slug}`} data-theme="dark" className="relative block aspect-[4/3] overflow-hidden bg-graphite">
-        <Photo media={car.images[0]} sizes={sizes} className="zoom" />
+        {car.photos[0] && <UploadedPhoto src={car.photos[0]} alt={`${car.year} ${car.brand} ${car.model}`} sizes={sizes} className="zoom" />}
         <div className="absolute inset-0 bg-gradient-to-t from-void/90 via-void/10 to-transparent" />
 
         <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
-          {car.verified && (
-            <span className="verified">
-              <Icon name="shield" size={11} />
-              Verified
-            </span>
-          )}
-          {car.condition === "Modified" && (
+          {car.status === "sold" && <span className="chip border-danger/40 bg-danger/15 text-danger">Sold</span>}
+          {car.modifications.length > 0 && (
             <span className="chip border-gold/40 bg-gold/12 text-gold">Modified</span>
           )}
         </div>
@@ -32,10 +27,8 @@ export function CarCard({ car, sizes = "(min-width:1024px) 33vw, (min-width:640p
               {car.model}
             </h3>
           </div>
-          {car.hasVideo && (
-            <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.12em] text-ash">
-              <Icon name="play" size={11} /> {car.photoCount}
-            </span>
+          {car.photos.length > 1 && (
+            <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-ash">{car.photos.length} photos</span>
           )}
         </div>
       </Link>

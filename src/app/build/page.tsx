@@ -6,7 +6,7 @@ import { SectionHead } from "@/components/ui/Section";
 import { BuildCard } from "@/components/community/Cards";
 import { Icon } from "@/components/ui/Icon";
 import { BUILD_STAGES } from "@/lib/data/configurator";
-import { BUILDS } from "@/lib/data/community";
+import { liveBuilds } from "@/lib/server/builds";
 import { pageMeta } from "@/lib/data/seo";
 
 export const metadata: Metadata = pageMeta({
@@ -16,7 +16,8 @@ export const metadata: Metadata = pageMeta({
   path: "/build",
 });
 
-export default function BuildPage() {
+export default async function BuildPage() {
+  const BUILDS = await liveBuilds();
   return (
     <>
       <PageHero
@@ -92,7 +93,7 @@ export default function BuildPage() {
         </div>
       </section>
 
-      <section className="section border-t border-tint/8 bg-carbon">
+      {BUILDS.length > 0 && <section className="section border-t border-tint/8 bg-carbon">
         <div className="shell">
           <SectionHead
             eyebrow="Finished builds"
@@ -111,7 +112,7 @@ export default function BuildPage() {
             Book a consultation at the garage
           </Link>
         </div>
-      </section>
+      </section>}
     </>
   );
 }

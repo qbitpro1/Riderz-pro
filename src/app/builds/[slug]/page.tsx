@@ -2,21 +2,19 @@ import type { Metadata } from "next";
 import { pageMeta } from "@/lib/data/seo";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Photo } from "@/components/ui/Photo";
 import { Icon } from "@/components/ui/Icon";
 import { Breadcrumbs } from "@/components/layout/PageHero";
 import { SectionHead } from "@/components/ui/Section";
 import { CatalogCard } from "@/components/catalog/CatalogCard";
 import { itemsBySlug } from "@/components/shop/catalogLookup";
 import { BuildCard } from "@/components/community/Cards";
-import { BUILDS, getBuild } from "@/lib/data/community";
+import { liveBuild, liveBuilds } from "@/lib/server/builds";
+import { UploadedPhoto } from "@/components/ui/UploadedPhoto";
 import { rupees } from "@/lib/format";
 import { whatsapp } from "@/lib/data/site";
-import { MEDIA } from "@/lib/media";
 
-export function generateStaticParams() {
-  return BUILDS.map((b) => ({ slug: b.slug }));
-}
+// Builds come from the database (builds, managed in /admin/builds).
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
@@ -24,14 +22,13 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const build = getBuild(slug);
+  const build = await liveBuild(slug);
   if (!build) return {};
   return pageMeta({
     title: `${build.title} — ${build.vehicle} Build`,
-    description: `${build.brief} Full modification list and a build cost of ${rupees(build.cost)}.`,
+    description: `${build.brief} Full modification list${build.cost !== null ? ` and a build cost of ${rupees(build.cost)}` : ""}.`,
     path: `/builds/${build.slug}`,
-    image: MEDIA[build.image].src,
-    imageAlt: MEDIA[build.image].alt,
+    ...(build.photos[0] ? { image: build.photos[0], imageAlt: `${build.title}, ${build.vehicle}` } : {}),
     ogTitle: build.title,
     ogDescription: build.brief,
   });
@@ -39,17 +36,17 @@ export async function generateMetadata({
 
 export default async function BuildDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const build = getBuild(slug);
+  const build = await liveBuild(slug);
   if (!build) notFound();
 
   const shopItems = await itemsBySlug(build.shop);
-  const others = BUILDS.filter((b) => b.slug !== build.slug).slice(0, 3);
+  const others = (await liveBuilds()).filter((b) => b.slug !== build.slug).slice(0, 3);
 
   return (
     <>
       <section data-theme="dark" className="relative min-h-[70svh] overflow-hidden pt-14 md:pt-[68px]">
         <div className="absolute inset-0">
-          <Photo media={build.image} sizes="100vw" priority />
+          {build.photos[0] && <UploadedPhoto src={build.photos[0]} alt={`${build.title}, ${build.vehicle}`} sizes="100vw" priority />}
           <div className="absolute inset-0 scrim" />
         </div>
         <div className="shell relative flex min-h-[calc(70svh-56px)] flex-col justify-end pb-12 pt-16">
@@ -57,10 +54,10 @@ export default async function BuildDetailPage({ params }: { params: Promise<{ sl
           <h1 className="display-1">{build.title}</h1>
           <p className="mt-3 text-base text-ash">{build.vehicle}</p>
           <dl className="mt-8 grid max-w-xl grid-cols-2 gap-x-6 gap-y-4 border-t border-tint/12 pt-6 sm:grid-cols-4">
-            <Stat label="Build cost" value={rupees(build.cost)} />
-            <Stat label="Time in shop" value={`${build.weeks} weeks`} />
-            <Stat label="Owner" value={build.owner} />
-            <Stat label="City" value={build.city} />
+            {build.cost !== null && <Stat label="Build cost" value={rupees(build.cost)} />}
+            {build.weeks !== null && <Stat label="Time in shop" value={`${build.weeks} week${build.weeks === 1 ? "" : "s"}`} />}
+            {build.owner && <Stat label="Owner" value={build.owner} />}
+            {build.city && <Stat label="City" value={build.city} />}
           </dl>
         </div>
       </section>
@@ -99,23 +96,31 @@ export default async function BuildDetailPage({ params }: { params: Promise<{ sl
                 ))}
               </ul>
 
-              <h2 className="display-3 mt-10">GALLERY</h2>
-              <ul className="mt-4 grid grid-cols-2 gap-3">
-                {build.gallery.map((g, i) => (
-                  <li key={`${g}-${i}`} className="relative aspect-[4/3] overflow-hidden bg-graphite">
-                    <Photo media={g} sizes="(min-width:768px) 33vw, 46vw" />
-                  </li>
-                ))}
-              </ul>
+              {build.photos.length > 1 && (
+                <>
+                  <h2 className="display-3 mt-10">GALLERY</h2>
+                  <ul className="mt-4 grid grid-cols-2 gap-3">
+                    {build.photos.slice(1).map((src, i) => (
+                      <li key={src} className="relative aspect-[4/3] overflow-hidden bg-graphite">
+                        <UploadedPhoto src={src} alt={`${build.title}, photo ${i + 2}`} sizes="(min-width:768px) 33vw, 46vw" />
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
             </div>
 
             <aside className="lg:sticky lg:top-24">
               <div className="card p-5">
-                <p className="label mb-1">Total build cost</p>
-                <p className="font-display text-4xl font-extrabold tracking-[-0.04em] tnum">
-                  {rupees(build.cost)}
-                </p>
-                <p className="mt-1 text-xs text-dim">Parts, labour and GST, as invoiced.</p>
+                {build.cost !== null && (
+                  <>
+                    <p className="label mb-1">Total build cost</p>
+                    <p className="font-display text-4xl font-extrabold tracking-[-0.04em] tnum">
+                      {rupees(build.cost)}
+                    </p>
+                    <p className="mt-1 text-xs text-dim">Parts, labour and GST, as invoiced.</p>
+                  </>
+                )}
 
                 <Link href="/build" className="btn btn-accent btn-block mt-5">
                   Build something like this
@@ -151,7 +156,7 @@ export default async function BuildDetailPage({ params }: { params: Promise<{ sl
         </section>
       )}
 
-      <section className="section">
+      {others.length > 0 && <section className="section">
         <div className="shell">
           <SectionHead eyebrow="More builds" title="KEEP SCROLLING." href="/builds" />
           <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -162,7 +167,7 @@ export default async function BuildDetailPage({ params }: { params: Promise<{ sl
             ))}
           </ul>
         </div>
-      </section>
+      </section>}
     </>
   );
 }

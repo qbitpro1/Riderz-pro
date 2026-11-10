@@ -27,7 +27,10 @@ export type FileKind =
   | "doc_hold_reply"
   | "logo"
   | "banner"
-  | "product_image";
+  | "product_image"
+  /** Riderzpro's own car listings and build showcase, uploaded by the team (no vendor). */
+  | "car_photo"
+  | "build_photo";
 
 export const FILE_KINDS: FileKind[] = [
   "doc_pan",
@@ -39,6 +42,8 @@ export const FILE_KINDS: FileKind[] = [
   "logo",
   "banner",
   "product_image",
+  "car_photo",
+  "build_photo",
 ];
 
 export const isDocument = (kind: FileKind) => kind.startsWith("doc_");
@@ -65,7 +70,12 @@ function sniff(b: Uint8Array): string | null {
   return null;
 }
 
-export async function saveFile(vendorId: string, kind: FileKind, file: File): Promise<{ id: string; mime: string; size: number }> {
+/** A photo the team uploads for a car listing or a build (no vendor). Public once its car or build is live. */
+export async function saveAdminPhoto(kind: "car_photo" | "build_photo", file: File): Promise<{ id: string; mime: string; size: number }> {
+  return saveFile(null, kind, file);
+}
+
+export async function saveFile(vendorId: string | null, kind: FileKind, file: File): Promise<{ id: string; mime: string; size: number }> {
   const limit = LIMITS[isDocument(kind) ? "document" : "image"];
   if (file.size === 0) throw new ApiError(400, "empty_file", "That file is empty.");
   if (file.size > limit.bytes) {
@@ -80,7 +90,7 @@ export async function saveFile(vendorId: string, kind: FileKind, file: File): Pr
       isDocument(kind) ? "Upload a PDF, JPG, PNG or WebP file." : "Upload a JPG, PNG or WebP image.",
     );
   }
-  const count = await sqlOne<{ n: string }>("SELECT count(*) AS n FROM files WHERE vendor_id = $1", [vendorId]);
+  const count = vendorId ? await sqlOne<{ n: string }>("SELECT count(*) AS n FROM files WHERE vendor_id = $1", [vendorId]) : null;
   if (Number(count?.n ?? 0) >= MAX_FILES_PER_VENDOR) {
     throw new ApiError(429, "too_many_files", "You have reached the upload limit. Remove unused photos first.");
   }

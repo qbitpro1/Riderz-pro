@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { ldJson, pageMeta } from "@/lib/data/seo";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Photo } from "@/components/ui/Photo";
 import { Icon } from "@/components/ui/Icon";
 import { Breadcrumbs } from "@/components/layout/PageHero";
 import { SectionHead } from "@/components/ui/Section";
@@ -18,14 +17,13 @@ import {
 import { InspectionRequest } from "@/components/inventory/InspectionRequest";
 import { getListing } from "@/lib/inventory/store";
 import { formatIST } from "@/lib/inventory/freshness";
-import { CARS, getCar, relatedCars } from "@/lib/data/cars";
+import { publicCar, relatedCars } from "@/lib/server/cars";
+import { UploadedPhoto } from "@/components/ui/UploadedPhoto";
 import { emiFrom, km as fmtKm, lakh } from "@/lib/format";
 import { SITE, TRUST_POINTS, whatsapp } from "@/lib/data/site";
-import { MEDIA } from "@/lib/media";
 
-export function generateStaticParams() {
-  return CARS.map((c) => ({ slug: c.slug }));
-}
+// Cars come from the database (car_listings, managed in /admin/cars).
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
@@ -33,15 +31,14 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const car = getCar(slug);
+  const car = await publicCar(slug);
   if (!car) return {};
   const title = `${car.year} ${car.brand} ${car.model} ${car.variant} — ${lakh(car.price)}`;
   return pageMeta({
     title,
-    description: `${car.note} ${fmtKm(car.km)}, ${car.fuel}, ${car.transmission}, ${car.owner}, ${car.city}. Riderzpro Certified with a 200-point inspection report.`,
+    description: `${car.note} ${fmtKm(car.km)}, ${car.fuel}, ${car.transmission}, ${car.owner}, ${car.city}.`,
     path: `/cars/${car.slug}`,
-    image: MEDIA[car.images[0]].src,
-    imageAlt: MEDIA[car.images[0]].alt,
+    ...(car.photos[0] ? { image: car.photos[0], imageAlt: `${car.year} ${car.brand} ${car.model} ${car.variant}` } : {}),
     ogDescription: car.note,
   });
 }
@@ -67,11 +64,17 @@ const FAQ = [
 
 export default async function CarDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const car = getCar(slug);
+  const car = await publicCar(slug);
   if (!car) notFound();
 
-  const related = relatedCars(car);
-  const listing = getListing(slug);
+  const [related, listing] = await Promise.all([relatedCars(car), getListing(slug)]);
+  const sold = car.status === "sold";
+  const paperwork = [
+    ["Insurance", car.insurance],
+    ["Registration", car.registration],
+    ["Service history", car.serviceHistory],
+    ["Colour", car.colour],
+  ].filter((p): p is [string, string] => Boolean(p[1]));
   const waMessage = `Hi Riderzpro, I'm interested in the ${car.year} ${car.brand} ${car.model} ${car.variant} (${lakh(car.price)}) listed on your website.`;
 
   const schema = {
@@ -85,12 +88,12 @@ export default async function CarDetailPage({ params }: { params: Promise<{ slug
     fuelType: car.fuel,
     vehicleTransmission: car.transmission,
     driveWheelConfiguration: car.drivetrain,
-    numberOfPreviousOwners: car.owner.startsWith("1") ? 1 : 2,
+    numberOfPreviousOwners: car.owners,
     offers: {
       "@type": "Offer",
       price: car.price,
       priceCurrency: "INR",
-      availability: "https://schema.org/InStock",
+      availability: sold ? "https://schema.org/SoldOut" : "https://schema.org/InStock",
       seller: { "@type": "AutoDealer", name: SITE.name },
     },
   };
@@ -103,23 +106,22 @@ export default async function CarDetailPage({ params }: { params: Promise<{ slug
       <section className="relative pt-14 md:pt-[68px]">
         <div className="grid gap-1 md:grid-cols-4 md:grid-rows-2">
           <div data-theme="dark" className="relative col-span-2 row-span-2 aspect-[4/3] bg-graphite md:aspect-auto md:min-h-[62vh]">
-            <Photo media={car.images[0]} sizes="(min-width:768px) 50vw, 100vw" priority />
+            {car.photos[0] && <UploadedPhoto src={car.photos[0]} alt={`${car.year} ${car.brand} ${car.model} ${car.variant}`} sizes="(min-width:768px) 50vw, 100vw" priority />}
             <div className="absolute inset-0 bg-gradient-to-t from-void/70 to-transparent md:from-void/40" />
             <div className="absolute bottom-4 left-4 flex flex-wrap gap-2">
-              {car.verified && (
+              {listing?.verification === "RIDERZPRO_VERIFIED" && (
                 <span className="verified">
                   <Icon name="shield" size={12} />
                   Riderzpro Verified
                 </span>
               )}
-              <span className="chip bg-void/70">{car.photoCount} photos</span>
-              {car.hasVideo && <span className="chip bg-void/70">Video walkaround</span>}
-              {car.has360 && <span className="chip bg-void/70">360° gallery</span>}
+              {sold && <span className="chip border-danger/40 bg-danger/20 text-danger">Sold</span>}
+              {car.photos.length > 1 && <span className="chip bg-void/70">{car.photos.length} photos</span>}
             </div>
           </div>
-          {car.images.slice(1, 5).map((m, i) => (
-            <div key={`${m}-${i}`} className="relative hidden aspect-[4/3] bg-graphite md:block">
-              <Photo media={m} sizes="25vw" />
+          {car.photos.slice(1, 5).map((src, i) => (
+            <div key={src} className="relative hidden aspect-[4/3] bg-graphite md:block">
+              <UploadedPhoto src={src} alt={`${car.year} ${car.brand} ${car.model}, photo ${i + 2}`} sizes="25vw" />
             </div>
           ))}
         </div>
@@ -158,13 +160,13 @@ export default async function CarDetailPage({ params }: { params: Promise<{ slug
               <Spec label="Fuel" value={car.fuel} />
               <Spec label="Transmission" value={car.transmission} />
               <Spec label="Ownership" value={car.owner} />
-              <Spec label="Engine" value={car.engine} />
-              <Spec label="Power" value={car.power} />
+              {car.engine && <Spec label="Engine" value={car.engine} />}
+              {car.power && <Spec label="Power" value={car.power} />}
               <Spec label="Drivetrain" value={car.drivetrain} />
               <Spec label="Location" value={`${car.city}, ${car.state}`} />
             </dl>
 
-            <div className="mt-8">
+            {car.highlights.length > 0 && <div className="mt-8">
               <h2 className="display-3">HIGHLIGHTS</h2>
               <ul className="mt-4 grid gap-2.5 sm:grid-cols-2">
                 {car.highlights.map((h) => (
@@ -174,9 +176,9 @@ export default async function CarDetailPage({ params }: { params: Promise<{ slug
                   </li>
                 ))}
               </ul>
-            </div>
+            </div>}
 
-            {car.modifications && (
+            {car.modifications.length > 0 && (
               <div className="mt-10">
                 <h2 className="display-3">MODIFICATIONS</h2>
                 <p className="mt-2 text-sm text-ash">
@@ -196,30 +198,17 @@ export default async function CarDetailPage({ params }: { params: Promise<{ slug
               </div>
             )}
 
-            <div className={`mt-10 ${listing && listing.verification !== "RIDERZPRO_VERIFIED" ? "hidden" : ""}`}>
-              <h2 className="display-3">INSPECTION REPORT</h2>
-              <div className="card mt-4 p-5">
-                <div className="flex flex-wrap items-center gap-5">
-                  <div>
-                    <p className="label mb-1">Overall score</p>
-                    <p className="font-display text-4xl font-extrabold text-accent tnum">
-                      {car.inspectionScore}
-                      <span className="text-lg text-dim">/100</span>
-                    </p>
-                  </div>
-                  <div className="h-12 w-px bg-tint/10" />
-                  <ul className="grid flex-1 gap-1.5 text-sm text-ash sm:grid-cols-2">
-                    <li>Insurance — {car.insurance}</li>
-                    <li>Registration — {car.registration}</li>
-                    <li className="sm:col-span-2">Service history — {car.serviceHistory}</li>
-                  </ul>
-                </div>
-                <p className="mt-4 border-t border-tint/8 pt-4 text-xs text-dim">
-                  The full 200-point report, paint thickness readings and OBD scan are shared over
-                  WhatsApp before any payment. Ask for it — we send it to everyone who asks.
-                </p>
+            {paperwork.length > 0 && (
+              <div className="mt-10">
+                <h2 className="display-3">PAPERWORK</h2>
+                <p className="mt-2 text-sm text-ash">As recorded when the car came in. Ask us for copies before you pay.</p>
+                <ul className="card mt-4 grid gap-1.5 p-5 text-sm text-ash sm:grid-cols-2">
+                  {paperwork.map(([label, value]) => (
+                    <li key={label}>{label} — {value}</li>
+                  ))}
+                </ul>
               </div>
-            </div>
+            )}
 
             {/* Only a completed inspection lets us call these "cleared". Until
                 then this is the checklist we will run, not a claim about this car. */}
@@ -282,6 +271,7 @@ export default async function CarDetailPage({ params }: { params: Promise<{ slug
               <p className="font-display text-4xl font-extrabold tracking-[-0.04em] tnum">
                 {lakh(car.price)}
               </p>
+              {sold && <p className="mt-1 text-sm font-bold text-danger">This car has been sold. Ask us about similar cars.</p>}
               {car.financing && (
                 <p className="mt-1.5 text-sm text-ash tnum">
                   EMI from <span className="text-accent">{emiFrom(car.price)}</span> · finance available

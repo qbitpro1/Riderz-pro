@@ -1,8 +1,8 @@
 import type { MetadataRoute } from "next";
 import { SITE } from "@/lib/data/site";
-import { CARS } from "@/lib/data/cars";
+import { publicCars } from "@/lib/server/cars";
 import { CATEGORIES } from "@/lib/data/products";
-import { BUILDS } from "@/lib/data/community";
+import { liveBuilds } from "@/lib/server/builds";
 import { LANDING_MODELS } from "@/lib/data/vehicles";
 import { SEO_LANDINGS } from "@/lib/data/seo";
 import { LEGAL_POLICIES, SUPPORT_POLICIES } from "@/lib/data/policies";
@@ -24,6 +24,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const snap = await catalogSnapshot().catch(() => null);
   const CATALOG = snap?.items ?? [];
   const PRODUCT_DETAILS = snap ? [...snap.details.values()] : [];
+  const [CARS, BUILDS] = await Promise.all([publicCars(), liveBuilds()]);
   const url = (path: string) => `${SITE.url}${path}`;
 
   const entry = (
@@ -78,7 +79,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...PRODUCT_DETAILS.filter((d) => d.indexable).map((d) => entry(productHref(d.slug), 0.65)),
     ...CATEGORIES.map((c) => entry(`/shop/${c.slug}`, 0.8)),
     ...LANDING_MODELS.map((m) => entry(`/accessories/${m.slug}`, 0.8)),
-    ...CARS.map((c) => entry(`/cars/${c.slug}`, 0.7, "daily")),
+    ...CARS.filter((c) => c.status === "live").map((c) => entry(`/cars/${c.slug}`, 0.7, "daily")),
     ...BUILDS.map((b) => entry(`/builds/${b.slug}`, 0.6)),
     ...market.map((m) => ({
       url: url(m.path),

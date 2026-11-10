@@ -10,7 +10,7 @@ import { BuildCard } from "@/components/community/Cards";
 import { Accordion } from "@/components/ui/Accordion";
 import { OFFROAD_GROUPS } from "@/lib/data/services";
 import { catalogFor } from "@/lib/server/catalog";
-import { BUILDS } from "@/lib/data/community";
+import { liveBuilds } from "@/lib/server/builds";
 import { rupees } from "@/lib/format";
 import { whatsapp } from "@/lib/data/site";
 import { pageMeta } from "@/lib/data/seo";
@@ -55,7 +55,7 @@ const FAQ = [
 
 export default async function OffRoadPage() {
   const offroadProducts = (await catalogFor("riderzpro")).filter((i) => i.category === "off-roading");
-  const offroadBuilds = BUILDS.filter((b) => b.tag === "Off-Road");
+  const offroadBuilds = (await liveBuilds()).filter((b) => b.tag === "Off-Road");
 
   return (
     <>
@@ -133,8 +133,8 @@ export default async function OffRoadPage() {
         </div>
       </section>
 
-      {/* builds ---------------------------------------------------- */}
-      <section className="section">
+      {/* builds (live ones from the database) ------------------------- */}
+      {offroadBuilds.length > 0 && <section className="section">
         <div className="shell">
           <SectionHead eyebrow="Finished rigs" title="BUILT AND PROVEN." href="/builds" hrefLabel="All builds" />
           <ul className="grid gap-4 md:grid-cols-2">
@@ -145,7 +145,7 @@ export default async function OffRoadPage() {
             ))}
           </ul>
         </div>
-      </section>
+      </section>}
 
       <section className="section border-t border-tint/8 bg-carbon">
         <div className="shell grid gap-8 lg:grid-cols-2 lg:items-start">

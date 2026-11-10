@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
-import { SNAPSHOT } from "@/lib/inventory/store";
+import { inventorySnapshot } from "@/lib/inventory/store";
 import { SOURCES, getSource } from "@/lib/inventory/sources";
 import { formatIST, priceChange, refreshPriority } from "@/lib/inventory/freshness";
 import { ACTIVE_DEALERS, DEALERS } from "@/lib/inventory/dealers";
@@ -19,6 +19,7 @@ export const metadata: Metadata = {
 
 export default async function InventoryAdminPage() {
   await adminPage("catalog", "/admin/inventory");
+  const SNAPSHOT = await inventorySnapshot();
   const { totals, listings, importLog } = SNAPSHOT;
   // eslint-disable-next-line react-hooks/purity -- a Server Component, rendered per request
   const now = Date.now();

@@ -6,7 +6,7 @@ import { SectionHead } from "@/components/ui/Section";
 import { Icon } from "@/components/ui/Icon";
 import { toCardData } from "@/lib/inventory/card-data";
 import { BUCKET_LABEL, bucketFor, formatIST, type Bucket } from "@/lib/inventory/freshness";
-import { latestFirst, SNAPSHOT } from "@/lib/inventory/store";
+import { browsable, inventorySnapshot, latestFirst } from "@/lib/inventory/store";
 import { LIVE_SOURCES } from "@/lib/inventory/sources";
 import { whatsapp } from "@/lib/data/site";
 import { pageMeta } from "@/lib/data/seo";
@@ -23,8 +23,11 @@ const ORDER: Bucket[] = ["today", "yesterday", "this-week", "older"];
 // "Today" / "yesterday" are relative to now: rebuild the page hourly so they don't freeze at build time.
 export const revalidate = 3600;
 
-export default function LatestCarsPage() {
-  const listings = latestFirst();
+export const dynamic = "force-dynamic";
+
+export default async function LatestCarsPage() {
+  const [SNAPSHOT, all] = await Promise.all([inventorySnapshot(), browsable()]);
+  const listings = latestFirst(all);
   // eslint-disable-next-line react-hooks/purity -- a Server Component, rendered once per revalidation
   const now = Date.now();
 

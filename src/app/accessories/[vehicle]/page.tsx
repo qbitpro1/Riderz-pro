@@ -10,7 +10,7 @@ import { LANDING_MODELS, findModelBySlug } from "@/lib/data/vehicles";
 import { EMPTY_FILTERS, sortItems } from "@/lib/catalog";
 import { itemsForModel } from "@/lib/server/catalog";
 import { FACELIFT_CONVERSIONS } from "@/lib/data/services";
-import { CARS } from "@/lib/data/cars";
+import { publicCars } from "@/lib/server/cars";
 import { CarCard } from "@/components/cars/CarCard";
 import { whatsapp } from "@/lib/data/site";
 import { rupees } from "@/lib/format";
@@ -77,7 +77,7 @@ export default async function VehicleAccessoriesPage({
 
   const products = await itemsForModel(model.slug);
   const facelift = FACELIFT_CONVERSIONS.filter((f) => f.modelSlug === model.slug);
-  const listings = CARS.filter((c) => c.model === model.name).slice(0, 3);
+  const listings = (await publicCars()).filter((c) => c.status === "live" && c.model.toLowerCase() === model.name.toLowerCase()).slice(0, 3);
 
   const recommended = [
     "Floor mats and interior protection",

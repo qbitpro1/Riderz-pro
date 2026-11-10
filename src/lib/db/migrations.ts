@@ -1111,4 +1111,80 @@ CREATE INDEX reviews_product_idx ON reviews (product_slug) WHERE status = 'appro
 CREATE UNIQUE INDEX reviews_one_per_order_product ON reviews (order_id, COALESCE(product_slug, '')) WHERE order_id IS NOT NULL;
 `,
   },
+  {
+    // Riderzpro's own cars for sale (src/lib/server/cars.ts) and the build showcase (builds.ts), both
+    // added and edited by the team in /admin/cars and /admin/builds. Photos are uploaded files of kind
+    // car_photo / build_photo with no vendor (public once the car or build is live).
+    id: "022_car_listings_builds",
+    sql: `
+CREATE TABLE car_listings (
+  id              text PRIMARY KEY,
+  slug            text NOT NULL UNIQUE,
+  status          text NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','live','sold','archived')),
+  make            text NOT NULL,
+  model           text NOT NULL,
+  variant         text NOT NULL,
+  year            integer NOT NULL CHECK (year BETWEEN 1980 AND 2100),
+  price           integer NOT NULL CHECK (price > 0),
+  km              integer NOT NULL CHECK (km >= 0),
+  fuel            text NOT NULL,
+  transmission    text NOT NULL,
+  owners          integer NOT NULL CHECK (owners BETWEEN 1 AND 9),
+  city            text NOT NULL,
+  state           text NOT NULL,
+  body_type       text NOT NULL,
+  engine          text,
+  power           text,
+  drivetrain      text NOT NULL,
+  colour          text,
+  registration    text,
+  insurance       text,
+  service_history text,
+  note            text NOT NULL,
+  highlights      jsonb NOT NULL DEFAULT '[]'::jsonb,
+  modifications   jsonb NOT NULL DEFAULT '[]'::jsonb,
+  photos          text[] NOT NULL DEFAULT '{}',
+  financing       boolean NOT NULL DEFAULT true,
+  featured        boolean NOT NULL DEFAULT false,
+  created_by      text NOT NULL,
+  created_at      timestamptz NOT NULL DEFAULT now(),
+  updated_at      timestamptz NOT NULL DEFAULT now(),
+  sold_at         timestamptz
+);
+CREATE INDEX car_listings_status_idx ON car_listings (status, created_at DESC);
+
+CREATE TABLE builds (
+  id          text PRIMARY KEY,
+  slug        text NOT NULL UNIQUE,
+  status      text NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','live','archived')),
+  title       text NOT NULL,
+  vehicle     text NOT NULL,
+  owner       text,
+  city        text,
+  cost        integer CHECK (cost IS NULL OR cost >= 0),
+  weeks       integer CHECK (weeks IS NULL OR weeks >= 0),
+  brief       text NOT NULL,
+  tag         text NOT NULL CHECK (tag IN ('Off-Road','Street','Audio','Luxury','Performance')),
+  mods        jsonb NOT NULL DEFAULT '[]'::jsonb,
+  shop        text[] NOT NULL DEFAULT '{}',
+  photos      text[] NOT NULL DEFAULT '{}',
+  created_by  text NOT NULL,
+  created_at  timestamptz NOT NULL DEFAULT now(),
+  updated_at  timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX builds_status_idx ON builds (status, created_at DESC);
+
+DO $$
+DECLARE c text;
+BEGIN
+  FOR c IN SELECT conname FROM pg_constraint
+            WHERE conrelid = 'files'::regclass AND contype = 'c' AND pg_get_constraintdef(oid) LIKE '%kind%'
+  LOOP
+    EXECUTE 'ALTER TABLE files DROP CONSTRAINT ' || quote_ident(c);
+  END LOOP;
+END $$;
+ALTER TABLE files ADD CONSTRAINT files_kind_check
+  CHECK (kind IN ('doc_pan','doc_gst','doc_cheque','doc_trade_license','doc_brand_auth','doc_hold_reply','logo','banner','product_image','car_photo','build_photo'));
+`,
+  },
 ];

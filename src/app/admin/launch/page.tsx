@@ -4,6 +4,7 @@ import { Icon } from "@/components/ui/Icon";
 import { BLOCKERS, READINESS, type Blocker } from "@/lib/catalog/readiness";
 import { SOURCES } from "@/lib/inventory/sources";
 import { adminPage } from "@/lib/server/admin-auth";
+import { publicCars } from "@/lib/server/cars";
 
 export const metadata: Metadata = {
   title: "Launch Readiness",
@@ -19,6 +20,7 @@ const OWNER_TONE: Record<Blocker["owner"], string> = {
 
 export default async function LaunchReadinessPage() {
   await adminPage("catalog", "/admin/launch");
+  const carsListed = (await publicCars()).filter((c) => c.status === "live").length;
   return (
     <section className="section pt-24 md:pt-32">
       <div className="shell">
@@ -36,7 +38,7 @@ export default async function LaunchReadinessPage() {
             { label: "Live products", value: READINESS.live.total },
             { label: "Held back", value: READINESS.heldBack },
             { label: "RECOIL coming soon", value: READINESS.recoil.comingSoon },
-            { label: "Cars listed", value: READINESS.cars.listed },
+            { label: "Cars listed", value: carsListed },
           ].map((s) => (
             <li key={s.label} className="card p-4">
               <p className="font-display text-2xl font-extrabold tnum">{s.value}</p>
@@ -122,7 +124,7 @@ export default async function LaunchReadinessPage() {
         {/* cars ---------------------------------------------------- */}
         <h2 className="display-2 mt-16">CARS.</h2>
         <p className="mt-3 max-w-2xl text-sm leading-relaxed text-ash">
-          {READINESS.cars.listed} listings, {READINESS.cars.liveSources} permitted sources and{" "}
+          {carsListed} listings, {READINESS.cars.liveSources} permitted sources and{" "}
           {READINESS.cars.blockedSources} sources blocked for want of a licence. Listings only ever
           arrive through a source the registry permits — there is no path that adds cars without one.
         </p>
