@@ -514,6 +514,59 @@ await step("customer: GST invoice for the delivered order", async () => {
   assert.ok(/invoice/i.test(inv.text) && inv.text.includes(ctx.orderNumber));
 });
 
+/* ------------------------------------------------------ catalogue (database) */
+
+const HOUSE = "nappa-leather-steering-cover";
+// Each catalogue order uses its own mobile (orders are limited to 5 per mobile per hour).
+let houseSeq = 10;
+const houseOrder = (qty) => cust.call("POST", "/api/orders", {
+  customer: { name: "Test Customer", mobile: mobile(houseSeq++), address: "12 MG Road, Indiranagar", city: "Bengaluru", state: "Karnataka", pincode: "560038" },
+  lines: [{ id: HOUSE, qty, install: false }], paymentMethod: "whatsapp",
+});
+
+await step("catalogue: products come from the database; admin price change shows on the site", async () => {
+  const list = await admin.expect(200, "GET", `/api/admin/products?q=${HOUSE}`);
+  const row = list.rows.find((r) => r.slug === HOUSE);
+  assert.ok(row, "house product is a database row");
+  ctx.house = row;
+  const price = 777 + (Number(RUN) % 100);
+  await admin.expect(200, "PUT", `/api/admin/products/${HOUSE}`, { price, mrp: row.mrp, stock: 2, status: "live" });
+  const page = await cust.call("GET", `/products/${HOUSE}`);
+  assert.ok(page.text.includes(`₹${price}`) || page.text.includes(String(price)), "product page shows the new price");
+  const search = await cust.expect(200, "GET", "/search-index.json");
+  assert.ok(JSON.stringify(search).includes(String(price)), "search shows the new price");
+  ctx.housePrice = price;
+});
+
+await step("catalogue: orders take counted stock; sold out is refused; a cancel puts it back", async () => {
+  const r = await houseOrder(2);
+  assert.equal(r.status, 201, r.text.slice(0, 200));
+  assert.equal(r.json.order.total, ctx.housePrice * 2 + (ctx.housePrice * 2 >= 2000 ? 0 : 149), "server priced it from the database");
+  let row = (await admin.expect(200, "GET", `/api/admin/products?q=${HOUSE}`)).rows[0];
+  assert.equal(row.stock, 0, "2 − 2 = 0");
+  const page = await cust.call("GET", `/products/${HOUSE}`);
+  assert.ok(page.text.includes("Out of stock"), "product page says out of stock");
+  const more = await houseOrder(1);
+  assert.equal(more.status, 400, "can't order a sold-out product");
+  const orders = await admin.expect(200, "GET", `/api/admin/orders?q=${r.json.order.number}`);
+  const o = (orders.orders ?? orders.items).find((x) => x.number === r.json.order.number);
+  await admin.expect(200, "POST", `/api/admin/orders/${o.id}/order-status`, { to: "cancelled" });
+  row = (await admin.expect(200, "GET", `/api/admin/products?q=${HOUSE}`)).rows[0];
+  assert.equal(row.stock, 2, "cancelled order's stock is back");
+});
+
+await step("catalogue: hidden products leave the shop and their page; restored afterwards", async () => {
+  await admin.expect(200, "PUT", `/api/admin/products/${HOUSE}`, { price: ctx.house.price, mrp: ctx.house.mrp, stock: ctx.house.stock, status: "hidden" });
+  assert.equal((await cust.call("GET", `/products/${HOUSE}`)).status, 404);
+  const search = await cust.expect(200, "GET", "/search-index.json");
+  assert.ok(!JSON.stringify(search).includes(`/products/${HOUSE}"`), "not in search");
+  assert.equal((await houseOrder(1)).status, 400, "can't be ordered");
+  await admin.expect(200, "PUT", `/api/admin/products/${HOUSE}`, { price: ctx.house.price, mrp: ctx.house.mrp, stock: ctx.house.stock, status: "live" });
+  assert.equal((await cust.call("GET", `/products/${HOUSE}`)).status, 200);
+  const bad = await admin.call("PUT", `/api/admin/products/${HOUSE}`, { price: 5000, mrp: 100, stock: null, status: "live" });
+  assert.equal(bad.status, 400, "price above MRP refused");
+});
+
 console.log(`\n${passed} passed, ${failures.length} failed`);
 if (failures.length) {
   console.log(failures.map((f) => `  - ${f}`).join("\n"));

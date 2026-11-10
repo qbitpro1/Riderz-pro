@@ -8,7 +8,8 @@ import { CatalogCard } from "@/components/catalog/CatalogCard";
 import { itemsBySlug } from "@/components/shop/catalogLookup";
 import { BrandShopBar } from "@/components/catalog/BrandShopBar";
 import { CatalogBrowser } from "@/components/catalog/CatalogBrowser";
-import { catalogFor, filtersFromQuery, type CatalogQuery } from "@/lib/catalog";
+import { filtersFromQuery, type CatalogQuery } from "@/lib/catalog";
+import { catalogFor } from "@/lib/server/catalog";
 import {
   CATALOG_SUMMARY,
   CATEGORIES,
@@ -31,8 +32,8 @@ export default async function RecoilPage({ searchParams }: { searchParams: Promi
   const filters = { ...filtersFromQuery(query), brands: ["recoil" as const] };
   const audio = CATEGORIES.filter((c) => c.group === "CAR AUDIO");
   const install = CATEGORIES.filter((c) => c.group === "INSTALLATION");
-  const featured = itemsBySlug(FEATURED.map((p) => p.slug));
-  const comingSoon = itemsBySlug(COMING_SOON.slice(0, 12).map((p) => p.slug));
+  const featured = await itemsBySlug(FEATURED.map((p) => p.slug));
+  const comingSoon = await itemsBySlug(COMING_SOON.slice(0, 12).map((p) => p.slug));
 
   return (
     <>
@@ -130,7 +131,7 @@ export default async function RecoilPage({ searchParams }: { searchParams: Promi
       <section className="section border-t border-tint/8" id="range">
         <div className="shell">
           <SectionHead eyebrow="Every model" title="FILTER THE WHOLE RANGE." blurb="The same catalogue as the rest of the shop, locked to RECOIL." />
-          <CatalogBrowser items={catalogFor("recoil")} initial={filters} locked={["brands"]} showBrandOnCards={false} />
+          <CatalogBrowser items={await catalogFor("recoil")} initial={filters} locked={["brands"]} showBrandOnCards={false} />
         </div>
       </section>
 

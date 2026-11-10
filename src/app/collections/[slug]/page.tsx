@@ -3,15 +3,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PageHero, Breadcrumbs } from "@/components/layout/PageHero";
 import { CatalogBrowser } from "@/components/catalog/CatalogBrowser";
-import { CATALOG, filtersFromQuery, sortItems, type CatalogQuery } from "@/lib/catalog";
+import { filtersFromQuery, sortItems, type CatalogQuery } from "@/lib/catalog";
+import { getCatalog } from "@/lib/server/catalog";
 import { COLLECTIONS, COLLECTION_BY_SLUG } from "@/lib/data/collections";
 import { breadcrumbLd, itemListLd, ldJson, pageMeta } from "@/lib/data/seo";
 
-const LIVE = COLLECTIONS.filter((c) => CATALOG.some(c.match));
-
-export function generateStaticParams() {
-  return LIVE.map((c) => ({ slug: c.slug }));
-}
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -34,7 +30,9 @@ export default async function CollectionPage({
   const { slug } = await params;
   const c = COLLECTION_BY_SLUG[slug];
   if (!c) notFound();
-  const items = CATALOG.filter(c.match);
+  const catalog = await getCatalog();
+  const LIVE = COLLECTIONS.filter((x) => catalog.some(x.match));
+  const items = catalog.filter(c.match);
   if (items.length === 0) notFound();
 
   const query = await searchParams;

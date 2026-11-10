@@ -6,10 +6,9 @@ import { Photo } from "@/components/ui/Photo";
 import { Reveal } from "@/components/ui/Reveal";
 import { Accordion } from "@/components/ui/Accordion";
 import { CatalogCard } from "@/components/catalog/CatalogCard";
-import { itemsBySlug } from "@/components/shop/catalogLookup";
 import { PERFORMANCE_DISCLAIMER, PERFORMANCE_SERVICES } from "@/lib/data/services";
-import { PRODUCTS } from "@/lib/data/products";
-import { groupHref, placeSub } from "@/lib/data/taxonomy";
+import { catalogFor } from "@/lib/server/catalog";
+import { groupHref } from "@/lib/data/taxonomy";
 import { rupees } from "@/lib/format";
 import { whatsapp } from "@/lib/data/site";
 import { pageMeta } from "@/lib/data/seo";
@@ -40,10 +39,8 @@ const FAQ = [
   },
 ];
 
-export default function PerformancePage() {
-  const perfProducts = itemsBySlug(
-    PRODUCTS.filter((p) => placeSub(p.sub).group === "performance").map((p) => p.slug),
-  );
+export default async function PerformancePage() {
+  const perfProducts = (await catalogFor("riderzpro")).filter((i) => i.group === "performance");
 
   return (
     <>

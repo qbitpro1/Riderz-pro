@@ -80,7 +80,7 @@ export async function POST(req: Request) {
     seen.add(canonical);
     // Buyability is judged from the catalogue before Shopify config is consulted,
     // so a bad cart gets the same 400 whether or not checkout is switched on.
-    const buyable = checkBuyable(canonical);
+    const buyable = await checkBuyable(canonical);
     if (!buyable.ok) return bad(buyable.reason);
     lines.push({ id: canonical, qty });
   }

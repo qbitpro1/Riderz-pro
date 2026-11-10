@@ -1058,4 +1058,57 @@ ALTER TABLE files ADD CONSTRAINT files_kind_check
   CHECK (kind IN ('doc_pan','doc_gst','doc_cheque','doc_trade_license','doc_brand_auth','doc_hold_reply','logo','banner','product_image'));
 `,
   },
+  {
+    // The product catalogue (Riderzpro's own range, RECOIL, Autoform, Blaupunkt) lives here; the brand
+    // price lists in the repo are only the import source (src/lib/server/catalog.ts imports any product
+    // not here yet). price, mrp, stock and status are the admin's to change (/admin/products) and are
+    // never overwritten by an import. stock NULL = not counted (made to order / supplier stock);
+    // a number goes down with each order and back up when the order is cancelled.
+    id: "020_catalog_products",
+    sql: `
+CREATE TABLE catalog_products (
+  slug        text PRIMARY KEY,
+  item_id     text UNIQUE,
+  brand       text NOT NULL,
+  status      text NOT NULL DEFAULT 'live' CHECK (status IN ('live','hidden')),
+  item        jsonb,
+  detail      jsonb NOT NULL,
+  price       integer CHECK (price IS NULL OR price >= 0),
+  mrp         integer CHECK (mrp IS NULL OR mrp >= 0),
+  stock       integer CHECK (stock IS NULL OR stock >= 0),
+  sort        integer NOT NULL,
+  imported_at timestamptz NOT NULL DEFAULT now(),
+  updated_at  timestamptz NOT NULL DEFAULT now(),
+  updated_by  text
+);
+CREATE INDEX catalog_products_brand_idx ON catalog_products (brand, sort);
+`,
+  },
+  {
+    // Customer reviews (src/lib/server/reviews.ts). A signed-in customer reviews a product from an
+    // order that was delivered or completed, or the service in general; nothing shows until an admin
+    // approves it. Product star ratings and the site's average rating are worked out from approved rows.
+    id: "021_reviews",
+    sql: `
+CREATE TABLE reviews (
+  id           text PRIMARY KEY,
+  customer_id  text REFERENCES customers(id) ON DELETE SET NULL,
+  order_id     text REFERENCES orders(id) ON DELETE SET NULL,
+  product_slug text,
+  name         text NOT NULL,
+  city         text,
+  vehicle      text,
+  title        text,
+  rating       integer NOT NULL CHECK (rating BETWEEN 1 AND 5),
+  body         text NOT NULL,
+  status       text NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','approved','rejected')),
+  decided_by   text,
+  decided_at   timestamptz,
+  created_at   timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX reviews_status_idx ON reviews (status, created_at DESC);
+CREATE INDEX reviews_product_idx ON reviews (product_slug) WHERE status = 'approved';
+CREATE UNIQUE INDEX reviews_one_per_order_product ON reviews (order_id, COALESCE(product_slug, '')) WHERE order_id IS NOT NULL;
+`,
+  },
 ];

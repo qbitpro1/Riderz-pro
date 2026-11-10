@@ -10,7 +10,8 @@ import { BrandStrip } from "@/components/catalog/BrandStrip";
 import { FitmentPicker } from "@/components/fitment/FitmentPicker";
 import { CATEGORIES, PRICE_BANDS } from "@/lib/data/products";
 import { DEPARTMENT_BY_SLUG } from "@/lib/data/taxonomy";
-import { CATALOG, CATALOG_TOTALS, filtersFromQuery, type CatalogQuery } from "@/lib/catalog";
+import { filtersFromQuery, type CatalogQuery } from "@/lib/catalog";
+import { catalogSnapshot } from "@/lib/server/catalog";
 import { LANDING_MODELS } from "@/lib/data/vehicles";
 import { breadcrumbLd, itemListLd, ldJson, pageMeta } from "@/lib/data/seo";
 import { liveVendorItems } from "@/lib/server/marketplace";
@@ -25,6 +26,7 @@ export const metadata: Metadata = pageMeta({
 export default async function ShopPage({ searchParams }: { searchParams: Promise<CatalogQuery> }) {
   const filters = filtersFromQuery(await searchParams);
   // Approved sellers' live products follow the house range; empty when there is no database.
+  const { items: CATALOG, totals: CATALOG_TOTALS } = await catalogSnapshot();
   const items = [...CATALOG, ...(await liveVendorItems())];
 
   return (

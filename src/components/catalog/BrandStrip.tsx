@@ -2,14 +2,16 @@ import Link from "next/link";
 import { Photo } from "@/components/ui/Photo";
 import { Icon } from "@/components/ui/Icon";
 import { Reveal } from "@/components/ui/Reveal";
-import { BRANDS, CATALOG_BY_BRAND } from "@/lib/catalog";
+import { BRANDS } from "@/lib/catalog";
+import { catalogSnapshot } from "@/lib/server/catalog";
 
 /**
  * "Shop by brand." Every brand card leads to its own brand page; the brands
  * that also run a standalone store carry a second link straight into it, so
  * neither route is hidden behind the other.
  */
-export function BrandStrip({ exclude = [] as string[] }) {
+export async function BrandStrip({ exclude = [] as string[] }) {
+  const { byBrand: CATALOG_BY_BRAND } = await catalogSnapshot();
   const brands = BRANDS.filter((b) => !exclude.includes(b.slug));
 
   return (

@@ -4,7 +4,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { z } from "zod";
 import { sql, sqlOne } from "@/lib/db/client";
-import { PRODUCT_DETAILS } from "@/lib/store/products";
+import { productDetails } from "./catalog";
 import type { ProductDetail } from "@/lib/store/types";
 import { DEFAULT_COMMISSION_RATE, type VendorOnboarding } from "@/lib/vendor/types";
 import { emailSchema, mobileSchema } from "@/lib/vendor/validators";
@@ -54,7 +54,8 @@ export const demoStoreSchema = z.object({
 type Pick = { detail: ProductDetail; department: "interior" | "multimedia"; group: string };
 
 /** Seat covers and speakers with a fixed price and a real product photo. */
-function demoProducts(): Pick[] {
+async function demoProducts(): Promise<Pick[]> {
+  const PRODUCT_DETAILS = await productDetails();
   const ok = (d: ProductDetail) =>
     d.price !== null && d.availability !== "coming-soon" && d.images.some((i) => i.kind === "remote");
   const take = (dept: "interior" | "multimedia", group: string) =>
@@ -263,7 +264,7 @@ export async function seedDemoStore(input: z.infer<typeof demoStoreSchema>, by: 
     products++;
   };
 
-  const picks = demoProducts();
+  const picks = await demoProducts();
   for (const [i, { detail: d, department, group }] of picks.entries()) {
     const price = d.price!;
     const mrp = Math.max(d.mrp ?? price, price);

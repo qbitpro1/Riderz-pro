@@ -46,7 +46,7 @@ export type ProductOptionValue = {
   available: boolean;
 };
 
-export type ProductAvailability = "in-stock" | "made-to-order" | "coming-soon";
+export type ProductAvailability = "in-stock" | "made-to-order" | "coming-soon" | "out-of-stock";
 
 export type ProductDetail = {
   slug: string;

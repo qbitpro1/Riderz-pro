@@ -9,7 +9,8 @@ import { CatalogCard } from "@/components/catalog/CatalogCard";
 import { BrandStrip } from "@/components/catalog/BrandStrip";
 import { FitmentPicker } from "@/components/fitment/FitmentPicker";
 import { ReviewCard } from "@/components/community/Cards";
-import { CATALOG, sortItems } from "@/lib/catalog";
+import { sortItems } from "@/lib/catalog";
+import { getCatalog } from "@/lib/server/catalog";
 import { COLLECTIONS } from "@/lib/data/collections";
 import {
   DEPARTMENTS,
@@ -102,8 +103,9 @@ const WHY = [
   },
 ];
 
-export default function HomePage() {
-  /* ---- everything below is computed from CATALOG; nothing is typed in ---- */
+export default async function HomePage() {
+  /* ---- everything below is computed from the catalogue in the database; nothing is typed in ---- */
+  const CATALOG = await getCatalog();
   const lowest = new Map<DepartmentSlug, number>();
   const groupCount = new Map<string, number>();
   for (const i of CATALOG) {

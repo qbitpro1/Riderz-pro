@@ -23,7 +23,7 @@ export default async function ShopifyAdminPage() {
   await adminPage("catalog", "/admin/shopify");
   const cfg = getShopifyConfig();
   const flag = isShopifyCheckoutFlagOn();
-  const build = buildShopifyCsv();
+  const build = await buildShopifyCsv();
   const skippedTotal = Object.values(build.skipped).reduce((a, b) => a + b, 0);
 
   return (

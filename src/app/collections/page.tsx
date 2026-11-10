@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHero, Breadcrumbs } from "@/components/layout/PageHero";
 import { Photo } from "@/components/ui/Photo";
-import { CATALOG } from "@/lib/catalog";
+import { getCatalog } from "@/lib/server/catalog";
 import { COLLECTIONS } from "@/lib/data/collections";
 import { breadcrumbLd, itemListLd, ldJson, pageMeta } from "@/lib/data/seo";
 
@@ -12,8 +12,9 @@ export const metadata: Metadata = pageMeta({
   path: "/collections",
 });
 
-export default function CollectionsPage() {
-  const collections = COLLECTIONS.map((c) => ({ c, count: CATALOG.filter(c.match).length })).filter((x) => x.count > 0);
+export default async function CollectionsPage() {
+  const catalog = await getCatalog();
+  const collections = COLLECTIONS.map((c) => ({ c, count: catalog.filter(c.match).length })).filter((x) => x.count > 0);
 
   return (
     <>

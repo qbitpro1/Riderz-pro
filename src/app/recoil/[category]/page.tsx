@@ -61,7 +61,7 @@ export default async function RecoilCategoryPage({
   const cat = getCategory(category);
   if (!cat) notFound();
 
-  const items = itemsBySlug(productsInCategory(cat.slug).map((p) => p.slug));
+  const items = await itemsBySlug(productsInCategory(cat.slug).map((p) => p.slug));
   const filters = { ...filtersFromQuery(query), brands: ["recoil" as const] };
   const hero = HERO[cat.slug] ?? { media: "studioMonitors" as MediaKey, line: cat.name.toUpperCase() };
 

@@ -5,7 +5,8 @@ import { SectionHead } from "@/components/ui/Section";
 import { Icon } from "@/components/ui/Icon";
 import { Reveal } from "@/components/ui/Reveal";
 import { BrandStrip } from "@/components/catalog/BrandStrip";
-import { BRAND_STORES, BRANDS, CATALOG_BY_BRAND, CATALOG_TOTALS } from "@/lib/catalog";
+import { BRAND_STORES, BRANDS } from "@/lib/catalog";
+import { catalogSnapshot } from "@/lib/server/catalog";
 import { CATEGORIES } from "@/lib/data/products";
 import { breadcrumbLd, itemListLd, ldJson, pageMeta } from "@/lib/data/seo";
 
@@ -16,7 +17,8 @@ export const metadata: Metadata = pageMeta({
   path: "/brands",
 });
 
-export default function BrandsPage() {
+export default async function BrandsPage() {
+  const { byBrand: CATALOG_BY_BRAND, totals: CATALOG_TOTALS } = await catalogSnapshot();
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: ldJson(breadcrumbLd([{ name: "Home", path: "/" }, { name: "Brands", path: "/brands" }])) }} />

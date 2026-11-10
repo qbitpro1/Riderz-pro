@@ -31,7 +31,11 @@ import {
 } from "@/lib/data/blaupunkt";
 import { CARS } from "@/lib/data/cars";
 import { SOURCES } from "@/lib/inventory/sources";
-import { CATALOG, CATALOG_BY_BRAND } from "./index";
+import { BRANDS, type BrandSlug } from "./brands";
+import { FILE_CATALOG as CATALOG } from "./file-source";
+
+// A report on the price lists themselves (the catalogue's import source), so it reads them directly.
+const CATALOG_BY_BRAND = Object.fromEntries(BRANDS.map((b) => [b.slug, CATALOG.filter((i) => i.brand === b.slug)])) as Record<BrandSlug, typeof CATALOG>;
 
 export type BlockerOwner =
   /** Only the manufacturer can answer it. */

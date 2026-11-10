@@ -1,12 +1,13 @@
-import { CATALOG } from "@/lib/catalog";
+import "server-only";
+
 import type { CatalogItem } from "@/lib/catalog/types";
+import { getCatalog } from "@/lib/server/catalog";
 
 /**
- * Server-side lookup from a store slug to its unified catalogue item. The legacy
- * service pages still name products by slug; this resolves them to the one card.
+ * Server-side lookup from store slugs to their catalogue items (from the database). The service
+ * pages name products by slug; this resolves them to the one card, skipping hidden or missing ones.
  */
-const BY_SLUG = new Map(CATALOG.map((i) => [i.slug, i]));
-
-export function itemsBySlug(slugs: readonly string[]): CatalogItem[] {
-  return slugs.map((s) => BY_SLUG.get(s)).filter((i): i is CatalogItem => Boolean(i));
+export async function itemsBySlug(slugs: readonly string[]): Promise<CatalogItem[]> {
+  const bySlug = new Map((await getCatalog()).map((i) => [i.slug, i]));
+  return slugs.map((s) => bySlug.get(s)).filter((i): i is CatalogItem => Boolean(i));
 }

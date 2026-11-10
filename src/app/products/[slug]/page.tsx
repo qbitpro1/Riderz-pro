@@ -11,15 +11,12 @@ import { ldJson } from "@/lib/data/seo";
 import { SITE } from "@/lib/data/site";
 import { DEPARTMENT_BY_SLUG, departmentHref, groupHref } from "@/lib/data/taxonomy";
 import { MEDIA } from "@/lib/media";
-import { getProductDetail, PRODUCT_SLUGS, relatedProducts } from "@/lib/store/products";
+import { getProductDetail, relatedProducts } from "@/lib/server/catalog";
 import { productHref, type ProductDetail, type ProductImage } from "@/lib/store/types";
 
-// Every slug is known at build; anything else is a plain 404 rather than a year-cached one.
-export const dynamicParams = false;
-
-export function generateStaticParams() {
-  return PRODUCT_SLUGS.map((slug) => ({ slug }));
-}
+// Products come from the database (catalog_products): each page is rendered on request, and a
+// product the admin hid or never added is a plain 404.
+export const dynamic = "force-dynamic";
 
 function absolute(src: string): string {
   return src.startsWith("http") ? src : `${SITE.url}${src.startsWith("/") ? "" : "/"}${src}`;
@@ -31,7 +28,7 @@ function imageUrl(image: ProductImage): string {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const d = getProductDetail(slug);
+  const d = await getProductDetail(slug);
   if (!d) return {};
   const title = d.code && !d.title.includes(d.code) ? `${d.title} (${d.code})` : d.title;
   const description =
@@ -90,10 +87,10 @@ function offersLd(detail: ProductDetail, availability: string, url: string) {
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const detail = getProductDetail(slug);
+  const detail = await getProductDetail(slug);
   if (!detail) notFound();
 
-  const related = relatedProducts(slug, 8);
+  const related = await relatedProducts(slug, 8);
   const department = DEPARTMENT_BY_SLUG[detail.department];
 
   // A held-back or coming-soon product cannot be bought, so it advertises no price or availability.

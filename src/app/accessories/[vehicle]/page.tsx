@@ -7,7 +7,8 @@ import { SectionHead } from "@/components/ui/Section";
 import { Icon } from "@/components/ui/Icon";
 import { Accordion } from "@/components/ui/Accordion";
 import { LANDING_MODELS, findModelBySlug } from "@/lib/data/vehicles";
-import { EMPTY_FILTERS, itemsForModel, sortItems } from "@/lib/catalog";
+import { EMPTY_FILTERS, sortItems } from "@/lib/catalog";
+import { itemsForModel } from "@/lib/server/catalog";
 import { FACELIFT_CONVERSIONS } from "@/lib/data/services";
 import { CARS } from "@/lib/data/cars";
 import { CarCard } from "@/components/cars/CarCard";
@@ -74,7 +75,7 @@ export default async function VehicleAccessoriesPage({
   const model = findModelBySlug(vehicle);
   if (!model) notFound();
 
-  const products = itemsForModel(model.slug);
+  const products = await itemsForModel(model.slug);
   const facelift = FACELIFT_CONVERSIONS.filter((f) => f.modelSlug === model.slug);
   const listings = CARS.filter((c) => c.model === model.name).slice(0, 3);
 

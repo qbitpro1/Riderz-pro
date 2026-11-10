@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { DatabaseNotConfigured, sql, sqlOne, transaction } from "@/lib/db/client";
 import { MEDIA } from "@/lib/media";
-import { getProductDetail } from "@/lib/store/products";
+import { catalogSnapshot } from "./catalog";
 import { productHref } from "@/lib/store/types";
 import { vendorProductHref } from "@/lib/vendor/types";
 import { parseLineId } from "@/lib/shopify/variants";
@@ -475,13 +475,14 @@ export async function customerOrderDetail(customerId: string, number: string): P
     [o.id],
   );
 
+  const liveDetails = (await catalogSnapshot().catch(() => null))?.details;
   const toItem = (i: (typeof items)[number]): AccountOrderItem => {
     let href: string | null = null;
     if (i.product_kind === "vendor") {
       href = i.product_slug && i.vendor_slug ? vendorProductHref(i.vendor_slug, i.product_slug) : null;
     } else {
       const slug = parseLineId(i.product_ref)?.slug;
-      const detail = slug ? getProductDetail(slug) : null;
+      const detail = slug ? liveDetails?.get(slug) : null;
       href = detail?.indexable ? productHref(detail.slug) : null;
     }
     return {

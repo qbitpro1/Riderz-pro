@@ -1,10 +1,11 @@
 import "server-only";
 
 /**
- * THE STORE'S PRODUCT DETAILS
+ * THE CATALOGUE IMPORT SOURCE (product details)
  *
- * Every product from every catalogue, projected into the one `ProductDetail`
- * shape in `./types`. Server-only: the brand modules carry dealer prices, and
+ * The site reads products from the database (catalog_products, src/lib/server/catalog.ts). This
+ * module is only what the import reads: every product from the brand price lists and the house
+ * range, projected into the one `ProductDetail` shape in `./types`. Nothing else imports it. Server-only: the brand modules carry dealer prices, and
  * although nothing confidential is copied into a `ProductDetail`, the source
  * records must never be importable from the browser.
  *
@@ -14,7 +15,8 @@ import "server-only";
  * highlights, specs and the like — filled only from fields the source carries.
  */
 
-import { CATALOG, type CatalogItem } from "@/lib/catalog";
+import type { CatalogItem } from "@/lib/catalog/types";
+import { FILE_CATALOG as CATALOG } from "@/lib/catalog/file-source";
 import { BRAND_BY_SLUG } from "@/lib/catalog/brands";
 import { DEPARTMENT_BY_SLUG, placeSub } from "@/lib/data/taxonomy";
 import { PRODUCTS as HOUSE_PRODUCTS, type Product as HouseProduct } from "@/lib/data/products";
@@ -109,8 +111,8 @@ function houseDetail(p: HouseProduct): ProductDetail {
     installation: p.installation ? { price: p.installPrice ?? null, time: p.installTime ?? null } : null,
     warranty: p.warranty || null,
     delivery: p.delivery || null,
-    rating: p.rating,
-    reviews: p.reviews,
+    rating: null, // real ratings come from customer reviews (src/lib/server/reviews.ts)
+    reviews: null,
     source: null,
     indexable: true,
   };
@@ -378,47 +380,27 @@ function blaupunktDetail(p: BlaupunktProduct): ProductDetail {
 
 /* ------------------------------------------------------------- the lot */
 
-/** Each record with the id of the catalogue item it was built from. */
-const built: { detail: ProductDetail; itemId: string }[] = [
-  ...HOUSE_PRODUCTS.map((p) => ({ detail: houseDetail(p), itemId: `riderzpro:${p.slug}` })),
-  // Every RECOIL row has a page today (unpublished ones are noindex).
-  ...RECOIL_ALL.map((p) => ({ detail: recoilDetail(p), itemId: `recoil:${p.slug}` })),
-  ...AF_DESIGNS.map((d) => ({ detail: autoformDesignDetail(d), itemId: `autoform:design-${d.slug}` })),
-  ...AF_MATS.map((m) => ({ detail: autoformMatDetail(m), itemId: `autoform:mat-${m.sno}` })),
-  ...AF_ACCESSORIES.filter(accessoryPublishable).map((a) => ({
-    detail: autoformAccessoryDetail(a),
-    itemId: `autoform:accessory-${a.sno}`,
-  })),
-  ...BLAUPUNKT_PRODUCTS.map((p) => ({ detail: blaupunktDetail(p), itemId: `blaupunkt:${p.slug}` })),
-];
-
-export const PRODUCT_DETAILS: ProductDetail[] = built.map((b) => b.detail);
-
-const DETAIL_BY_SLUG = new Map<string, ProductDetail>();
-for (const d of PRODUCT_DETAILS) {
-  if (DETAIL_BY_SLUG.has(d.slug)) throw new Error(`store/products: duplicate product slug "${d.slug}"`);
-  DETAIL_BY_SLUG.set(d.slug, d);
-}
-
-const SLUG_BY_ITEM_ID = new Map(built.map((b) => [b.itemId, b.detail.slug]));
-
-export const PRODUCT_SLUGS: string[] = PRODUCT_DETAILS.map((d) => d.slug);
-
-export function getProductDetail(slug: string): ProductDetail | undefined {
-  return DETAIL_BY_SLUG.get(slug);
-}
-
-/** The store slug for a catalogue item, so cards can link to `/products/{slug}`. */
-export function catalogSlugFor(item: CatalogItem): string | null {
-  return SLUG_BY_ITEM_ID.get(item.id) ?? null;
-}
-
-/** Same department+group first, then the rest of the department; never itself, never coming-soon. */
-export function relatedProducts(slug: string, limit = 8): CatalogItem[] {
-  const detail = DETAIL_BY_SLUG.get(slug);
-  if (!detail) return [];
-  const pool = CATALOG.filter(
-    (i) => SLUG_BY_ITEM_ID.get(i.id) !== slug && i.availability !== "coming-soon" && i.category === detail.department,
-  );
-  return [...pool.filter((i) => i.group === detail.group), ...pool.filter((i) => i.group !== detail.group)].slice(0, limit);
+/**
+ * Every product with the catalogue item it was built from (null for a held-back RECOIL row, which
+ * keeps a page but is not listed). In file order, which becomes the database's sort order.
+ */
+export function fileProducts(): { detail: ProductDetail; item: CatalogItem | null }[] {
+  const built: { detail: ProductDetail; itemId: string }[] = [
+    ...HOUSE_PRODUCTS.map((p) => ({ detail: houseDetail(p), itemId: `riderzpro:${p.slug}` })),
+    // Every RECOIL row has a page (unpublished ones are noindex).
+    ...RECOIL_ALL.map((p) => ({ detail: recoilDetail(p), itemId: `recoil:${p.slug}` })),
+    ...AF_DESIGNS.map((d) => ({ detail: autoformDesignDetail(d), itemId: `autoform:design-${d.slug}` })),
+    ...AF_MATS.map((m) => ({ detail: autoformMatDetail(m), itemId: `autoform:mat-${m.sno}` })),
+    ...AF_ACCESSORIES.filter(accessoryPublishable).map((a) => ({
+      detail: autoformAccessoryDetail(a),
+      itemId: `autoform:accessory-${a.sno}`,
+    })),
+    ...BLAUPUNKT_PRODUCTS.map((p) => ({ detail: blaupunktDetail(p), itemId: `blaupunkt:${p.slug}` })),
+  ];
+  const seen = new Set<string>();
+  for (const b of built) {
+    if (seen.has(b.detail.slug)) throw new Error(`store/file-source: duplicate product slug "${b.detail.slug}"`);
+    seen.add(b.detail.slug);
+  }
+  return built.map((b) => ({ detail: b.detail, item: ITEM_BY_ID.get(b.itemId) ?? null }));
 }

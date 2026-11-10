@@ -54,7 +54,8 @@ export function BuyBox({ detail }: { detail: ProductDetail }) {
   const installPrice = detail.installation && typeof detail.installation.price === "number" ? detail.installation.price : null;
   // A held-back product (not indexable) has no sale price to show: it is enquiry-only, like price on request.
   const forSale = detail.price !== null && detail.indexable && detail.availability !== "coming-soon";
-  const canBuy = forSale && unitPrice !== null && !optionUnavailable;
+  const soldOut = detail.availability === "out-of-stock";
+  const canBuy = forSale && !soldOut && unitPrice !== null && !optionUnavailable;
   const allChosen = detail.options.length > 0 && detail.options.every((o) => picked.has(o.id));
   const showFrom = detail.priceFrom && !allChosen;
 
@@ -106,7 +107,9 @@ export function BuyBox({ detail }: { detail: ProductDetail }) {
       ? "In stock"
       : detail.availability === "made-to-order"
         ? "Made to order"
-        : "Coming soon";
+        : detail.availability === "out-of-stock"
+          ? "Out of stock"
+          : "Coming soon";
   const lowStock =
     detail.availability === "in-stock" && detail.stock !== null && detail.stock > 0 && detail.stock <= LOW_STOCK
       ? `Only ${detail.stock} left`

@@ -1,15 +1,16 @@
 import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
-import { BRAND_BY_SLUG, CATALOG_BY_BRAND, type BrandSlug } from "@/lib/catalog";
+import { BRAND_BY_SLUG, type BrandSlug } from "@/lib/catalog";
+import { catalogFor } from "@/lib/server/catalog";
 
 /**
  * The link back out of a standalone brand store into the shared shop. The store
  * stays the deep catalogue; this is the door to the filtered, cross-brand view
  * of the same products.
  */
-export function BrandShopBar({ brand }: { brand: BrandSlug }) {
+export async function BrandShopBar({ brand }: { brand: BrandSlug }) {
   const b = BRAND_BY_SLUG[brand];
-  const count = CATALOG_BY_BRAND[brand]?.length ?? 0;
+  const count = (await catalogFor(brand)).length;
 
   return (
     <section className="border-b border-tint/8 bg-void">

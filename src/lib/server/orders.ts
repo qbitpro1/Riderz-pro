@@ -9,6 +9,7 @@ import type { PlaceOrderInput } from "@/components/cart/orderSchema";
 import type { OrderItemView, VendorOrderDetail, VendorOrderListItem } from "@/components/vendor/orders/types";
 import type { AdminOrder, AdminOrderPart, OrderStatus } from "@/components/admin/orders/types";
 import { ApiError } from "./http";
+import { invalidateCatalog, restoreHouseStock, takeHouseStock } from "./catalog";
 import { newId, sha256 } from "./security";
 import { LIVE_PRODUCT_WHERE } from "./vendor-products";
 import { audit, notifyVendor, type Actor } from "./vendors";
@@ -80,11 +81,15 @@ export async function priceCart(lines: PlaceOrderInput["lines"]) {
       continue;
     }
 
-    const buyable = checkBuyable(line.id);
+    const buyable = await checkBuyable(line.id);
     if (!buyable.ok) throw new ApiError(400, "invalid", buyable.reason);
     const parsed = parseLineId(line.id);
     if (!parsed) throw new ApiError(400, "invalid", "An item in your cart is not valid.");
     const { detail } = buyable;
+    // Counted stock (the order's transaction takes it for real; this gives the shopper the number).
+    if (detail.stock !== null && detail.stock < line.qty) {
+      throw new ApiError(409, "sold_out", detail.stock === 0 ? `${detail.title} just sold out.` : `Only ${detail.stock} of ${detail.title} left.`);
+    }
 
     let unit = detail.price as number; // checkBuyable guarantees a price
     const labels: string[] = [];
@@ -245,10 +250,14 @@ export async function placeOrder(
       if (!rows[0]) throw new ApiError(409, "sold_out", `${i.title} just sold out.`);
       if (rows[0].stock <= rows[0].low_stock_at) low.push({ vendorId: i.vendorId!, title: i.title, stock: rows[0].stock });
     }
+    // Riderzpro's own products whose stock is counted in the catalogue (src/lib/server/catalog.ts).
+    await takeHouseStock(q, items.filter((i) => i.kind === "house"));
 
     const placed: Placed[] = [...parts].map(([vendorId, p]) => ({ vendorId, vendorOrderId: p.id, count: p.count }));
     return { number, placed, low };
   });
+  // Stock counts changed: the shop shows them at once.
+  if (items.some((i) => i.kind === "house")) invalidateCatalog();
 
   /* ---- 3. after commit: tell the sellers; failures here must not undo the order ---- */
   try {
@@ -331,6 +340,7 @@ export async function cancelUnpaidOnlineOrder(q: Query, orderId: string, reason:
     await q("UPDATE vendor_orders SET status='cancelled', cancelled_at=now(), cancel_reason=$2, updated_at=now() WHERE id=$1", [p.id, reason]);
     await restoreStock(q, p.id);
   }
+  await restoreHouseStock(q, orderId);
   await q("UPDATE orders SET status='cancelled', payment_status='failed', updated_at=now() WHERE id=$1", [orderId]);
   await audit({ type: "system", id: "payments" }, "order.payment_expired", { detail: { orderId, number: o.number, parts: parts.length, reason } }, q);
   return true;
@@ -860,11 +870,13 @@ export async function adminChangeOrderStatus(actor: string, orderId: string, to:
       }
     }
     await q("UPDATE orders SET status = $2, updated_at = now() WHERE id = $1", [orderId, to]);
+    if (to === "cancelled") await restoreHouseStock(q, orderId);
     // Cancelling a paid online order does not move money by itself: the admin order page then shows
     // the refundable amount and the refund form (payments.ts adminRefund). The audit row records it.
     const refundDue = to === "cancelled" && row.payment_method === "online" && (row.payment_status === "paid" || row.payment_status === "partially_refunded");
     await audit({ type: "admin", id: actor }, `order.status_${to}`, { detail: { orderId, number: row.number, from: row.status, ...(refundDue ? { refundDue: true } : {}) } }, q);
   });
+  if (to === "cancelled") invalidateCatalog();
   // GST invoice, confirmation email and SMS, once per order (a paid online order already had them).
   if (to === "confirmed") await onOrderConfirmedMessages(orderId);
 }

@@ -8,7 +8,7 @@ import { Footer } from "@/components/layout/Footer";
 import { SiteChrome } from "@/components/layout/SiteChrome";
 import { CartProvider } from "@/components/cart/CartContext";
 import { AccountProvider } from "@/components/account/AccountContext";
-import { LIVE_GROUPS } from "@/lib/catalog";
+import { liveGroups } from "@/lib/server/catalog";
 import { SITE } from "@/lib/data/site";
 import { ldJson } from "@/lib/data/seo";
 import { THEME_COLOR, THEME_SCRIPT } from "@/components/theme/theme";
@@ -108,7 +108,12 @@ const WEBSITE_SCHEMA = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+// Every page reads the product catalogue and its menus from the database (src/lib/server/catalog.ts).
+export const dynamic = "force-dynamic";
+
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  // The menus hide empty shelves; without the database they show every shelf rather than fail.
+  const groups = await liveGroups().catch(() => undefined);
   return (
     // `data-theme` is corrected before paint by THEME_SCRIPT, hence suppressHydrationWarning.
     <html lang="en-IN" data-theme="light" className={`${archivo.variable} ${inter.variable}`} suppressHydrationWarning>
@@ -131,7 +136,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <AccountProvider>
         <CartProvider>
           <SiteChrome part="header">
-            <Header liveGroups={LIVE_GROUPS} />
+            <Header liveGroups={groups} />
           </SiteChrome>
           <main id="main">{children}</main>
           <SiteChrome part="footer">

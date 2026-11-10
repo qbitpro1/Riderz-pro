@@ -1,17 +1,14 @@
 import "server-only";
 
 import { CARS } from "@/lib/data/cars";
-import { PRODUCTS } from "@/lib/data/products";
 import { DEPARTMENTS, departmentHref } from "@/lib/data/taxonomy";
 import { AUDIO_PACKAGES, DETAIL_SERVICES, FACELIFT_CONVERSIONS } from "@/lib/data/services";
 import { BUILDS } from "@/lib/data/community";
 import { LANDING_MODELS, findModelBySlug } from "@/lib/data/vehicles";
-import { COMING_SOON as RECOIL_COMING_SOON, PRODUCTS as RECOIL_PRODUCTS } from "@/lib/data/recoil";
-import { DESIGNS as AUTOFORM_DESIGNS, bandFor, priceFor } from "@/lib/autoform/catalog";
-import { BRANDS, CATALOG, CATALOG_BY_BRAND } from "@/lib/catalog";
+import { BRANDS, type CatalogItem } from "@/lib/catalog";
+import { catalogSnapshot } from "@/lib/server/catalog";
 import { COLLECTIONS } from "@/lib/data/collections";
 import { lakh, rupees } from "@/lib/format";
-import { storeSlug } from "@/lib/store/slugs";
 import { productHref } from "@/lib/store/types";
 import { norm, type SearchBrand, type SearchEntry, type SearchIndex } from "./match";
 
@@ -24,7 +21,29 @@ const PPF_PAGE_ANCHORS = new Set(
     .map((s) => s.slug),
 );
 
-export const SEARCH_INDEX: SearchEntry[] = [
+/** One search entry per listed product, from the database. RECOIL is SKU-first ("SPL4200" finds SPL4200.4). */
+function productEntry(i: CatalogItem): SearchEntry {
+  const price = i.availability === "coming-soon" ? "Coming soon" : i.price !== null ? `${i.priceFrom ? "From " : ""}${rupees(i.price)}` : "Price on request";
+  if (i.brand === "recoil") {
+    return { id: `recoil-${i.slug}`, kind: "RECOIL", title: i.code ? `${i.code} — ${i.title}` : i.title, meta: `${price} · ${i.sub}`, href: productHref(i.slug), keywords: norm(`recoil ${i.code ?? ""} ${i.keywords} car audio`) };
+  }
+  if (i.id.startsWith("autoform:design-")) {
+    return { id: `autoform-${i.slug}`, kind: "Autoform", title: i.title, meta: `${price} · ${i.sub}`, href: productHref(i.slug), keywords: norm(`autoform ${i.code ?? ""} ${i.keywords} seat cover seat covers interior`) };
+  }
+  // Expand fitment slugs into brand + model names so "BMW ambient lighting" finds a part listed only against the 3 Series and GLC.
+  const fitment = i.fitment
+    .map((slug) => {
+      const model = findModelBySlug(slug);
+      return model ? `${model.brand} ${model.name}` : slug;
+    })
+    .join(" ");
+  return { id: `product-${i.slug}`, kind: "Product", title: i.title, meta: `${price} · ${i.sub}`, href: productHref(i.slug), keywords: norm(`${i.keywords} ${i.brandName} ${fitment} accessories`) };
+}
+
+/** The whole search index, built from the database (products) and the site's own pages. */
+export async function buildSearchIndex(): Promise<SearchIndex> {
+  const { items: CATALOG, byBrand: CATALOG_BY_BRAND } = await catalogSnapshot();
+  const SEARCH_INDEX: SearchEntry[] = [
   // Brands come first in construction order so an exact brand name — "recoil",
   // "autoform", "blaupunkt" — always has a destination, whether or not that
   // brand has products listed yet.
@@ -49,46 +68,7 @@ export const SEARCH_INDEX: SearchEntry[] = [
       `${c.brand} ${c.model} ${c.variant} ${c.body} ${c.fuel} ${c.transmission} ${c.city} ${c.condition} used car buy`,
     ),
   })),
-  ...PRODUCTS.map((p) => {
-    // Expand fitment slugs into brand + model names so "BMW ambient lighting"
-    // finds a part listed only against the 3 Series and GLC.
-    const fitment = p.fitment
-      .map((slug) => {
-        const model = findModelBySlug(slug);
-        return model ? `${model.brand} ${model.name}` : slug;
-      })
-      .join(" ");
-    return {
-      id: `product-${p.slug}`,
-      kind: "Product" as const,
-      title: p.name,
-      meta: `${rupees(p.price)} · ${p.sub}`,
-      href: productHref(storeSlug.house(p)),
-      keywords: norm(`${p.name} ${p.sub} ${p.category} ${p.maker} ${fitment} accessories`),
-    };
-  }),
-  // The RECOIL catalogue is SKU-first: "SPL4200" has to find SPL4200.4.
-  ...RECOIL_PRODUCTS.concat(RECOIL_COMING_SOON).map((p) => ({
-    id: `recoil-${p.slug}`,
-    kind: "RECOIL" as const,
-    title: `${p.sku} — ${p.priceListName}`,
-    meta:
-      p.status === "COMING_SOON"
-        ? `Coming soon · ${p.subcategory}`
-        : `${p.sellingPrice ? rupees(p.sellingPrice) : "Price on request"} · ${p.subcategory}`,
-    href: productHref(storeSlug.recoil(p)),
-    keywords: norm(`recoil ${p.sku} ${p.searchTokens.join(" ")} car audio`),
-  })),
-  // Autoform designs are named things people search for by code — "u-volt",
-  // "x-cross" — so they need their own entries, not just a brand page.
-  ...AUTOFORM_DESIGNS.map((d) => ({
-    id: `autoform-${d.slug}`,
-    kind: "Autoform" as const,
-    title: `Autoform ${d.code}`,
-    meta: `From ${rupees(priceFor(d, 2).sellingPrice)} · ${d.tagline}`,
-    href: productHref(storeSlug.autoformDesign(d)),
-    keywords: norm(`autoform ${d.code} ${d.tagline} ${bandFor(d).series} seat cover seat covers interior`),
-  })),
+  ...CATALOG.map(productEntry),
   // Help pages people look for by name.
   ...[
     { id: "faq", title: "FAQ — ordering, fitment, delivery, returns", href: "/faq", k: "faq help questions ordering fitment delivery returns payment" },
@@ -167,15 +147,15 @@ export const SEARCH_INDEX: SearchEntry[] = [
     href: `/builds/${b.slug}`,
     keywords: norm(`${b.title} ${b.vehicle} ${b.tag} build modified`),
   })),
-];
+  ];
 
-/** Brand shortcuts for the search panel — name, destination and product count. */
-export const SEARCH_BRANDS: SearchBrand[] = BRANDS.map((b) => ({
-  slug: b.slug,
-  name: b.name,
-  href: `/brands/${b.slug}`,
-  count: CATALOG_BY_BRAND[b.slug]?.length ?? 0,
-}));
+  /** Brand shortcuts for the search panel — name, destination and product count. */
+  const SEARCH_BRANDS: SearchBrand[] = BRANDS.map((b) => ({
+    slug: b.slug,
+    name: b.name,
+    href: `/brands/${b.slug}`,
+    count: CATALOG_BY_BRAND[b.slug]?.length ?? 0,
+  }));
 
-/** What the search panel downloads, served as a static file by `/search-index.json`. */
-export const PUBLIC_SEARCH_INDEX: SearchIndex = { entries: SEARCH_INDEX, brands: SEARCH_BRANDS };
+  return { entries: SEARCH_INDEX, brands: SEARCH_BRANDS };
+}

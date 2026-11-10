@@ -42,7 +42,7 @@ export default async function BuildDetailPage({ params }: { params: Promise<{ sl
   const build = getBuild(slug);
   if (!build) notFound();
 
-  const shopItems = itemsBySlug(build.shop);
+  const shopItems = await itemsBySlug(build.shop);
   const others = BUILDS.filter((b) => b.slug !== build.slug).slice(0, 3);
 
   return (

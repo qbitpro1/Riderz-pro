@@ -65,8 +65,8 @@ function houseItem(p: Product): CatalogItem {
     priceFrom: false,
     tier: p.tier,
     image: { kind: "media", key: p.image },
-    rating: p.rating,
-    reviews: p.reviews,
+    rating: null, // real ratings come from customer reviews
+    reviews: null,
     fitment: p.fitment,
     availability: p.stock > 0 ? "in-stock" : "made-to-order",
     buyable: true,

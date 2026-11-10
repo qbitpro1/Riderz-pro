@@ -1,9 +1,8 @@
 import "server-only";
 
-import { CATALOG } from "@/lib/catalog";
 import type { ShopItem } from "@/lib/catalog/types";
 import { FREE_SHIPPING_OVER } from "@/lib/store/shipping";
-import { getProductDetail } from "@/lib/store/products";
+import { getCatalog, getProductDetail } from "../catalog";
 import { liveVendorItems, liveVendorProduct } from "../marketplace";
 import { publicCoupons } from "../coupons";
 import { couponOffer } from "@/lib/coupons/types";
@@ -26,7 +25,7 @@ const MAX_SHOWN = 6;
 const categoryName = (i: ShopItem) => `${DEPARTMENT_BY_SLUG[i.category]?.name ?? i.category} ${i.sub}`;
 
 async function allItems(): Promise<ShopItem[]> {
-  return [...CATALOG, ...(await liveVendorItems())];
+  return [...(await getCatalog()), ...(await liveVendorItems())];
 }
 
 function brief(i: ShopItem, car: string | null) {
@@ -91,7 +90,7 @@ export async function askWebAssistant(history: AssistantMessage[], carSlug: stri
           const p = page.product;
           return { ...brief(i, car), summary: p.summary, highlights: p.highlights.slice(0, 8), specs: p.specs.slice(0, 12), warrantyMonths: p.warrantyMonths, inStock: p.stock > 0 };
         }
-        const d = getProductDetail(i.slug);
+        const d = await getProductDetail(i.slug);
         if (!d) return brief(i, car);
         return {
           ...brief(i, car),

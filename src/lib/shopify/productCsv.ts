@@ -1,5 +1,5 @@
 import "server-only";
-import { PRODUCT_DETAILS } from "@/lib/store/products";
+import { productDetails } from "@/lib/server/catalog";
 import type { ProductDetail, ProductImage, ProductOption, ProductOptionValue } from "@/lib/store/types";
 import { MEDIA } from "@/lib/media";
 import { SITE } from "@/lib/data/site";
@@ -122,7 +122,8 @@ function skipReason(d: ProductDetail): SkipReason | null {
   return null;
 }
 
-export function buildShopifyCsv(): CsvBuild {
+export async function buildShopifyCsv(): Promise<CsvBuild> {
+  const PRODUCT_DETAILS = await productDetails();
   const skipped: Record<SkipReason, number> = {
     "not-indexable": 0,
     "no-price": 0,

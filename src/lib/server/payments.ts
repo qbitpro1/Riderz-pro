@@ -1,5 +1,6 @@
 import "server-only";
 
+import { invalidateCatalog } from "./catalog";
 import { after } from "next/server";
 import { sql, transaction, type Query } from "@/lib/db/client";
 import {
@@ -524,6 +525,8 @@ export async function releaseUnpaidOrders(opts: { olderThanMinutes?: number; lim
     });
     if (released) out.released.push(r.number);
   }
+  // Released orders put counted stock back.
+  if (out.released.length) invalidateCatalog();
   return out;
 }
 

@@ -67,6 +67,7 @@ export default async function AdminHub({ searchParams }: { searchParams: Promise
     { href: "/admin/audit", perm: "audit", title: "Audit log", text: "Every sign-in, decision and change, newest first.", icon: ScrollText },
   ];
   const site: Tile[] = [
+    { href: "/admin/products", perm: "catalog", title: "Products", text: "Riderzpro's catalogue: prices, stock, live or hidden.", icon: Boxes },
     { href: "/admin/catalog", perm: "catalog", title: "Catalogue report", text: "House catalogue import and data quality.", icon: ClipboardList },
     { href: "/admin/inventory", perm: "catalog", title: "Inventory", text: "Used-car sources, freshness and compliance.", icon: Boxes },
     { href: "/admin/launch", perm: "catalog", title: "Launch readiness", text: "What is live, held back, and what unblocks it.", icon: Rocket },

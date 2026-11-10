@@ -664,8 +664,8 @@ export async function productReview(id: string): Promise<ProductReview | null> {
       duplicates.push({ source: "vendor", id: o.id, title: o.title, detail: `${o.store_name ?? "Another seller"} · same brand, similar title`, reason: "title", href: `/admin/vendor-products/${o.id}` });
     }
   }
-  // House catalogue titles (server-only import; prices are never read).
-  const { CATALOG } = await import("@/lib/catalog");
+  // House catalogue titles, from the database (prices are never read).
+  const CATALOG = await (await import("./catalog")).getCatalog();
   const houseBrand = norm(content.brand);
   for (const item of CATALOG) {
     const sameBrand = norm(item.brandName) === houseBrand;

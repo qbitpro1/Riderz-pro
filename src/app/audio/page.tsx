@@ -6,11 +6,10 @@ import { Icon } from "@/components/ui/Icon";
 import { Photo } from "@/components/ui/Photo";
 import { Reveal } from "@/components/ui/Reveal";
 import { CatalogCard } from "@/components/catalog/CatalogCard";
-import { itemsBySlug } from "@/components/shop/catalogLookup";
 import { ReviewCard } from "@/components/community/Cards";
 import { Accordion } from "@/components/ui/Accordion";
 import { AUDIO_PACKAGES } from "@/lib/data/services";
-import { productsIn } from "@/lib/data/products";
+import { catalogFor } from "@/lib/server/catalog";
 import { REVIEWS } from "@/lib/data/community";
 import { rupees } from "@/lib/format";
 import { whatsapp } from "@/lib/data/site";
@@ -42,8 +41,8 @@ const FAQ = [
   },
 ];
 
-export default function AudioPage() {
-  const audioProducts = itemsBySlug(productsIn("multimedia").map((p) => p.slug));
+export default async function AudioPage() {
+  const audioProducts = (await catalogFor("riderzpro")).filter((i) => i.category === "multimedia");
   const audioReviews = REVIEWS.filter((r) => r.service.toLowerCase().includes("audio"));
 
   return (

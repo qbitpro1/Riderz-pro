@@ -24,10 +24,11 @@ export type CatalogImage =
   | { kind: "remote"; src: string; alt: string; fit: "contain" | "cover"; tone: "light" | "dark" }
   | { kind: "none" };
 
-export type Availability = "in-stock" | "made-to-order" | "coming-soon";
+/** "out-of-stock": the stock counted in the database (or a seller's) is at 0. */
+export type Availability = "in-stock" | "made-to-order" | "coming-soon" | "out-of-stock";
 
-/** `Availability` plus "out-of-stock", which only marketplace items whose seller has no units left use. */
-export type ShopAvailability = Availability | "out-of-stock";
+/** Kept as a name for the shop browser's items; the same values as `Availability`. */
+export type ShopAvailability = Availability;
 
 /** The store a marketplace item is sold by. Only public fields; mirrors `CartLine.seller`. */
 export type CatalogSeller = { id: string; name: string; slug: string };

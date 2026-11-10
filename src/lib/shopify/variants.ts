@@ -1,5 +1,5 @@
 import "server-only";
-import { getProductDetail } from "@/lib/store/products";
+import { getProductDetail } from "@/lib/server/catalog";
 import { cartLineId, type ProductDetail } from "@/lib/store/types";
 import { isVendorLineSlug } from "@/lib/vendor/types";
 import { storefront } from "./client";
@@ -71,15 +71,16 @@ export type Buyable =
  * indexable, and every option choice is present, known and available.
  * `wanted` maps option name -> value label, which is how Shopify names variants.
  */
-export function checkBuyable(id: string): Buyable {
+export async function checkBuyable(id: string): Promise<Buyable> {
   // Marketplace items are not in Shopify; they are ordered through /api/orders and WhatsApp.
   if (isVendorLineSlug(id)) return { ok: false, reason: "Marketplace items are ordered on WhatsApp" };
   const parsed = parseLineId(id);
   if (!parsed) return { ok: false, reason: "Invalid cart line" };
-  const detail = getProductDetail(parsed.slug);
+  const detail = await getProductDetail(parsed.slug);
   if (!detail) return { ok: false, reason: "Unknown product" };
   if (detail.price === null) return { ok: false, reason: "Price on request" };
   if (detail.availability === "coming-soon") return { ok: false, reason: "Not available to order yet" };
+  if (detail.availability === "out-of-stock") return { ok: false, reason: `${detail.title} is out of stock` };
   if (!detail.indexable) return { ok: false, reason: "Not available to order yet" };
 
   const wanted = new Map<string, string>();
@@ -104,7 +105,7 @@ export function checkBuyable(id: string): Buyable {
 export async function resolveLine(line: LineRequest): Promise<LineResult> {
   const fail = (reason: string): LineResult => ({ ok: false, id: line.id, reason });
 
-  const buyable = checkBuyable(line.id);
+  const buyable = await checkBuyable(line.id);
   if (!buyable.ok) return fail(buyable.reason);
   const { detail, wanted } = buyable;
 

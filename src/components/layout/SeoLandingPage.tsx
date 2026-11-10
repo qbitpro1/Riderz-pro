@@ -7,10 +7,12 @@ import { LANDING_MODELS } from "@/lib/data/vehicles";
 import { LOCATIONS } from "@/lib/data/site";
 import { DEPARTMENTS, departmentHref } from "@/lib/data/taxonomy";
 import { COLLECTIONS } from "@/lib/data/collections";
-import { BRANDS, CATALOG } from "@/lib/catalog";
+import { BRANDS } from "@/lib/catalog";
+import { getCatalog } from "@/lib/server/catalog";
 import { breadcrumbLd, itemListLd, ldJson, type SeoLanding } from "@/lib/data/seo";
 
-export function SeoLandingPage({ landing }: { landing: SeoLanding }) {
+export async function SeoLandingPage({ landing }: { landing: SeoLanding }) {
+  const CATALOG = await getCatalog();
   const path = `/${landing.slug}`;
   const collections = landing.store ? COLLECTIONS.filter((c) => CATALOG.some(c.match)) : [];
   const schema: object[] = [

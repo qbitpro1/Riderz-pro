@@ -1,6 +1,6 @@
 import "server-only";
 
-import { CATALOG } from "@/lib/catalog";
+import { getCatalog } from "../catalog";
 import type { ShopItem } from "@/lib/catalog/types";
 import { DEPARTMENT_BY_SLUG, DEPARTMENTS } from "@/lib/data/taxonomy";
 import { SITE } from "@/lib/data/site";
@@ -91,7 +91,7 @@ export async function askWebLocal(history: AssistantMessage[], garageSlug: strin
 
   if (intent.words.length === 0 && !intent.car && intent.sort === "relevance") return { text: `I didn't catch which product you need. ${HELP}`, products: [] };
 
-  const all = [...CATALOG, ...(await liveVendorItems())].map(candidate);
+  const all = [...(await getCatalog()), ...(await liveVendorItems())].map(candidate);
   const found = search(all, intent, shown, SHOW);
   if (!found.items.length) {
     return {

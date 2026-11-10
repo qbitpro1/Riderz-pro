@@ -6,14 +6,13 @@ import { BUILDS } from "@/lib/data/community";
 import { LANDING_MODELS } from "@/lib/data/vehicles";
 import { SEO_LANDINGS } from "@/lib/data/seo";
 import { LEGAL_POLICIES, SUPPORT_POLICIES } from "@/lib/data/policies";
-import { PRODUCT_DETAILS } from "@/lib/store/products";
 import { productHref } from "@/lib/store/types";
 import { PPF_LANDINGS } from "@/lib/ppf/landings";
 import { PPF_FILMS } from "@/lib/ppf/films";
 import { GUIDE as PPF_GUIDE } from "@/lib/ppf/guide";
 import { CATEGORIES as RECOIL_CATEGORIES } from "@/lib/data/recoil";
 import { BRANDS } from "@/lib/catalog/brands";
-import { CATALOG } from "@/lib/catalog";
+import { catalogSnapshot } from "@/lib/server/catalog";
 import { COLLECTIONS } from "@/lib/data/collections";
 import { marketplaceUrls } from "@/lib/server/marketplace";
 
@@ -21,6 +20,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
   // Approved storefronts and live seller products; empty (never an error) when there is no database.
   const market = await marketplaceUrls();
+  // Products from the database; without one the sitemap still lists every other page.
+  const snap = await catalogSnapshot().catch(() => null);
+  const CATALOG = snap?.items ?? [];
+  const PRODUCT_DETAILS = snap ? [...snap.details.values()] : [];
   const url = (path: string) => `${SITE.url}${path}`;
 
   const entry = (

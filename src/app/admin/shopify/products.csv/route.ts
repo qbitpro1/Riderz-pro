@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 /** Shopify product-import CSV. Admins with catalogue access only (the /admin proxy only checks a cookie exists). */
 export const GET = route(async () => {
   await requireAdmin("catalog");
-  const { csv } = buildShopifyCsv();
+  const { csv } = await buildShopifyCsv();
   return new Response(csv, {
     headers: {
       "Content-Type": "text/csv; charset=utf-8",

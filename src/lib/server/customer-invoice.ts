@@ -1,7 +1,7 @@
 import "server-only";
 
 import { sqlOne, transaction, type Query } from "@/lib/db/client";
-import { getProductDetail } from "@/lib/store/products";
+import { departmentsFor } from "./catalog";
 import { parseLineId } from "@/lib/shopify/variants";
 import {
   GST_STATE_CODES,
@@ -74,9 +74,9 @@ export async function allocateInvoiceNumber(q: Query, at: Date): Promise<{ fy: s
   return { fy, seq, number: formatInvoiceNumber(fy, seq) };
 }
 
-function departmentOf(productRef: string): string | null {
+function departmentOf(productRef: string, departments: Map<string, string>): string | null {
   const slug = parseLineId(productRef)?.slug;
-  return (slug && getProductDetail(slug)?.department) || null;
+  return (slug && departments.get(slug)) || null;
 }
 
 /**
@@ -97,10 +97,10 @@ function spreadDiscount(input: InvoiceInputLine[], discount: number) {
   });
 }
 
-function buildSnapshot(o: OrderRow, items: ItemRow[], number: string, issuedAt: Date): CustomerInvoiceSnapshot | null {
+function buildSnapshot(o: OrderRow, items: ItemRow[], number: string, issuedAt: Date, departments: Map<string, string>): CustomerInvoiceSnapshot | null {
   const input: InvoiceInputLine[] = [];
   for (const i of items.filter((i) => i.product_kind === "house" && !i.vendor_order_id)) {
-    const tax = goodsTax(departmentOf(i.product_ref));
+    const tax = goodsTax(departmentOf(i.product_ref, departments));
     input.push({ kind: "goods", title: i.title, variant: i.variant, qty: i.qty, unitPrice: i.unit_price, ...tax });
     if (i.install_price > 0) {
       input.push({ kind: "installation", title: `Installation: ${i.title}`, variant: null, qty: i.qty, unitPrice: i.install_price, ...TAX_CODES.installation });
@@ -184,10 +184,14 @@ export async function issueCustomerInvoice(orderId: string, opts: { at?: Date } 
       [orderId],
     );
     const at = opts.at ?? new Date();
+    const departments = await departmentsFor(
+      items.filter((i) => i.product_kind === "house").map((i) => parseLineId(i.product_ref)?.slug ?? ""),
+      q,
+    );
     // Check there is something to invoice before taking a number.
-    if (!buildSnapshot(o, items, "", at)) return null;
+    if (!buildSnapshot(o, items, "", at, departments)) return null;
     const { fy, seq, number } = await allocateInvoiceNumber(q, at);
-    const snapshot = buildSnapshot(o, items, number, at)!;
+    const snapshot = buildSnapshot(o, items, number, at, departments)!;
     await q(
       `INSERT INTO customer_invoices (id, order_id, number, fy, seq, issued_at, total, snapshot)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,

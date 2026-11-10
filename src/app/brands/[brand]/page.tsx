@@ -9,13 +9,13 @@ import { CatalogBrowser } from "@/components/catalog/CatalogBrowser";
 import { BrandStrip } from "@/components/catalog/BrandStrip";
 import {
   BRANDS,
-  catalogFor,
   filtersFromQuery,
   getBrand,
   sortItems,
   type CatalogQuery,
 } from "@/lib/catalog";
 import { CATEGORIES } from "@/lib/data/products";
+import { catalogFor } from "@/lib/server/catalog";
 import { whatsapp } from "@/lib/data/site";
 import { breadcrumbLd, itemListLd, ldJson, pageMeta } from "@/lib/data/seo";
 
@@ -45,7 +45,7 @@ export default async function BrandPage({
   const b = getBrand(brand);
   if (!b) notFound();
 
-  const items = catalogFor(b.slug);
+  const items = await catalogFor(b.slug);
   const query = await searchParams;
   // The brand is the page, not a filter the visitor can clear.
   const filters = { ...filtersFromQuery(query), brands: [b.slug] };
