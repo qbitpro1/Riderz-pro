@@ -54,13 +54,13 @@ export const BRANDS: Brand[] = [
     position: "House brand",
     tagline: "Built by us, fitted by us.",
     blurb:
-      "Our own range — mats, covers, lighting, off-road hardware and performance parts, cut to the model and warranted by the workshop that fits them.",
+      "Our own range — mats, covers, lighting, off-road hardware and performance parts, cut to the model.",
     storeHref: null,
     storeLabel: null,
     image: "heroWorkshopNight",
     categories: ["interior", "exterior", "multimedia", "covers-guards", "utilities", "off-roading", "lighting", "accessories"],
     state: "live",
-    provenance: "Specified, stocked and warranted by Riderzpro. Fitted at our own workshops.",
+    provenance: "Specified, stocked and warranted by Riderzpro.",
   },
   {
     slug: "recoil",

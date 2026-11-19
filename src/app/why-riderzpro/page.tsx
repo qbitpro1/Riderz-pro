@@ -18,7 +18,7 @@ export const metadata: Metadata = pageMeta({
 const PRINCIPLES = [
   {
     title: "One team, the whole car",
-    body: "Accessories, audio, PPF, off-road, interiors and installation from one team. You stop coordinating four workshops that each blame the other.",
+    body: "Accessories, audio, PPF, off-road, interiors and installation from one team. One team to talk to for all of it.",
   },
   {
     title: "Prices you can see",

@@ -267,7 +267,7 @@ function Build({ garage }: { garage: Garage | null }) {
 
           <dl className="mt-5 space-y-2 border-t border-tint/8 pt-4 text-sm">
             <SummaryRow label="Parts" value={rupees(parts)} />
-            <SummaryRow label="Workshop labour" value={rupees(labour)} />
+            <SummaryRow label="Installation labour" value={rupees(labour)} />
             <SummaryRow label="GST (18%)" value={rupees(gst)} />
           </dl>
 

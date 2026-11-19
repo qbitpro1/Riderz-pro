@@ -153,7 +153,7 @@ export const SUPPORT_POLICIES: Policy[] = [
         id: "exclusions",
         heading: "What isn't covered",
         body: [
-          "Damage from an accident, off-road impact beyond the product's rating, improper use, or work carried out on the part by another workshop.",
+          "Damage from an accident, off-road impact beyond the product's rating, improper use, or work carried out on the part by someone else.",
           "Consumables: filters, pads, bulbs, wiper elements and tyres, which are covered by wear limits rather than time.",
         ],
       },
@@ -190,7 +190,7 @@ export const SUPPORT_POLICIES: Policy[] = [
         id: "builds",
         heading: "Larger builds",
         body: [
-          "Quotes, deposits and storage for larger builds are covered in the Workshop bookings section of our Terms of Service.",
+          "Quotes, deposits and storage for larger builds are covered in the Installation bookings section of our Terms of Service.",
         ],
       },
       {

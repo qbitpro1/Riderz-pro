@@ -58,7 +58,7 @@ export default function AutoformPage() {
       <PageHero
         eyebrow="Genuine Autoform · Authorised Autoform reseller"
         title="Seats that look built in"
-        blurb={`Twenty Autoform designs across the Eco and Signature series, cut to your car rather than pulled over it. From ${rupees(cheapest)} for a 5-seater set, fitted at a Riderzpro workshop.`}
+        blurb={`Twenty Autoform designs across the Eco and Signature series, cut to your car rather than pulled over it. From ${rupees(cheapest)} for a 5-seater set, with fitting available.`}
         media="cockpitScreen"
         actions={[
           { href: "#designs", label: "Browse designs", variant: "primary" },
@@ -279,7 +279,7 @@ export default function AutoformPage() {
             <p className="font-display text-lg font-extrabold uppercase">Book a fitting</p>
             <p className="mt-2 text-sm text-ash">
               Autoform sets are made to order for your car. We take the order, confirm the pattern for
-              your exact variant, and fit it at the workshop — usually about two hours.
+              your exact variant, and arrange the fitting with you.
             </p>
             <EnquiryButton id="enquire" topic="installation" message={"Hi Riderzpro, I want to book Autoform seat cover fitting. My car is: "} className="btn btn-primary btn-block mt-5">
               Book Autoform installation

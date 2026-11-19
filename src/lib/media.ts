@@ -16,7 +16,7 @@ export const MEDIA = {
   // --- Cinematic / night -----------------------------------------------
   heroWorkshopNight: photo(
     "photo-1626668893632-6f3a4466d22f",
-    "Blacked-out build lit by workshop floodlights inside a workshop bay at night",
+    "Blacked-out car lit by floodlights at night",
   ),
   garageHeadlights: photo(
     "photo-1533106418989-88406c7cc8ca",
@@ -24,7 +24,7 @@ export const MEDIA = {
   ),
   garageSpotlit: photo(
     "photo-1492144534655-ae79c964c9d7",
-    "Coupe under dramatic overhead lighting in a dark workshop",
+    "Coupe under dramatic overhead lighting",
   ),
   cityNightRain: photo(
     "photo-1517672651691-24622a91b550",
@@ -77,7 +77,7 @@ export const MEDIA = {
   ),
   mechanicEngine: photo(
     "photo-1487754180451-c456f719a1fc",
-    "Technician working on an engine bay inside a garage",
+    "Technician working on an engine bay",
   ),
   washBay: photo(
     "photo-1590362891991-f776e747a588",

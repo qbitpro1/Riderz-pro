@@ -1160,7 +1160,7 @@ const HOUSE_PRODUCTS: (Omit<Product, "category"> & { category: string })[] = [
     installPrice: 0,
     installTime: "4 hours including road test",
     warranty: "Lifetime map support, free revisions",
-    delivery: "Workshop appointment",
+    delivery: "Installation appointment",
     image: "engineBay",
     summary:
       "Custom-written on your car, on our dyno, with your fuel. Typically 20–30% more torque with factory safety margins intact — and your stock map saved so you can flip back any time.",

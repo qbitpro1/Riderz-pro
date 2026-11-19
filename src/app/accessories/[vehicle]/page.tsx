@@ -117,7 +117,7 @@ export default async function VehicleAccessoriesPage({
           model.blurb ??
           `Everything for the ${model.brand} ${model.name} — accessories, lighting, audio, interiors, protection and ${
             model.offroad ? "off-road hardware" : "performance upgrades"
-          }. Fitment checked against your variant and year, installed by our workshop.`
+          }. Fitment checked against your variant and year, with installation available.`
         }
         media={HERO_MEDIA[model.slug] ?? "openRoadRear"}
         actions={[
@@ -186,7 +186,7 @@ export default async function VehicleAccessoriesPage({
                   <p className="text-xs text-dim">{f.from}</p>
                   <p className="mt-1 font-display text-xl font-extrabold uppercase">{f.to}</p>
                   <p className="mt-3 font-display text-lg text-accent tnum">From {rupees(f.price)}</p>
-                  <p className="mt-1 text-xs text-dim">{f.duration} in the workshop</p>
+                  <p className="mt-1 text-xs text-dim">{f.duration} to fit</p>
                   <ul className="mt-4 space-y-1.5">
                     {f.includes.map((i) => (
                       <li key={i} className="flex items-start gap-2 text-xs text-ash">

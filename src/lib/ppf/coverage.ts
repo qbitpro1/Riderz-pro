@@ -172,7 +172,7 @@ export const PPF_PACKAGES: PpfPackage[] = [
     name: "ESSENTIAL PROTECTION",
     headline: "The bits that always get damaged.",
     blurb:
-      "Door cups, door edges, the boot loading edge, mirrors and headlights. Under a day in the workshop, and it removes most of the damage a car picks up in normal use.",
+      "Door cups, door edges, the boot loading edge, mirrors and headlights. Usually done in under a day, and it removes most of the damage a car picks up in normal use.",
     areaIds: ["door-cups", "door-edges", "boot-loading", "orvm", "headlights"],
     cta: "Protect the essentials",
     audience: "entry",

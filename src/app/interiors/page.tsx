@@ -46,7 +46,7 @@ export default async function InteriorsPage() {
       <PageHero
         eyebrow="Custom interiors studio"
         title="The best seat in the car"
-        blurb="Leather, alcantara, diamond stitching, ventilation, captain conversions and lighting — pattern-cut and trimmed in our own workshop, not outsourced to a market shop."
+        blurb="Leather, alcantara, diamond stitching, ventilation, captain conversions and lighting — pattern-cut for your car."
         media="cockpitScreen"
         actions={[
           { href: "#services", label: "Design my interior", variant: "primary" },

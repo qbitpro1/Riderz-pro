@@ -4,20 +4,17 @@ import { PageHero } from "@/components/layout/PageHero";
 import { BookingForm } from "@/components/garage/BookingForm";
 import { SectionHead } from "@/components/ui/Section";
 import { Icon } from "@/components/ui/Icon";
-import { Photo } from "@/components/ui/Photo";
-import { Reveal } from "@/components/ui/Reveal";
 import { GARAGE_SERVICES } from "@/lib/data/services";
 import { SITE } from "@/lib/data/site";
 import { pageMeta } from "@/lib/data/seo";
 
 export const metadata: Metadata = pageMeta({
-  title: "Riderzpro Garage — Installation, Modification & Service Workshop",
+  title: "Installation & Service — Riderzpro",
   description:
     "Book installation, modification, detailing, PPF, audio, performance, off-road and interior work with Riderzpro. We call you to confirm the slot and the fitment.",
   path: "/garage",
 });
 
-const WORKSHOP_MEDIA = ["mechanicEngine", "garageSpotlit", "washBay", "detailingPolish"] as const;
 
 export default async function GaragePage() {
   return (
@@ -63,23 +60,6 @@ export default async function GaragePage() {
         </div>
       </section>
 
-      <section className="section border-y border-tint/8 bg-carbon">
-        <div className="shell">
-          <SectionHead eyebrow="Inside the workshop" title="Where it happens" />
-          <ul className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-            {WORKSHOP_MEDIA.map((m, i) => (
-              <li key={m}>
-                <Reveal delay={i * 60}>
-                  <div className="relative aspect-[4/5] overflow-hidden bg-graphite">
-                    <Photo media={m} sizes="(min-width:1024px) 25vw, 46vw" />
-                    <div className="absolute inset-0 scrim-soft" />
-                  </div>
-                </Reveal>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
 
       <section className="section">
         <div className="shell">

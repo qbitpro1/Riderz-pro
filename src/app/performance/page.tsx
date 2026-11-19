@@ -31,7 +31,7 @@ const FAQ = [
   },
   {
     q: "Do you remove DPFs or catalytic converters?",
-    a: "No. Ever. Removing emissions hardware is illegal, fails PUC and is a road-safety and public-health issue. If that is what you are after, we are not the workshop for you.",
+    a: "No. Ever. Removing emissions hardware is illegal, fails PUC and is a road-safety and public-health issue. If that is what you are after, we can't help with it.",
   },
   {
     q: "How loud will the exhaust be?",

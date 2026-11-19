@@ -62,7 +62,7 @@ export default async function RecoilPage({ searchParams }: { searchParams: Promi
           {[
             { icon: "shield" as const, t: "Genuine products only", b: "Sourced against the official RECOIL price list." },
             { icon: "check" as const, t: "Exact model matching", b: "Every image is matched to its own SKU, never a similar one." },
-            { icon: "wrench" as const, t: "Installation available", b: "Fitted and tuned at three Riderzpro workshops." },
+            { icon: "wrench" as const, t: "Installation available", b: "Fitting and tuning available on marked products." },
             { icon: "spark" as const, t: "Manufacturer-backed data", b: "Specifications published as RECOIL states them." },
           ].map((f, i) => (
             <li key={f.t} className="bg-carbon">
