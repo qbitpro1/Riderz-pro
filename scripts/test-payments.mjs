@@ -77,8 +77,10 @@ async function seed(db) {
   );
   await db.query(
     `INSERT INTO vendor_products (id, vendor_id, slug, status, title, brand, department, group_slug, sku, mrp, price, stock, low_stock_at)
-     VALUES ('vp_paytest000000000001','ven_paytest000000000001',$1,'live','Paytest Seat Cover','Paytest','interior','seat-covers','PAYTEST-1',$2,$2,$3,0)
-     ON CONFLICT (id) DO UPDATE SET stock = EXCLUDED.stock, price = EXCLUDED.price, mrp = EXCLUDED.mrp, status = 'live'`,
+     VALUES ('vp_paytest000000000001','ven_paytest000000000001',$1,'live','Paytest Car Cover','Paytest','covers-guards','exterior','PAYTEST-1',$2,$2,$3,0)
+     ON CONFLICT (id) DO UPDATE SET stock = EXCLUDED.stock, price = EXCLUDED.price, mrp = EXCLUDED.mrp, status = 'live',
+       title = EXCLUDED.title, department = EXCLUDED.department, group_slug = EXCLUDED.group_slug`,
+  // A car cover: while only car covers are on sale (src/lib/catalog/on-sale.ts), other products can't be ordered.
     [SLUG, PRICE, STOCK],
   );
   // Leave no earlier unpaid test orders around to be released mid-run.
