@@ -5,12 +5,10 @@ export const SITE = {
   description:
     "Riderzpro makes and sells car accessories in India — interior, exterior, multimedia, covers and guards, utilities, lighting and off-roading parts, fitment-checked for your car, with installation available.",
   url: "https://riderzpro.com",
-  phone: "+91 98860 44488",
-  phoneHref: "tel:+919886044488",
-  email: "hello@riderzpro.com",
-  instagram: "https://instagram.com/riderzpro",
-  youtube: "https://youtube.com/@riderzpro",
-  facebook: "https://facebook.com/riderzpro",
+  phone: "+91 98118 86661",
+  phoneHref: "tel:+919811886661",
+  email: "admin@riderzpro.com",
+  // No social media accounts yet: add their links here (and in the footer) when they exist.
   hours: "Mon – Sat · 9:30 AM – 8:00 PM · Sunday by appointment",
   /** The registered company (GSTIN holder) that owns the Riderzpro trademark. Ends with a full stop. */
   legalName: "Motorbotz Automotive Pvt. Ltd.",

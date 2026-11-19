@@ -48,12 +48,10 @@ export function Footer() {
                 <Icon name="phone" size={14} />
                 {SITE.phone}
               </a>
-            </div>
-
-            <div className="mt-6 flex gap-3">
-              <Social href={SITE.instagram} icon="instagram" label="Instagram" />
-              <Social href={SITE.youtube} icon="youtube" label="YouTube" />
-              <Social href={SITE.facebook} icon="facebook" label="Facebook" />
+              <a href={`mailto:${SITE.email}`} className="btn btn-outline btn-sm">
+                <Icon name="mail" size={14} />
+                {SITE.email}
+              </a>
             </div>
           </div>
 
@@ -114,16 +112,3 @@ export function Footer() {
   );
 }
 
-function Social({ href, icon, label }: { href: string; icon: "instagram" | "youtube" | "facebook" | "map"; label: string }) {
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noreferrer noopener"
-      aria-label={label}
-      className="grid h-11 w-11 place-items-center border border-tint/12 text-ash transition-colors hover:border-accent hover:text-accent"
-    >
-      <Icon name={icon} size={18} />
-    </a>
-  );
-}

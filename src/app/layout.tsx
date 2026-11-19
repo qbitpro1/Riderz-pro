@@ -88,7 +88,6 @@ const ORG_SCHEMA = {
     addressRegion: "Karnataka",
     addressCountry: "IN",
   },
-  sameAs: [SITE.instagram, SITE.youtube, SITE.facebook],
 };
 
 // /shop?q= is read by the catalogue filters, so this search action really searches.

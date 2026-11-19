@@ -134,7 +134,7 @@ The task list per person is kept with the team (latest: task update of 9 Nov 202
   offer, rider arriving, rider arrived and shop receipt. Waiting for approval.
 - [ ] Resend: verify riderzpro.com (SPF/DKIM), set `OTP_EMAIL_FROM` and `ORDERS_EMAIL_FROM`.
 - [ ] Keys and template IDs to Sathwik for the server (password manager only).
-- [ ] Confirm the support email and phone printed on emails and invoices.
+- [x] Support contact on the site, emails and invoices: admin@riderzpro.com, +91 98118 86661 (19 Nov).
 
 ### Payments and GST (Sathwik)
 
@@ -178,7 +178,8 @@ The task list per person is kept with the team (latest: task update of 9 Nov 202
 - [ ] Privacy policy: add a line about Google Translate (approved by the owner).
 - [ ] Invoices keep a placeholder address until the registered office address is shared.
 - [ ] Demo content still to go: car buying and selling (`/cars`, `/sell`, `/used-cars`, EMI), the
-  `/garage` page, "Motorbotz" and the demo GSTIN and phone number in the footer.
+  `/garage` page, "Motorbotz" and the demo GSTIN in the footer. (Phone and email are real since 19 Nov;
+  the social media links are removed until the accounts exist.)
 - [ ] `/partners` dealer form: save the requests and list them in admin, or hide it.
 - [ ] Customer requests (quotes, bookings, fitment questions) now arrive in admin -> Customer support;
   the admin Requests page (`/admin/leads`) only shows requests saved before 19 Nov.
