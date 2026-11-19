@@ -104,14 +104,23 @@ export function payOptions(s: StoreSettings) {
 /* ------------------------------------------------------------------ pricing */
 
 type CartLine = { id: string; qty: number };
-type Priced = { id: string; title: string; price: number; qty: number; stock: number };
+type Priced = { id: string; title: string; price: number; qty: number; stock: number; floor: number };
+
+/**
+ * The lowest unit price bargaining may reach: the seller's minimum price, never above today's
+ * price (a later price cut wins) and never below ₹1.
+ */
+const FLOOR_SQL = "LEAST(GREATEST(COALESCE(p.min_price, 1), 1), p.price)";
+
+/** Most rupees a discount may take off these lines without any unit going below its floor. */
+const bargainRoom = (items: Priced[]) => items.reduce((n, i) => n + Math.max(0, i.price - i.floor) * i.qty, 0);
 
 /** Prices the screen's cart from the database (this seller's own screen products only). */
 export async function priceStoreCart(vendorId: string, lines: CartLine[]): Promise<{ items: Priced[]; subtotal: number }> {
   if (lines.length === 0) throw new ApiError(400, "empty", "The order is empty.");
   const ids = [...new Set(lines.map((l) => l.id))];
-  const rows = await sql<{ id: string; title: string; price: number; stock: number }>(
-    `SELECT p.id, ${SCREEN_TITLE_SQL} AS title, p.price, p.stock FROM vendor_products p JOIN vendors v ON v.id = p.vendor_id
+  const rows = await sql<{ id: string; title: string; price: number; stock: number; floor: number }>(
+    `SELECT p.id, ${SCREEN_TITLE_SQL} AS title, p.price, p.stock, ${FLOOR_SQL} AS floor FROM vendor_products p JOIN vendors v ON v.id = p.vendor_id
       WHERE p.id = ANY($1) AND p.vendor_id = $2 AND ${SCREEN_PRODUCT_WHERE}`,
     [ids, vendorId],
   );
@@ -166,8 +175,11 @@ export async function createOffer(vendorId: string, percent: number, lines: Cart
   if (!s.bargainEnabled) return { ok: false as const, why: "This shop doesn't offer bargains on the screen. The listed prices are final." };
   if (!Number.isInteger(percent) || percent < 1) return { ok: false as const, why: "Offer a whole percent, at least 1." };
   if (percent > s.maxDiscountPct) return { ok: false as const, why: `Too high: the most this shop allows is ${s.maxDiscountPct}% off.` };
-  const { subtotal } = await priceStoreCart(vendorId, lines);
-  const discount = discountFor(subtotal, percent, s, null);
+  const { items, subtotal } = await priceStoreCart(vendorId, lines);
+  // Never below the seller's lowest price for any product in the order.
+  const room = bargainRoom(items);
+  if (room <= 0) return { ok: false as const, why: "These are already the shop's lowest prices. No further discount is possible on this order." };
+  const discount = Math.min(discountFor(subtotal, percent, s, null), room);
   if (discount <= 0) return { ok: false as const, why: "That doesn't take anything off this order." };
   const id = newId("sof");
   await sql(
@@ -175,7 +187,9 @@ export async function createOffer(vendorId: string, percent: number, lines: Cart
     [id, vendorId, percent, discount, reason?.slice(0, 200) ?? null, OFFER_MINUTES],
   );
   await audit({ type: "system", id: "store-assistant" }, "store_screen.offer", { vendorId, detail: { offerId: id, percent, discount, subtotal } });
-  return { ok: true as const, offer: { id, percent, discount, subtotal, total: subtotal - discount, validMinutes: OFFER_MINUTES } };
+  // When a lowest price held the discount back, show the customer the percent they really get.
+  const shown = discount < discountFor(subtotal, percent, s, null) ? Math.max(1, Math.floor((discount * 100) / subtotal)) : percent;
+  return { ok: true as const, offer: { id, percent: shown, discount, subtotal, total: subtotal - discount, validMinutes: OFFER_MINUTES } };
 }
 
 /** A live offer as the screen shows it (null when used, expired or another seller's). */
@@ -213,8 +227,8 @@ export async function placeStoreOrder(vendor: VendorSelf, input: StoreCheckoutIn
   const out = await transaction(async (q) => {
     // Lock and price every product (stock is taken below; a lost race rolls everything back).
     const ids = [...new Set(input.lines.map((l) => l.id))];
-    const rows = await q<{ id: string; title: string; price: number; stock: number }>(
-      `SELECT p.id, ${SCREEN_TITLE_SQL} AS title, p.price, p.stock FROM vendor_products p
+    const rows = await q<{ id: string; title: string; price: number; stock: number; floor: number }>(
+      `SELECT p.id, ${SCREEN_TITLE_SQL} AS title, p.price, p.stock, ${FLOOR_SQL} AS floor FROM vendor_products p JOIN vendors v ON v.id = p.vendor_id
         WHERE p.id = ANY($1) AND p.vendor_id = $2 AND ${SCREEN_PRODUCT_WHERE} ORDER BY p.id FOR UPDATE OF p`,
       [ids, vendor.id],
     );
@@ -241,15 +255,26 @@ export async function placeStoreOrder(vendor: VendorSelf, input: StoreCheckoutIn
       offerId = o.id;
     }
 
-    // The seller's discount lowers the unit prices (in proportion; whole rupees per unit).
+    // The seller's discount lowers the unit prices (in proportion; whole rupees per unit), never
+    // taking a unit below its floor (the seller's lowest price, or ₹1). What a floored line can't
+    // take moves to lines that still have room; anything left over is simply not given.
     const priced = items.map((i) => ({ ...i, unit: i.price }));
     if (discount > 0) {
+      discount = Math.min(discount, bargainRoom(items));
       let given = 0;
       for (const i of priced) {
         const share = Math.floor((discount * i.price * i.qty) / list);
-        const perUnit = Math.min(Math.floor(share / i.qty), i.price - 1);
+        const perUnit = Math.min(Math.floor(share / i.qty), i.price - i.floor);
         i.unit = i.price - perUnit;
         given += perUnit * i.qty;
+      }
+      for (const i of priced) {
+        const left = discount - given;
+        if (left < i.qty) continue;
+        const more = Math.min(Math.floor(left / i.qty), i.unit - i.floor);
+        if (more <= 0) continue;
+        i.unit -= more;
+        given += more * i.qty;
       }
       discount = given;
     }

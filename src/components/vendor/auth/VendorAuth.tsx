@@ -8,7 +8,7 @@ import { BUSINESS_TYPES, type BusinessType } from "@/lib/vendor/types";
 import { ApiFailure, api } from "@/lib/vendor/client";
 import { passwordSchema, signInSchema, signUpSchema, emailSchema } from "@/lib/vendor/validators";
 import { z } from "@/lib/zod";
-import { CheckField, Notice, SelectField, TextField, useFocusFirstInvalid, validate, type FieldErrors } from "./fields";
+import { CheckField, FieldMessage, Notice, SelectField, TextField, useFocusFirstInvalid, validate, type FieldErrors } from "./fields";
 
 type Mode = "signin" | "signup" | "reset";
 
@@ -174,11 +174,7 @@ function SignIn({ next, onForgot }: { next: string | null; onForgot: () => void 
           />
           <ShowToggle shown={show} onToggle={() => setShow((s) => !s)} />
         </div>
-        {errors.password && (
-          <p id="password-msg" role="alert" className="mt-1.5 text-xs text-danger">
-            {errors.password}
-          </p>
-        )}
+        <FieldMessage id="password" error={errors.password} />
       </div>
       <button type="submit" disabled={busy} className="btn btn-primary btn-block">
         {busy ? "Signing in…" : "Sign in"}
@@ -314,11 +310,7 @@ function SignUp({ onSwitch }: { onSwitch: () => void }) {
             aria-describedby={errors.mobile ? "mobile-msg" : undefined}
           />
         </div>
-        {errors.mobile && (
-          <p id="mobile-msg" role="alert" className="mt-1.5 text-xs text-danger">
-            {errors.mobile}
-          </p>
-        )}
+        <FieldMessage id="mobile" error={errors.mobile} />
       </div>
       <div>
         <label htmlFor="password" className="label">Password</label>
@@ -336,11 +328,7 @@ function SignUp({ onSwitch }: { onSwitch: () => void }) {
           />
           <ShowToggle shown={show} onToggle={() => setShow((s) => !s)} />
         </div>
-        {errors.password && (
-          <p id="password-msg" role="alert" className="mt-1.5 text-xs text-danger">
-            {errors.password}
-          </p>
-        )}
+        <FieldMessage id="password" error={errors.password} />
         <div id="password-strength">
           <StrengthMeter password={password} />
         </div>

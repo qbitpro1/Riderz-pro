@@ -180,6 +180,8 @@ export type VendorProductCommercial = {
   price: number;
   stock: number;
   lowStockAt: number;
+  /** Lowest price Salesman AI may bargain down to on the shop screen; null = no floor. */
+  minPrice: number | null;
 };
 
 export type VendorProduct = VendorProductContent &

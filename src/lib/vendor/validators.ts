@@ -84,11 +84,13 @@ export const maskTail = (last: string, length = 10) => `${"X".repeat(Math.max(0,
 
 /* --------------------------------------------------------------- schemas */
 
+// Empty says "is required"; too short says how long it must be ("Full name must be at least 2 characters").
 const trimmed = (min: number, max: number, label: string) =>
   z
     .string()
     .trim()
-    .min(min, `${label} is required`)
+    .min(Math.min(min, 1), `${label} is required`)
+    .min(min, `${label} must be at least ${min} characters`)
     .max(max, `${label} must be ${max} characters or fewer`);
 
 export const emailSchema = z.string().trim().toLowerCase().pipe(z.email("Enter a valid email address").max(254));
@@ -288,8 +290,11 @@ export const productCommercialSchema = z
     price: z.number().int().min(1).max(10_000_000),
     stock: z.number().int().min(0).max(100_000),
     lowStockAt: z.number().int().min(0).max(10_000),
+    /** Lowest price Salesman AI may bargain down to on the shop screen. Omitted = unchanged on edit. */
+    minPrice: z.number().int().min(1, "Lowest price must be at least ₹1").max(10_000_000).nullable().optional(),
   })
-  .refine((v) => v.price <= v.mrp, { path: ["price"], message: "Selling price cannot be above MRP" });
+  .refine((v) => v.price <= v.mrp, { path: ["price"], message: "Selling price cannot be above MRP" })
+  .refine((v) => v.minPrice == null || v.minPrice <= v.price, { path: ["minPrice"], message: "Lowest price cannot be above the selling price" });
 
 /** Draft products may be saved incomplete; only these fields are required. */
 export const productDraftSchema = z.object({

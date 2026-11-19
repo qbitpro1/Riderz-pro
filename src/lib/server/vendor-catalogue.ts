@@ -219,6 +219,7 @@ const COLUMN: Record<string, { col: string; json?: boolean }> = {
   price: { col: "price" },
   stock: { col: "stock" },
   lowStockAt: { col: "low_stock_at" },
+  minPrice: { col: "min_price" },
   status: { col: "status" },
   pendingRevision: { col: "pending_revision", json: true },
   reviewNotes: { col: "review_notes", json: true },
@@ -303,9 +304,10 @@ export async function createProduct(
       const rows = await q<VendorProductRow>(
         `INSERT INTO vendor_products
            (id, vendor_id, slug, status, title, brand, department, group_slug, sku, hsn, gst_rate, mrp, price, stock,
-            low_stock_at, part_type, warranty_months, summary, highlights, specs, fitment, images, submitted_at, store_category_id)
+            low_stock_at, part_type, warranty_months, summary, highlights, specs, fitment, images, submitted_at, store_category_id,
+            min_price)
          VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19::jsonb,$20::jsonb,$21::jsonb,$22::jsonb,
-                 CASE WHEN $4 = 'pending_review' THEN now() ELSE NULL END, $23)
+                 CASE WHEN $4 = 'pending_review' THEN now() ELSE NULL END, $23, $24)
          RETURNING *`,
         [
           id, vendorId, slug, input.submit ? "pending_review" : "draft", finalContent.title, finalContent.brand,
@@ -313,6 +315,7 @@ export async function createProduct(
           c.stock, c.lowStockAt, finalContent.partType, finalContent.warrantyMonths, finalContent.summary,
           JSON.stringify(finalContent.highlights), JSON.stringify(finalContent.specs),
           JSON.stringify(finalContent.fitment), JSON.stringify(finalContent.images), input.storeCategoryId ?? null,
+          c.minPrice ?? null,
         ],
       );
       await audit({ type: "vendor", id: vendorId }, input.submit ? "product.submit" : "product.create", { vendorId, detail: { productId: id } }, q);
@@ -353,6 +356,7 @@ export async function updateProduct(
         const c = input.commercial;
         if (c.sku.toLowerCase() !== row.sku.toLowerCase()) await assertSkuFree(q, vendorId, c.sku, row.id);
         Object.assign(set, { sku: c.sku, mrp: c.mrp, price: c.price, lowStockAt: c.lowStockAt });
+        if (c.minPrice !== undefined) set.minPrice = c.minPrice;
         const stock = stockAfterEdit(row, c.stock, input.stockWas, "stock");
         if (stock !== row.stock) set.stock = stock;
       }
@@ -465,13 +469,13 @@ export async function duplicateProduct(vendorId: string, id: string): Promise<Ve
     const rows = await q<VendorProductRow>(
       `INSERT INTO vendor_products
          (id, vendor_id, slug, status, title, brand, department, group_slug, sku, hsn, gst_rate, mrp, price, stock,
-          low_stock_at, part_type, warranty_months, summary, highlights, specs, fitment, images, store_category_id)
-       VALUES ($1,$2,$3,'draft',$4,$5,$6,$7,$8,$9,$10,$11,$12,0,$13,$14,$15,$16,$17::jsonb,$18::jsonb,$19::jsonb,$20::jsonb,$21)
+          low_stock_at, part_type, warranty_months, summary, highlights, specs, fitment, images, store_category_id, min_price)
+       VALUES ($1,$2,$3,'draft',$4,$5,$6,$7,$8,$9,$10,$11,$12,0,$13,$14,$15,$16,$17::jsonb,$18::jsonb,$19::jsonb,$20::jsonb,$21,$22)
        RETURNING *`,
       [
         copyId, vendorId, slug, c.title, c.brand, c.department, c.groupSlug, sku, c.hsn, c.gstRate, row.mrp, row.price,
         row.low_stock_at, c.partType, c.warrantyMonths, c.summary, JSON.stringify(c.highlights), JSON.stringify(c.specs),
-        JSON.stringify(c.fitment), JSON.stringify(c.images), row.store_category_id,
+        JSON.stringify(c.fitment), JSON.stringify(c.images), row.store_category_id, row.min_price ?? null,
       ],
     );
     await audit({ type: "vendor", id: vendorId }, "product.duplicate", { vendorId, detail: { productId: copyId, from: id } }, q);

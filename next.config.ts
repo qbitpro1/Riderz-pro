@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import path from "node:path";
 
 /**
  * Content Security Policy. No nonces, so it works with statically rendered pages; the price is
@@ -62,6 +63,9 @@ const cspHeader =
   CSP_MODE === "off" ? [] : [{ key: CSP_MODE === "enforce" ? "Content-Security-Policy" : "Content-Security-Policy-Report-Only", value: CSP_VALUE }];
 
 const nextConfig: NextConfig = {
+  turbopack: {
+    root: path.resolve(__dirname),
+  },
   reactStrictMode: true,
   poweredByHeader: false,
   // Database drivers load native/wasm code at runtime; keep them out of the server bundle.

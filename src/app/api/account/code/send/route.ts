@@ -13,6 +13,6 @@ export const POST = route(async (req: Request) => {
   await rateLimit(`cust-code-ip:${clientIp(req)}`, 10, 10 * 60);
   const { identifier } = await readJson(req, sendCodeSchema);
   await rateLimit(`cust-code-to:${identifier.target}`, 5, 60 * 60);
-  await sendOtp({ vendorId: null, channel: identifier.channel, target: identifier.target, purpose: "customer_login" });
-  return ok({ sent: true, channel: identifier.channel });
+  const code = await sendOtp({ vendorId: null, channel: identifier.channel, target: identifier.target, purpose: "customer_login" });
+  return ok({ sent: true, channel: identifier.channel, ...(process.env.NODE_ENV !== "production" ? { devCode: code } : {}) });
 });

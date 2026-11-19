@@ -45,9 +45,8 @@ function VerifyRow({
     }
   }
 
-  // Not a <form>: this row sits inside the step's own form, and a nested form is invalid HTML (the
-  // browser would submit the outer form instead, reloading the page without checking the code).
   async function verify() {
+    if (busy !== null) return;
     if (!/^[0-9]{6}$/.test(code)) {
       setError("Enter the 6-digit code.");
       return;
@@ -86,7 +85,9 @@ function VerifyRow({
         <p className="mt-3 text-xs leading-relaxed text-ash">We&apos;ll confirm this during review. Nothing to do for now.</p>
       )}
       {!verified && deliverable && sent && (
-        <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-end">
+        // Not a <form>: this row sits inside the step's own form, and a nested form makes the
+        // browser submit (reload the page) instead of verifying. Enter in the box verifies.
+        <div role="group" aria-label={`Verify ${label.toLowerCase()}`} className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-end">
           <div className="flex-1">
             <label htmlFor={id} className="label">
               Code sent to {sent}
@@ -100,7 +101,7 @@ function VerifyRow({
               onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
-                  e.preventDefault();
+                  e.preventDefault(); // keep Enter from submitting the step's form
                   void verify();
                 }
               }}

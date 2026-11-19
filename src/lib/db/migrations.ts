@@ -1030,6 +1030,14 @@ UPDATE vendor_orders vo SET commission_rate = 0, updated_at = now()
 `,
   },
   {
+    // The seller's lowest price for a product on the shop screen: Salesman AI's bargaining never
+    // takes a unit below it (store-sales.ts). Empty = no floor beyond the seller's % / ₹ limits.
+    id: "019_product_min_price",
+    sql: `
+ALTER TABLE vendor_products ADD COLUMN min_price integer CHECK (min_price IS NULL OR min_price >= 1);
+`,
+  },
+  {
     // customer_carts      a signed-in shopper's cart, so it follows them across devices
     //                     (src/lib/server/customer-cart.ts). Lines are the browser's own, checked on read.
     // vendor_hold_messages the conversation while a seller's account is frozen (suspended): the admin's
