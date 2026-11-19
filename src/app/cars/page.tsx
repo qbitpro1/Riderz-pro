@@ -8,8 +8,8 @@ import { Icon } from "@/components/ui/Icon";
 import { toCardData } from "@/lib/inventory/card-data";
 import { browsable, facetsFor, KM_BANDS, PRICE_BANDS, SPECIAL_FILTERS } from "@/lib/inventory/store";
 import { SEARCH_EXAMPLES } from "@/lib/inventory/query";
-import { whatsapp } from "@/lib/data/site";
 import { pageMeta } from "@/lib/data/seo";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 
 export const metadata: Metadata = pageMeta({
   title: "Buy Used Cars in India — Verified, Inspected & Certified",
@@ -107,15 +107,9 @@ export default async function CarsPage() {
               </p>
             </div>
             <div className="flex flex-wrap gap-3">
-              <a
-                href={whatsapp("Hi Riderzpro, I'm looking for a car. My requirement is: ")}
-                target="_blank"
-                rel="noreferrer noopener"
-                className="btn btn-whatsapp btn-sm"
-              >
-                <Icon name="whatsapp" size={15} />
+              <EnquiryButton topic="other" message={"Hi Riderzpro, I'm looking for a car. My requirement is: "} className="btn btn-primary btn-sm">
                 Tell us what you want
-              </a>
+              </EnquiryButton>
               <Link href="/sell" className="btn btn-outline btn-sm">
                 Sell my car
               </Link>

@@ -7,13 +7,13 @@ import { Icon } from "@/components/ui/Icon";
 import { Reveal } from "@/components/ui/Reveal";
 import { liveBuilds } from "@/lib/server/builds";
 import { approvedReviews } from "@/lib/server/reviews";
-import { whatsapp } from "@/lib/data/site";
 import { pageMeta } from "@/lib/data/seo";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 
 export const metadata: Metadata = pageMeta({
-  title: "Riderzpro Builds — Modified Cars, Full Spec & Real Build Costs",
+  title: "Riderzpro Builds — Modified Cars, Full Spec & Build Costs",
   description:
-    "Every Riderzpro build with the full modification list and what it actually cost. Off-road rigs, street builds, audio installs, luxury interiors and performance cars.",
+    "Riderzpro builds with the full modification list and what they cost: off-road rigs, street builds, audio installs, interiors and performance cars.",
   path: "/builds",
 });
 
@@ -23,8 +23,8 @@ export default async function BuildsPage() {
     <>
       <PageHero
         eyebrow="Riderzpro builds"
-        title="BUILT BY US. DRIVEN BY THEM."
-        blurb="Real cars, real invoices, real owners. Every build lists exactly what went into it and what it cost — because that is the number nobody else publishes."
+        title="Riderzpro builds"
+        blurb="Every build we publish lists exactly what went into it and what it cost. Builds appear here once their owners agree to share them."
         media="garageSpotlit"
         size="sm"
       />
@@ -46,7 +46,7 @@ export default async function BuildsPage() {
 
           <div className="card mt-8 flex flex-col items-start justify-between gap-4 p-6 md:flex-row md:items-center">
             <div>
-              <p className="font-display text-lg font-extrabold uppercase">Build something like this</p>
+              <p className="font-display text-lg font-extrabold uppercase">Plan your build</p>
               <p className="mt-1 text-sm text-ash">
                 Send us a reference and a budget. We&apos;ll come back with a spec sheet and a schedule.
               </p>
@@ -56,15 +56,9 @@ export default async function BuildsPage() {
                 Open the configurator
                 <Icon name="arrow" size={14} />
               </Link>
-              <a
-                href={whatsapp("Hi Riderzpro, I want to build something like one of your builds. My car is: ")}
-                target="_blank"
-                rel="noreferrer noopener"
-                className="btn btn-whatsapp btn-sm"
-              >
-                <Icon name="whatsapp" size={15} />
+              <EnquiryButton topic="installation" message={"Hi Riderzpro, I'd like to plan a build. My car is: "} className="btn btn-primary btn-sm">
                 Send a reference
-              </a>
+              </EnquiryButton>
             </div>
           </div>
         </div>

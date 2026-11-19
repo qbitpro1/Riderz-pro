@@ -12,13 +12,14 @@ export { GARAGE_EVENT, readGarage, writeGarage, type Garage } from "@/lib/client
  * "WHAT DO YOU DRIVE?" — brand → model → variant → year.
  * The choice is remembered so the rest of the site can filter by fitment.
  */
-export function FitmentPicker({ compact = false }: { compact?: boolean }) {
+/** `bare`: no card and no heading, for a section that already has its own (the home page). */
+export function FitmentPicker({ compact = false, bare = false }: { compact?: boolean; bare?: boolean }) {
   // The form starts from the saved car; it starts again when the car changes (another picker, the account).
   const saved = useGarage();
-  return <PickerForm key={garageKey(saved)} saved={saved} compact={compact} />;
+  return <PickerForm key={garageKey(saved)} saved={saved} compact={compact} bare={bare} />;
 }
 
-function PickerForm({ saved, compact }: { saved: Garage | null; compact: boolean }) {
+function PickerForm({ saved, compact, bare }: { saved: Garage | null; compact: boolean; bare: boolean }) {
   const [brandSlug, setBrandSlug] = useState(saved?.brandSlug ?? "");
   const [modelSlug, setModelSlug] = useState(saved?.modelSlug ?? "");
   const [variant, setVariant] = useState(saved?.variant ?? "");
@@ -62,20 +63,19 @@ function PickerForm({ saved, compact }: { saved: Garage | null; compact: boolean
   }
 
   return (
-    <div className="card p-5 md:p-6">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <p className="eyebrow mb-2">Car-specific shopping</p>
-          <h3 className="display-3">WHAT DO YOU DRIVE?</h3>
-          <p className="mt-2 max-w-md text-sm text-ash">
-            Tell us once and we only show you parts confirmed to fit — no guessing at
-            the checkout.
-          </p>
+    <div className={bare ? "" : "card p-5 md:p-6"}>
+      {!bare && (
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="eyebrow mb-2">Car-specific shopping</p>
+            <h2 className="display-3">What do you drive?</h2>
+            <p className="mt-2 max-w-md text-sm text-ash">Tell us once and we only show parts confirmed to fit.</p>
+          </div>
+          <Icon name="wheel" size={40} className="hidden shrink-0 text-accent/30 sm:block" />
         </div>
-        <Icon name="wheel" size={40} className="hidden shrink-0 text-accent/30 sm:block" />
-      </div>
+      )}
 
-      <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className={bare ? "grid gap-3 sm:grid-cols-2" : "mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4"}>
         <div>
           <label className="label" htmlFor="fit-brand">
             Brand

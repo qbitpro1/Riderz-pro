@@ -21,8 +21,27 @@ import {
 } from "@/lib/ppf/coverage";
 import { GUIDE, PREP_STEPS, QUALITY_CHECKLIST } from "@/lib/ppf/guide";
 import { rupees } from "@/lib/format";
-import { whatsapp } from "@/lib/data/site";
 import { pageMeta } from "@/lib/data/seo";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
+import { PlaceCard } from "@/components/ui/card-22";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { photoAlt, photoUrl, type MediaKey } from "@/lib/media";
+import type { DetailService } from "@/lib/data/services";
+
+/** Carousel photos per service card (stock photography from lib/media). */
+const SERVICE_GALLERY: Partial<Record<string, MediaKey[]>> = {
+  "ceramic-coating": ["detailingPolish", "garageSpotlit", "chromeGrille"],
+  "graphene-coating": ["washBay", "nightStreetSedan", "garageHeadlights"],
+  "paint-correction": ["frontGrilleRed", "garageSpotlit", "heroWorkshopNight"],
+  "interior-detailing": ["cockpitScreen", "steeringNight"],
+};
+
+const SERVICE_CATEGORY: Record<DetailService["category"], string> = {
+  protection: "Protection",
+  correction: "Correction",
+  wrap: "Wrap",
+};
 
 export const metadata: Metadata = pageMeta({
   title: "Paint Protection Film (PPF) — Packages & Installation",
@@ -56,7 +75,7 @@ export default function PpfPage() {
     <>
       <PageHero
         eyebrow="Paint protection film"
-        title="PROTECT WHAT YOU PAID FOR."
+        title="Protect what you paid for"
         blurb="Premium paint protection film engineered to protect your car from stone chips, scratches, road debris and everyday damage — on a ₹10 lakh SUV or a ₹2 crore supercar."
         media="wrapHeatGun"
         actions={[
@@ -137,7 +156,7 @@ export default function PpfPage() {
         <div className="shell">
           <SectionHead
             eyebrow="Choose your coverage"
-            title="FROM DOOR CUPS TO THE WHOLE CAR."
+            title="From door cups to the whole car"
             blurb="Prices shown are indicative for a mid-size SUV on excellent paint. Your car, your coverage and your paint condition all move the number."
           />
           <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -174,14 +193,14 @@ export default function PpfPage() {
         <div className="shell space-y-10">
           <SectionHead
             eyebrow="Whatever you drive"
-            title="ONE STUDIO, EVERY PRICE POINT."
+            title="One studio, every price point"
             blurb="We do not price a Creta like a Cayenne, and we do not pretend PPF is a luxury-only service."
           />
 
           <div className="grid gap-4 lg:grid-cols-3">
             <SegmentCard
               eyebrow="Mid-range"
-              title="PROTECTION FOR EVERYDAY DRIVERS."
+              title="Protection for everyday drivers"
               price={rupees(fromPrice("compact-suv"))}
               media="crossoverTeal"
               blurb="Tata, Hyundai, Kia, Mahindra, Toyota, Honda, Maruti Suzuki, Volkswagen, Skoda, MG, Jeep. Start with the high-impact areas and build up."
@@ -190,7 +209,7 @@ export default function PpfPage() {
             />
             <SegmentCard
               eyebrow="Off-road"
-              title="BUILT FOR THE TRAIL."
+              title="Built for the trail"
               price={rupees(
                 quote({ sizeClass: "full-suv", tier: "premium", areaIds: getPackage("trail")!.areaIds, paintCondition: "excellent" }).low,
               )}
@@ -202,7 +221,7 @@ export default function PpfPage() {
             />
             <SegmentCard
               eyebrow="Signature"
-              title="LUXURY PAINT DESERVES BETTER."
+              title="Luxury paint deserves better"
               price={rupees(
                 quote({ sizeClass: "luxury", tier: "signature", areaIds: [], fullBody: true, paintCondition: "excellent" }).low,
               )}
@@ -221,7 +240,7 @@ export default function PpfPage() {
         <div className="shell">
           <SectionHead
             eyebrow="PPF films"
-            title="THE FILM MATTERS AS MUCH AS THE FITTER."
+            title="The film matters as much as the fitter"
             blurb="Every film we list carries its own manufacturer warranty, with its own conditions. We publish them per product rather than rolling them into one promise."
             href="/ppf/films"
             hrefLabel="All films"
@@ -265,7 +284,7 @@ export default function PpfPage() {
         <div className="shell">
           <SectionHead
             eyebrow="Preparation"
-            title="TEN STEPS BEFORE YOU GET IT BACK."
+            title="Ten steps before you get it back"
             blurb="Film locks in whatever is underneath it. Most of this job happens before any film is cut."
           />
           <ol className="grid gap-px overflow-hidden border border-tint/8 bg-tint/8 sm:grid-cols-2 lg:grid-cols-5">
@@ -283,7 +302,7 @@ export default function PpfPage() {
       {/* before/after ----------------------------------------------- */}
       <section className="section border-y border-tint/8 bg-carbon">
         <div className="shell">
-          <SectionHead eyebrow="Before / after" title="DRAG TO SEE THE DIFFERENCE." />
+          <SectionHead eyebrow="Before / after" title="Drag to see the difference" />
           <div className="grid gap-5 md:grid-cols-2">
             <Reveal>
               <BeforeAfter
@@ -311,7 +330,7 @@ export default function PpfPage() {
       <section className="section">
         <div className="shell grid gap-8 lg:grid-cols-2 lg:items-start">
           <div>
-            <SectionHead eyebrow="What good looks like" title="OUR QUALITY CHECKLIST." blurb="What you should expect from any installer, including us." />
+            <SectionHead eyebrow="What good looks like" title="Our quality checklist" blurb="What you should expect from any installer, including us." />
             <ul className="space-y-2.5">
               {QUALITY_CHECKLIST.map((item) => (
                 <li key={item.claim} className="flex items-start gap-2.5 text-sm text-chalk/85">
@@ -326,7 +345,7 @@ export default function PpfPage() {
           </div>
 
           <div>
-            <SectionHead eyebrow="Why Riderzpro" title="WHAT WE ACTUALLY DO." />
+            <SectionHead eyebrow="Why Riderzpro" title="What we actually do" />
             <ul className="grid gap-2 sm:grid-cols-2">
               {[
                 "Professional installation",
@@ -360,20 +379,34 @@ export default function PpfPage() {
         <div className="shell">
           <SectionHead
             eyebrow="Goes with it"
-            title="PPF ISN'T THE ONLY LAYER."
+            title="PPF isn't the only layer"
             blurb="A ceramic coating over film makes the whole car easier to wash. It is not a substitute for the physical protection film gives you."
           />
-          <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <ul className="cl-scope grid gap-5 md:grid-cols-2 lg:grid-cols-4">
             {DETAIL_SERVICES.filter((s) => s.slug !== "paint-protection-film")
               .slice(0, 4)
               .map((s) => (
-                <li key={s.slug} id={s.slug} className="scroll-mt-24">
-                  <div className="card flex h-full flex-col p-5">
-                    <p className="font-display text-base font-extrabold uppercase">{s.name}</p>
-                    <p className="mt-2 flex-1 text-xs leading-relaxed text-ash">{s.blurb}</p>
-                    <p className="mt-3 font-display text-lg font-extrabold text-accent tnum">From {rupees(s.price)}</p>
-                    <p className="text-[11px] text-dim">{s.priceNote}</p>
-                  </div>
+                <li key={s.slug} id={s.slug} className="flex scroll-mt-24">
+                  <PlaceCard
+                    className="max-w-none"
+                    images={(SERVICE_GALLERY[s.slug] ?? [s.image]).map((key) => ({ src: photoUrl(key, 800), alt: photoAlt(key) }))}
+                    tags={[SERVICE_CATEGORY[s.category]]}
+                    title={s.name}
+                    meta={[s.duration, ...(s.warranty !== "—" ? [s.warranty] : [])]}
+                    description={s.blurb}
+                    price={`From ${rupees(s.price)}`}
+                    priceNote={s.priceNote}
+                    action={
+                      <EnquiryButton
+                        topic="installation"
+                        message={`Hi Riderzpro, I'd like to book ${s.name} for my `}
+                        className={cn(buttonVariants({ size: "sm" }), "rounded-full px-4")}
+                      >
+                        Book now
+                        <Icon name="arrow" size={14} />
+                      </EnquiryButton>
+                    }
+                  />
                 </li>
               ))}
           </ul>
@@ -388,7 +421,7 @@ export default function PpfPage() {
       <section className="section">
         <div className="shell grid gap-8 lg:grid-cols-2 lg:items-start">
           <div>
-            <SectionHead eyebrow="Questions" title="BEFORE YOU BOOK." href="/ppf/guide" hrefLabel="Full guide" />
+            <SectionHead eyebrow="Questions" title="Before you book" href="/ppf/guide" hrefLabel="Full guide" />
             <Accordion items={FAQ} />
           </div>
           <div className="card p-6">
@@ -401,15 +434,9 @@ export default function PpfPage() {
               Build your PPF package
               <Icon name="arrow" size={15} />
             </Link>
-            <a
-              href={whatsapp("Hi Riderzpro, I want a PPF quote for my ")}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="btn btn-whatsapp btn-block mt-3"
-            >
-              <Icon name="whatsapp" size={16} />
-              Get PPF quote on WhatsApp
-            </a>
+            <EnquiryButton topic="installation" message={"Hi Riderzpro, I want a PPF quote for my "} className="btn btn-primary btn-block mt-3">
+              Get PPF quote
+            </EnquiryButton>
             <p className="mt-4 text-[11px] text-dim">
               Vehicle classes we price against: {VEHICLE_CLASSES.map((c) => c.label).join(" · ")}.
             </p>

@@ -79,7 +79,7 @@ export const COLLECTIONS: Collection[] = [
   {
     slug: "fitted-by-us",
     name: "Fitted by us",
-    tagline: "We install it at our garages",
+    tagline: "We can install it for you",
     blurb: "Products with installation available at a Riderzpro garage.",
     image: "mechanicEngine",
     match: (i) => i.installation,

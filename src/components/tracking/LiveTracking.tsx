@@ -135,12 +135,13 @@ function JobLine({ job: j, seller }: { job: CustomerTrackingJob; seller?: string
           {!j.rider && "Waiting for the rider's location"}
         </p>
       )}
-      <ol className="mt-3 grid grid-cols-5 gap-1" aria-label="Delivery progress">
+      {/* Phones: a vertical list with whole labels and times. sm and up: one row of five. */}
+      <ol className="mt-3 grid gap-2 sm:grid-cols-5 sm:gap-1" aria-label="Delivery progress">
         {j.steps.map((s, i) => (
-          <li key={s.key} className="min-w-0">
-            <span className={`block h-1.5 rounded-full ${i <= reached ? "bg-accent" : "bg-tint/10"}`} />
-            <span className={`mt-1.5 block truncate text-[11px] ${i <= reached ? "font-semibold text-chalk" : "text-dim"}`}>{s.label}</span>
-            {s.at && <span className="block truncate text-[10px] text-dim tnum">{timeOf(s.at)}</span>}
+          <li key={s.key} className="flex min-w-0 items-center gap-3 sm:block" aria-current={i === reached ? "step" : undefined}>
+            <span className={`block h-1.5 w-8 shrink-0 rounded-full sm:w-auto ${i <= reached ? "bg-accent" : "bg-tint/10"}`} />
+            <span className={`block text-xs sm:mt-1.5 sm:truncate sm:text-[11px] ${i <= reached ? "font-semibold text-chalk" : "text-dim"}`}>{s.label}</span>
+            {s.at && <span className="ml-auto block text-[11px] text-dim tnum sm:ml-0 sm:truncate sm:text-[10px]">{timeOf(s.at)}</span>}
           </li>
         ))}
       </ol>

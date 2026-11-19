@@ -7,7 +7,7 @@ export default function NotFound() {
     <section className="section">
       <div className="shell max-w-3xl py-16 text-center md:py-24">
         <p className="eyebrow mb-4">404 · Page not found</p>
-        <h1 className="display-1">NOT ON THIS SHELF.</h1>
+        <h1 className="display-1">Not on this shelf</h1>
         <p className="mx-auto mt-5 max-w-md text-sm text-ash md:text-base">
           That page has moved or never existed. Search the shop or pick a department.
         </p>

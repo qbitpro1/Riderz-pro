@@ -20,7 +20,8 @@ import { formatIST } from "@/lib/inventory/freshness";
 import { publicCar, relatedCars } from "@/lib/server/cars";
 import { UploadedPhoto } from "@/components/ui/UploadedPhoto";
 import { emiFrom, km as fmtKm, lakh } from "@/lib/format";
-import { SITE, whatsapp } from "@/lib/data/site";
+import { SITE } from "@/lib/data/site";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 
 // Cars come from the database (car_listings, managed in /admin/cars).
 export const dynamic = "force-dynamic";
@@ -249,46 +250,25 @@ export default async function CarDetailPage({ params }: { params: Promise<{ slug
               )}
 
               <div className="mt-5 grid gap-3">
-                <a
-                  href={whatsapp(`${waMessage} I'd like to book a test drive.`)}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  className="btn btn-primary btn-block"
-                >
+                <EnquiryButton topic="other" message={`${waMessage} I'd like to book a test drive.`} className="btn btn-primary btn-block">
                   Book a test drive
                   <Icon name="arrow" size={15} />
-                </a>
+                </EnquiryButton>
                 <div className="grid grid-cols-2 gap-3">
                   <a href={SITE.phoneHref} className="btn btn-outline">
                     <Icon name="phone" size={15} />
                     Call
                   </a>
-                  <a
-                    href={whatsapp(waMessage)}
-                    target="_blank"
-                    rel="noreferrer noopener"
-                    className="btn btn-whatsapp"
-                  >
-                    <Icon name="whatsapp" size={16} />
-                    WhatsApp
-                  </a>
+                  <EnquiryButton topic="other" message={waMessage} className="btn btn-primary">
+                    Message
+                  </EnquiryButton>
                 </div>
-                <a
-                  href={whatsapp(`${waMessage} I'd like to make an offer of ₹`)}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  className="btn btn-outline btn-block"
-                >
+                <EnquiryButton topic="other" message={`${waMessage} I'd like to make an offer of ₹`} className="btn btn-outline btn-block">
                   Make an offer
-                </a>
-                <a
-                  href={whatsapp(`${waMessage} Please send me finance options.`)}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  className="btn btn-outline btn-block"
-                >
+                </EnquiryButton>
+                <EnquiryButton topic="other" message={`${waMessage} Please send me finance options.`} className="btn btn-outline btn-block">
                   Get finance
-                </a>
+                </EnquiryButton>
                 <InspectionRequest
                   vehicle={`${car.year} ${car.brand} ${car.model} ${car.variant}`}
                   city={car.city}

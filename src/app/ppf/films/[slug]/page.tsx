@@ -16,7 +16,7 @@ import {
   type Spec,
 } from "@/lib/ppf/films";
 import { TIER_RATES } from "@/lib/ppf/coverage";
-import { whatsapp } from "@/lib/data/site";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 
 export function generateStaticParams() {
   return PPF_FILMS.map((f) => ({ slug: f.slug }));
@@ -197,15 +197,9 @@ export default async function PpfFilmPage({ params }: { params: Promise<{ slug: 
                   Price this on my car
                   <Icon name="arrow" size={15} />
                 </Link>
-                <a
-                  href={whatsapp(`Hi Riderzpro, I'm interested in ${brand?.name} ${film.name} PPF. My car is: `)}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  className="btn btn-whatsapp btn-block mt-3"
-                >
-                  <Icon name="whatsapp" size={16} />
+                <EnquiryButton topic="installation" message={`Hi Riderzpro, I'm interested in ${brand?.name} ${film.name} PPF. My car is: `} className="btn btn-primary btn-block mt-3">
                   Ask about this film
-                </a>
+                </EnquiryButton>
 
                 {coverage.missing.length > 0 && (
                   <div className="mt-5 border-t border-tint/8 pt-4">
@@ -230,7 +224,7 @@ export default async function PpfFilmPage({ params }: { params: Promise<{ slug: 
 
       <section className="section border-t border-tint/8 bg-carbon">
         <div className="shell">
-          <SectionHead eyebrow="Other films" title="COMPARE THE RANGE." href="/ppf/films" hrefLabel="All films" />
+          <SectionHead eyebrow="Other films" title="Compare the range" href="/ppf/films" hrefLabel="All films" />
           <ul className="flex flex-wrap gap-2">
             {PPF_FILMS.filter((f) => f.slug !== film.slug).map((f) => (
               <li key={f.sku}>

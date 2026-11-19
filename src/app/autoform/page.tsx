@@ -22,8 +22,8 @@ import {
   priceFor,
 } from "@/lib/autoform/catalog";
 import { rupees } from "@/lib/format";
-import { whatsapp } from "@/lib/data/site";
 import { pageMeta } from "@/lib/data/seo";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 
 export const metadata: Metadata = pageMeta({
   title: "Autoform Seat Covers — Car-Specific Designs & Prices",
@@ -57,16 +57,15 @@ export default function AutoformPage() {
     <>
       <PageHero
         eyebrow="Genuine Autoform · Authorised Autoform reseller"
-        title="SEATS THAT LOOK BUILT IN."
+        title="Seats that look built in"
         blurb={`Twenty Autoform designs across the Eco and Signature series, cut to your car rather than pulled over it. From ${rupees(cheapest)} for a 5-seater set, fitted at a Riderzpro workshop.`}
         media="cockpitScreen"
         actions={[
           { href: "#designs", label: "Browse designs", variant: "primary" },
           {
-            href: whatsapp("Hi Riderzpro, I want Autoform seat covers for my "),
+            href: "#enquire",
             label: "Get a quote",
             variant: "outline",
-            external: true,
           },
         ]}
       />
@@ -83,7 +82,7 @@ export default function AutoformPage() {
       <section className="section border-y border-tint/8 bg-carbon">
         <div className="shell grid gap-8 lg:grid-cols-2 lg:items-start">
           <div>
-            <SectionHead eyebrow="From the Autoform catalogue" title="WHAT EVERY DESIGN CARRIES." />
+            <SectionHead eyebrow="From the Autoform catalogue" title="What every design carries" />
             <ul className="grid gap-2 sm:grid-cols-2">
               {DESIGN_FEATURES.map((f) => (
                 <li key={f} className="flex items-center gap-2 border border-tint/8 bg-tint/2 p-3 text-sm text-ash">
@@ -127,7 +126,7 @@ export default function AutoformPage() {
         <div className="shell">
           <SectionHead
             eyebrow="Pricing"
-            title="PRICED BY SERIES AND SEAT ROWS."
+            title="Priced by series and seat rows"
             blurb="Autoform prices by design series and by how many rows your car has. That is the whole of it — no hidden vehicle loading."
           />
           <div className="overflow-x-auto">
@@ -181,7 +180,7 @@ export default function AutoformPage() {
         <div className="shell">
           <SectionHead
             eyebrow="Also from Autoform"
-            title="MATS AND BOOT LINERS."
+            title="Mats and boot liners"
             blurb="Same price list, same logic — by design and row count. Boot mats are the one place Autoform publishes real per-model sizing."
           />
           <div className="overflow-x-auto">
@@ -238,7 +237,7 @@ export default function AutoformPage() {
         <div className="shell">
           <SectionHead
             eyebrow="Autoform accessories"
-            title="THE REST OF THE CABIN."
+            title="The rest of the cabin"
             blurb={`${CATALOGUE_SUMMARY.accessoriesPublishable} of ${CATALOGUE_SUMMARY.accessories} accessory lines are listed. The rest carry a price in the sheet but no product name — we are not guessing what they are.`}
           />
           <ul className="grid grid-cols-2 gap-3 md:grid-cols-4">
@@ -260,7 +259,7 @@ export default function AutoformPage() {
       <section className="section border-t border-tint/8 bg-carbon">
         <div className="shell grid gap-8 lg:grid-cols-2 lg:items-start">
           <div>
-            <SectionHead eyebrow="Not listed yet" title="TEN MORE DESIGNS." />
+            <SectionHead eyebrow="Not listed yet" title="Ten more designs" />
             <p className="text-sm leading-relaxed text-ash">
               These are named and priced in the Autoform price list but do not appear in the 2024
               catalogue we have read. They are almost certainly in the Brand Store Exclusive
@@ -282,15 +281,9 @@ export default function AutoformPage() {
               Autoform sets are made to order for your car. We take the order, confirm the pattern for
               your exact variant, and fit it at the workshop — usually about two hours.
             </p>
-            <a
-              href={whatsapp("Hi Riderzpro, I want to book Autoform seat cover fitting. My car is: ")}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="btn btn-whatsapp btn-block mt-5"
-            >
-              <Icon name="whatsapp" size={16} />
+            <EnquiryButton id="enquire" topic="installation" message={"Hi Riderzpro, I want to book Autoform seat cover fitting. My car is: "} className="btn btn-primary btn-block mt-5">
               Book Autoform installation
-            </a>
+            </EnquiryButton>
             <Link href="/garage" className="btn btn-outline btn-block mt-3">
               Workshop and locations
             </Link>

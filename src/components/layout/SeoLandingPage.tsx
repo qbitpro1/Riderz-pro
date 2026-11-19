@@ -72,7 +72,7 @@ export async function SeoLandingPage({ landing }: { landing: SeoLanding }) {
       {landing.store && (
         <section className="section border-t border-tint/8">
           <div className="shell">
-            <SectionHead eyebrow="Departments" title="SHOP BY DEPARTMENT." href="/shop" hrefLabel="Whole shop" />
+            <SectionHead eyebrow="Departments" title="Shop by department" href="/shop" hrefLabel="Whole shop" />
             <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {DEPARTMENTS.map((d) => (
                 <li key={d.slug}>
@@ -111,7 +111,7 @@ export async function SeoLandingPage({ landing }: { landing: SeoLanding }) {
 
       <section className="section border-y border-tint/8 bg-carbon">
         <div className="shell">
-          <SectionHead eyebrow="Where next" title="KEEP GOING." />
+          <SectionHead eyebrow="Where next" title="Keep going" />
           <ul className="flex flex-wrap gap-2">
             {landing.links.map((l) => (
               <li key={l.href}>

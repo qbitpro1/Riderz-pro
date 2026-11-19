@@ -10,8 +10,8 @@ import { toPublic } from "@/lib/data/recoil";
 import { buildSystem, BUDGETS, GOALS, type Budget, type Goal } from "@/lib/data/recoil/system-builder";
 import { findModel } from "@/lib/data/vehicles";
 import { rupees } from "@/lib/format";
-import { whatsapp } from "@/lib/data/site";
 import { pageMeta } from "@/lib/data/seo";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 
 export const metadata: Metadata = pageMeta({
   title: "Build My Audio System — RECOIL, Costed to Your Budget",
@@ -37,7 +37,7 @@ export default async function BuildAudioPage({ searchParams }: { searchParams: P
     <>
       <PageHero
         eyebrow="Build my audio system"
-        title="TELL US WHAT YOU WANT IT TO DO."
+        title="Tell us what you want it to do"
         blurb="Budget, car, goal. We put together a RECOIL specification that actually works as a system — and tell you when the honest answer is that your budget buys fewer, better parts."
         media="studioMonitors"
         size="sm"
@@ -78,7 +78,7 @@ export default async function BuildAudioPage({ searchParams }: { searchParams: P
           <div className="shell">
             <SectionHead
               eyebrow={`${goalMeta?.label} · ${rupees(budget!)} budget${vehicle ? ` · ${vehicle}` : ""}`}
-              title="YOUR SYSTEM."
+              title="Your system"
               blurb={goalMeta?.blurb}
             />
 
@@ -132,9 +132,7 @@ export default async function BuildAudioPage({ searchParams }: { searchParams: P
                       : `Above your ${rupees(budget!)} budget — see the note below.`}
                   </p>
                 </div>
-                <a
-                  href={whatsapp(
-                    [
+                <EnquiryButton topic="installation" message={[
                       "Hi Riderzpro, I built an audio system on the website:",
                       "",
                       ...system.slots
@@ -145,15 +143,9 @@ export default async function BuildAudioPage({ searchParams }: { searchParams: P
                       `Goal: ${goalMeta?.label}`,
                       vehicle ? `Car: ${vehicle}` : "Car: ",
                       "Please quote installation and confirm fitment.",
-                    ].join("\n"),
-                  )}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  className="btn btn-whatsapp"
-                >
-                  <Icon name="whatsapp" size={16} />
+                    ].join("\n")} className="btn btn-primary">
                   Get this quoted
-                </a>
+                </EnquiryButton>
               </div>
 
               {system.notes.length > 0 && (

@@ -19,7 +19,7 @@ export default function PpfGuidePage() {
     <>
       <PageHero
         eyebrow="PPF guide"
-        title="STRAIGHT ANSWERS."
+        title="Straight answers"
         blurb="Written to answer the question, not to rank for it. Where a claim depends on a specific film, we say so and point you at that film's warranty."
         media="detailingPolish"
         size="sm"
@@ -27,7 +27,7 @@ export default function PpfGuidePage() {
 
       <section className="section">
         <div className="shell">
-          <SectionHead eyebrow={`${GUIDE.length} articles`} title="EVERYTHING PEOPLE ASK US." />
+          <SectionHead eyebrow={`${GUIDE.length} articles`} title="Everything people ask us" />
           <ul className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
             {GUIDE.map((article) => (
               <li key={article.slug}>

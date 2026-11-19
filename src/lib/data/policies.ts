@@ -69,7 +69,7 @@ export const SUPPORT_POLICIES: Policy[] = [
         heading: "Damaged or missing items",
         body: [
           "Record a short video while opening any package that arrives visibly damaged. Send it to us within 48 hours and we ship a replacement immediately — no investigation, no arguing with the courier on your time.",
-          "If something is missing from your parcel, message us on WhatsApp with your order number and a photo of what arrived, and we will confirm the next step with you there.",
+          "If something is missing from your parcel, send us a message from the Contact page with your order number and a photo of what arrived, and we will confirm the next step with you.",
         ],
       },
     ],
@@ -108,7 +108,7 @@ export const SUPPORT_POLICIES: Policy[] = [
         id: "start-a-return",
         heading: "How to start a return",
         body: [
-          "Message us on WhatsApp with your order number and a photo. We arrange reverse pickup in most pin codes within 72 hours.",
+          "Send us a message from the Contact page with your order number and a photo. We arrange reverse pickup in most pin codes within 72 hours.",
         ],
       },
       {
@@ -122,7 +122,7 @@ export const SUPPORT_POLICIES: Policy[] = [
         id: "cancellations",
         heading: "Cancellations",
         body: [
-          "Orders can be cancelled free of charge until they are dispatched. Message us on WhatsApp with your order number.",
+          "Orders can be cancelled free of charge until they are dispatched. Send us a message from the Contact page with your order number.",
           "Made-to-order items can be cancelled until production starts — usually within 24 hours of ordering.",
         ],
       },
@@ -163,8 +163,7 @@ export const SUPPORT_POLICIES: Policy[] = [
         id: "claims",
         heading: "Making a warranty claim",
         body: [
-          "Message us on WhatsApp with your invoice number. Most claims are resolved with a workshop visit; where a manufacturer replacement is required, we raise it and hand you the replacement — you never deal with the brand directly.",
-          "If you are not near one of our garages, tell us on WhatsApp and we will confirm how your claim will be handled.",
+          "Send us a message from the Contact page with your invoice number. We confirm how your claim will be handled; where a manufacturer replacement is required, we raise it and hand you the replacement — you never deal with the brand directly.",
         ],
       },
     ],
@@ -174,13 +173,13 @@ export const SUPPORT_POLICIES: Policy[] = [
     title: "INSTALLATION & BOOKINGS",
     eyebrow: "Customer support",
     intro:
-      "You can have what you buy fitted at the Riderzpro garage. Workmanship is warranted by the garage that did the work.",
+      "You can have what you buy fitted where installation is offered. Workmanship is warranted by the team that did the work.",
     sections: [
       {
         id: "booking",
         heading: "Booking a fitting",
         body: [
-          "Add installation to a product where it is offered, or book a slot with the form on the Contact page or on WhatsApp. We confirm your slot with you there.",
+          "Add installation to a product where it is offered, or book a slot with the form on the Contact page. We call you to confirm the slot.",
           "Autoform seat covers are made to order for your car: we take the order, confirm the pattern for your exact variant, and fit it at the workshop.",
         ],
       },
@@ -261,7 +260,7 @@ export const LEGAL_POLICIES: Policy[] = [
           "Your orders: the items, the delivery details you give at checkout (name, phone, email, address and, if you choose \"Detect my location\", your location at that moment) and the order history, so we can deliver, honour warranties and answer questions. Messages you send us from the help form are kept with them.",
           "Online payments are taken by Razorpay on its own secure page. We never see or store your card, UPI or bank details; we keep the payment reference, amount and status.",
           "If you order on a seller's shop screen in their store, we keep your name and mobile number with that order.",
-          "Enquiries that reach us on WhatsApp, by phone or by email, with the vehicle details we need to confirm fitment (make, model, variant and year).",
+          "Enquiries that reach us through the website, by phone or by email, with the vehicle details we need to confirm fitment (make, model, variant and year).",
         ],
       },
       {

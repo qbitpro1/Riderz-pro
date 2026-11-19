@@ -11,7 +11,7 @@ import { BuildCard } from "@/components/community/Cards";
 import { liveBuild, liveBuilds } from "@/lib/server/builds";
 import { UploadedPhoto } from "@/components/ui/UploadedPhoto";
 import { rupees } from "@/lib/format";
-import { whatsapp } from "@/lib/data/site";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 
 // Builds come from the database (builds, managed in /admin/builds).
 export const dynamic = "force-dynamic";
@@ -126,15 +126,9 @@ export default async function BuildDetailPage({ params }: { params: Promise<{ sl
                   Build something like this
                   <Icon name="arrow" size={15} />
                 </Link>
-                <a
-                  href={whatsapp(`Hi Riderzpro, I want a build like ${build.title} (${build.vehicle}). My car is: `)}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  className="btn btn-whatsapp btn-block mt-3"
-                >
-                  <Icon name="whatsapp" size={16} />
+                <EnquiryButton topic="installation" message={`Hi Riderzpro, I want a build like ${build.title} (${build.vehicle}). My car is: `} className="btn btn-primary btn-block mt-3">
                   Ask about this build
-                </a>
+                </EnquiryButton>
               </div>
             </aside>
           </div>
@@ -144,7 +138,7 @@ export default async function BuildDetailPage({ params }: { params: Promise<{ sl
       {shopItems.length > 0 && (
         <section className="section border-y border-tint/8 bg-carbon">
           <div className="shell">
-            <SectionHead eyebrow="Shop the build" title="THE PARTS ON THIS CAR." href="/shop" hrefLabel="Shop all" />
+            <SectionHead eyebrow="Shop the build" title="The parts on this car" href="/shop" hrefLabel="Shop all" />
             <ul className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
               {shopItems.map((p) => (
                 <li key={p.slug}>
@@ -158,7 +152,7 @@ export default async function BuildDetailPage({ params }: { params: Promise<{ sl
 
       {others.length > 0 && <section className="section">
         <div className="shell">
-          <SectionHead eyebrow="More builds" title="KEEP SCROLLING." href="/builds" />
+          <SectionHead eyebrow="More builds" title="Keep scrolling" href="/builds" />
           <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {others.map((b) => (
               <li key={b.slug}>

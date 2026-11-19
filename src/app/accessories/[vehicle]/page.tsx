@@ -12,10 +12,10 @@ import { itemsForModel } from "@/lib/server/catalog";
 import { FACELIFT_CONVERSIONS } from "@/lib/data/services";
 import { publicCars } from "@/lib/server/cars";
 import { CarCard } from "@/components/cars/CarCard";
-import { whatsapp } from "@/lib/data/site";
 import { rupees } from "@/lib/format";
 import type { MediaKey } from "@/lib/media";
 import { breadcrumbLd, itemListLd, ldJson, pageMeta } from "@/lib/data/seo";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 
 export function generateStaticParams() {
   return LANDING_MODELS.map((m) => ({ vehicle: m.slug }));
@@ -34,7 +34,7 @@ export async function generateMetadata({
     title,
     description: `Accessories, lighting, audio, interiors, PPF and ${
       model.offroad ? "off-road" : "performance"
-    } upgrades for the ${model.brand} ${model.name}. Fitment-checked for every variant and year, installed at Riderzpro garages.`,
+    } upgrades for the ${model.brand} ${model.name}. Fitment-checked for every variant and year, with installation available.`,
     path: `/accessories/${model.slug}`,
   });
 }
@@ -159,9 +159,9 @@ export default async function VehicleAccessoriesPage({
       <section className="section border-y border-tint/8 bg-carbon">
         <div className="shell grid gap-8 lg:grid-cols-[1fr_1.15fr]">
           <SectionHead
-            eyebrow="Most requested"
-            title={`WHAT ${model.name.toUpperCase()} OWNERS ACTUALLY BUY.`}
-            blurb="Ranked from what left our workshop this quarter, not from what we want to sell you."
+            eyebrow="Where to start"
+            title={`WHERE ${model.name.toUpperCase()} OWNERS USUALLY START.`}
+            blurb="The upgrades that suit most cars like this one. Tell us how you use yours and we will narrow it down."
           />
           <ul className="grid gap-2.5 sm:grid-cols-2">
             {recommended.map((r) => (
@@ -179,7 +179,7 @@ export default async function VehicleAccessoriesPage({
           <div className="shell">
             <SectionHead
               eyebrow="Facelift & body kits"
-              title="MAKE IT LOOK NEW AGAIN."
+              title="Make it look new again"
               href="/body-kits"
               hrefLabel="All conversions"
             />
@@ -198,14 +198,9 @@ export default async function VehicleAccessoriesPage({
                       </li>
                     ))}
                   </ul>
-                  <a
-                    href={whatsapp(`Hi Riderzpro, I want a quote for: ${f.to} on my ${f.from}.`)}
-                    target="_blank"
-                    rel="noreferrer noopener"
-                    className="btn btn-outline btn-sm btn-block mt-5"
-                  >
+                  <EnquiryButton topic="fitment" message={`Hi Riderzpro, I want a quote for: ${f.to} on my ${f.from}.`} className="btn btn-outline btn-sm btn-block mt-5">
                     Get a quote
-                  </a>
+                  </EnquiryButton>
                 </li>
               ))}
             </ul>
@@ -247,15 +242,9 @@ export default async function VehicleAccessoriesPage({
               Send us your variant, year and what you want the car to do. We&apos;ll come back with two or
               three options at different budgets — not a catalogue dump.
             </p>
-            <a
-              href={whatsapp(`Hi Riderzpro, I drive a ${model.brand} ${model.name}. I'm looking for: `)}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="btn btn-whatsapp btn-block mt-5"
-            >
-              <Icon name="whatsapp" size={16} />
-              Ask on WhatsApp
-            </a>
+            <EnquiryButton topic="fitment" message={`Hi Riderzpro, I drive a ${model.brand} ${model.name}. I'm looking for: `} className="btn btn-primary btn-block mt-5">
+              Ask
+            </EnquiryButton>
             <Link href="/garage" className="btn btn-outline btn-block mt-3">
               Book an installation slot
             </Link>

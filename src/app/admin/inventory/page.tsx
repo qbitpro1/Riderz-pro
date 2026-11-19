@@ -21,6 +21,7 @@ export default async function InventoryAdminPage() {
   await adminPage("catalog", "/admin/inventory");
   const SNAPSHOT = await inventorySnapshot();
   const { totals, listings, importLog } = SNAPSHOT;
+  // Date.now() during render is fine: a Server Component, rendered per request.
   // eslint-disable-next-line react-hooks/purity -- a Server Component, rendered per request
   const now = Date.now();
 

@@ -8,8 +8,8 @@ import { customerOrderPayment } from "@/lib/server/payments";
 import { reviewTargets } from "@/lib/server/reviews";
 import { ReviewForm } from "@/components/account/ReviewForm";
 import { rupees } from "@/lib/format";
-import { whatsapp } from "@/lib/data/site";
 import { ORDER_STATUS_TEXT, PART_STATUS_LABELS, PART_STEPS, fmtDay, type AccountOrderPart } from "@/lib/account/types";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 
 export const metadata: Metadata = { title: "Order details", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
@@ -79,14 +79,9 @@ export default async function OrderPage({ params }: Params) {
             {order.notes && <p className="mt-2 text-xs text-dim">Note: {order.notes}</p>}
           </div>
           <div className="flex flex-col gap-2">
-            <a
-              href={whatsapp(`Hi Riderzpro, I have a question about my order ${order.number}.`)}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="btn btn-whatsapp btn-block"
-            >
-              Ask about this order on WhatsApp
-            </a>
+            <EnquiryButton topic="order" message={`Hi Riderzpro, I have a question about my order ${order.number}.`} className="btn btn-primary btn-block">
+              Ask about this order
+            </EnquiryButton>
             <Link href={`/account/help?order=${order.number}`} className="btn btn-outline btn-block">
               Send us a message
             </Link>
@@ -121,11 +116,12 @@ function Part({ part, orderStatus }: { part: AccountOrderPart; orderStatus: stri
       </div>
 
       {part.status && !stopped && (
-        <ol className="mt-4 grid grid-cols-5 gap-1" aria-label="Progress">
+        // Phones: a vertical list with whole labels (five columns cut them to "Confi…"). sm and up: one row.
+        <ol className="mt-4 grid gap-2 sm:grid-cols-5 sm:gap-1" aria-label="Progress">
           {PART_STEPS.map((s, i) => (
-            <li key={s} className="min-w-0">
-              <span className={`block h-1.5 rounded-full ${i <= reached ? "bg-accent" : "bg-tint/10"}`} />
-              <span className={`mt-1.5 block truncate text-[11px] ${i <= reached ? "font-semibold text-chalk" : "text-dim"}`}>
+            <li key={s} className="flex min-w-0 items-center gap-3 sm:block" aria-current={i === reached ? "step" : undefined}>
+              <span className={`block h-1.5 w-8 shrink-0 rounded-full sm:w-auto ${i <= reached ? "bg-accent" : "bg-tint/10"}`} />
+              <span className={`block text-xs sm:mt-1.5 sm:truncate sm:text-[11px] ${i <= reached ? "font-semibold text-chalk" : "text-dim"}`}>
                 {PART_STATUS_LABELS[s]}
               </span>
             </li>

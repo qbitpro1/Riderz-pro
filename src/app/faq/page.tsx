@@ -20,7 +20,7 @@ export default function FaqPage() {
       />
       <PageHero
         eyebrow="Customer support"
-        title="QUESTIONS, ANSWERED."
+        title="Questions, answered"
         blurb="Ordering, fitment, delivery, returns, installation and payments. Each answer links to the policy it comes from."
         media="mechanicEngine"
         size="sm"

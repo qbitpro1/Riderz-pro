@@ -258,7 +258,7 @@ export const DEALER_PACKAGES = [
     name: "FREE",
     price: "No cost",
     blurb: "Get your stock in front of Riderzpro buyers. No card, no commitment.",
-    features: ["Unlimited listings", "Bulk upload — CSV, Excel, XML, JSON", "Google Sheet sync", "Buyer enquiries by WhatsApp"],
+    features: ["Unlimited listings", "Bulk upload — CSV, Excel, XML, JSON", "Google Sheet sync", "Buyer enquiries with the vehicle attached"],
   },
   {
     id: "premium",

@@ -169,7 +169,7 @@ export function SearchPanel({ onClose }: { onClose: () => void }) {
           <div className="py-10 text-center">
             <p className="font-display text-lg uppercase">Nothing matched “{q}”</p>
             <p className="mt-2 text-sm text-ash">
-              Ask us on WhatsApp — if it fits a car, we can usually source it.
+              Ask us — if it fits a car, we can usually source it.
             </p>
             <AskAi q={q} onNavigate={onClose} />
           </div>

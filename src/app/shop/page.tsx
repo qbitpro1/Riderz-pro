@@ -2,24 +2,22 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHero } from "@/components/layout/PageHero";
 import { Photo } from "@/components/ui/Photo";
-import { Icon } from "@/components/ui/Icon";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHead } from "@/components/ui/Section";
 import { CatalogBrowser } from "@/components/catalog/CatalogBrowser";
 import { BrandStrip } from "@/components/catalog/BrandStrip";
 import { FitmentPicker } from "@/components/fitment/FitmentPicker";
-import { CATEGORIES, PRICE_BANDS } from "@/lib/data/products";
+import { CATEGORIES } from "@/lib/data/products";
 import { DEPARTMENT_BY_SLUG } from "@/lib/data/taxonomy";
 import { filtersFromQuery, type CatalogQuery } from "@/lib/catalog";
 import { catalogSnapshot } from "@/lib/server/catalog";
-import { LANDING_MODELS } from "@/lib/data/vehicles";
 import { breadcrumbLd, itemListLd, ldJson, pageMeta } from "@/lib/data/seo";
 import { liveVendorItems } from "@/lib/server/marketplace";
 
 export const metadata: Metadata = pageMeta({
   title: "Car Accessories Online India: Interior, Exterior, Audio, Lighting & Off-Road",
   description:
-    "Shop car accessories across eight departments and every brand we stock. Filter by brand, department, price and fitment, with installation at the Riderzpro garage.",
+    "Shop car accessories across eight departments and every brand we stock. Filter by brand, department, price and fitment, with installation available on marked products.",
   path: "/shop",
 });
 
@@ -35,7 +33,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: ldJson(itemListLd("Shop departments", CATEGORIES.map((c) => ({ name: c.name, path: `/shop/${c.slug}` })))) }} />
       <PageHero
         eyebrow="Accessories store"
-        title="EVERYTHING THAT BOLTS ON."
+        title="Everything that bolts on"
         blurb="Eight departments, every brand we stock, every part fitment-checked against your variant. If it shows up for your car, it fits your car — or we collect it and refund in full."
         media="tailLightBokeh"
         size="sm"
@@ -90,7 +88,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
         <div className="shell">
           <SectionHead
             eyebrow="Shop by brand"
-            title="EVERY BRAND WE STOCK."
+            title="Every brand we stock"
             blurb="RECOIL and Autoform keep their own stores, and everything in them is also here — so you can filter across brands, or stay inside one."
             href="/brands"
             hrefLabel="All brands"
@@ -103,43 +101,13 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
         <div className="shell">
           <SectionHead
             eyebrow="Everything in stock"
-            title="THE FULL CATALOGUE."
-            blurb={`${CATALOG_TOTALS.products} products across ${CATALOG_TOTALS.brands} brands. Filter by brand, category, type, price band or fitment. Prices include GST; installation is quoted separately and is often free.`}
+            title="The full catalogue"
+            blurb={`${CATALOG_TOTALS.products} products across ${CATALOG_TOTALS.brands} brands. Filter by brand, category, type, price band or fitment. Prices include GST; installation is quoted separately.`}
           />
           <CatalogBrowser items={items} initial={filters} />
         </div>
       </section>
 
-      <section className="section border-t border-tint/8 bg-carbon">
-        <div className="shell">
-          <SectionHead eyebrow="Pricing" title="₹299 TO ₹2 LAKH+." blurb="We stock for the first-time owner and the signature build, deliberately." />
-          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {PRICE_BANDS.map((b) => (
-              <li key={b.slug} className="card p-5">
-                <p className="eyebrow">{b.label}</p>
-                <p className="mt-2 font-display text-xl font-extrabold tnum">{b.range}</p>
-                <p className="mt-2 text-xs leading-relaxed text-ash">{b.blurb}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
-      <section className="section border-t border-tint/8">
-        <div className="shell">
-          <SectionHead eyebrow="Shop by car" title="PARTS FOR YOUR EXACT MODEL." />
-          <ul className="flex flex-wrap gap-2">
-            {LANDING_MODELS.map((m) => (
-              <li key={m.slug}>
-                <Link href={`/accessories/${m.slug}`} className="chip hover:border-accent hover:text-accent">
-                  <Icon name="chevron" size={11} className="text-accent" />
-                  {m.brand} {m.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
     </>
   );
 }

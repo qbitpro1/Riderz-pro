@@ -16,8 +16,8 @@ import {
 } from "@/lib/catalog";
 import { CATEGORIES } from "@/lib/data/products";
 import { catalogFor } from "@/lib/server/catalog";
-import { whatsapp } from "@/lib/data/site";
 import { breadcrumbLd, itemListLd, ldJson, pageMeta } from "@/lib/data/seo";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 
 export function generateStaticParams() {
   return BRANDS.map((b) => ({ brand: b.slug }));
@@ -113,7 +113,7 @@ export default async function BrandPage({
           <div className="shell">
             <SectionHead
               eyebrow={`${b.name} in the shop`}
-              title="COMPARE IT AGAINST EVERYTHING ELSE."
+              title="Compare it against everything else"
               blurb="The same products sit in the main shop alongside every other brand, so you can judge them on price and fit rather than on the badge."
             />
             <ul className="flex flex-wrap gap-2">
@@ -141,7 +141,7 @@ export default async function BrandPage({
 
       <section className="section">
         <div className="shell">
-          <SectionHead eyebrow="Other brands" title="WHO ELSE WE STOCK." />
+          <SectionHead eyebrow="Other brands" title="Who else we stock" />
           <BrandStrip exclude={[b.slug]} />
         </div>
       </section>
@@ -165,15 +165,9 @@ function ImportPending({ name }: { name: string }) {
         the range isn&apos;t published yet. Ask us and we&apos;ll quote you against the current price list.
       </p>
       <div className="mt-6 flex flex-wrap gap-3">
-        <a
-          href={whatsapp(`Hi Riderzpro, I'm looking for ${name} products. What do you have?`)}
-          target="_blank"
-          rel="noreferrer noopener"
-          className="btn btn-whatsapp btn-sm"
-        >
-          <Icon name="whatsapp" size={15} />
-          Ask on WhatsApp
-        </a>
+        <EnquiryButton topic="product" message={`Hi Riderzpro, I'm looking for ${name} products. What do you have?`} className="btn btn-primary btn-sm">
+          Ask
+        </EnquiryButton>
         <Link href="/shop" className="btn btn-outline btn-sm">
           Browse the full shop
         </Link>

@@ -1,9 +1,9 @@
 import "server-only";
 
 import { DatabaseNotConfigured, sql } from "@/lib/db/client";
-import { slugify } from "@/lib/format";
 import { DEPARTMENT_BY_SLUG, type DepartmentSlug } from "@/lib/data/taxonomy";
-import { tierFor, type MarketplaceBrandKey, type ShopItem } from "@/lib/catalog/types";
+import { tierFor, type ShopItem } from "@/lib/catalog/types";
+import { normalizeBrand } from "@/lib/catalog/brand-normalize";
 import {
   fileHref,
   storeHref,
@@ -172,12 +172,13 @@ function toShopItem(r: JoinedRow): ShopItem | null {
   const href = vendorProductHref(r.v_slug, r.slug);
   const sub = groupName(r.department, r.group_slug);
   const first = r.images?.[0];
-  const brandKey = `mp-${slugify(r.brand).slice(0, 60) || "brand"}` as MarketplaceBrandKey;
+  // One brand, one key: a seller's "RECOIL" files under the house brand, not a second "RECOIL".
+  const brand = normalizeBrand(r.brand);
   return {
     id: `mp:${r.slug}`,
-    // A seller's own brand text is not in the house registry; it is keyed `mp-…`. See `ShopItem`.
-    brand: brandKey,
-    brandName: r.brand,
+    // A seller's own brand text not in the house registry is keyed `mp-…`. See `ShopItem`.
+    brand: brand.key,
+    brandName: brand.name,
     slug: r.slug,
     href,
     hasOptions: false,

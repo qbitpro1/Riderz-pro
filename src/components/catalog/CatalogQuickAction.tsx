@@ -14,9 +14,9 @@ import type { ShopItem } from "@/lib/catalog/types";
  *   a choice is needed first      → Choose options  (opens the product page)
  *   no price / coming soon / held back → View details
  */
-export function CatalogQuickAction({ item }: { item: ShopItem }) {
+export function CatalogQuickAction({ item, className }: { item: ShopItem; className?: string }) {
   const { add } = useCart();
-  const cls = "btn btn-outline btn-sm btn-block min-h-10";
+  const cls = className ?? "btn btn-outline btn-sm btn-block min-h-10";
 
   /* Marketplace item: sold by an approved vendor. Added under a prefixed line slug so it never
      collides with a house product; out of stock cannot be added. */

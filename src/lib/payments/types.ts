@@ -11,7 +11,7 @@ export type PaymentStatus = "pending" | "paid" | "failed" | "refunded" | "partia
 export type RefundStatus = "requested" | "pending" | "processed" | "failed";
 
 export const PAYMENT_METHOD_LABELS: Record<PaymentMethod, string> = {
-  whatsapp: "WhatsApp order",
+  whatsapp: "Pay later",
   cod: "Cash on delivery",
   online: "Paid online",
   counter: "Pay at the shop counter",

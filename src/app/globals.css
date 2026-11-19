@@ -1,4 +1,6 @@
 @import "tailwindcss";
+/* animate-in / fade-in / zoom-in classes used by shadcn components (tooltips). */
+@import "tw-animate-css";
 
 /* Register sources explicitly. Automatic detection honours ignore rules, which
    is easy to trip over with a directory literally named "build". */
@@ -39,6 +41,48 @@
   /* Blue "verified" badge and the check on it. */
   --color-verified: var(--verified);
   --color-on-verified: var(--on-verified);
+
+  /* Catalogue listing ("cl-") tokens: the product listing pages' palette. Ink is the text and
+     primary-button colour; red is only for discount badges and the car icon tint. */
+  --color-cl-ink: var(--cl-ink);
+  --color-cl-on-ink: var(--cl-on-ink);
+  --color-cl-page: var(--cl-page);
+  --color-cl-surface: var(--cl-surface);
+  --color-cl-fill: var(--cl-fill);
+  --color-cl-fill-2: var(--cl-fill-2);
+  --color-cl-line: var(--cl-line);
+  --color-cl-line-strong: var(--cl-line-strong);
+  --color-cl-muted: var(--cl-muted);
+  --color-cl-sale: var(--cl-sale);
+  --color-cl-sale-tint: var(--cl-sale-tint);
+  --color-cl-fit: var(--cl-fit);
+  --color-cl-fit-bg: var(--cl-fit-bg);
+  --color-cl-bar: var(--cl-bar);
+  --color-cl-on-bar: var(--cl-on-bar);
+  --color-cl-bar-fit: var(--cl-bar-fit);
+  --color-cl-bar-fit-bg: var(--cl-bar-fit-bg);
+
+  /* shadcn/ui names (src/components/ui/{slider,tooltip,button,toggle,label,badge,card-22}.tsx), pointed at the
+     catalogue palette so those components follow both themes. "accent" is NOT remapped: here it is
+     the brand red, so shadcn's ghost/outline button hover and toggle "on" state show red. */
+  --color-background: var(--cl-surface);
+  --color-foreground: var(--cl-ink);
+  --color-primary: var(--cl-ink);
+  --color-primary-foreground: var(--cl-on-ink);
+  --color-secondary: var(--cl-line);
+  --color-secondary-foreground: var(--cl-ink);
+  --color-muted: var(--cl-fill);
+  --color-muted-foreground: var(--cl-muted);
+  --color-accent-foreground: var(--on-accent);
+  --color-popover: var(--cl-ink);
+  --color-popover-foreground: var(--cl-on-ink);
+  --color-destructive: var(--danger);
+  --color-destructive-foreground: var(--on-accent);
+  --color-card: var(--cl-surface);
+  --color-card-foreground: var(--cl-ink);
+  --color-border: var(--cl-line);
+  --color-input: var(--cl-line-strong);
+  --color-ring: var(--cl-ink);
 }
 
 /* Offline Store screen: "wide" = a laptop/desktop (1024px+) OR any landscape screen from 768px,
@@ -73,6 +117,8 @@
   --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
 
   --radius-card: 4px;
+  --radius-cl: 12px;
+  --radius-cl-ctl: 10px;
 
   --breakpoint-xs: 24rem;
 }
@@ -100,6 +146,32 @@
     --verified: #4db5ff;
     --on-verified: #ffffff;
     --shadow-lift: 0 26px 60px -30px rgba(0, 0, 0, 0.9);
+    /* Catalogue (dark): derived from the light spec, every text pairing ≥4.5:1. */
+    --cl-ink: #f4f4f2;
+    --cl-on-ink: #111111;
+    --cl-page: #0b0b0c;
+    --cl-surface: #151517;
+    --cl-fill: #1f1f22;
+    --cl-fill-2: #232326;
+    --cl-line: #2e2e32;
+    --cl-line-strong: #55555b;
+    --cl-muted: #a8a8a2;
+    --cl-sale: #c8102e;
+    --cl-sale-tint: #3a1219;
+    --cl-fit: #9be3b5;
+    --cl-fit-bg: #173d27;
+    --cl-bar: #1f1f22;
+    --cl-on-bar: #f4f4f2;
+    --cl-bar-fit: #9be3b5;
+    --cl-bar-fit-bg: #173d27;
+    /* Glass filter panel (dark): smoky glass, faint top highlight, deeper glow. */
+    --glass-fill: rgba(28, 28, 32, 0.5);
+    --glass-edge: rgba(255, 255, 255, 0.1);
+    --glass-hi: rgba(255, 255, 255, 0.08);
+    --glass-well: rgba(255, 255, 255, 0.06);
+    --glass-well-edge: rgba(255, 255, 255, 0.1);
+    --glass-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.7);
+    --glass-glow: 0.55;
   }
 
   /* Every pairing here clears WCAG AA (4.5:1) on void, carbon and steel. --danger is a crimson (hue ~340) so error text reads apart from the brand red accent. */
@@ -124,6 +196,32 @@
     --verified: #1d9bf0;
     --on-verified: #ffffff;
     --shadow-lift: 0 22px 50px -28px rgba(15, 18, 22, 0.28);
+    /* Catalogue (light): the listing-page spec. */
+    --cl-ink: #111111;
+    --cl-on-ink: #ffffff;
+    --cl-page: #fafaf9;
+    --cl-surface: #ffffff;
+    --cl-fill: #f3f3f1;
+    --cl-fill-2: #f5f5f4;
+    --cl-line: #e4e4e1;
+    --cl-line-strong: #c9c9c4;
+    --cl-muted: #5c5c58;
+    --cl-sale: #c8102e;
+    --cl-sale-tint: #fdecec;
+    --cl-fit: #1e6b3c;
+    --cl-fit-bg: #e7f4ec;
+    --cl-bar: #111111;
+    --cl-on-bar: #ffffff;
+    --cl-bar-fit: #9be3b5;
+    --cl-bar-fit-bg: #173d27;
+    /* Glass filter panel (light): frosted white, bright top highlight, soft lift. */
+    --glass-fill: rgba(255, 255, 255, 0.5);
+    --glass-edge: rgba(255, 255, 255, 0.75);
+    --glass-hi: rgba(255, 255, 255, 0.95);
+    --glass-well: rgba(255, 255, 255, 0.7);
+    --glass-well-edge: rgba(17, 17, 17, 0.08);
+    --glass-shadow: 0 24px 50px -28px rgba(15, 18, 22, 0.35), 0 2px 8px -2px rgba(15, 18, 22, 0.06);
+    --glass-glow: 1;
   }
 
   /* Recomputed wherever a theme is set, so a dark island on a light page gets
@@ -238,12 +336,14 @@
   }
 
   /* Section rhythm -------------------------------------------------- */
+  /* Section rhythm: generous enough to separate topics, tight enough that a page never reads as
+     empty space between them. */
   .section {
-    padding-block: 3.5rem;
+    padding-block: 2.75rem;
   }
   @media (min-width: 768px) {
     .section {
-      padding-block: 5.5rem;
+      padding-block: 4rem;
     }
   }
 
@@ -381,7 +481,6 @@
        including where backdrop-filter is unsupported. */
     background: color-mix(in oklab, var(--void) 94%, transparent);
     backdrop-filter: blur(16px) saturate(140%);
-    -webkit-backdrop-filter: blur(16px) saturate(140%);
     border: 1px solid var(--edge);
   }
 
@@ -394,8 +493,75 @@
   :root[data-theme="light"] .header-top {
     background: color-mix(in oklab, var(--void) 94%, transparent);
     backdrop-filter: blur(16px) saturate(140%);
-    -webkit-backdrop-filter: blur(16px) saturate(140%);
     border-bottom-color: var(--edge);
+  }
+
+  /* Navbar: Apple-style frosted glass. A translucent tint over a strong blur + saturation (the
+     page shows through softly), a hairline edge and a 1px inner highlight along the top. The same
+     material is used for the header's dropdowns and the profile menu (.nav-glass-panel).
+     Where backdrop-filter is unsupported the tint goes nearly opaque so text stays readable. */
+  .nav-glass,
+  .nav-glass-panel {
+    --glass-tint: rgba(255, 255, 255, 0.62);
+    --glass-panel-tint: rgba(255, 255, 255, 0.8);
+    --glass-edge: rgba(0, 0, 0, 0.08);
+    --glass-highlight: rgba(255, 255, 255, 0.7);
+    --glass-hover: rgba(0, 0, 0, 0.06);
+    --glass-shadow: 0 8px 32px -12px rgba(15, 18, 22, 0.18);
+  }
+  :root:not([data-theme="light"]) .nav-glass,
+  :root:not([data-theme="light"]) .nav-glass-panel,
+  :root[data-theme="dark"] .nav-glass,
+  :root[data-theme="dark"] .nav-glass-panel {
+    --glass-tint: rgba(22, 22, 26, 0.55);
+    --glass-panel-tint: rgba(28, 28, 32, 0.78);
+    --glass-edge: rgba(255, 255, 255, 0.1);
+    --glass-highlight: rgba(255, 255, 255, 0.08);
+    --glass-hover: rgba(255, 255, 255, 0.1);
+    --glass-shadow: 0 10px 40px -12px rgba(0, 0, 0, 0.7);
+  }
+  /* The bar's blur lives on a layer behind its content: an element with backdrop-filter becomes
+     the "backdrop root" for everything inside it, so the dropdowns (children of the header) could
+     only blur the header itself and the page showed through them sharp. */
+  .nav-glass {
+    border-bottom: 1px solid var(--glass-edge);
+    box-shadow: inset 0 1px 0 var(--glass-highlight);
+  }
+  .nav-glass::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--glass-tint);
+    backdrop-filter: blur(24px) saturate(180%);
+    pointer-events: none;
+  }
+  .nav-glass-panel {
+    background: var(--glass-panel-tint);
+    backdrop-filter: blur(30px) saturate(180%);
+  }
+  .nav-glass.nav-glass-scrolled {
+    box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow);
+  }
+  .nav-glass-panel {
+    border: 1px solid var(--glass-edge);
+    border-radius: 16px;
+    box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow);
+  }
+  /* Round, softly filled hover states for the header's icon buttons, as on Apple's bars. */
+  .nav-glass :is(a, button).place-items-center {
+    border-radius: 9999px;
+    transition: background-color 150ms, color 150ms;
+  }
+  .nav-glass :is(a, button).place-items-center:hover,
+  .nav-glass :is(a, button).place-items-center[aria-expanded="true"] {
+    background: var(--glass-hover);
+  }
+  @supports not (backdrop-filter: blur(1px)) {
+    .nav-glass::before,
+    .nav-glass-panel {
+      background: color-mix(in oklab, var(--void) 96%, transparent);
+    }
   }
 
   .hairline {
@@ -453,6 +619,25 @@
   }
   .field::placeholder {
     color: var(--dim);
+  }
+  /* Phones: chips that are links or buttons get a 44px tap height (plain label chips stay small). */
+  @media (max-width: 47.99rem) {
+    a.chip,
+    button.chip {
+      min-height: 2.75rem;
+      padding-inline: 0.75rem;
+    }
+    .btn-sm {
+      min-height: 2.75rem;
+    }
+  }
+  /* Phones: 16px in every text field. iOS Safari zooms the whole page into a field whose text is
+     smaller than 16px; from tablet width up the fields go back to 15px. */
+  /* (.cl-input and .fs-field are defined further down, so their phone rule follows them.) */
+  @media (max-width: 47.99rem) {
+    .field {
+      font-size: 16px;
+    }
   }
   .field:focus {
     border-color: color-mix(in oklab, var(--accent) 60%, transparent);
@@ -604,5 +789,408 @@
   }
   .rise {
     animation: mb-rise 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Catalogue listing pages
+------------------------------------------------------------------- */
+@layer components {
+  .cl-shell {
+    width: 100%;
+    max-width: 1360px;
+    margin-inline: auto;
+    padding-inline: 1rem;
+  }
+  @media (min-width: 768px) {
+    .cl-shell {
+      padding-inline: 2.5rem;
+    }
+  }
+  /* 2px ink focus ring on every interactive element inside a listing. */
+  .cl-scope :is(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline: 2px solid var(--cl-ink);
+    outline-offset: 2px;
+  }
+  .cl-label {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--cl-muted);
+  }
+  .cl-btn {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: var(--radius-cl-ctl);
+    padding-inline: 1.125rem;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background-color 150ms, color 150ms, border-color 150ms;
+  }
+  .cl-btn-primary {
+    background: var(--cl-ink);
+    color: var(--cl-on-ink);
+  }
+  .cl-btn-primary:hover {
+    opacity: 0.88;
+  }
+  .cl-btn-outline {
+    border: 1px solid var(--cl-line-strong);
+    background: var(--cl-surface);
+    color: var(--cl-ink);
+  }
+  .cl-btn-outline:hover {
+    border-color: var(--cl-ink);
+  }
+  .cl-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+  .cl-input {
+    width: 100%;
+    min-height: 44px;
+    border: 1px solid var(--cl-line-strong);
+    border-radius: var(--radius-cl-ctl);
+    background-color: var(--cl-surface);
+    color: var(--cl-ink);
+    padding-inline: 0.875rem;
+    font-size: 15px;
+  }
+  .cl-input:disabled {
+    background-color: var(--cl-fill);
+    color: var(--cl-muted);
+    cursor: not-allowed;
+  }
+  select.cl-input {
+    appearance: none;
+    padding-right: 2.25rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.875rem center;
+  }
+  .cl-chip {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    gap: 0.375rem;
+    border: 1px solid var(--cl-line-strong);
+    border-radius: 999px;
+    background: var(--cl-surface);
+    padding-inline: 0.875rem;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--cl-ink);
+  }
+  .cl-chip:hover {
+    border-color: var(--cl-ink);
+  }
+
+  /* ------------------------------------------------------------------
+     Glass filter panel (catalogue sidebar): frosted, Apple-style.
+     Colours come from --glass-* in each theme block. A soft colour glow sits
+     behind the panel so the blur has something to frost on a plain page.
+  ------------------------------------------------------------------- */
+  .fs-backdrop {
+    position: relative;
+    isolation: isolate;
+  }
+  .fs-backdrop::before {
+    content: "";
+    position: absolute;
+    /* No sideways overhang, so it never adds a horizontal scrollbar; the blur spreads it anyway. */
+    inset: -32px 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: var(--glass-glow);
+    background:
+      radial-gradient(40% 40% at 12% 18%, rgba(255, 70, 60, 0.24), transparent 72%),
+      radial-gradient(44% 46% at 88% 30%, rgba(56, 132, 255, 0.22), transparent 72%),
+      radial-gradient(42% 40% at 30% 88%, rgba(160, 90, 255, 0.2), transparent 72%),
+      radial-gradient(36% 34% at 70% 92%, rgba(40, 200, 170, 0.14), transparent 72%);
+    filter: blur(32px);
+  }
+  .fs-glass {
+    border-radius: 24px;
+    border: 1px solid var(--glass-edge);
+    background: var(--glass-fill);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    backdrop-filter: blur(28px) saturate(180%);
+    box-shadow:
+      inset 0 1px 0 var(--glass-hi),
+      0 0 0 0.5px color-mix(in oklab, var(--cl-ink) 6%, transparent),
+      var(--glass-shadow);
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in oklab, var(--cl-ink) 18%, transparent) transparent;
+  }
+  /* Recessed "well" for inputs, counts and the chevron button. */
+  .fs-well {
+    border: 1px solid var(--glass-well-edge);
+    background: var(--glass-well);
+    box-shadow: inset 0 1px 2px color-mix(in oklab, var(--cl-ink) 5%, transparent);
+  }
+  .fs-field {
+    width: 100%;
+    min-height: 44px;
+    border-radius: 14px;
+    padding-inline: 0.75rem 0.75rem;
+    font-size: 15px;
+    color: var(--cl-ink);
+    font-variant-numeric: tabular-nums;
+    transition: box-shadow 150ms, border-color 150ms;
+  }
+  select.fs-field {
+    appearance: none;
+    padding-right: 2.25rem;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 10 5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.85rem center;
+  }
+  .fs-field:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+  /* Phones: 16px so iOS Safari does not zoom into the field (see .field above). Kept after both
+     definitions: in the same layer the later rule wins. */
+  @media (max-width: 47.99rem) {
+    .cl-input,
+    .fs-field {
+      font-size: 16px;
+    }
+  }
+  /* Ink pill button (primary action on glass). */
+  .fs-btn {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    border-radius: 999px;
+    padding-inline: 1.25rem;
+    background: var(--cl-ink);
+    color: var(--cl-on-ink);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    box-shadow:
+      inset 0 1px 0 color-mix(in oklab, var(--cl-on-ink) 18%, transparent),
+      0 8px 20px -8px rgba(0, 0, 0, 0.45);
+    transition: transform 120ms, opacity 150ms, box-shadow 150ms;
+  }
+  .fs-btn:hover:not(:disabled) {
+    box-shadow:
+      inset 0 1px 0 color-mix(in oklab, var(--cl-on-ink) 18%, transparent),
+      0 12px 26px -8px rgba(0, 0, 0, 0.5);
+  }
+  .fs-btn:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+  .fs-btn:disabled {
+    opacity: 0.35;
+    box-shadow: none;
+    cursor: not-allowed;
+  }
+  .fs-btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--cl-ink) 18%, transparent);
+  }
+  /* App-icon tile in the brand red. */
+  .fs-icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    border-radius: 14px;
+    color: #fff;
+    background: linear-gradient(145deg, #ff6a5c 0%, #e02424 55%, #b31717 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.45),
+      0 8px 18px -6px rgba(200, 30, 30, 0.55);
+  }
+  .fs-field::placeholder {
+    color: var(--cl-muted);
+  }
+  .fs-field:focus {
+    outline: none;
+    border-color: color-mix(in oklab, var(--cl-ink) 35%, transparent);
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--cl-ink) 10%, transparent);
+  }
+  /* Rounded-square checkbox that fills with ink and a white tick when on. */
+  .fs-check {
+    appearance: none;
+    display: grid;
+    place-items: center;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    margin: 0;
+    border-radius: 6px;
+    border: 1.5px solid color-mix(in oklab, var(--cl-ink) 28%, transparent);
+    background: var(--glass-well);
+    cursor: pointer;
+    transition: background-color 150ms, border-color 150ms, transform 120ms;
+  }
+  .fs-check::after {
+    content: "";
+    width: 11px;
+    height: 11px;
+    background: var(--cl-on-ink);
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center / contain no-repeat;
+    transform: scale(0);
+    transition: transform 150ms cubic-bezier(0.3, 1.5, 0.6, 1);
+  }
+  .fs-check:checked {
+    border-color: var(--cl-ink);
+    background: var(--cl-ink);
+  }
+  .fs-check:checked::after {
+    transform: scale(1);
+  }
+  .fs-check:active {
+    transform: scale(0.92);
+  }
+  .fs-check:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--cl-ink) 14%, transparent);
+  }
+  /* ------------------------------------------------------------------
+     Product card on listing pages (ListingCard): frosted card, inset image tile.
+     Hover effects only on devices that really hover (a mouse), so a tap on a
+     phone never leaves a card stuck "lifted"; phones get a light press instead.
+  ------------------------------------------------------------------- */
+  .fs-card {
+    border-radius: 20px;
+    border: 1px solid color-mix(in oklab, var(--cl-ink) 7%, transparent);
+    background: color-mix(in oklab, var(--cl-surface) 90%, transparent);
+    box-shadow:
+      inset 0 1px 0 var(--glass-hi),
+      0 1px 2px color-mix(in oklab, var(--cl-ink) 5%, transparent);
+    transition:
+      transform 320ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      box-shadow 320ms ease,
+      border-color 320ms ease;
+  }
+  .fs-card-media {
+    border-radius: 14px;
+    isolation: isolate;
+  }
+  .fs-card-media img {
+    transition: transform 600ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  /* Soft light sweep across the image on hover. */
+  .fs-card-media::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(115deg, transparent 35%, rgba(255, 255, 255, 0.28) 50%, transparent 65%);
+    transform: translateX(-120%);
+    transition: transform 800ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .fs-card:focus-within {
+    border-color: color-mix(in oklab, var(--cl-ink) 30%, transparent);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .fs-card:hover {
+      transform: translateY(-4px);
+      border-color: color-mix(in oklab, var(--cl-ink) 14%, transparent);
+      box-shadow:
+        inset 0 1px 0 var(--glass-hi),
+        0 0 0 0.5px color-mix(in oklab, var(--cl-ink) 6%, transparent),
+        var(--glass-shadow);
+    }
+    .fs-card:hover .fs-card-media img {
+      transform: scale(1.06);
+    }
+    .fs-card:hover .fs-card-media::after {
+      transform: translateX(120%);
+    }
+  }
+  @media (hover: none) {
+    .fs-card:active {
+      transform: scale(0.985);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .fs-card,
+    .fs-card-media img,
+    .fs-card-media::after {
+      transition: none;
+    }
+    .fs-card:hover,
+    .fs-card:active,
+    .fs-card:hover .fs-card-media img {
+      transform: none;
+    }
+    .fs-card-media::after {
+      display: none;
+    }
+  }
+  /* Floating panels over busy pages (the AI assistant): same glass, but a denser fill for reading. */
+  .fs-panel {
+    border-radius: 24px;
+    border: 1px solid var(--glass-edge);
+    background: color-mix(in oklab, var(--cl-surface) 84%, transparent);
+    -webkit-backdrop-filter: blur(32px) saturate(180%);
+    backdrop-filter: blur(32px) saturate(180%);
+    box-shadow:
+      inset 0 1px 0 var(--glass-hi),
+      0 0 0 0.5px color-mix(in oklab, var(--cl-ink) 8%, transparent),
+      0 30px 80px -24px rgba(0, 0, 0, 0.45);
+  }
+  /* Typing indicator: three dots that rise in turn. */
+  .fs-typing span {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--cl-muted);
+    animation: fs-typing 1.2s infinite ease-in-out;
+  }
+  .fs-typing span:nth-child(2) {
+    animation-delay: 0.15s;
+  }
+  .fs-typing span:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+  @keyframes fs-typing {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.45; }
+    30% { transform: translateY(-4px); opacity: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .fs-typing span { animation: none; opacity: 0.7; }
+  }
+  /* Settings that ask for less transparency get a solid panel. */
+  @media (prefers-reduced-transparency: reduce) {
+    .fs-panel {
+      background: var(--cl-surface);
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+    .fs-glass {
+      background: var(--cl-surface);
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+    .fs-backdrop::before {
+      display: none;
+    }
+  }
+
+  /* Listing pages: the floating "Ask AI" button stays at the bottom right. On phones it is a small
+     ink pill so it doesn't crowd the Filter / Sort row. (!important: these override the button's
+     own utility classes from inside the components layer.) */
+  @media (max-width: 63.999rem) {
+    html[data-listing] .assistant-fab {
+      height: 2.75rem !important;
+      padding: 0 0.875rem 0 0.75rem !important;
+      background: var(--cl-ink) !important;
+      color: var(--cl-on-ink) !important;
+      font-size: 11px !important;
+    }
   }
 }

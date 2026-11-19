@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { whatsapp } from "@/lib/data/site";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 
 /** Something failed while showing this page. The header, footer and cart stay usable around it. */
 export default function PageError({ error, retry }: { error: Error & { digest?: string }; retry: () => void }) {
@@ -20,14 +20,9 @@ export default function PageError({ error, retry }: { error: Error & { digest?: 
           <Link href="/" className="btn btn-outline">
             Back home
           </Link>
-          <a
-            href={whatsapp(`Hi Riderzpro, a page didn't load for me.${error.digest ? ` (ref ${error.digest})` : ""}`)}
-            target="_blank"
-            rel="noreferrer noopener"
-            className="btn btn-whatsapp"
-          >
-            WhatsApp us
-          </a>
+          <EnquiryButton topic="other" message={`Hi Riderzpro, a page didn't load for me.${error.digest ? ` (ref ${error.digest})` : ""}`} className="btn btn-primary">
+            Message us
+          </EnquiryButton>
         </div>
         {error.digest && <p className="mt-6 text-xs text-dim">Reference: {error.digest}</p>}
       </div>

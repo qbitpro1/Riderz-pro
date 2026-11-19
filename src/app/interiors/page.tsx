@@ -9,8 +9,8 @@ import { ReviewCard } from "@/components/community/Cards";
 import { INTERIOR_SERVICES } from "@/lib/data/services";
 import { approvedReviews } from "@/lib/server/reviews";
 import { rupees } from "@/lib/format";
-import { whatsapp } from "@/lib/data/site";
 import { pageMeta } from "@/lib/data/seo";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 
 export const metadata: Metadata = pageMeta({
   title: "Custom Car Interiors — Leather, Alcantara & Captain Seats",
@@ -45,7 +45,7 @@ export default async function InteriorsPage() {
     <>
       <PageHero
         eyebrow="Custom interiors studio"
-        title="THE BEST SEAT IN THE CAR."
+        title="The best seat in the car"
         blurb="Leather, alcantara, diamond stitching, ventilation, captain conversions and lighting — pattern-cut and trimmed in our own workshop, not outsourced to a market shop."
         media="cockpitScreen"
         actions={[
@@ -58,7 +58,7 @@ export default async function InteriorsPage() {
         <div className="shell">
           <SectionHead
             eyebrow="What we build"
-            title="EVERY SURFACE YOU TOUCH."
+            title="Every surface you touch"
             blurb="Prices are starting points for a mid-size SUV. The final quote depends on hide count, stitch pattern and how much of the cabin comes apart."
           />
           <ul className="grid gap-px overflow-hidden border border-tint/8 bg-tint/8 sm:grid-cols-2 lg:grid-cols-3">
@@ -87,7 +87,7 @@ export default async function InteriorsPage() {
           </Reveal>
           <Reveal delay={80}>
             <p className="eyebrow mb-3">Luxury SUV conversion</p>
-            <h2 className="display-2">TURN ROW TWO INTO FIRST CLASS.</h2>
+            <h2 className="display-2">Turn row two into first class</h2>
             <p className="mt-4 text-sm leading-relaxed text-ash">
               Electric recliners with memory, automatic footrests, a partition console with a fridge,
               roof-mounted or headrest screens, alcantara headliner and concealed ambient runs. Built
@@ -108,21 +108,15 @@ export default async function InteriorsPage() {
                 </li>
               ))}
             </ul>
-            <a
-              href={whatsapp("Hi Riderzpro, I want a luxury interior conversion. My car is: ")}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="btn btn-accent mt-7"
-            >
-              <Icon name="whatsapp" size={16} />
+            <EnquiryButton topic="installation" message={"Hi Riderzpro, I want a luxury interior conversion. My car is: "} className="btn btn-accent mt-7">
               Design my interior
-            </a>
+            </EnquiryButton>
           </Reveal>
         </div>
       </section>
 
       <section className="section">
-        <div className="shell grid gap-10 lg:grid-cols-2 lg:items-start">
+        <div className={`shell grid gap-10 lg:items-start ${interiorReviews.length > 0 ? "lg:grid-cols-2" : ""}`}>
           <div>
             <SectionHead eyebrow="Questions" title="INTERIOR FAQs." />
             <Accordion items={FAQ} />

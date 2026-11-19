@@ -66,9 +66,10 @@ export const MEDIA = {
   ),
 
   // --- Workshop / service ----------------------------------------------
+  // Was photo-1552642986-ccb41e7059e7, which turned out to be a portrait, not a detailing shot.
   detailingPolish: photo(
-    "photo-1552642986-ccb41e7059e7",
-    "Detailer machine-polishing a panel under inspection lighting",
+    "photo-1607860108855-64acf2078ed9",
+    "Detailer hand-washing a black car with a foam wash mitt",
   ),
   wrapHeatGun: photo(
     "photo-1558618666-fcd25c85cd64",

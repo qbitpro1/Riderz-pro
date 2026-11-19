@@ -1,9 +1,8 @@
 "use client";
 
-import { recordLead } from "@/lib/client/leads";
 import { useState } from "react";
 import { Icon } from "@/components/ui/Icon";
-import { whatsapp } from "@/lib/data/site";
+import { EnquiryStatus, useEnquiry } from "@/components/enquiry/Enquiry";
 import { APPOINTMENT_SERVICES } from "@/lib/data/services";
 
 export function BookingForm({ defaultService }: { defaultService?: string }) {
@@ -15,6 +14,7 @@ export function BookingForm({ defaultService }: { defaultService?: string }) {
   const [city, setCity] = useState("");
   const [notes, setNotes] = useState("");
 
+  const enquiry = useEnquiry();
   const ready = name.trim() && phone.trim().length >= 10 && car.trim();
 
   const message = [
@@ -35,15 +35,13 @@ export function BookingForm({ defaultService }: { defaultService?: string }) {
       className="card p-5 md:p-6"
       onSubmit={(e) => {
         e.preventDefault();
-        if (!ready) return;
-        window.open(whatsapp(message), "_blank", "noopener,noreferrer");
-        recordLead("garage_booking", { name, phone, city: city.trim() || undefined, details: { car, service, date: date || "flexible", notes } }, message);
+        if (ready && !enquiry.sending) void enquiry.send({ name, mobile: phone, topic: "installation", message });
       }}
     >
       <p className="eyebrow mb-1">Riderzpro Garage</p>
       <h3 className="display-3">BOOK AN APPOINTMENT</h3>
       <p className="mt-2 text-sm text-ash">
-        Tell us what the car needs. We confirm a slot on WhatsApp within business hours.
+        Tell us what the car needs. We call you to confirm a slot within one working day.
       </p>
 
       <div className="mt-5 grid gap-3 sm:grid-cols-2">
@@ -102,12 +100,14 @@ export function BookingForm({ defaultService }: { defaultService?: string }) {
 
       <button
         type="submit"
-        className={`btn btn-block mt-5 ${ready ? "btn-whatsapp" : "btn-outline cursor-not-allowed opacity-40"}`}
-        disabled={!ready}
+        className={`btn btn-block mt-5 ${ready ? "btn-primary" : "btn-outline cursor-not-allowed opacity-40"}`}
+        disabled={!ready || enquiry.sending}
+        aria-busy={enquiry.sending}
       >
-        <Icon name="whatsapp" size={16} />
-        Request this slot
+        <Icon name="check" size={16} />
+        {enquiry.sending ? "Sending…" : "Request this slot"}
       </button>
+      <EnquiryStatus status={enquiry.status} error={enquiry.error} />
     </form>
   );
 }

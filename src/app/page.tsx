@@ -31,7 +31,7 @@ import { pageMeta } from "@/lib/data/seo";
 export const metadata: Metadata = pageMeta({
   title: "Riderzpro — Car Accessories, Fitted Right",
   description:
-    "Seat covers, floor mats, multimedia, lighting, covers and guards, and off-roading gear. Made by Riderzpro, fitment-checked for your model and fitted at our garage.",
+    "Seat covers, floor mats, multimedia, lighting, covers and guards, and off-roading gear. Made by Riderzpro, fitment-checked for your model, with installation available.",
   path: "/",
 });
 
@@ -90,17 +90,19 @@ const WHY = [
     title: "We make what we sell",
     body: "Riderzpro is our own registered brand. We manufacture car accessories and sell them directly.",
   },
+  // Each point says something the sections around it do not (fitment, installation and the AI
+  // assistant have their own sections). Sources: docs policies (returns, payments) and the README.
   {
-    title: "Checked against your car",
-    body: "Pick your car once and we show what fits it. Parts without a confirmed fit are not claimed to fit.",
+    title: "Refund if it doesn't fit",
+    body: "If a part we confirmed for your car doesn't fit, we collect it at our cost and refund you in full.",
   },
   {
-    title: "Fitted by people who know them",
-    body: "Installation is available at our garages for the products marked with the wrench.",
+    title: "A GST invoice with every order",
+    body: "Your tax invoice is ready in My orders as soon as the order is confirmed.",
   },
   {
-    title: "Help whenever you ask",
-    body: "Our AI assistant answers fitment and product questions any time, and a real person is a call away.",
+    title: "Approved sellers only",
+    body: "Marketplace products come from sellers we check and approve before they can list.",
   },
 ];
 
@@ -141,6 +143,8 @@ export default async function HomePage() {
   ).slice(0, 12);
 
   const collections = COLLECTIONS.map((c) => ({ c, count: CATALOG.filter(c.match).length })).filter((x) => x.count > 0);
+  // Full rows only: 3 across when the count divides by 3 but not 4 (6 collections → 2 rows), else 4.
+  const threeUp = collections.length % 3 === 0 && collections.length % 4 !== 0;
 
   const models = LANDING_MODELS.slice(0, 12);
 
@@ -170,17 +174,11 @@ export default async function HomePage() {
       {/* 2 — TRUST STRIP --------------------------------------------------- */}
       <section className="bg-carbon py-6 md:py-8" aria-label="Why shop with us">
         <div className="shell">
-          <ul className="grid grid-cols-2 gap-x-4 gap-y-5 md:grid-cols-4 lg:grid-cols-8">
-            {STATS.map((s) => (
-              <li key={s.label}>
-                <p className="font-display text-xl font-extrabold tnum">{s.value}</p>
-                <p className="text-[11px] text-dim">{s.label}</p>
-              </li>
-            ))}
+          <ul className="grid gap-x-4 gap-y-3 sm:grid-cols-3">
             {[
               "Fitment-checked for your car",
               `Free shipping over ${rupees(FREE_SHIPPING_OVER)}`,
-              "Installation at our garages",
+              "Installation available",
             ].map((t) => (
               <li key={t} className="flex items-start gap-2 text-xs text-ash">
                 <Icon name="check" size={14} className="mt-0.5 shrink-0 text-accent" />
@@ -232,7 +230,7 @@ export default async function HomePage() {
           />
           <div className="grid gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-10">
             <div className="card p-5 md:p-6">
-              <FitmentPicker />
+              <FitmentPicker bare />
             </div>
             <div>
               <p className="eyebrow mb-3">Popular models</p>
@@ -308,14 +306,14 @@ export default async function HomePage() {
       <section className="section bg-void">
         <div className="shell">
           <SectionHead eyebrow="Collections" title="Shop by price and offer" href="/collections" />
-          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 md:gap-4">
+          <ul className={`grid gap-3 sm:grid-cols-2 md:gap-4 ${threeUp ? "lg:grid-cols-3" : "lg:grid-cols-4"}`}>
             {collections.map(({ c, count }, i) => (
               <li key={c.slug}>
                 <Reveal delay={i * 55} className="h-full">
                   <Link
                     data-theme="dark"
                     href={`/collections/${c.slug}`}
-                    className="card card-hover relative flex aspect-[16/10] flex-col justify-end overflow-hidden bg-graphite lg:aspect-[4/5]"
+                    className={`card card-hover relative flex aspect-[16/10] flex-col justify-end overflow-hidden bg-graphite ${threeUp ? "lg:aspect-[4/3]" : "lg:aspect-[4/5]"}`}
                   >
                     <Photo media={c.image} sizes="(min-width:1024px) 24vw, (min-width:640px) 48vw, 92vw" className="zoom opacity-75" />
                     <div className="absolute inset-0 scrim-soft" />
@@ -377,7 +375,6 @@ export default async function HomePage() {
             <h2 className="display-2">We fit what we sell</h2>
             <ul className="mt-5 space-y-3 text-sm text-ash md:text-base">
               {[
-                "Fitting at the Riderzpro garage.",
                 "Look for the wrench on a product: installation is available for it.",
                 "Book a slot and we confirm fitment before we start.",
               ].map((t) => (
@@ -389,7 +386,7 @@ export default async function HomePage() {
             </ul>
             <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
               <Link href="/garage" className="btn btn-primary">
-                Visit the garage
+                Book installation
                 <Icon name="arrow" size={16} />
               </Link>
               {SERVICES.map((s) => (

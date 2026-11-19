@@ -151,7 +151,7 @@ export function CartDrawer() {
                         type="button"
                         onClick={() => remove(l.id)}
                         aria-label={`Remove ${l.name}`}
-                        className="shrink-0 text-dim transition-colors duration-150 hover:text-danger"
+                        className="-mt-2.5 grid h-11 w-11 shrink-0 place-items-center text-dim transition-colors duration-150 hover:text-danger"
                       >
                         <Icon name="close" size={16} />
                       </button>
@@ -167,7 +167,7 @@ export function CartDrawer() {
                           type="button"
                           aria-label={`Decrease ${l.name}`}
                           onClick={() => setQty(l.id, l.qty - 1)}
-                          className="grid h-9 w-9 place-items-center text-ash transition-colors duration-150 hover:text-accent"
+                          className="grid h-11 w-11 place-items-center text-ash transition-colors duration-150 hover:text-accent"
                         >
                           <Icon name="minus" size={14} />
                         </button>
@@ -178,7 +178,7 @@ export function CartDrawer() {
                           type="button"
                           aria-label={`Increase ${l.name}`}
                           onClick={() => setQty(l.id, l.qty + 1)}
-                          className="grid h-9 w-9 place-items-center text-ash transition-colors duration-150 hover:text-accent"
+                          className="grid h-11 w-11 place-items-center text-ash transition-colors duration-150 hover:text-accent"
                         >
                           <Icon name="plus" size={14} />
                         </button>

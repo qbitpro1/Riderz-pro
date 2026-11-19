@@ -13,6 +13,7 @@ type IconName =
   | "shield"
   | "whatsapp"
   | "phone"
+  | "mail"
   | "star"
   | "spark"
   | "speaker"
@@ -87,6 +88,12 @@ const PATHS: Record<IconName, React.ReactNode> = {
   ),
   phone: (
     <path d="M5 3.5h3l1.5 4-2 1.4a12 12 0 0 0 5.6 5.6l1.4-2 4 1.5v3c0 .9-.7 1.6-1.6 1.5C9.4 18.7 5.3 14.6 3.6 5.1 3.4 4.2 4.1 3.5 5 3.5z" />
+  ),
+  mail: (
+    <>
+      <rect x="3" y="5.5" width="18" height="13" rx="1.5" />
+      <path d="m3.5 6.5 8.5 6.5 8.5-6.5" />
+    </>
   ),
   star: <path d="m12 3.5 2.6 5.4 5.9.8-4.3 4.1 1 5.9-5.2-2.8-5.2 2.8 1-5.9L3.5 9.7l5.9-.8z" />,
   spark: <path d="M12 2.5 14 9l6.5 2-6.5 2-2 6.5-2-6.5L3.5 11 10 9z" />,

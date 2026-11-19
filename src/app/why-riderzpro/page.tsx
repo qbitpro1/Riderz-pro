@@ -2,24 +2,23 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHero } from "@/components/layout/PageHero";
 import { SectionHead } from "@/components/ui/Section";
-import { Icon } from "@/components/ui/Icon";
 import { Reveal } from "@/components/ui/Reveal";
 import { ReviewCard } from "@/components/community/Cards";
-import { whatsapp } from "@/lib/data/site";
 import { approvedReviews, siteStats } from "@/lib/server/reviews";
 import { pageMeta } from "@/lib/data/seo";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 
 export const metadata: Metadata = pageMeta({
   title: "Why Riderzpro",
   description:
-    "What Riderzpro does differently: one workshop for the whole car, published prices, documented builds, legal compliance, and a badge that means something.",
+    "What Riderzpro does differently: one team for the whole car, published prices, documented builds, legal compliance, and a badge that means something.",
   path: "/why-riderzpro",
 });
 
 const PRINCIPLES = [
   {
-    title: "One garage, the whole car",
-    body: "Buying, selling, accessories, audio, PPF, off-road, interiors and tuning under one roof. You stop coordinating four workshops that each blame the other.",
+    title: "One team, the whole car",
+    body: "Accessories, audio, PPF, off-road, interiors and installation from one team. You stop coordinating four workshops that each blame the other.",
   },
   {
     title: "Prices you can see",
@@ -49,7 +48,7 @@ export default async function WhyPage() {
     <>
       <PageHero
         eyebrow="Why Riderzpro"
-        title="IF IT HAS WHEELS, WE CAN HELP."
+        title="If it has wheels, we can help"
         blurb="Buy it, sell it, modify it, protect it, upgrade it or build it. One brand, one standard, one number to call when something isn't right."
         media="garageHeadlights"
         size="sm"
@@ -66,7 +65,7 @@ export default async function WhyPage() {
 
       <section className="section">
         <div className="shell">
-          <SectionHead eyebrow="How we work" title="SIX THINGS WE DON'T BEND ON." />
+          <SectionHead eyebrow="How we work" title="Six things we don't bend on" />
           <ul className="grid gap-px overflow-hidden border border-tint/8 bg-tint/8 md:grid-cols-2 lg:grid-cols-3">
             {PRINCIPLES.map((p, i) => (
               <li key={p.title} className="bg-void p-6">
@@ -101,22 +100,16 @@ export default async function WhyPage() {
             <div>
               <p className="font-display text-lg font-extrabold uppercase">Start somewhere</p>
               <p className="mt-1 text-sm text-ash">
-                A ₹899 steering cover or a ₹6 lakh overland build — both get the same workshop.
+                A ₹899 steering cover or a ₹6 lakh overland build — both get the same care.
               </p>
             </div>
             <div className="flex flex-wrap gap-3">
               <Link href="/shop" className="btn btn-primary btn-sm">
                 Shop accessories
               </Link>
-              <a
-                href={whatsapp("Hi Riderzpro, I'd like to talk about my car.")}
-                target="_blank"
-                rel="noreferrer noopener"
-                className="btn btn-whatsapp btn-sm"
-              >
-                <Icon name="whatsapp" size={15} />
+              <EnquiryButton topic="other" message={"Hi Riderzpro, I'd like to talk about my car."} className="btn btn-primary btn-sm">
                 Ask us anything
-              </a>
+              </EnquiryButton>
             </div>
           </div>
         </div>

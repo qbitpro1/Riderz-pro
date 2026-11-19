@@ -5,24 +5,24 @@ import { BookingForm } from "@/components/garage/BookingForm";
 import { HelpForm } from "@/components/account/HelpForm";
 import { SectionHead } from "@/components/ui/Section";
 import { Icon } from "@/components/ui/Icon";
-import { SITE, whatsapp } from "@/lib/data/site";
+import { LOCATIONS, SITE } from "@/lib/data/site";
 import { pageMeta } from "@/lib/data/seo";
 
 export const metadata: Metadata = pageMeta({
   title: "Contact Riderzpro",
   description:
-    "Talk to Riderzpro on WhatsApp or by phone about cars, accessories, builds, audio, PPF, off-road work and workshop bookings.",
+    "Talk to Riderzpro by message, phone or email about accessories, fitment, orders, audio, PPF, off-road work and installation bookings.",
   path: "/contact",
 });
 
 const CHANNELS = [
   {
-    title: "WhatsApp",
-    body: "Fastest route to a human. Fitment questions, quotes, order updates, build photos.",
-    action: "Message us",
-    href: whatsapp("Hi Riderzpro, "),
-    icon: "whatsapp" as const,
-    external: true,
+    title: "Message",
+    body: "Fitment questions, quotes and order updates. We reply within one working day.",
+    action: "Send a message",
+    href: "#message",
+    icon: "spark" as const,
+    external: false,
   },
   {
     title: "Phone",
@@ -30,6 +30,14 @@ const CHANNELS = [
     action: "Call now",
     href: SITE.phoneHref,
     icon: "phone" as const,
+    external: true,
+  },
+  {
+    title: "Email",
+    body: SITE.email,
+    action: "Write to us",
+    href: `mailto:${SITE.email}`,
+    icon: "mail" as const,
     external: true,
   },
 ];
@@ -54,7 +62,7 @@ export default function ContactPage() {
     <>
       <PageHero
         eyebrow="Contact"
-        title="TALK TO A HUMAN."
+        title="Talk to a human"
         blurb="No ticket queues, no chatbots. Message us and someone from the team replies during business hours."
         media="mechanicEngine"
         size="sm"
@@ -103,8 +111,8 @@ export default function ContactPage() {
           <div>
             <SectionHead
               eyebrow="Support"
-              title="EVERYTHING ELSE."
-              blurb={`${SITE.legalName} GSTIN ${SITE.gstin}.`}
+              title="Everything else"
+              blurb={`${SITE.legalName}${SITE.registeredOffice ? ` Registered office: ${SITE.registeredOffice}.` : ""} GSTIN ${SITE.gstin}.`}
             />
             <ul className="space-y-2.5">
               {QUICK_LINKS.map((l) => (
@@ -117,10 +125,28 @@ export default function ContactPage() {
               ))}
             </ul>
 
+            {LOCATIONS.length > 0 && (
+              <>
+                <p className="mt-8 label">Our garages</p>
+                <ul className="space-y-3">
+                  {LOCATIONS.map((l) => (
+                    <li key={l.slug} className="text-sm text-ash">
+                      <span className="font-display text-xs font-bold uppercase tracking-[0.14em] text-chalk">
+                        {l.city}
+                      </span>
+                      <br />
+                      {l.address}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
           </div>
 
           <div className="space-y-6">
-            <HelpForm />
+            <div id="message" className="scroll-mt-28">
+              <HelpForm />
+            </div>
             <BookingForm />
           </div>
         </div>

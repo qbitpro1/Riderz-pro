@@ -1,10 +1,9 @@
 "use client";
 
-import { recordLead } from "@/lib/client/leads";
 import { useMemo, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { lakh } from "@/lib/format";
-import { whatsapp } from "@/lib/data/site";
+import { EnquiryStatus, useEnquiry } from "@/components/enquiry/Enquiry";
 import { BRANDS } from "@/lib/data/vehicles";
 
 /** Indicative new-car values by body style, before segment and age adjustment. */
@@ -44,6 +43,8 @@ export function SellFlow() {
   const [phone, setPhone] = useState("");
   const [city, setCity] = useState("");
   const [date, setDate] = useState("");
+  const enquiry = useEnquiry();
+  const canSend = name.trim().length > 1 && phone.trim().length >= 10;
 
   const brand = BRANDS.find((b) => b.slug === brandSlug);
   const model = brand?.models.find((m) => m.slug === modelSlug);
@@ -269,7 +270,7 @@ export function SellFlow() {
                   I have {n}+ photos
                 </button>
               ))}
-              <span className="text-xs text-dim">Send them on WhatsApp — it speeds up the offer by a day.</span>
+              <span className="text-xs text-dim">Have them ready for the inspection — it speeds up the offer by a day.</span>
             </div>
           </Panel>
         )}
@@ -346,16 +347,17 @@ export function SellFlow() {
               </div>
             </div>
 
-            <a
-              href={whatsapp(message)}
-              target="_blank"
-              rel="noreferrer noopener"
-              onClick={() => recordLead("sell_car", { name, phone, city: city.trim() || undefined, details: { registration: reg, brand: brandSlug, model: modelSlug, variant, year, km, owner, condition, photos, date } }, message)}
-              className="btn btn-whatsapp btn-block mt-5"
+            <button
+              type="button"
+              disabled={!canSend || enquiry.sending || enquiry.sent}
+              aria-busy={enquiry.sending}
+              onClick={() => void enquiry.send({ name, mobile: phone, topic: "other", message })}
+              className={`btn btn-block mt-5 ${canSend ? "btn-primary" : "btn-outline cursor-not-allowed opacity-40"}`}
             >
-              <Icon name="whatsapp" size={16} />
-              Confirm on WhatsApp
-            </a>
+              <Icon name="check" size={16} />
+              {enquiry.sending ? "Sending…" : enquiry.sent ? "Request sent" : "Request an inspection"}
+            </button>
+            <EnquiryStatus status={enquiry.status} error={enquiry.error} />
           </Panel>
         )}
 

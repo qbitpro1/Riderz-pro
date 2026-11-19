@@ -132,7 +132,7 @@ export default function Be6Page() {
         <div className="shell">
           <SectionHead
             eyebrow="Riderzpro"
-            title="NOW BUILD IT YOUR WAY."
+            title="Now build it your way"
             blurb="The factory car stays exactly as Mahindra built it. This is what we add on top."
           />
           <Builder />
@@ -168,7 +168,7 @@ export default function Be6Page() {
         <div className="shell">
           <SectionHead
             eyebrow="Be first"
-            title="BE FIRST."
+            title="Be first"
             blurb="Join the RIDERZPRO BE 6 waitlist. We come back when there is something real to come back with."
           />
           <Waitlist />

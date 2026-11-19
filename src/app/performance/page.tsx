@@ -10,8 +10,8 @@ import { PERFORMANCE_DISCLAIMER, PERFORMANCE_SERVICES } from "@/lib/data/service
 import { catalogFor } from "@/lib/server/catalog";
 import { groupHref } from "@/lib/data/taxonomy";
 import { rupees } from "@/lib/format";
-import { whatsapp } from "@/lib/data/site";
 import { pageMeta } from "@/lib/data/seo";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 
 export const metadata: Metadata = pageMeta({
   title: "Performance Tuning — ECU Remap, Exhaust, Intake & Brakes",
@@ -46,12 +46,12 @@ export default async function PerformancePage() {
     <>
       <PageHero
         eyebrow="Performance garage"
-        title="MORE POWER. MORE CONTROL."
+        title="More power. More control"
         blurb="Custom maps written on our dyno with your fuel. Intake, exhaust, cooling, braking and suspension set up as a package — because power without the rest is just noise."
         media="engineBay"
         actions={[
           { href: "#services", label: "See what we do", variant: "primary" },
-          { href: whatsapp("Hi Riderzpro, I want more power from my "), label: "Talk to the tuner", variant: "outline", external: true },
+          { href: "#enquire", label: "Talk to the tuner", variant: "outline" },
         ]}
       />
 
@@ -59,7 +59,7 @@ export default async function PerformancePage() {
         <div className="shell">
           <SectionHead
             eyebrow="Services"
-            title="WHAT WE ACTUALLY DO."
+            title="What we actually do"
             blurb="Every job ends with a road test and a printed dyno sheet. If a modification does not measure, we do not charge for it."
           />
           <ul className="divide-y divide-tint/8 border-y border-tint/8">
@@ -94,7 +94,7 @@ export default async function PerformancePage() {
           </Reveal>
           <Reveal delay={80}>
             <p className="eyebrow mb-3">Our approach</p>
-            <h2 className="display-2">HONEST POWER.</h2>
+            <h2 className="display-2">Honest power</h2>
             <ol className="mt-6 space-y-4">
               {[
                 { t: "Health check first", b: "Compression, boost, fuelling and clutch condition. We refuse maps on tired engines." },
@@ -118,7 +118,7 @@ export default async function PerformancePage() {
 
       <section className="section">
         <div className="shell">
-          <SectionHead eyebrow="Performance store" title="PARTS WE FIT." href={groupHref("accessories", "performance")} hrefLabel="All performance" />
+          <SectionHead eyebrow="Performance store" title="Parts we fit" href={groupHref("accessories", "performance")} hrefLabel="All performance" />
           <ul className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-6">
             {perfProducts.map((p) => (
               <li key={p.slug}>
@@ -154,15 +154,9 @@ export default async function PerformancePage() {
               Come in for a baseline run before you decide anything. You leave with a printed sheet and
               an honest opinion about whether your car is worth tuning at all.
             </p>
-            <a
-              href={whatsapp("Hi Riderzpro, I'd like to book a dyno session. My car is: ")}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="btn btn-whatsapp btn-block mt-5"
-            >
-              <Icon name="whatsapp" size={16} />
+            <EnquiryButton id="enquire" topic="installation" message={"Hi Riderzpro, I'd like to book a dyno session. My car is: "} className="btn btn-primary btn-block mt-5">
               Book the dyno
-            </a>
+            </EnquiryButton>
           </div>
         </div>
       </section>

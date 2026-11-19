@@ -80,6 +80,7 @@ Rate limits read the visitor's address from `x-vercel-forwarded-for` / `x-real-i
 
 - [ ] Home, shop, a product page, `/offers`, `/assistant` load.
 - [ ] Sign in with a mobile/email code (a real code arrives); the account page opens.
+- [ ] Send an enquiry from a product page ("Ask us"); it shows in `/admin/customer-support`.
 - [ ] With Razorpay test keys: pay online with a test card / UPI; the order turns "Paid" and shows in
       `/admin/orders` and My orders, the confirmation email/SMS arrives, the invoice opens; refund ₹1
       from the admin order page.

@@ -2,7 +2,9 @@
 
 import { useMemo, useState } from "react";
 import { ListingCard } from "./ListingCard";
+import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 import type { CardData } from "@/lib/inventory/card-data";
 
 type Sort = "newest-listed" | "price-asc" | "price-desc" | "km-asc" | "year-desc" | "best-value";
@@ -31,7 +33,34 @@ export type Bands = { priceBands: { label: string; min: number; max: number }[];
 /** Parsed server-side from the natural-language box and passed back for display. */
 export type ParsedHint = { label: string; value: string }[];
 
-export function InventoryBrowser({
+type BrowserProps = Parameters<typeof Browser>[0];
+
+/**
+ * With no cars listed at all, the search box, example searches, filters and "0 cars" are only empty
+ * scaffolding, so one clear message takes their place.
+ */
+export function InventoryBrowser(props: BrowserProps) {
+  if (props.listings.length > 0) return <Browser {...props} />;
+  return (
+    <div className="card p-8 text-center md:p-12">
+      <Icon name="car" size={28} className="mx-auto text-accent" />
+      <p className="mt-3 font-display text-xl uppercase">No cars listed yet</p>
+      <p className="mx-auto mt-2 max-w-md text-sm text-ash">
+        Our first listings go up soon. Tell us the car, spec and budget you want and we will source it for you.
+      </p>
+      <div className="mt-5 flex flex-wrap justify-center gap-3">
+        <EnquiryButton topic="other" title="Find me a car" message="Hi Riderzpro, I'm looking for a car. My requirement is: " className="btn btn-primary btn-sm">
+          Tell us what you want
+        </EnquiryButton>
+        <Link href="/sell" className="btn btn-outline btn-sm">
+          Sell your car
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+function Browser({
   listings,
   facets,
   bands,
@@ -243,7 +272,7 @@ export function InventoryBrowser({
         <div className="card p-10 text-center">
           <p className="font-display text-xl uppercase">Nothing matches that yet</p>
           <p className="mx-auto mt-2 max-w-md text-sm text-ash">
-            Inventory changes daily. Tell us the spec and budget on WhatsApp and we will source it, or
+            Inventory changes daily. Tell us the spec and budget and we will source it, or
             loosen a filter to see what is here now.
           </p>
           <button type="button" onClick={clearAll} className="btn btn-outline btn-sm mt-5">

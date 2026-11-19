@@ -30,7 +30,7 @@ export const FAQ_GROUPS: FaqGroup[] = [
       },
       {
         q: "Can I cancel an order?",
-        a: "Yes, free of charge until it is dispatched. Made-to-order items can be cancelled until production starts, usually within 24 hours of ordering. Message us on WhatsApp with your order number.",
+        a: "Yes, free of charge until it is dispatched. Made-to-order items can be cancelled until production starts, usually within 24 hours of ordering. Send us a message from the Contact page with your order number.",
         href: "/support/returns#cancellations",
         hrefLabel: "Cancellations",
       },
@@ -48,7 +48,7 @@ export const FAQ_GROUPS: FaqGroup[] = [
     items: [
       {
         q: "How do I know a part will fit my car?",
-        a: "Save your car on the site and we show what fits it. Where a product page does not list your car, ask us on WhatsApp with your variant and year before you order.",
+        a: "Save your car on the site and we show what fits it. We also confirm fitment against your variant and year with you before dispatch. Where a product page says fitment is confirmed before dispatch, we check it with you first.",
         href: "/support/returns#fitment-guarantee",
         hrefLabel: "Fitment guarantee",
       },
@@ -102,7 +102,7 @@ export const FAQ_GROUPS: FaqGroup[] = [
       },
       {
         q: "How do I start a return, and when do I get my refund?",
-        a: "Message us on WhatsApp with your order number and a photo. We arrange reverse pickup in most pin codes within 72 hours, and refund to the original payment method within 5 working days of the item reaching us.",
+        a: "Send us a message from the Contact page with your order number and a photo. We arrange reverse pickup in most pin codes within 72 hours, and refund to the original payment method within 5 working days of the item reaching us.",
         href: "/support/returns#start-a-return",
         hrefLabel: "How to start a return",
       },
@@ -120,7 +120,7 @@ export const FAQ_GROUPS: FaqGroup[] = [
     items: [
       {
         q: "Can you fit what I buy?",
-        a: "Yes, at the Riderzpro garage. Add installation to a product where it is offered, or book a slot on WhatsApp or through the Contact page.",
+        a: "Yes. Add installation to a product where it is offered, or book a slot through the Contact page.",
         href: "/support/installation#booking",
         hrefLabel: "Booking a fitting",
       },
@@ -138,7 +138,7 @@ export const FAQ_GROUPS: FaqGroup[] = [
     items: [
       {
         q: "Do you sell Original Equipment (OE) parts?",
-        a: "OE parts are listed in several departments of the shop. Availability for your car is confirmed on WhatsApp before you order.",
+        a: "OE parts are listed in several departments of the shop. Availability for your car is confirmed with you before you order.",
         href: "/contact",
         hrefLabel: "Contact us",
       },

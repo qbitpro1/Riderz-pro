@@ -123,7 +123,7 @@ export function MobileDrawer({ onClose, liveGroups }: { onClose: () => void; liv
                   <Link
                     href={d.oe.href}
                     onClick={onClose}
-                    className="my-1 flex items-center justify-between bg-accent/10 px-3 py-2.5 font-display text-[11px] font-bold uppercase tracking-[0.12em] text-accent"
+                    className="my-1 flex min-h-11 items-center justify-between bg-accent/10 px-3 py-2.5 font-display text-[11px] font-bold uppercase tracking-[0.12em] text-accent"
                   >
                     {d.oe.label}
                     <Icon name="chevron" size={12} />
@@ -131,7 +131,7 @@ export function MobileDrawer({ onClose, liveGroups }: { onClose: () => void; liv
                   <Link
                     href={d.all.href}
                     onClick={onClose}
-                    className="block px-3 py-2.5 font-display text-[11px] font-bold uppercase tracking-[0.12em] text-chalk"
+                    className="flex min-h-11 items-center px-3 py-2.5 font-display text-[11px] font-bold uppercase tracking-[0.12em] text-chalk"
                   >
                     {d.all.label}
                   </Link>
@@ -156,7 +156,7 @@ export function MobileDrawer({ onClose, liveGroups }: { onClose: () => void; liv
                     <Link
                       href={s.all.href}
                       onClick={onClose}
-                      className="block px-3 py-2.5 font-display text-[11px] font-bold uppercase tracking-[0.12em] text-accent"
+                      className="flex min-h-11 items-center px-3 py-2.5 font-display text-[11px] font-bold uppercase tracking-[0.12em] text-accent"
                     >
                       {s.all.label}
                     </Link>
@@ -211,7 +211,7 @@ function DrawerLink({ href, onClose, children }: { href: string; onClose: () => 
       <Link
         href={href}
         onClick={onClose}
-        className="block px-3 py-2.5 text-sm text-ash transition-colors hover:text-chalk"
+        className="flex min-h-11 items-center px-3 py-2.5 text-sm text-ash transition-colors hover:text-chalk"
       >
         {children}
       </Link>

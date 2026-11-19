@@ -6,6 +6,7 @@ import Link from "next/link";
 import { STICKY_BAR_VAR } from "./useStickyBarOffset";
 import { Icon } from "@/components/ui/Icon";
 import { AssistantChat } from "@/components/assistant/AssistantChat";
+import { OPEN_ASSISTANT_EVENT } from "@/components/catalog/FilterSidebar";
 
 /**
  * The chat button at the bottom right of every shopper page. It opens a small window with the AI
@@ -50,10 +51,20 @@ export function AssistantFab() {
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
+  // "Ask AI" elsewhere on the page (the listing filters) opens this window.
+  useEffect(() => {
+    const onOpen = () => setOpen(true);
+    window.addEventListener(OPEN_ASSISTANT_EVENT, onOpen);
+    return () => window.removeEventListener(OPEN_ASSISTANT_EVENT, onOpen);
+  }, []);
+
   // The full-page assistant is already on screen there.
   if (pathname === "/assistant") return null;
 
   const bottom = "bottom-[calc(76px+var(--sticky-bar-h,0px)+env(safe-area-inset-bottom))] lg:bottom-6";
+  // On the cart (which is also checkout) the floating button sat over the quantity controls and the
+  // address fields on phones and tablets, so it is hidden there below desktop width.
+  const offOnSmall = pathname === "/cart" ? "max-lg:hidden" : "";
 
   return (
     <>
@@ -63,32 +74,38 @@ export function AssistantFab() {
           id="assistant-window"
           role="dialog"
           aria-label="AI shopping assistant"
-          className={`fixed inset-x-3 top-20 z-[60] flex flex-col overflow-hidden rounded-md border border-tint/15 bg-void shadow-[0_24px_70px_-20px_rgba(0,0,0,0.75)] ${bottom} md:inset-x-auto md:top-auto md:right-6 md:h-[min(600px,calc(100dvh-8rem))] md:w-[400px] lg:bottom-24`}
+          className={`fs-panel fixed inset-x-3 top-20 z-[60] flex flex-col overflow-hidden text-cl-ink ${bottom} md:inset-x-auto md:top-auto md:right-6 md:h-[min(600px,calc(100dvh-8rem))] md:w-[400px] lg:bottom-24`}
         >
-          <div className="flex items-center justify-between gap-3 border-b border-tint/10 bg-carbon px-4 py-3">
-            <div className="flex items-center gap-2.5">
-              <span className="grid h-9 w-9 place-items-center rounded-full bg-accent text-on-accent">
-                <Icon name="spark" size={17} />
+          <div className="flex items-center justify-between gap-3 border-b border-cl-ink/[0.07] px-4 py-3.5">
+            <div className="flex min-w-0 items-center gap-3">
+              <span className="fs-icon h-10 w-10" aria-hidden="true">
+                <Icon name="spark" size={18} />
               </span>
-              <div>
-                <p className="font-display text-sm font-bold uppercase tracking-[0.1em] text-chalk">AI assistant</p>
-                <p className="text-[11px] text-dim">Parts that fit your car, within budget</p>
+              <div className="min-w-0">
+                <p className="text-[15px] font-semibold tracking-[-0.01em]">AI assistant</p>
+                <p className="truncate text-[12px] text-cl-muted">Parts that fit your car, within budget</p>
               </div>
             </div>
-            <div className="flex items-center gap-1">
-              <Link href="/assistant" className="whitespace-nowrap px-2 py-1 text-[11px] text-ash underline underline-offset-4 hover:text-accent">
-                Full screen
+            <div className="flex shrink-0 items-center gap-1.5">
+              <Link
+                href="/assistant"
+                aria-label="Open the assistant full screen"
+                title="Full screen"
+                className="fs-well grid h-9 w-9 place-items-center rounded-full text-cl-muted transition-colors hover:bg-cl-ink/[0.06] hover:text-cl-ink"
+              >
+                <Icon name="arrow" size={15} className="-rotate-45" />
               </Link>
               <button
                 type="button"
                 onClick={() => {
                   setOpen(false);
+                  // On a desktop listing the floating button is hidden; focus it only when it shows.
                   button.current?.focus();
                 }}
                 aria-label="Close the assistant"
-                className="grid h-9 w-9 place-items-center text-chalk/80 hover:text-accent"
+                className="fs-well grid h-9 w-9 place-items-center rounded-full text-cl-muted transition-colors hover:bg-cl-ink/[0.06] hover:text-cl-ink"
               >
-                <Icon name="close" size={18} />
+                <Icon name="close" size={15} />
               </button>
             </div>
           </div>
@@ -105,7 +122,7 @@ export function AssistantFab() {
         aria-expanded={open}
         aria-controls="assistant-window"
         aria-label={open ? "Close the AI assistant" : "Ask our AI assistant"}
-        className={`fixed right-4 z-50 flex h-13 items-center gap-2 rounded-full bg-accent py-3 pl-3.5 pr-4 font-display text-xs font-bold uppercase tracking-[0.12em] text-on-accent shadow-[0_14px_40px_-12px_rgba(0,0,0,0.8)] transition-transform hover:-translate-y-0.5 lg:right-6 ${bottom} ${open ? "max-md:hidden" : ""}`}
+        className={`assistant-fab fixed right-4 z-50 flex h-13 items-center gap-2 rounded-full bg-accent py-3 pl-3.5 pr-4 font-display text-xs font-bold uppercase tracking-[0.12em] text-on-accent shadow-[0_14px_40px_-12px_rgba(0,0,0,0.8)] transition-transform hover:-translate-y-0.5 lg:right-6 ${bottom} ${offOnSmall} ${open ? "max-md:hidden" : ""}`}
       >
         <Icon name={open ? "close" : "spark"} size={19} />
         <span className="hidden xs:inline">{open ? "Close" : "Ask AI"}</span>

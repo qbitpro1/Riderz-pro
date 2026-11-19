@@ -12,8 +12,8 @@ import { AUDIO_PACKAGES } from "@/lib/data/services";
 import { catalogFor } from "@/lib/server/catalog";
 import { approvedReviews } from "@/lib/server/reviews";
 import { rupees } from "@/lib/format";
-import { whatsapp } from "@/lib/data/site";
 import { pageMeta } from "@/lib/data/seo";
+import { EnquiryButton } from "@/components/enquiry/Enquiry";
 
 export const metadata: Metadata = pageMeta({
   title: "Premium Car Audio — Component, DSP & Signature Builds",
@@ -49,7 +49,7 @@ export default async function AudioPage() {
     <>
       <PageHero
         eyebrow="Premium audio studio"
-        title="HEAR EVERY DETAIL."
+        title="Hear every detail"
         blurb="Sound. Power. Control. From an honest first upgrade to an audiophile-grade custom build — measured on an RTA rig, tuned by ear, and re-tuned free within the first month."
         media="studioMonitors"
         actions={[
@@ -63,7 +63,7 @@ export default async function AudioPage() {
         <div className="shell">
           <SectionHead
             eyebrow="Four packages"
-            title="PICK YOUR LEVEL."
+            title="Pick your level"
             blurb="Every package is a complete, installed system — parts, labour, deadening and tuning included."
           />
           <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -99,14 +99,9 @@ export default async function AudioPage() {
                       Best for: {p.bestFor}
                     </p>
 
-                    <a
-                      href={whatsapp(`Hi Riderzpro, I'm interested in the ${p.name} audio package (${rupees(p.price)}). My car is: `)}
-                      target="_blank"
-                      rel="noreferrer noopener"
-                      className={`btn btn-sm btn-block mt-4 ${p.highlight ? "btn-accent" : "btn-outline"}`}
-                    >
+                    <EnquiryButton topic="installation" message={`Hi Riderzpro, I'm interested in the ${p.name} audio package (${rupees(p.price)}). My car is: `} className={`btn btn-sm btn-block mt-4 ${p.highlight ? "btn-accent" : "btn-outline"}`}>
                       Book this package
-                    </a>
+                    </EnquiryButton>
                   </div>
                 </Reveal>
               </li>
@@ -120,7 +115,7 @@ export default async function AudioPage() {
         <div className="shell">
           <SectionHead
             eyebrow="Custom"
-            title="BUILD YOUR AUDIO SYSTEM."
+            title="Build your audio system"
             blurb="Mix and match source, front stage, amplification, bass and acoustics. The total updates as you go."
           />
           <AudioBuilder />
@@ -138,7 +133,7 @@ export default async function AudioPage() {
           </Reveal>
           <Reveal delay={80}>
             <p className="eyebrow mb-3">How we tune</p>
-            <h2 className="display-2">MEASURED, NOT GUESSED.</h2>
+            <h2 className="display-2">Measured, not guessed</h2>
             <ol className="mt-6 space-y-4">
               {[
                 { t: "Baseline sweep", b: "We measure the car as it is, with a calibrated mic at the driver's headrest." },
@@ -167,7 +162,7 @@ export default async function AudioPage() {
         <div className="shell">
           <SectionHead
             eyebrow="Audio store"
-            title="BUY THE PARTS."
+            title="Buy the parts"
             href="/shop/multimedia"
             hrefLabel="All audio"
             blurb="Prefer to fit it yourself, or upgrade one piece at a time? Everything we install is on the shelf."
@@ -183,7 +178,7 @@ export default async function AudioPage() {
       </section>
 
       <section className="section">
-        <div className="shell grid gap-10 lg:grid-cols-2 lg:items-start">
+        <div className={`shell grid gap-10 lg:items-start ${audioReviews.length > 0 ? "lg:grid-cols-2" : ""}`}>
           <div>
             <SectionHead eyebrow="Questions" title="AUDIO FAQs." />
             <Accordion items={FAQ} />
