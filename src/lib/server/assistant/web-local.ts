@@ -61,7 +61,7 @@ async function topicReply(intent: Intent, onlinePay: boolean): Promise<string | 
     case "order_status":
       return "To see your order, sign in under Account → My orders, or use Track your order with your order number and mobile.";
     case "warranty":
-      return "Each product's warranty is on its product page (it comes from the maker). Fitting done by Riderzpro has our own 12-month workmanship warranty. Tell me a product and I'll find it.";
+      return "Warranty is different for every product: each product page shows its own period, and your invoice confirms it. Tell me a product and I'll find it.";
     case "contact":
       return `You can call us on ${SITE.phone} (${SITE.hours}) or email ${SITE.email}. The Contact page has every way to reach us.`;
     case "bargain":

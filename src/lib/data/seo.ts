@@ -185,7 +185,7 @@ export const SEO_LANDINGS: SeoLanding[] = [
       },
       {
         heading: "Installation available",
-        body: "Products marked with the wrench can be fitted for you, with a 12-month workmanship warranty on the fitting.",
+        body: "Products marked with the wrench can be fitted for you; the warranty depends on the product and is on your invoice.",
       },
       {
         heading: "Savings only where they are real",

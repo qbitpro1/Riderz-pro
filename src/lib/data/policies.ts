@@ -133,22 +133,22 @@ export const SUPPORT_POLICIES: Policy[] = [
     title: "WARRANTY",
     eyebrow: "Customer support",
     intro:
-      "Two things are warranted separately: the part, by whoever made it, and our workmanship, by us. We honour both without sending you to a manufacturer's helpline.",
+      "Warranty is different for every product. Each product page shows its own warranty period, and your invoice confirms it for every item you bought.",
     sections: [
       {
-        id: "workmanship",
-        heading: "Workmanship warranty",
+        id: "product-warranties",
+        heading: "Warranty by product",
         body: [
-          "Twelve months on all installation, wiring, fabrication and trim work carried out at a Riderzpro garage.",
-          "If something we fitted rattles, leaks, fails or comes loose within that period, we fix it free — including removing and refitting other parts to get to it.",
+          "The warranty period is set for each product by its maker or seller, and it can be a few months, a year or longer. Where we have it, it is shown on the product page under Product details; if a product page shows no warranty, ask us before you buy and we will confirm it.",
+          "Your invoice lists the warranty for each item. That is the period that applies to your order.",
         ],
       },
       {
-        id: "product-warranties",
-        heading: "Product warranties",
+        id: "workmanship",
+        heading: "Fitting",
         body: [
-          "Each product page lists its own warranty period. Paint protection film is warranted for ten years against yellowing and cracking; ceramic coatings for five years and graphene for seven, subject to annual inspection.",
-          "Structural steel — rock sliders, bull bars, roof racks — carries a five-year structural warranty.",
+          "Where we fit a product for you, the warranty on the fitting depends on the product and the work involved. It is confirmed when the installation is booked and written on your invoice.",
+          "If something we fitted rattles, leaks, fails or comes loose within that period, we fix it free.",
         ],
       },
       {
@@ -199,7 +199,7 @@ export const SUPPORT_POLICIES: Policy[] = [
         id: "workmanship",
         heading: "Workmanship warranty",
         body: [
-          "Twelve months on all installation, wiring, fabrication and trim work carried out at a Riderzpro garage. The full terms are on the Warranty page.",
+          "The warranty on fitting depends on the product and the work involved; it is confirmed when the installation is booked and written on your invoice. The full terms are on the Warranty page.",
         ],
       },
     ],
