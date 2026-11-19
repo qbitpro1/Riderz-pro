@@ -285,7 +285,7 @@ export default function AutoformPage() {
               Book Autoform installation
             </EnquiryButton>
             <Link href="/garage" className="btn btn-outline btn-block mt-3">
-              Workshop and locations
+              Installation
             </Link>
           </div>
         </div>
