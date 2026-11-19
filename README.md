@@ -57,6 +57,9 @@ the company's garages.
   - **Demo content removed:** the three invented garages and `/locations`, made-up testimonials and
     figures ("12,400+ builds"), the 16 sample cars and 8 sample builds.
   - Next.js 16.4.6 (security update).
+- **Later on 19 Nov.** Only car covers are on sale for now (everything else "Coming soon"); car buying
+  and selling removed; contact is +91 98118 86661 and admin@riderzpro.com; no social media links or
+  GST number on the website.
 - **Free AI, no API key needed.**
   - Ask AI on the website.
   - Salesman AI on the shop screen: Basic mode free; Full mode on Claude when a key is set.
@@ -177,10 +180,12 @@ The task list per person is kept with the team (latest: task update of 9 Nov 202
   test keys (checkout, coupons, invoices, rider delivery and reviews are not covered until then).
 - [ ] Privacy policy: add a line about Google Translate (approved by the owner).
 - [ ] Invoices keep a placeholder address until the registered office address is shared.
-- [ ] Demo content still to go: car buying and selling (`/cars`, `/sell`, `/used-cars`, EMI), the
-  `/garage` page, "Motorbotz" and the demo GSTIN in the footer. (Phone and email are real since 19 Nov;
-  the social media links are removed until the accounts exist.)
-- [ ] `/partners` dealer form: save the requests and list them in admin, or hide it.
+- [ ] Demo content still to go: the `/garage` page and "Motorbotz" in the footer. Done on 19 Nov: car
+  buying and selling removed (`/cars`, `/sell`, `/used-cars`, `/partners` now redirect), real phone
+  and email, social media links and the GST number taken off the website (invoices keep the GSTIN).
+- [ ] **Only car covers are on sale** (owner, 19 Nov): every other product, Riderzpro's and sellers',
+  shows "Coming soon" and can't be bought. When more stock arrives, set `ONLY_CAR_COVERS_ON_SALE` to
+  `false` in `src/lib/catalog/on-sale.ts`. Sellers' Offline Store screens are not affected.
 - [ ] Customer requests (quotes, bookings, fitment questions) now arrive in admin -> Customer support;
   the admin Requests page (`/admin/leads`) only shows requests saved before 19 Nov.
 - [ ] Later: monthly Offline Store subscription for sellers (plans, billing, what happens when unpaid).

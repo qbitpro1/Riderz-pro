@@ -608,7 +608,8 @@ await step("customer: GST invoice for the delivered order", async () => {
 
 /* ------------------------------------------------------ catalogue (database) */
 
-const HOUSE = "nappa-leather-steering-cover";
+// A car cover: while only car covers are on sale (src/lib/catalog/on-sale.ts), other products are "Coming soon".
+const HOUSE = "all-weather-body-cover";
 // Each catalogue order uses its own mobile (orders are limited to 5 per mobile per hour).
 let houseSeq = 10;
 const houseOrder = (qty) => cust.call("POST", "/api/orders", {
