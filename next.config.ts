@@ -137,6 +137,9 @@ const nextConfig: NextConfig = {
       { source: "/used-cars", destination: "/shop", permanent: false },
       { source: "/sell", destination: "/shop", permanent: false },
       { source: "/partners", destination: "/vendor", permanent: false },
+      // The Mahindra BE 6 programme was removed (19 Nov 2026); old links land on the shop.
+      { source: "/be-6", destination: "/shop", permanent: false },
+      { source: "/be-6/:path*", destination: "/shop", permanent: false },
       { source: "/ppf/ppf-in-hyderabad", destination: "/ppf", permanent: false },
       { source: "/ppf/ppf-in-pune", destination: "/ppf", permanent: false },
       // The compare feature was dropped; its URL goes to the shop.

@@ -58,8 +58,9 @@ the company's garages.
     figures ("12,400+ builds"), the 16 sample cars and 8 sample builds.
   - Next.js 16.4.6 (security update).
 - **Later on 19 Nov.** Only car covers are on sale for now (everything else "Coming soon"); car buying
-  and selling removed; contact is +91 98118 86661 and admin@riderzpro.com; no social media links or
-  GST number on the website.
+  and selling removed; the Mahindra BE 6 programme removed (`/be-6` redirects to the shop); contact is
+  +91 98118 86661 and admin@riderzpro.com; no social media links, GST number, Motorbotz name or garage
+  claims on the website; warranty is per product.
 - **Free AI, no API key needed.**
   - Ask AI on the website.
   - Salesman AI on the shop screen: Basic mode free; Full mode on Claude when a key is set.
@@ -104,7 +105,7 @@ the company's garages.
 | Offline Store | Shop-floor screen per seller: shop categories, Bestseller tags, suggestions, Salesman AI with seller-limited bargaining, pay on the screen or at the counter, receipts by SMS | `/store/[slug]`, set up in `/vendor/dashboard/store-screen` |
 | Riders (Delhi NCR) | Apply, accept deliveries, share location, delivery codes, earnings | `/rider` |
 | Admin | Team logins with roles; sellers, products, orders, refunds, payouts, dispatch, riders, coupons, customers, reports, audit log | `/admin` |
-| Other | Services (PPF, audio, body kits…), used cars, the Mahindra BE 6 programme, offers | menus |
+| Other | Services (PPF, audio, body kits…), offers | menus |
 
 ### Offline Store in short
 
