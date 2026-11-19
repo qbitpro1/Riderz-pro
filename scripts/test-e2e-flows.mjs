@@ -260,6 +260,38 @@ await step("admin: application shows in the KYC queue with its documents", async
   assert.notEqual(stranger.status, 200, "documents are not public");
 });
 
+await step("admin: declines with a reason; seller signs in, sees it, stays locked, re-uploads and resubmits", async () => {
+  await admin.expect(200, "POST", `/api/admin/vendors/${ctx.vendorId}/decision`, { action: "start_review" });
+  const noReason = await admin.call("POST", `/api/admin/vendors/${ctx.vendorId}/decision`, { action: "reject", reason: "" });
+  assert.equal(noReason.status, 400, "a decline needs a reason");
+  const reason = `PAN copy is unreadable (${RUN}). Please upload a clear scan.`;
+  await admin.expect(200, "POST", `/api/admin/vendors/${ctx.vendorId}/decision`, { action: "reject", reason });
+  // A fresh sign-in works for a declined seller and lands on the application to fix it.
+  const again = client("seller-again");
+  const signin = await again.expect(200, "POST", "/api/vendor/auth/signin", { identifier: sellerEmail, password: "testpass12345" });
+  assert.equal(signin.next, "/vendor/onboarding", "declined seller is sent to the application");
+  const me = await again.expect(200, "GET", "/api/vendor/me");
+  assert.equal(me.vendor.status, "rejected");
+  assert.equal(me.vendor.rejectionReason, reason, "seller sees the admin's reason");
+  const locked = await again.call("POST", "/api/vendor/products", { content: {}, commercial: {}, submit: false });
+  assert.equal(locked.status, 403, "products stay locked while declined");
+  assert.match(locked.json.message, /declined/i);
+  const notes = await again.expect(200, "GET", "/api/vendor/notifications");
+  assert.ok(JSON.stringify(notes).includes("declined"), "seller is notified of the decline");
+  // Re-upload a document and resubmit: back in the admin queue as submitted, reason cleared.
+  const pan = await again.expect(201, "POST", "/api/vendor/files", undefined, { form: upload("doc_pan", PDF, "pan-clear.pdf", "application/pdf") });
+  await again.expect(200, "PUT", "/api/vendor/onboarding/documents", {
+    files: [{ kind: "doc_pan", fileId: pan.file.id, name: "pan-clear.pdf" }, { kind: "doc_cheque", fileId: ctx.docIds[1], name: "cheque.png" }],
+    signatoryName: "Test Seller", acceptAgreement: true,
+  });
+  await again.expect(200, "POST", "/api/vendor/onboarding/submit");
+  const after = await again.expect(200, "GET", "/api/vendor/me");
+  assert.equal(after.vendor.status, "submitted");
+  assert.equal(after.vendor.rejectionReason, null, "old reason cleared on resubmit");
+  const queue = await admin.expect(200, "GET", "/api/admin/vendors?status=queue");
+  assert.ok(JSON.stringify(queue).includes(ctx.vendorId), "resubmitted seller is back in the approval queue");
+});
+
 await step("admin: start review and approve the seller", async () => {
   await admin.expect(200, "POST", `/api/admin/vendors/${ctx.vendorId}/decision`, { action: "start_review" });
   const from = logLines();
@@ -288,6 +320,26 @@ await step("seller: product created, submitted, approved by admin, live", async 
   await admin.expect(200, "POST", `/api/admin/vendor-products/${p.product.id}/decision`, { action: "approve" });
   const list = await seller.expect(200, "GET", "/api/vendor/products");
   assert.equal(list.products.find((x) => x.id === p.product.id)?.status, "live");
+});
+
+await step("seller: bulk JSON catalogue goes to review; admin approves one, declines one; customers see only the approved", async () => {
+  const photo = await seller.expect(201, "POST", "/api/vendor/files", undefined, { form: upload("product_image", PNG, "bulk.png", "image/png") });
+  const row = (n) => ({ title: `E2E Bulk ${n} ${RUN}`, sku: `E2EB${n}-${RUN}`, price: 799, mrp: 999, stock: 4, department: "interior", group: "seat-covers", hsn: "8708", gstRate: 18, summary: "Bulk test product", images: [photo.file.id] });
+  const r = await seller.expect(201, "POST", "/api/vendor/products/import", { products: [row(1), row(2), { title: "No SKU or price" }] });
+  assert.deepEqual(r.summary, { submitted: 2, draft: 0, failed: 1 }, JSON.stringify(r.results));
+  const [a, b] = r.results.filter((x) => x.outcome === "submitted");
+  const queue = await admin.expect(200, "GET", "/api/admin/vendor-products");
+  for (const x of [a, b]) assert.ok(JSON.stringify(queue).includes(x.productId), "imported product waits in the review queue");
+  const mine = (await seller.expect(200, "GET", "/api/vendor/products")).products;
+  const slug = (id) => mine.find((p) => p.id === id).slug;
+  const url = (id) => `/sellers/e2e-store-${RUN}/${slug(id)}`;
+  assert.equal((await cust.call("GET", url(a.productId))).status, 404, "not public before review");
+  await admin.expect(200, "POST", `/api/admin/vendor-products/${a.productId}/decision`, { action: "approve" });
+  await admin.expect(200, "POST", `/api/admin/vendor-products/${b.productId}/decision`, { action: "reject", note: "Photo does not show the product." });
+  assert.equal((await cust.call("GET", url(a.productId))).status, 200, "approved product is on the website");
+  assert.equal((await cust.call("GET", url(b.productId))).status, 404, "declined product is not");
+  const after = (await seller.expect(200, "GET", "/api/vendor/products")).products;
+  assert.equal(after.find((p) => p.id === b.productId).rejectionReason, "Photo does not show the product.", "seller sees why");
 });
 
 await step("seller products: hidden until approved; edits to a live product wait for review", async () => {

@@ -7,6 +7,7 @@ import { liveBuilds } from "@/lib/server/builds";
 import { LANDING_MODELS, findModelBySlug } from "@/lib/data/vehicles";
 import { BRANDS, type CatalogItem } from "@/lib/catalog";
 import { catalogSnapshot } from "@/lib/server/catalog";
+import { liveVendorItems } from "@/lib/server/marketplace";
 import { COLLECTIONS } from "@/lib/data/collections";
 import { lakh, rupees } from "@/lib/format";
 import { productHref } from "@/lib/store/types";
@@ -42,7 +43,7 @@ function productEntry(i: CatalogItem): SearchEntry {
 
 /** The whole search index, built from the database (products) and the site's own pages. */
 export async function buildSearchIndex(): Promise<SearchIndex> {
-  const [{ items: CATALOG, byBrand: CATALOG_BY_BRAND }, allCars, BUILDS] = await Promise.all([catalogSnapshot(), publicCars(), liveBuilds()]);
+  const [{ items: CATALOG, byBrand: CATALOG_BY_BRAND }, allCars, BUILDS, SELLER_ITEMS] = await Promise.all([catalogSnapshot(), publicCars(), liveBuilds(), liveVendorItems()]);
   const CARS = allCars.filter((c) => c.status === "live");
   const SEARCH_INDEX: SearchEntry[] = [
   // Brands come first in construction order so an exact brand name — "recoil",
@@ -70,6 +71,15 @@ export async function buildSearchIndex(): Promise<SearchIndex> {
     ),
   })),
   ...CATALOG.map(productEntry),
+  // Admin-approved products of approved sellers only (liveVendorItems applies the same gate as the shop).
+  ...SELLER_ITEMS.map((i) => ({
+    id: `seller-${i.id}`,
+    kind: "Product" as const,
+    title: i.title,
+    meta: `${i.price !== null ? rupees(i.price) : "Price on request"} · ${i.seller?.name ?? "Seller"}`,
+    href: i.href,
+    keywords: norm(`${i.keywords} ${i.title} ${i.seller?.name ?? ""} seller marketplace`),
+  })),
   // Help pages people look for by name.
   ...[
     { id: "faq", title: "FAQ — ordering, fitment, delivery, returns", href: "/faq", k: "faq help questions ordering fitment delivery returns payment" },

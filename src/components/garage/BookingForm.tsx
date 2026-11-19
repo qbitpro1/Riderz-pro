@@ -3,7 +3,7 @@
 import { recordLead } from "@/lib/client/leads";
 import { useState } from "react";
 import { Icon } from "@/components/ui/Icon";
-import { LOCATIONS, whatsapp } from "@/lib/data/site";
+import { whatsapp } from "@/lib/data/site";
 import { APPOINTMENT_SERVICES } from "@/lib/data/services";
 
 export function BookingForm({ defaultService }: { defaultService?: string }) {
@@ -12,10 +12,9 @@ export function BookingForm({ defaultService }: { defaultService?: string }) {
   const [car, setCar] = useState("");
   const [service, setService] = useState(defaultService ?? APPOINTMENT_SERVICES[0]);
   const [date, setDate] = useState("");
-  const [location, setLocation] = useState(LOCATIONS[0].slug);
+  const [city, setCity] = useState("");
   const [notes, setNotes] = useState("");
 
-  const branch = LOCATIONS.find((l) => l.slug === location);
   const ready = name.trim() && phone.trim().length >= 10 && car.trim();
 
   const message = [
@@ -25,7 +24,7 @@ export function BookingForm({ defaultService }: { defaultService?: string }) {
     `Car: ${car}`,
     `Service: ${service}`,
     `Preferred date: ${date || "flexible"}`,
-    `Location: ${branch?.name}`,
+    city.trim() ? `City: ${city.trim()}` : "",
     notes ? `Notes: ${notes}` : "",
   ]
     .filter(Boolean)
@@ -38,14 +37,13 @@ export function BookingForm({ defaultService }: { defaultService?: string }) {
         e.preventDefault();
         if (!ready) return;
         window.open(whatsapp(message), "_blank", "noopener,noreferrer");
-        recordLead("garage_booking", { name, phone, city: branch?.city, details: { car, service, date: date || "flexible", location: branch?.name, notes } }, message);
+        recordLead("garage_booking", { name, phone, city: city.trim() || undefined, details: { car, service, date: date || "flexible", notes } }, message);
       }}
     >
       <p className="eyebrow mb-1">Riderzpro Garage</p>
       <h3 className="display-3">BOOK AN APPOINTMENT</h3>
       <p className="mt-2 text-sm text-ash">
-        Tell us what the car needs. We confirm a slot on WhatsApp within business hours, usually in
-        under twenty minutes.
+        Tell us what the car needs. We confirm a slot on WhatsApp within business hours.
       </p>
 
       <div className="mt-5 grid gap-3 sm:grid-cols-2">
@@ -83,14 +81,8 @@ export function BookingForm({ defaultService }: { defaultService?: string }) {
         <Field label="Preferred date" id="bk-date">
           <input id="bk-date" type="date" className="field" value={date} onChange={(e) => setDate(e.target.value)} />
         </Field>
-        <Field label="Location" id="bk-loc">
-          <select id="bk-loc" className="field" value={location} onChange={(e) => setLocation(e.target.value)}>
-            {LOCATIONS.map((l) => (
-              <option key={l.slug} value={l.slug}>
-                {l.city} — {l.bays} bays
-              </option>
-            ))}
-          </select>
+        <Field label="Your city" id="bk-city">
+          <input id="bk-city" className="field" autoComplete="address-level2" value={city} onChange={(e) => setCity(e.target.value)} />
         </Field>
       </div>
 
@@ -116,9 +108,6 @@ export function BookingForm({ defaultService }: { defaultService?: string }) {
         <Icon name="whatsapp" size={16} />
         Request this slot
       </button>
-      <p className="mt-3 text-[11px] text-dim">
-        {branch?.address} · {branch?.phone}
-      </p>
     </form>
   );
 }

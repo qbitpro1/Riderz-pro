@@ -7,14 +7,14 @@ import { Icon } from "@/components/ui/Icon";
 import { Photo } from "@/components/ui/Photo";
 import { Reveal } from "@/components/ui/Reveal";
 import { GARAGE_SERVICES } from "@/lib/data/services";
-import { LOCATIONS, SITE } from "@/lib/data/site";
+import { SITE } from "@/lib/data/site";
 import { siteStats } from "@/lib/server/reviews";
 import { pageMeta } from "@/lib/data/seo";
 
 export const metadata: Metadata = pageMeta({
   title: "Riderzpro Garage — Installation, Modification & Service Workshop",
   description:
-    "Book installation, modification, detailing, PPF, audio, performance, off-road and interior work at Riderzpro garages in Bengaluru, Hyderabad and Pune. 26 bays.",
+    "Book installation, modification, detailing, PPF, audio, performance, off-road and interior work at the Riderzpro garage.",
   path: "/garage",
 });
 
@@ -26,7 +26,7 @@ export default async function GaragePage() {
     <>
       <PageHero
         eyebrow="Riderzpro Garage"
-        title="26 BAYS. ONE STANDARD."
+        title="ONE GARAGE. ONE STANDARD."
         blurb="Everything happens under one roof — trim shop, paint room, audio bay, dyno, welding and lifts. No sending your car to three different markets and hoping."
         media="mechanicEngine"
         actions={[{ href: "#book", label: "Book an appointment", variant: "primary" }]}
@@ -47,7 +47,7 @@ export default async function GaragePage() {
             <SectionHead
               eyebrow="What we do here"
               title="EVERY JOB, ONE ROOF."
-              blurb="If it can be done to a car, one of our bays does it. If we cannot do something properly, we say so instead of learning on your car."
+              blurb="If it can be done to a car, our garage does it. If we cannot do something properly, we say so instead of learning on your car."
             />
             <ul className="grid gap-px overflow-hidden border border-tint/8 bg-tint/8 sm:grid-cols-2">
               {GARAGE_SERVICES.map((s) => (
@@ -86,29 +86,11 @@ export default async function GaragePage() {
 
       <section className="section">
         <div className="shell">
-          <SectionHead eyebrow="Locations" title="VISIT RIDERZPRO." href="/locations" hrefLabel="All locations" />
-          <ul className="grid gap-4 md:grid-cols-3">
-            {LOCATIONS.map((l) => (
-              <li key={l.slug} className="card p-5">
-                <p className="flex items-center gap-2 font-display text-base font-extrabold uppercase">
-                  {l.city}
-                  {l.flagship && <span className="chip border-accent/35 bg-accent/12 text-accent">Flagship</span>}
-                </p>
-                <p className="mt-2 text-xs leading-relaxed text-ash">{l.address}</p>
-                <p className="mt-3 text-xs text-dim">{l.bays} bays · {l.services.join(" · ")}</p>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <a href={`tel:${l.phone.replace(/\s/g, "")}`} className="btn btn-outline btn-sm">
-                    <Icon name="phone" size={13} />
-                    Call
-                  </a>
-                  <a href={l.mapUrl} target="_blank" rel="noreferrer noopener" className="btn btn-outline btn-sm">
-                    <Icon name="map" size={13} />
-                    Directions
-                  </a>
-                </div>
-              </li>
-            ))}
-          </ul>
+          <SectionHead eyebrow="Visit us" title="VISIT RIDERZPRO." blurb="Call or message us to book a slot before you come in." />
+          <a href={SITE.phoneHref} className="btn btn-outline btn-sm">
+            <Icon name="phone" size={13} />
+            {SITE.phone}
+          </a>
           <p className="mt-6 text-sm text-dim">{SITE.hours}</p>
           <Link href="/build" className="btn btn-accent btn-sm mt-6">
             Configure a build before you come in

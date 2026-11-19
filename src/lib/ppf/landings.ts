@@ -1,4 +1,3 @@
-import { LOCATIONS } from "@/lib/data/site";
 import { ALL_MODELS } from "@/lib/data/vehicles";
 import { classForBody, getPackage, quote, type SizeClass } from "./coverage";
 
@@ -21,18 +20,15 @@ export type PpfLanding = {
   /** Present on vehicle pages. */
   sizeClass: SizeClass;
   vehicle: { brand: string; model: string; body: string } | null;
-  city: { name: string; state: string; address: string | null } | null;
+  city: { name: string; state: string } | null;
   points: string[];
 };
 
-/** Cities we can honestly claim to serve: our own studios, plus Delhi NCR. */
+/** Cities we can honestly claim to serve: Delhi NCR. */
 const CITY_TARGETS = [
   { name: "Delhi", state: "Delhi", nearby: "Delhi NCR" },
   { name: "Gurugram", state: "Haryana", nearby: "Delhi NCR" },
   { name: "Noida", state: "Uttar Pradesh", nearby: "Delhi NCR" },
-  { name: "Bengaluru", state: "Karnataka", nearby: null },
-  { name: "Hyderabad", state: "Telangana", nearby: null },
-  { name: "Pune", state: "Maharashtra", nearby: null },
 ];
 
 /** Models with enough search demand to deserve their own page. */
@@ -42,7 +38,6 @@ const VEHICLE_TARGETS = [
 ];
 
 function cityLanding(target: (typeof CITY_TARGETS)[number]): PpfLanding {
-  const studio = LOCATIONS.find((l) => l.city === target.name);
   const entry = quote({
     sizeClass: "compact-suv",
     tier: "essential",
@@ -64,12 +59,10 @@ function cityLanding(target: (typeof CITY_TARGETS)[number]): PpfLanding {
     description: `Paint protection film in ${target.name}. Essential protection from ₹${entry.low.toLocaleString(
       "en-IN",
     )}, full front from ₹${fullFront.low.toLocaleString("en-IN")}. Plotter-cut patterns, dust-controlled installation, manufacturer warranty passed through.`,
-    intro: studio
-      ? `Our ${target.name} studio has a dedicated dust-controlled room for film work. Book an inspection and we read the paint before quoting — the number on the website is an estimate until we have seen the car.`
-      : `We install paint protection film for customers across ${target.nearby ?? target.name}. Bring the car to the nearest Riderzpro studio and we will read the paint, quote properly and book you in.`,
+    intro: `We install paint protection film for customers across ${target.nearby ?? target.name}. Book an inspection and we read the paint before quoting — the number on the website is an estimate until we have seen the car.`,
     sizeClass: "mid-suv",
     vehicle: null,
-    city: { name: target.name, state: target.state, address: studio?.address ?? null },
+    city: { name: target.name, state: target.state },
     points: [
       `Essential protection from ₹${entry.low.toLocaleString("en-IN")}`,
       `Full front from ₹${fullFront.low.toLocaleString("en-IN")}`,

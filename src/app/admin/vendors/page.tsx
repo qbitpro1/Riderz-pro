@@ -23,7 +23,7 @@ const TABS: { id: VendorFilter; label: string }[] = [
   { id: "changes_requested", label: "Changes requested" },
   { id: "approved", label: "Approved" },
   { id: "suspended", label: "Frozen" },
-  { id: "rejected", label: "Rejected" },
+  { id: "rejected", label: "Declined" },
   { id: "all", label: "All" },
 ];
 
@@ -44,7 +44,7 @@ export default async function VendorsAdminPage({ searchParams }: { searchParams:
         <p className="eyebrow mb-3">Internal · not indexed</p>
         <h1 className="display-2">SELLER KYC QUEUE</h1>
         <p className="mt-4 max-w-2xl text-sm leading-relaxed text-ash">
-          Review each application, check the documents, then approve, ask for changes or reject. Every decision is recorded and the seller is notified.
+          Review each application, check the documents, then approve, ask for changes or decline. Every decision is recorded and the seller is notified.
         </p>
 
         <nav aria-label="Filter by status" className="mt-6 flex flex-wrap gap-2">
@@ -81,7 +81,7 @@ export default async function VendorsAdminPage({ searchParams }: { searchParams:
                       <p className="break-words font-display text-base font-extrabold uppercase">{v.storeName ?? "(no store name yet)"}</p>
                       <p className="mt-0.5 text-sm text-ash">{v.fullName} · {v.businessType}</p>
                     </div>
-                    <StatusBadge status={v.status} />
+                    <StatusBadge status={v.status} label={v.status === "rejected" ? "declined" : undefined} />
                   </div>
                   <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-xs text-dim">
                     <span>{v.email}</span>

@@ -120,7 +120,7 @@ export const SEO_LANDINGS: SeoLanding[] = [
     h1: "USED CARS, WITHOUT THE ASTERISKS.",
     title: "Used Cars for Sale in India — Riderzpro Certified",
     description:
-      "Buy used cars in Bengaluru, Hyderabad and Pune with a 200-point inspection, RC and insurance verification, transparent pricing and a 5-day return window.",
+      "Buy used cars from Riderzpro with RC and insurance verification and transparent pricing.",
     intro:
       "Most used-car problems are not mechanical, they are informational. You cannot see the accident history, the odometer truth or the pending loan — so you overpay for risk. Riderzpro publishes all of it before you call.",
     media: "luxurySaloonMotion",
@@ -139,14 +139,6 @@ export const SEO_LANDINGS: SeoLanding[] = [
         heading: "One price, published",
         body: "No dealer margin games and no 'come and discuss'. The number on the listing is the number, and the same number is offered to everyone who walks in.",
       },
-      {
-        heading: "Finance from eleven lenders",
-        body: "Up to 90% funding on used cars, tenures from 12 to 84 months, and every offer shown to you — including the ones that pay us less.",
-      },
-      {
-        heading: "Five days to change your mind",
-        body: "Five days or 300 km on every Riderzpro Certified car. If our inspection missed something material, we take the car back and refund in full.",
-      },
     ],
     links: [
       { label: "Browse all cars", href: "/cars" },
@@ -161,7 +153,7 @@ export const SEO_LANDINGS: SeoLanding[] = [
     h1: "CAR MODIFICATION, DONE PROPERLY.",
     title: "Car Modification Near Me — Body Kits, Audio & Off-Road",
     description:
-      "Car modification in Bengaluru, Hyderabad and Pune: body kits, facelifts, custom interiors, car audio, PPF, off-road builds and performance tuning at Riderzpro.",
+      "Car modification at Riderzpro: body kits, facelifts, custom interiors, car audio, PPF, off-road builds and performance tuning at Riderzpro.",
     intro:
       "Modification goes wrong for three reasons: parts that do not fit, work that cannot be undone, and nobody taking responsibility afterwards. We fix all three by doing everything in one workshop and documenting all of it.",
     media: "garageSpotlit",
@@ -174,7 +166,7 @@ export const SEO_LANDINGS: SeoLanding[] = [
       },
       {
         heading: "Everything in one workshop",
-        body: "Trim shop, paint room, audio bay, dyno, welding and lifts across 26 bays in three cities. Your car does not tour four markets and come back with four opinions.",
+        body: "Trim shop, paint room, audio bay, dyno, welding and lifts under one roof. Your car does not tour four markets and come back with four opinions.",
       },
       {
         heading: "Reversible where it matters",
@@ -226,7 +218,7 @@ export const SEO_LANDINGS: SeoLanding[] = [
       },
       {
         heading: "Fitted at our garages",
-        body: "Anything bought here can be fitted at a Riderzpro garage in Bengaluru, Hyderabad or Pune, with a 12-month workmanship warranty on the fitting.",
+        body: "Anything bought here can be fitted at the Riderzpro garage, with a 12-month workmanship warranty on the fitting.",
       },
       {
         heading: "Savings only where they are real",

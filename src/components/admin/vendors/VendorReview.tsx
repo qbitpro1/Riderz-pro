@@ -39,7 +39,7 @@ const ACTION_LABEL: Record<string, string> = {
   "kyc.start_review": "Opened for review",
   "kyc.approve": "Approved",
   "kyc.request_changes": "Changes requested",
-  "kyc.reject": "Rejected",
+  "kyc.reject": "Declined",
   "kyc.suspend": "Frozen",
   "kyc.reinstate": "Freeze lifted",
   "hold.reply": "Seller replied (frozen)",
@@ -163,7 +163,7 @@ export default function VendorReview({ review, holdMessages }: { review: Review;
           </p>
         </div>
         <div className="text-right">
-          <StatusBadge status={status} />
+          <StatusBadge status={status} label={status === "rejected" ? "declined" : undefined} />
           <p className="mt-2 text-xs text-dim">Submitted {fmtDate(vendor.submittedAt)}</p>
           {vendor.approvedAt ? <p className="text-xs text-dim">Approved {fmtDate(vendor.approvedAt)}{review.approvedBy ? ` by ${review.approvedBy}` : ""}</p> : null}
         </div>
@@ -384,13 +384,13 @@ export default function VendorReview({ review, holdMessages }: { review: Review;
                 </button>
                 {!allTicked ? <p className="text-xs text-dim">Tick every checklist item to approve.</p> : null}
                 <button type="button" className="btn btn-outline btn-block" disabled={busy} onClick={() => setDialog("changes")}>Request changes</button>
-                <button type="button" className="btn btn-outline btn-block border-danger/50 text-danger" disabled={busy} onClick={() => setDialog("reject")}>Reject</button>
+                <button type="button" className="btn btn-outline btn-block border-danger/50 text-danger" disabled={busy} onClick={() => setDialog("reject")}>Decline</button>
               </div>
             ) : null}
             {status === "changes_requested" ? (
               <div className="space-y-2">
-                <p className="text-sm text-ash">The seller is editing. You can still reject the application.</p>
-                <button type="button" className="btn btn-outline btn-block border-danger/50 text-danger" disabled={busy} onClick={() => setDialog("reject")}>Reject</button>
+                <p className="text-sm text-ash">The seller is editing. You can still decline the application.</p>
+                <button type="button" className="btn btn-outline btn-block border-danger/50 text-danger" disabled={busy} onClick={() => setDialog("reject")}>Decline</button>
               </div>
             ) : null}
             {status === "approved" ? (
@@ -402,7 +402,7 @@ export default function VendorReview({ review, holdMessages }: { review: Review;
             {status === "suspended" ? (
               <button type="button" className="btn btn-primary btn-block" disabled={busy} onClick={() => decide({ action: "reinstate" }, "Freeze lifted. The seller is active again.")}>Lift freeze</button>
             ) : null}
-            {status === "draft" || status === "rejected" ? <p className="text-sm text-ash">{status === "draft" ? "Not submitted yet." : "This application is closed."}</p> : null}
+            {status === "draft" || status === "rejected" ? <p className="text-sm text-ash">{status === "draft" ? "Not submitted yet." : "Declined. The seller can fix the details, re-upload documents and resubmit; it comes back to Needs action when they do."}</p> : null}
           </section>
 
           <section className="card p-4 text-sm">
@@ -459,9 +459,9 @@ export default function VendorReview({ review, holdMessages }: { review: Review;
         </div>
       </Modal>
 
-      <Modal open={dialog === "reject" || dialog === "suspend"} title={dialog === "suspend" ? "Freeze seller account" : "Reject application"} onClose={closeDialog}>
+      <Modal open={dialog === "reject" || dialog === "suspend"} title={dialog === "suspend" ? "Freeze seller account" : "Decline seller profile"} onClose={closeDialog}>
         <p className="mb-3 text-sm text-ash">
-          {dialog === "suspend" ? "Their products leave the shop at once and their dashboard locks, showing this message. They can reply here with documents; lift the freeze when it's resolved." : "The seller is signed out everywhere and sees this reason."}
+          {dialog === "suspend" ? "Their products leave the shop at once and their dashboard locks, showing this message. They can reply here with documents; lift the freeze when it's resolved." : "The seller sees this reason, can sign in again, re-upload documents, correct details and resubmit. Selling stays locked until you approve."}
         </p>
         <Field label={dialog === "suspend" ? "Message to the seller" : "Reason"} error={fieldErrors.reason}>
           <textarea data-autofocus className="field min-h-24 py-2" value={reason} onChange={(e) => setReason(e.target.value)} maxLength={1000} />
@@ -472,9 +472,9 @@ export default function VendorReview({ review, holdMessages }: { review: Review;
             type="button"
             className="btn btn-primary btn-sm"
             disabled={busy}
-            onClick={() => decide({ action: dialog === "suspend" ? "suspend" : "reject", reason }, dialog === "suspend" ? "Account frozen. The seller sees your message." : "Application rejected.")}
+            onClick={() => decide({ action: dialog === "suspend" ? "suspend" : "reject", reason }, dialog === "suspend" ? "Account frozen. The seller sees your message." : "Profile declined. The seller sees your reason and can resubmit.")}
           >
-            {dialog === "suspend" ? "Freeze" : "Reject"}
+            {dialog === "suspend" ? "Freeze" : "Decline"}
           </button>
         </div>
       </Modal>

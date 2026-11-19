@@ -5,7 +5,7 @@ import { SectionHead } from "@/components/ui/Section";
 import { Icon } from "@/components/ui/Icon";
 import { Reveal } from "@/components/ui/Reveal";
 import { ReviewCard } from "@/components/community/Cards";
-import { TRUST_POINTS, whatsapp } from "@/lib/data/site";
+import { whatsapp } from "@/lib/data/site";
 import { approvedReviews, siteStats } from "@/lib/server/reviews";
 import { pageMeta } from "@/lib/data/seo";
 
@@ -76,27 +76,6 @@ export default async function WhyPage() {
                   </p>
                   <p className="mt-2.5 text-sm leading-relaxed text-ash">{p.body}</p>
                 </Reveal>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
-      <section className="section border-y border-tint/8 bg-carbon">
-        <div className="shell">
-          <SectionHead
-            eyebrow="Trust system"
-            title="THE VERIFIED BADGE."
-            blurb="Nine checks, all of them cleared and signed off, before a car can carry it."
-          />
-          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {TRUST_POINTS.map((t) => (
-              <li key={t.title} className="card p-4">
-                <p className="flex items-center gap-2 font-display text-sm font-extrabold uppercase">
-                  <Icon name="check" size={15} className="text-accent" />
-                  {t.title}
-                </p>
-                <p className="mt-2 text-xs leading-relaxed text-ash">{t.body}</p>
               </li>
             ))}
           </ul>

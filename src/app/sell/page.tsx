@@ -10,7 +10,7 @@ import { pageMeta } from "@/lib/data/seo";
 export const metadata: Metadata = pageMeta({
   title: "Sell Your Car — Free Valuation",
   description:
-    "Sell your used car to Riderzpro. Free valuation, free 200-point inspection at your home, payment before RC transfer, and full documentation support.",
+    "Sell your used car to Riderzpro. Free valuation, free inspection, payment before RC transfer, and full documentation support.",
   path: "/sell",
 });
 
@@ -48,7 +48,7 @@ const FAQ = [
   },
   {
     q: "How fast can I get paid?",
-    a: "For a clean, loan-free car with papers in order, payment is usually the same day as the inspection.",
+    a: "For a clean, loan-free car with papers in order, payment follows the inspection.",
   },
 ];
 
@@ -120,7 +120,7 @@ export default function SellPage() {
             <p className="font-display text-lg font-extrabold uppercase">Prefer to just talk?</p>
             <p className="mt-2 text-sm text-ash">
               Send us the registration number on WhatsApp. We will come back with a range and a slot for
-              a free inspection, usually within twenty minutes.
+              a free inspection.
             </p>
             <a
               href={whatsapp("Hi Riderzpro, I want to sell my car. Registration number: ")}

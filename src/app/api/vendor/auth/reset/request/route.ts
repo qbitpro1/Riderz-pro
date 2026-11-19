@@ -17,7 +17,7 @@ export const POST = route(async (req: Request) => {
   if (!otpDeliveryAvailable("email")) {
     return ok({ available: false, message: "Password reset by email is not switched on yet. Contact seller support." });
   }
-  const row = await sqlOne<{ id: string }>("SELECT id FROM vendors WHERE lower(email) = $1 AND status <> 'rejected'", [email]);
+  const row = await sqlOne<{ id: string }>("SELECT id FROM vendors WHERE lower(email) = $1", [email]);
   if (row) {
     await rateLimit(`reset-id:${email}`, 5, 60 * 60);
     await sendOtp({ vendorId: row.id, channel: "email", target: email, purpose: "reset" }).catch((err) => {

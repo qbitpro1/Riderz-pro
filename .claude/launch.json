@@ -6,6 +6,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
       "port": 3000
+    },
+    {
+      "name": "riderzpro-admin-open",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["-e", "process.env.ADMIN_USER='';process.env.ADMIN_PASSWORD='';require('child_process').spawn(process.execPath,['node_modules/next/dist/bin/next','dev','-p','3000'],{stdio:'inherit'}).on('exit',c=>process.exit(c??0))"],
+      "port": 3000
     }
   ]
 }

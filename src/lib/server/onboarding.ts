@@ -232,7 +232,7 @@ export async function submitApplication(vendorId: string): Promise<void> {
     if (!CAN_EDIT_ONBOARDING.includes(row.status)) {
       throw new ApiError(409, "already_submitted", "This application has already been submitted.");
     }
-    const resubmit = row.status === "changes_requested";
+    const resubmit = row.status === "changes_requested" || row.status === "rejected";
     let completed = row.completed_steps ?? [];
     if (accountStepComplete(toVendorSelf(row))) completed = withStep(completed, 1);
     const missing = ALL_STEPS.filter((s) => !completed.includes(s));
@@ -250,7 +250,7 @@ export async function submitApplication(vendorId: string): Promise<void> {
       throw new ApiError(400, "incomplete", "Upload all required documents to submit.");
     }
     await q(
-      `UPDATE vendors SET status = 'submitted', submitted_at = now(), changes_requested = NULL,
+      `UPDATE vendors SET status = 'submitted', submitted_at = now(), changes_requested = NULL, rejection_reason = NULL,
               completed_steps = $2::int[], current_step = 6, updated_at = now()
         WHERE id = $1`,
       [vendorId, completed],

@@ -449,12 +449,12 @@ const HOUSE_PRODUCTS: (Omit<Product, "category"> & { category: string })[] = [
     installPrice: 6500,
     installTime: "6–8 hours",
     warranty: "3 years",
-    delivery: "In stock at Bengaluru, Hyderabad, Pune",
+    delivery: "In stock",
     image: "speakerCone",
     gallery: ["speakerCone", "studioMonitors", "speakerEnclosure"],
     hasVideo: true,
     summary:
-      "Woven-glass-fibre midbass, silk-dome tweeter and a real passive crossover you can bi-amp later. Tuned in our Bengaluru room on the same reference monitors we use for every Signature build.",
+      "Woven-glass-fibre midbass, silk-dome tweeter and a real passive crossover you can bi-amp later. Tuned in our room on the same reference monitors we use for every Signature build.",
     features: [
       "165 mm woven glass-fibre cone, cast alloy basket",
       "28 mm silk dome tweeter with adjustable +3 dB tilt",

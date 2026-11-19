@@ -9,7 +9,7 @@ import { Icon } from "@/components/ui/Icon";
 import { PPF_LANDINGS, getLanding } from "@/lib/ppf/landings";
 import { PPF_PACKAGES, PRICE_DISCLAIMER, quote } from "@/lib/ppf/coverage";
 import { GUIDE } from "@/lib/ppf/guide";
-import { LOCATIONS, whatsapp } from "@/lib/data/site";
+import { whatsapp } from "@/lib/data/site";
 import { rupees } from "@/lib/format";
 import type { MediaKey } from "@/lib/media";
 
@@ -123,32 +123,6 @@ export default async function PpfLandingPage({ params }: { params: Promise<{ slu
         </div>
       </section>
 
-      {landing.kind === "city" && (
-        <section className="section">
-          <div className="shell">
-            <SectionHead eyebrow="Where to bring it" title="OUR STUDIOS." href="/locations" hrefLabel="All locations" />
-            <ul className="grid gap-4 md:grid-cols-3">
-              {LOCATIONS.map((l) => (
-                <li key={l.slug} className="card p-5">
-                  <p className="font-display text-base font-extrabold uppercase">{l.city}</p>
-                  <p className="mt-2 text-xs leading-relaxed text-ash">{l.address}</p>
-                  <a href={l.mapUrl} target="_blank" rel="noreferrer noopener" className="btn btn-outline btn-sm mt-4">
-                    <Icon name="map" size={13} />
-                    Directions
-                  </a>
-                </li>
-              ))}
-            </ul>
-            {!landing.city?.address && (
-              <p className="mt-4 text-xs leading-relaxed text-dim">
-                We do not have a studio in {landing.city?.name} yet. Customers there use the nearest
-                Riderzpro workshop — tell us on WhatsApp and we will sort out logistics.
-              </p>
-            )}
-          </div>
-        </section>
-      )}
-
       <section className="section border-t border-tint/8 bg-carbon">
         <div className="shell grid gap-8 lg:grid-cols-2 lg:items-start">
           <div>
@@ -173,7 +147,7 @@ export default async function PpfLandingPage({ params }: { params: Promise<{ slu
               {landing.kind === "vehicle" ? `Get a price for your ${landing.vehicle!.model}` : `Book an inspection in ${landing.city!.name}`}
             </p>
             <p className="mt-2 text-sm text-ash">
-              Free inspection, about twenty minutes. We read the paint and quote properly.
+              Free inspection. We read the paint and quote properly.
             </p>
             <Link href="/ppf/quote" className="btn btn-accent btn-block mt-5">
               Build your package

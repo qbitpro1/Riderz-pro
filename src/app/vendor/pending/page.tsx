@@ -71,7 +71,7 @@ async function timeline(vendorId: string) {
 }
 
 export default async function PendingPage() {
-  const vendor = await vendorPage(["submitted", "under_review", "rejected", "changes_requested"], "/vendor/pending");
+  const vendor = await vendorPage(["submitted", "under_review", "changes_requested"], "/vendor/pending");
   const info = STATUS[vendor.status]!;
   const Icon = info.icon;
   const events = await timeline(vendor.id);

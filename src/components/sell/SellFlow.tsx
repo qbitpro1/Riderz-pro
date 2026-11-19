@@ -42,7 +42,7 @@ export function SellFlow() {
   const [photos, setPhotos] = useState(0);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [city, setCity] = useState("Bengaluru");
+  const [city, setCity] = useState("");
   const [date, setDate] = useState("");
 
   const brand = BRANDS.find((b) => b.slug === brandSlug);
@@ -80,7 +80,7 @@ export function SellFlow() {
     valuation ? `Website estimate: ${lakh(valuation.low)} – ${lakh(valuation.high)}` : "",
     name ? `Name: ${name}` : "",
     phone ? `Phone: ${phone}` : "",
-    `Inspection: ${city}${date ? ` on ${date}` : ""}`,
+    `Inspection: ${city.trim() || "city not given"}${date ? ` on ${date}` : ""}`,
   ]
     .filter(Boolean)
     .join("\n");
@@ -292,8 +292,7 @@ export function SellFlow() {
             )}
             <ul className="mt-5 space-y-2 text-sm text-ash">
               {[
-                "The final offer comes after a free 200-point physical inspection.",
-                "We pay the higher of our offer and the best bid from our dealer network.",
+                "The final offer comes after a free physical inspection.",
                 "Payment lands in your account before the RC transfer is filed.",
               ].map((t) => (
                 <li key={t} className="flex gap-2">
@@ -331,12 +330,7 @@ export function SellFlow() {
                 <label className="label" htmlFor="sell-city">
                   City
                 </label>
-                <select id="sell-city" className="field" value={city} onChange={(e) => setCity(e.target.value)}>
-                  <option>Bengaluru</option>
-                  <option>Hyderabad</option>
-                  <option>Pune</option>
-                  <option>Other</option>
-                </select>
+                <input id="sell-city" className="field" autoComplete="address-level2" value={city} onChange={(e) => setCity(e.target.value)} />
               </div>
               <div>
                 <label className="label" htmlFor="sell-date">
@@ -356,7 +350,7 @@ export function SellFlow() {
               href={whatsapp(message)}
               target="_blank"
               rel="noreferrer noopener"
-              onClick={() => recordLead("sell_car", { name, phone, city, details: { registration: reg, brand: brandSlug, model: modelSlug, variant, year, km, owner, condition, photos, date } }, message)}
+              onClick={() => recordLead("sell_car", { name, phone, city: city.trim() || undefined, details: { registration: reg, brand: brandSlug, model: modelSlug, variant, year, km, owner, condition, photos, date } }, message)}
               className="btn btn-whatsapp btn-block mt-5"
             >
               <Icon name="whatsapp" size={16} />

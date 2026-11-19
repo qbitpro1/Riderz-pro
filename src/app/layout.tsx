@@ -84,10 +84,7 @@ const ORG_SCHEMA = {
   priceRange: "₹₹",
   address: {
     "@type": "PostalAddress",
-    streetAddress: "No. 14, Hosur Main Road, Kudlu Gate",
-    addressLocality: "Bengaluru",
     addressRegion: "Karnataka",
-    postalCode: "560068",
     addressCountry: "IN",
   },
   sameAs: [SITE.instagram, SITE.youtube, SITE.facebook],

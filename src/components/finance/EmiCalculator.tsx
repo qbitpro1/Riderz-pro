@@ -92,8 +92,8 @@ export function EmiCalculator({
               <Row label="Total payable" value={rupees(total)} />
             </dl>
             <p className="mt-4 text-[11px] leading-relaxed text-dim">
-              Indicative only. Final rate depends on your credit profile, lender and tenure. We work
-              with 11 lenders and will find you the cheapest available offer.
+              Indicative only. Final rate depends on your credit profile, lender and tenure. We will
+              find you the cheapest available offer.
             </p>
           </div>
           <a

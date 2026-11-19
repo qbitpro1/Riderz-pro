@@ -105,7 +105,7 @@ export default async function VehicleAccessoriesPage({
     },
     {
       q: "Can I get everything done in one visit?",
-      a: `Yes. Bring the ${model.name} in once and we sequence the work across bays — trim shop, paint, audio and mechanical — so it leaves finished rather than coming back four times.`,
+      a: `Yes. Bring the ${model.name} in once and we sequence the work — trim shop, paint, audio and mechanical — so it leaves finished rather than coming back four times.`,
     },
   ];
 

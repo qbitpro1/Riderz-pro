@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useCallback, useEffect, useRef, useState } from "react";
-import { AlertTriangle, Check } from "lucide-react";
+import { AlertTriangle, Check, XCircle } from "lucide-react";
 import { ONBOARDING_STEPS, type VendorSelf } from "@/lib/vendor/types";
 import { api } from "@/lib/vendor/client";
 import { SignOutButton } from "../auth/SignOutButton";
@@ -98,10 +98,24 @@ export function OnboardingFlow({ initial }: { initial: OnboardingState }) {
       <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
         <div>
           <p className="eyebrow mb-2">Seller application</p>
-          <h1 className="display-2">{vendor.status === "changes_requested" ? "Update your application" : "Set up your store"}</h1>
+          <h1 className="display-2">{vendor.status === "changes_requested" || vendor.status === "rejected" ? "Update your application" : "Set up your store"}</h1>
         </div>
         <SignOutButton label="Save & sign out" />
       </div>
+
+      {vendor.status === "rejected" && (
+        <div role="alert" className="mb-6 rounded-sm border border-danger/40 bg-danger/10 p-4 sm:p-5">
+          <p className="flex items-center gap-2 text-sm font-bold text-chalk">
+            <XCircle size={16} className="text-danger" aria-hidden="true" /> Your seller profile was declined
+          </p>
+          <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-ash">
+            {vendor.rejectionReason || "No reason was recorded. Please contact seller support."}
+          </p>
+          <p className="mt-3 text-xs text-ash">
+            Please review your details, re-upload the documents and resubmit. You can add products once your profile is approved.
+          </p>
+        </div>
+      )}
 
       {flagged && (
         <div role="status" className="mb-6 rounded-sm border border-gold/40 bg-gold/10 p-4 sm:p-5">

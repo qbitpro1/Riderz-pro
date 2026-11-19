@@ -28,7 +28,7 @@ import { pageMeta } from "@/lib/data/seo";
 export const metadata: Metadata = pageMeta({
   title: "Autoform Seat Covers — Car-Specific Designs & Prices",
   description:
-    "Genuine Autoform seat covers at Riderzpro. 20 designs across the Eco and Signature series, priced for 5-seater and 7-seater cars, with fitting at our workshops.",
+    "Genuine Autoform seat covers at Riderzpro. 20 designs across the Eco and Signature series, priced for 5-seater and 7-seater cars, with fitting at our garage.",
   path: "/autoform",
 });
 

@@ -21,8 +21,9 @@ import {
   type DepartmentSlug,
 } from "@/lib/data/taxonomy";
 import { approvedReviews, siteStats } from "@/lib/server/reviews";
+import { liveVendorItems } from "@/lib/server/marketplace";
 import { LANDING_MODELS } from "@/lib/data/vehicles";
-import { LOCATIONS, SITE } from "@/lib/data/site";
+import { SITE } from "@/lib/data/site";
 import { rupees } from "@/lib/format";
 import type { MediaKey } from "@/lib/media";
 import { pageMeta } from "@/lib/data/seo";
@@ -30,7 +31,7 @@ import { pageMeta } from "@/lib/data/seo";
 export const metadata: Metadata = pageMeta({
   title: "Riderzpro — Car Accessories, Fitted Right",
   description:
-    "Seat covers, floor mats, multimedia, lighting, covers and guards, and off-roading gear. Made by Riderzpro, fitment-checked for your model and fitted in Bengaluru, Hyderabad and Pune.",
+    "Seat covers, floor mats, multimedia, lighting, covers and guards, and off-roading gear. Made by Riderzpro, fitment-checked for your model and fitted at our garage.",
   path: "/",
 });
 
@@ -105,7 +106,9 @@ const WHY = [
 
 export default async function HomePage() {
   /* ---- everything below is computed from the catalogue in the database; nothing is typed in ---- */
-  const [CATALOG, REVIEWS, STATS] = await Promise.all([getCatalog(), approvedReviews(6), siteStats()]);
+  const [CATALOG, REVIEWS, STATS, SELLER_ITEMS] = await Promise.all([getCatalog(), approvedReviews(6), siteStats(), liveVendorItems()]);
+  // Newest admin-approved products from approved sellers (liveVendorItems is newest first); none, no row.
+  const fromSellers = SELLER_ITEMS.slice(0, 12);
   const lowest = new Map<DepartmentSlug, number>();
   const groupCount = new Map<string, number>();
   for (const i of CATALOG) {
@@ -286,6 +289,21 @@ export default async function HomePage() {
         </section>
       )}
 
+      {fromSellers.length > 0 && (
+        <section className="section bg-void">
+          <div className="shell">
+            <SectionHead eyebrow="Marketplace" title="From our sellers" href="/shop" />
+            <ul className="rail -mx-4 px-4 pb-2 md:mx-0 md:px-0">
+              {fromSellers.map((item) => (
+                <li key={item.id} className="w-[62%] sm:w-[36%] md:w-[28%] lg:w-[22%]">
+                  <CatalogCard item={item} sizes="(min-width:1024px) 22vw, (min-width:768px) 28vw, 62vw" />
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
+
       {/* 7 — COLLECTIONS --------------------------------------------------- */}
       <section className="section bg-void">
         <div className="shell">
@@ -359,7 +377,7 @@ export default async function HomePage() {
             <h2 className="display-2">We fit what we sell</h2>
             <ul className="mt-5 space-y-3 text-sm text-ash md:text-base">
               {[
-                "Fitting at our garages in Bengaluru, Hyderabad and Pune.",
+                "Fitting at the Riderzpro garage.",
                 "Look for the wrench on a product: installation is available for it.",
                 "Book a slot and we confirm fitment before we start.",
               ].map((t) => (
@@ -428,29 +446,6 @@ export default async function HomePage() {
         </div>
       </section>
       )}
-
-      {/* 13 — STORES ------------------------------------------------------- */}
-      <section className="section bg-void">
-        <div className="shell">
-          <SectionHead eyebrow="Visit us" title="Our garages" href="/locations" hrefLabel="All locations" />
-          <ul className="grid gap-3 md:grid-cols-3 md:gap-4">
-            {LOCATIONS.map((l) => (
-              <li key={l.slug}>
-                <Link href="/locations" className="card card-hover flex h-full min-h-[44px] flex-col p-5">
-                  <span className="font-display text-lg font-bold">{l.city}</span>
-                  <span className="mt-1 text-sm text-ash">{l.name}</span>
-                  <span className="mt-2 text-xs leading-relaxed text-dim">{l.address}</span>
-                  <span className="mt-4 inline-flex items-center gap-1 text-xs text-accent">
-                    Hours and directions
-                    <Icon name="arrow" size={12} />
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-          <SectionFootLink href="/locations" label="All locations" />
-        </div>
-      </section>
 
       {/* 14 — ASK AI ------------------------------------------------------- */}
       <section data-theme="dark" className="relative overflow-hidden bg-void py-16 md:py-24">

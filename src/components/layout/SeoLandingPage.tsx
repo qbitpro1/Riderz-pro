@@ -4,7 +4,6 @@ import { Icon } from "@/components/ui/Icon";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHead } from "@/components/ui/Section";
 import { LANDING_MODELS } from "@/lib/data/vehicles";
-import { LOCATIONS } from "@/lib/data/site";
 import { DEPARTMENTS, departmentHref } from "@/lib/data/taxonomy";
 import { COLLECTIONS } from "@/lib/data/collections";
 import { BRANDS } from "@/lib/catalog";
@@ -137,23 +136,6 @@ export async function SeoLandingPage({ landing }: { landing: SeoLanding }) {
         </div>
       </section>
 
-      <section className="section">
-        <div className="shell">
-          <SectionHead eyebrow="Near you" title="THREE CITIES. 26 BAYS." href="/locations" hrefLabel="All locations" />
-          <ul className="grid gap-4 md:grid-cols-3">
-            {LOCATIONS.map((l) => (
-              <li key={l.slug} className="card p-5">
-                <p className="font-display text-base font-extrabold uppercase">{l.city}</p>
-                <p className="mt-2 text-xs leading-relaxed text-ash">{l.address}</p>
-                <a href={l.mapUrl} target="_blank" rel="noreferrer noopener" className="btn btn-outline btn-sm mt-4">
-                  <Icon name="map" size={13} />
-                  Directions
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
     </>
   );
 }

@@ -329,7 +329,7 @@ export function StepDocuments({ state, editable, onSaved, onUploaded, goBack, go
             <CheckCircle2 size={14} className="text-accent" aria-hidden="true" /> All sections are filled in. Reviews usually take 1–2 working days.
           </p>
         )}
-        <StepFooter onBack={goBack} busy={busy} label={vendor.status === "changes_requested" ? "Resubmit application" : "Submit application"} />
+        <StepFooter onBack={goBack} busy={busy} label={vendor.status === "changes_requested" || vendor.status === "rejected" ? "Resubmit application" : "Submit application"} />
       </form>
     </StepFrame>
   );

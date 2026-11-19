@@ -31,9 +31,6 @@ export const POST = route(async (req: Request) => {
   if (!row || !valid) {
     throw new ApiError(401, "bad_credentials", "That email/mobile and password do not match.");
   }
-  if (row.status === "rejected") {
-    throw new ApiError(403, "rejected", "This seller application was not approved. Contact seller support for details.");
-  }
   await audit({ type: "vendor", id: row.id }, "vendor.signin", { vendorId: row.id, ip });
   await startSession(row.id, req.headers.get("user-agent"));
   return ok({ next: vendorHome(row.status) });

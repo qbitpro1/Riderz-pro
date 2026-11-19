@@ -33,15 +33,30 @@ export class DatabaseNotConfigured extends Error {
   }
 }
 
+/**
+ * Optional DATABASE_SCHEMA: keep every table of this app in its own Postgres schema, so it can
+ * share a database with another app without touching that app's tables. The schema is created on
+ * first start and becomes the connection's only search_path entry.
+ */
+export function databaseSchema(): string | null {
+  const raw = process.env.DATABASE_SCHEMA?.trim();
+  if (!raw) return null;
+  if (!/^[a-z_][a-z0-9_]{0,62}$/.test(raw)) throw new Error("DATABASE_SCHEMA must be a lowercase name (letters, digits, _)");
+  return raw;
+}
+
 async function postgresDriver(url: string): Promise<Driver> {
   const { Pool } = await import("pg");
+  const schema = databaseSchema();
   const pool = new Pool({
     connectionString: url,
     max: Number(process.env.DATABASE_POOL_MAX ?? 10),
     idleTimeoutMillis: 30_000,
     // Hosted Postgres (Neon, Supabase…) requires TLS; local servers usually do not.
     ssl: /sslmode=require|neon\.tech|supabase\.co/.test(url) ? { rejectUnauthorized: true } : undefined,
+    ...(schema ? { options: `-c search_path=${schema}` } : {}),
   });
+  if (schema) await pool.query(`CREATE SCHEMA IF NOT EXISTS ${schema}`);
   pool.on("error", (err) => console.error("[db] idle client error", err.message));
   return {
     async query(text, params) {

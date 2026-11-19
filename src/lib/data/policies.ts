@@ -174,7 +174,7 @@ export const SUPPORT_POLICIES: Policy[] = [
     title: "INSTALLATION & BOOKINGS",
     eyebrow: "Customer support",
     intro:
-      "You can have what you buy fitted at a Riderzpro garage in Bengaluru, Hyderabad or Pune. Workmanship is warranted by the garage that did the work.",
+      "You can have what you buy fitted at the Riderzpro garage. Workmanship is warranted by the garage that did the work.",
     sections: [
       {
         id: "booking",
@@ -380,7 +380,7 @@ export const LEGAL_POLICIES: Policy[] = [
         id: "vehicle-sales",
         heading: "Buying or selling a car with us",
         body: [
-          "Cars are sold with the inspection report shared in advance. Riderzpro Certified cars carry a 5-day / 300 km return window from delivery.",
+          "Cars are sold with the inspection report shared in advance.",
           "Payment for a car we buy from you is released before the RC transfer application is filed. We settle any outstanding loan directly with the lender.",
         ],
       },

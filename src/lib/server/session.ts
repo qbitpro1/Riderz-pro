@@ -132,7 +132,9 @@ function notAllowedMessage(status: VendorStatus, allow: readonly VendorStatus[])
     case "suspended":
       return "Your store is suspended: your products are hidden from the Riderzpro website and the Offline Store. Contact seller support.";
     case "rejected":
-      return "Your seller application was not approved. Contact seller support if you have questions.";
+      return onboardingRoute
+        ? "Your seller profile was declined."
+        : "Your seller profile was declined. Update your details, re-upload the documents and resubmit; this opens once your store is approved.";
     case "submitted":
     case "under_review":
       return onboardingRoute
@@ -149,8 +151,8 @@ function notAllowedMessage(status: VendorStatus, allow: readonly VendorStatus[])
   }
 }
 
-/** Statuses that may edit onboarding answers. */
-export const CAN_EDIT_ONBOARDING: readonly VendorStatus[] = ["draft", "changes_requested"];
+/** Statuses that may edit onboarding answers. A declined (rejected) seller fixes everything and resubmits. */
+export const CAN_EDIT_ONBOARDING: readonly VendorStatus[] = ["draft", "changes_requested", "rejected"];
 /** Statuses that may manage products, stock and orders. */
 export const CAN_SELL: readonly VendorStatus[] = ["approved"];
 

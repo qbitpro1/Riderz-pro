@@ -8,13 +8,13 @@ import { Icon } from "@/components/ui/Icon";
 import { toCardData } from "@/lib/inventory/card-data";
 import { browsable, facetsFor, KM_BANDS, PRICE_BANDS, SPECIAL_FILTERS } from "@/lib/inventory/store";
 import { SEARCH_EXAMPLES } from "@/lib/inventory/query";
-import { TRUST_POINTS, whatsapp } from "@/lib/data/site";
+import { whatsapp } from "@/lib/data/site";
 import { pageMeta } from "@/lib/data/seo";
 
 export const metadata: Metadata = pageMeta({
   title: "Buy Used Cars in India — Verified, Inspected & Certified",
   description:
-    "Browse Riderzpro Certified used, modified, off-road and luxury cars. 200-point inspection, RC and insurance verification, transparent pricing and finance from 11 lenders.",
+    "Browse Riderzpro used, modified, off-road and luxury cars with RC and insurance verification and transparent pricing.",
   path: "/cars",
 });
 
@@ -79,12 +79,10 @@ export default async function CarsPage() {
             <SectionHead
               eyebrow="Financing"
               title="FINANCE AVAILABLE."
-              blurb="We work with 11 lenders including private banks and NBFCs. Approval usually lands the same day, and we will show you every offer, not just the one that pays us most."
+              blurb="We work with private banks and NBFCs and show you every offer, not just the one that pays us most."
             />
             <ul className="space-y-3">
               {[
-                "Loans on used cars up to 90% of value",
-                "Tenures from 12 to 84 months",
                 "Modification and accessory financing on eligible builds",
                 "Balance transfer and top-up on existing car loans",
               ].map((t) => (
@@ -101,24 +99,11 @@ export default async function CarsPage() {
 
       <section className="section">
         <div className="shell">
-          <SectionHead eyebrow="Trust system" title="WHAT WE CHECK BEFORE WE LIST." />
-          <ul className="grid gap-px overflow-hidden border border-tint/8 bg-tint/8 sm:grid-cols-2 lg:grid-cols-3">
-            {TRUST_POINTS.map((t) => (
-              <li key={t.title} className="bg-void p-5">
-                <p className="flex items-center gap-2 font-display text-sm font-extrabold uppercase">
-                  <Icon name="check" size={16} className="text-accent" />
-                  {t.title}
-                </p>
-                <p className="mt-2 text-xs leading-relaxed text-ash">{t.body}</p>
-              </li>
-            ))}
-          </ul>
-
-          <div className="card mt-8 flex flex-col items-start justify-between gap-4 p-6 md:flex-row md:items-center">
+          <div className="card flex flex-col items-start justify-between gap-4 p-6 md:flex-row md:items-center">
             <div>
               <p className="font-display text-lg font-extrabold uppercase">Can&apos;t find the right car?</p>
               <p className="mt-1 text-sm text-ash">
-                Tell us the spec and budget. We source to order every week across three cities.
+                Tell us the spec and budget and we source it to order.
               </p>
             </div>
             <div className="flex flex-wrap gap-3">

@@ -7,7 +7,6 @@ import { findModelBySlug } from "@/lib/data/vehicles";
 import { ApiError, rateLimit } from "./http";
 import { bankPayloadSchema } from "./vendor-account";
 import { seal, unseal } from "./security";
-import { endAllSessions } from "./session";
 import { audit, notifyVendor, toVendorSelf, vendorById } from "./vendors";
 import { addAdminHoldMessage } from "./vendor-hold";
 import { sendVendorApprovedEmail } from "./vendor-emails";
@@ -392,7 +391,7 @@ export async function decideVendor(vendorId: string, input: VendorDecision, acto
         await audit(by, "kyc.reject", { vendorId, ip, detail: { reason: input.reason } }, q);
         await notifyVendor(
           vendorId,
-          { type: "account", title: "Your application was not approved", body: input.reason, link: "/vendor/pending" },
+          { type: "account", title: "Your seller profile was declined", body: input.reason, link: "/vendor/onboarding" },
           q,
         );
         break;
@@ -433,8 +432,6 @@ export async function decideVendor(vendorId: string, input: VendorDecision, acto
     }
   });
 
-  // Rejection revokes sessions so a stale dashboard tab stops working at once.
-  if (input.action === "reject") await endAllSessions(vendorId);
   // After the commit: "your account is active, you can sign in". Never undoes the approval if it fails.
   const email = input.action === "approve" ? (await sendVendorApprovedEmail(vendorId)).status : undefined;
   const after = await vendorById(vendorId);

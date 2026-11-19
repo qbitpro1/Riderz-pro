@@ -133,7 +133,7 @@ export type VendorSelf = {
 
 /** Where a signed-in vendor belongs, by status. */
 export function vendorHome(status: VendorStatus): string {
-  if (status === "draft" || status === "changes_requested") return "/vendor/onboarding";
+  if (status === "draft" || status === "changes_requested" || status === "rejected") return "/vendor/onboarding";
   if (status === "approved" || status === "suspended") return "/vendor/dashboard";
   return "/vendor/pending";
 }

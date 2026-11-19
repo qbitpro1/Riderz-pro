@@ -120,7 +120,7 @@ export const FAQ_GROUPS: FaqGroup[] = [
     items: [
       {
         q: "Can you fit what I buy?",
-        a: "Yes, at our garages in Bengaluru, Hyderabad and Pune. Add installation to a product where it is offered, or book a slot on WhatsApp or through the Contact page.",
+        a: "Yes, at the Riderzpro garage. Add installation to a product where it is offered, or book a slot on WhatsApp or through the Contact page.",
         href: "/support/installation#booking",
         hrefLabel: "Booking a fitting",
       },

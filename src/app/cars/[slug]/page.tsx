@@ -20,7 +20,7 @@ import { formatIST } from "@/lib/inventory/freshness";
 import { publicCar, relatedCars } from "@/lib/server/cars";
 import { UploadedPhoto } from "@/components/ui/UploadedPhoto";
 import { emiFrom, km as fmtKm, lakh } from "@/lib/format";
-import { SITE, TRUST_POINTS, whatsapp } from "@/lib/data/site";
+import { SITE, whatsapp } from "@/lib/data/site";
 
 // Cars come from the database (car_listings, managed in /admin/cars).
 export const dynamic = "force-dynamic";
@@ -50,15 +50,11 @@ const FAQ = [
   },
   {
     q: "How does the RC transfer work?",
-    a: "We handle it end to end. You sign Form 29 and 30, we file with the RTO, and the transfer is typically complete within 15 working days. You receive tracking updates on WhatsApp throughout.",
-  },
-  {
-    q: "Is there a return window?",
-    a: "Five days or 300 km, whichever comes first, on every Riderzpro Certified car. If something material was missed in our inspection, we take the car back and refund in full.",
+    a: "We handle it end to end. You sign Form 29 and 30, we file with the RTO, and you receive tracking updates on WhatsApp throughout.",
   },
   {
     q: "Can I part-exchange my current car?",
-    a: "Yes. We value your existing car through the same 200-point process and adjust it against the purchase. The valuation is free and there is no obligation to proceed.",
+    a: "Yes. We value your existing car and adjust it against the purchase. The valuation is free and there is no obligation to proceed.",
   },
 ];
 
@@ -212,32 +208,6 @@ export default async function CarDetailPage({ params }: { params: Promise<{ slug
 
             {/* Only a completed inspection lets us call these "cleared". Until
                 then this is the checklist we will run, not a claim about this car. */}
-            <div className="mt-10">
-              <h2 className="display-3">
-                {listing?.verification === "RIDERZPRO_VERIFIED" ? "TRUST CHECKS CLEARED" : "WHAT WE CHECK BEFORE WE VERIFY"}
-              </h2>
-              {listing?.verification !== "RIDERZPRO_VERIFIED" && (
-                <p className="mt-2 max-w-xl text-sm text-ash">
-                  None of these has been completed on this car yet. Request an inspection and we work
-                  through every one, then publish the result here.
-                </p>
-              )}
-              <ul className="mt-4 flex flex-wrap gap-2">
-                {TRUST_POINTS.map((t) => {
-                  const cleared = listing?.verification === "RIDERZPRO_VERIFIED";
-                  return (
-                    <li
-                      key={t.title}
-                      className={`chip ${cleared ? "border-accent/25 text-chalk/80" : "text-dim"}`}
-                    >
-                      <Icon name={cleared ? "check" : "shield"} size={11} className={cleared ? "text-accent" : "text-dim"} />
-                      {t.title}
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-
             {listing && (
               <>
                 <div className="mt-10">
@@ -332,14 +302,6 @@ export default async function CarDetailPage({ params }: { params: Promise<{ slug
               )}
 
               <ul className="mt-5 space-y-2 border-t border-tint/8 pt-4 text-xs text-ash">
-                <li className="flex gap-2">
-                  <Icon name="check" size={13} className="mt-0.5 shrink-0 text-accent" />
-                  Free home test drive across {car.city}
-                </li>
-                <li className="flex gap-2">
-                  <Icon name="check" size={13} className="mt-0.5 shrink-0 text-accent" />
-                  5-day / 300 km return window
-                </li>
                 <li className="flex gap-2">
                   <Icon name="check" size={13} className="mt-0.5 shrink-0 text-accent" />
                   RC transfer and documentation handled
