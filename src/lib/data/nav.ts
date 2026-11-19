@@ -86,16 +86,6 @@ export const SERVICES_NAV: NavSection = {
   ],
 };
 
-export const CARS_NAV: NavSection = {
-  id: "cars",
-  title: "BE 6",
-  links: [
-    { label: "BE 6", href: "/be-6" },
-    { label: "BE 6 Limited Edition", href: "/be-6/limited-edition" },
-    { label: "Sell on Riderzpro", href: "/vendor" },
-  ],
-};
-
 /** Partner programmes: sellers and delivery riders who work with Riderzpro. */
 export const PARTNERS_NAV: NavSection = {
   id: "partners",
@@ -108,7 +98,7 @@ export const PARTNERS_NAV: NavSection = {
 };
 
 /** Columns of the desktop "More" panel, and the drawer sections after the departments. */
-export const MORE_SECTIONS: NavSection[] = [SHOP_BY_CAR, BRANDS_NAV, SERVICES_NAV, CARS_NAV];
+export const MORE_SECTIONS: NavSection[] = [SHOP_BY_CAR, BRANDS_NAV, SERVICES_NAV];
 
 /** Footer: "Shop by" column. */
 export const SHOP_BY_LINKS: NavLink[] = [
