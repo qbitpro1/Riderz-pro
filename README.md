@@ -18,8 +18,10 @@ the company's garages.
 
 ## Current status (19 Nov 2026)
 
-- **Two branches only:** `stage` (what riderzpro.com runs; was `old-deploy`) and `DB-new`
+- **Two branches:** `stage` (what riderzpro.com runs; was `old-deploy`) and `DB-new`
   (development). Every other branch was merged in or kept as an `archive/...` tag on 19 Nov.
+  `main` is still on GitHub only because it is the repo's default branch: it holds the same code as
+  `stage` and is deleted once a repo admin makes `stage` the default (Settings → Branches).
 - **19 Nov team merge:** `DB-new` (catalogue, reviews, builds, car listings and requests in the
   database; JSON product upload; decline-and-resubmit for sellers; Next.js 16.4.6), Sathese's
   customer-site work (no WhatsApp on the shopper site, Google Translate, filter sidebar, phone
@@ -39,6 +41,22 @@ the company's garages.
 
 ### What's new in November 2026
 
+- **19 Nov team merge.**
+  - **Offline Store quick add:** a seller adds a product with just a name, price and stock; SKU and
+    MRP are optional (an SKU is made from the title, MRP defaults to the price). After saving, the
+    seller is told whether it is on the shop screen now or needs stock first.
+  - **Bulk JSON upload** of products (Products → Upload JSON); only title and price are required, and
+    the report flags rows with no stock.
+  - **Database instead of files:** the shop catalogue (admin can edit price and stock), customer
+    reviews (shown after admin approval), finished builds, car listings and site figures.
+  - **Sellers:** a declined seller sees the reason, edits the application and resubmits; admin can
+    freeze a seller with a message, and reports per seller; carts are saved to customer accounts.
+  - **Customer site:** no WhatsApp anywhere: quote, booking, fitment and "ask us" buttons send a
+    help-desk ticket, answered in admin → Customer support. Google Translate in the header, a filter
+    sidebar and vehicle bar in the shop, phone fixes and sentence-case headings.
+  - **Demo content removed:** the three invented garages and `/locations`, made-up testimonials and
+    figures ("12,400+ builds"), the 16 sample cars and 8 sample builds.
+  - Next.js 16.4.6 (security update).
 - **Free AI, no API key needed.**
   - Ask AI on the website.
   - Salesman AI on the shop screen: Basic mode free; Full mode on Claude when a key is set.
@@ -89,6 +107,8 @@ the company's garages.
 
 - The seller opens their screen from the portal (**Offline Store → Open the screen**) on a tablet
   or TV in the shop.
+- A product the seller adds (by hand or by JSON upload) shows on the screen within seconds if it has
+  stock; a name, price and stock are enough.
 - Customers browse by the seller's own categories, compare products and add them to an order.
 - They pay by UPI on the screen or at the counter.
 - Salesman AI answers questions in English or Hinglish, suggests products that go well together and
@@ -118,7 +138,7 @@ The task list per person is kept with the team (latest: task update of 9 Nov 202
 
 ### Payments and GST (Sathwik)
 
-- [x] Online-only checkout and zero commission on shop-screen sales (on `main`).
+- [x] Online-only checkout and zero commission on shop-screen sales (on `stage`).
 - [ ] Razorpay: test keys and webhook on the server, account activation (KYC), live keys at go-live.
 - [ ] Real payment test: card and UPI, order turns Paid, invoice opens, refund ₹1.
 - [ ] GST invoice details (GSTIN, HSN rates) checked with the accountant.
@@ -144,6 +164,10 @@ The task list per person is kept with the team (latest: task update of 9 Nov 202
 - [ ] Save the current `VENDOR_DATA_KEY` in the password manager.
 - [ ] Indus Enterprises' real catalogue in the live database, filed into its shop categories; then
   remove the `DEMO-` sample products once.
+- [x] Shop catalogue, reviews, builds and car listings are in the database (copied from the price
+  lists on the first start; edit them in admin).
+- [ ] Check prices, photos and stock of the house catalogue (Riderzpro, RECOIL, Autoform, Blaupunkt);
+  some RECOIL photos no longer exist on recoilaudio.com.
 - [ ] Home page photos stored in our own files table instead of loading from Unsplash.
 - [ ] Cancel or mark test orders before the public launch.
 
@@ -256,6 +280,8 @@ Tests (scripted, no real money or messages):
   before it is merged. Delete your branch after it is merged.
 - `stage`: **the live site** (renamed from `old-deploy` on 19 Nov 2026). For each release, `stage` is
   moved up to `DB-new` after testing and Sathwik redeploys. Never delete it, never force-push it.
+- `main`: kept only until a repo admin sets `stage` as the default branch, then deleted. Don't
+  start work from it.
 - Earlier branches are kept as tags (`archive/main`, `archive/vamsi`, `archive/customer-site-updates`,
   `archive/DB`, `archive/sathwik-deploy-and-payments`, `archive/harshitha-seller-portal-tasks`,
   `archive/chore-zod-4`), plus `old-deploy-2026-11-05` where the live branch started.
