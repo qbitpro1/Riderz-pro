@@ -32,7 +32,7 @@ export default async function BuildsPage() {
       <section className="section">
         <div className="shell">
           {BUILDS.length === 0 && (
-            <p className="text-sm text-ash">Finished builds are added here by our team as they leave the garage. Check back soon.</p>
+            <p className="text-sm text-ash">Finished customer builds are added here as they are completed. Check back soon.</p>
           )}
           <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {BUILDS.map((b, i) => (

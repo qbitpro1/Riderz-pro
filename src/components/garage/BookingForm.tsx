@@ -38,7 +38,7 @@ export function BookingForm({ defaultService }: { defaultService?: string }) {
         if (ready && !enquiry.sending) void enquiry.send({ name, mobile: phone, topic: "installation", message });
       }}
     >
-      <p className="eyebrow mb-1">Riderzpro Garage</p>
+      <p className="eyebrow mb-1">Installation</p>
       <h3 className="display-3">BOOK AN APPOINTMENT</h3>
       <p className="mt-2 text-sm text-ash">
         Tell us what the car needs. We call you to confirm a slot within one working day.

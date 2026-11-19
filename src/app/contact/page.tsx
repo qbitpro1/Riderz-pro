@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHero } from "@/components/layout/PageHero";
-import { BookingForm } from "@/components/garage/BookingForm";
 import { HelpForm } from "@/components/account/HelpForm";
 import { SectionHead } from "@/components/ui/Section";
 import { Icon } from "@/components/ui/Icon";
-import { LOCATIONS, SITE } from "@/lib/data/site";
+import { SITE } from "@/lib/data/site";
 import { pageMeta } from "@/lib/data/seo";
 
 export const metadata: Metadata = pageMeta({
@@ -125,29 +124,12 @@ export default function ContactPage() {
               ))}
             </ul>
 
-            {LOCATIONS.length > 0 && (
-              <>
-                <p className="mt-8 label">Our garages</p>
-                <ul className="space-y-3">
-                  {LOCATIONS.map((l) => (
-                    <li key={l.slug} className="text-sm text-ash">
-                      <span className="font-display text-xs font-bold uppercase tracking-[0.14em] text-chalk">
-                        {l.city}
-                      </span>
-                      <br />
-                      {l.address}
-                    </li>
-                  ))}
-                </ul>
-              </>
-            )}
           </div>
 
           <div className="space-y-6">
             <div id="message" className="scroll-mt-28">
               <HelpForm />
             </div>
-            <BookingForm />
           </div>
         </div>
       </section>

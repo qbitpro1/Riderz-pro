@@ -186,7 +186,6 @@ const HOUSE_PRODUCTS: (Omit<Product, "category"> & { category: string })[] = [
       "Airbag-compliant tear seams on side-airbag seats",
       "Breathable perforated centre panels",
       "Headrest, armrest and third-row pieces included where applicable",
-      "Free fitting at any Riderzpro garage",
     ],
     specs: [
       { label: "Material", value: "Automotive-grade leatherette, 1.2 mm" },
@@ -497,7 +496,6 @@ const HOUSE_PRODUCTS: (Omit<Product, "category"> & { category: string })[] = [
       "31-band parametric EQ per channel",
       "Time alignment to 0.01 ms per driver",
       "High-level input with factory-signal de-equalisation",
-      "Free re-tune at any Riderzpro garage for life",
     ],
     specs: [
       { label: "Channels", value: "8 (bridgeable to 4)" },

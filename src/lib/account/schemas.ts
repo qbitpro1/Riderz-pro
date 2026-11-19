@@ -103,7 +103,7 @@ export const TICKET_TOPICS = [
   { value: "order", label: "An order I placed" },
   { value: "product", label: "A product question" },
   { value: "fitment", label: "Will it fit my car?" },
-  { value: "installation", label: "Installation or garage booking" },
+  { value: "installation", label: "Installation booking" },
   { value: "returns", label: "Returns, refunds or warranty" },
   { value: "other", label: "Something else" },
 ] as const;

@@ -75,7 +75,7 @@ export const SERVICES_NAV: NavSection = {
   id: "services",
   title: "Services",
   links: [
-    { label: "Installation & Garage", href: "/garage" },
+    { label: "Installation", href: "/garage" },
     { label: "PPF & Detailing", href: "/ppf" },
     { label: "Audio Builds", href: "/audio" },
     { label: "Body Kits", href: "/body-kits" },

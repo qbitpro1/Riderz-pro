@@ -97,8 +97,7 @@ export function Footer() {
 
         <div className="mt-10 flex flex-col gap-3 border-t border-tint/8 pt-6 text-xs text-dim md:flex-row md:items-center md:justify-between">
           <p>
-            © {new Date().getFullYear()} {SITE.legalName} {SITE.name}® is a registered trademark of{" "}
-            {SITE.legalName} All rights reserved.
+            © {new Date().getFullYear()} {SITE.name}. All rights reserved.
           </p>
           <p>Modifications are carried out in line with the Central Motor Vehicles Rules.</p>
         </div>

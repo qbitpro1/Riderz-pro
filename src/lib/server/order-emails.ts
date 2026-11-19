@@ -86,7 +86,7 @@ export function confirmationEmail(o: OrderForMail, items: ItemForMail[], invoice
     "",
     `Questions? Reply to this email, write to ${SITE.email} or call ${SITE.phone}.`,
     "",
-    `Riderzpro (${SITE.legalName})`,
+    `Riderzpro`,
   ].join("\n");
 
   const td = 'style="padding:8px 0;border-bottom:1px solid #eee;vertical-align:top"';

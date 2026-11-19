@@ -108,7 +108,7 @@ export const FAQ_GROUPS: FaqGroup[] = [
       },
       {
         q: "What does the warranty cover?",
-        a: "Each product page lists its own warranty period. Installation, wiring, fabrication and trim work done at a Riderzpro garage carries a twelve-month workmanship warranty.",
+        a: "Warranty is different for every product: each product page shows its own period, and your invoice confirms it. The warranty on any fitting we do depends on the product and is written on your invoice.",
         href: "/support/warranty#product-warranties",
         hrefLabel: "Product warranties",
       },

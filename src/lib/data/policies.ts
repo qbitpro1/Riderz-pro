@@ -20,8 +20,6 @@ export type Policy = {
 
 const rupees = (n: number) => `₹${n.toLocaleString("en-IN")}`;
 
-/** `SITE.legalName` already ends with a full stop ("… Pvt. Ltd."). */
-const COMPANY = SITE.legalName;
 
 export const SUPPORT_POLICIES: Policy[] = [
   {
@@ -79,7 +77,7 @@ export const SUPPORT_POLICIES: Policy[] = [
     title: "RETURNS, REFUNDS & CANCELLATIONS",
     eyebrow: "Customer support",
     intro:
-      "If something doesn't fit, doesn't work or isn't what you expected, we take it back. The whole point of buying from a maker with its own garages rather than a marketplace is that someone stands behind the part.",
+      "If something doesn't fit, doesn't work or isn't what you expected, we take it back. Someone at Riderzpro stands behind every part we sell.",
     sections: [
       {
         id: "return-window",
@@ -179,14 +177,14 @@ export const SUPPORT_POLICIES: Policy[] = [
         id: "booking",
         heading: "Booking a fitting",
         body: [
-          "Add installation to a product where it is offered, or book a slot with the form on the Contact page. We call you to confirm the slot.",
-          "Autoform seat covers are made to order for your car: we take the order, confirm the pattern for your exact variant, and fit it at the workshop.",
+          "Add installation to a product where it is offered, or book a slot on the Installation page. We call you to confirm the slot.",
+          "Autoform seat covers are made to order for your car: we take the order, confirm the pattern for your exact variant, and arrange the fitting with you.",
         ],
       },
       {
         id: "reschedule",
         heading: "Rescheduling",
-        body: ["Workshop bookings can be rescheduled free of charge up to 24 hours before the slot."],
+        body: ["Installation bookings can be rescheduled free of charge up to 24 hours before the slot."],
       },
       {
         id: "builds",
@@ -242,7 +240,7 @@ export const LEGAL_POLICIES: Policy[] = [
     title: "PRIVACY POLICY",
     eyebrow: "Legal",
     metaDescription: "What personal information Riderzpro collects, why we collect it, and how to access, correct or delete it.",
-    intro: `This policy is issued by ${COMPANY} It owns the Riderzpro trademark and runs this store. It explains what we collect, why, and what you can ask us to do about it.`,
+    intro: "This policy explains what Riderzpro collects when you use this website, why, and what you can ask us to do about it.",
     sections: [
       {
         id: "on-this-site",
@@ -282,7 +280,7 @@ export const LEGAL_POLICIES: Policy[] = [
         id: "why",
         heading: "Why we collect it",
         body: [
-          "To run your account, fulfil orders, confirm fitment, take payments and refunds, schedule workshop slots, honour warranties and answer your messages.",
+          "To run your account, fulfil orders, confirm fitment, take payments and refunds, schedule installation bookings, honour warranties and answer your messages.",
           "To keep the site secure: sign-in codes, limits on repeated attempts and a record of account and order changes.",
           "To contact you about an order or enquiry you started. We do not add you to marketing lists without your consent.",
         ],
@@ -313,22 +311,14 @@ export const LEGAL_POLICIES: Policy[] = [
           `Write to ${SITE.email} and we respond within 30 days.`,
         ],
       },
-      {
-        id: "cars",
-        heading: "Buying or selling a car with us",
-        body: [
-          "If you buy or sell a car with us we also collect the vehicle's registration number, make, model, variant, year and kilometres, to value the car and complete the transfer.",
-          "We arrange finance only where you ask for it, and share your details with lending partners only when you ask us to check finance eligibility.",
-        ],
-      },
     ],
   },
   {
     slug: "terms",
     title: "TERMS OF SERVICE",
     eyebrow: "Legal",
-    metaDescription: "The terms for buying from Riderzpro: online orders, workshop bookings and vehicle transactions.",
-    intro: `These terms govern purchases from this website, workshop bookings and vehicle transactions. The seller is ${COMPANY} It owns the Riderzpro trademark.`,
+    metaDescription: "The terms for buying from Riderzpro: online orders and installation bookings.",
+    intro: "These terms govern purchases from this website and installation bookings with Riderzpro.",
     sections: [
       {
         id: "orders-and-prices",
@@ -346,11 +336,10 @@ export const LEGAL_POLICIES: Policy[] = [
         ],
       },
       {
-        id: "workshop-bookings",
-        heading: "Workshop bookings",
+        id: "installation-bookings",
+        heading: "Installation bookings",
         body: [
-          "Bookings can be rescheduled free of charge up to 24 hours before the slot. Builds require a 40% deposit to reserve parts; the balance is due at handover.",
-          "We photograph every vehicle on arrival. Vehicles left more than 14 days after completion attract storage charges, notified in advance.",
+          "Installation bookings can be rescheduled free of charge up to 24 hours before the slot. Anything else about the booking is confirmed with you when we call to set it up.",
         ],
       },
       {
@@ -373,14 +362,6 @@ export const LEGAL_POLICIES: Policy[] = [
         heading: "Governing law",
         body: [
           "These terms are governed by the laws of India. Disputes are subject to the exclusive jurisdiction of the courts of Bengaluru, Karnataka.",
-        ],
-      },
-      {
-        id: "vehicle-sales",
-        heading: "Buying or selling a car with us",
-        body: [
-          "Cars are sold with the inspection report shared in advance.",
-          "Payment for a car we buy from you is released before the RC transfer application is filed. We settle any outstanding loan directly with the lender.",
         ],
       },
     ],

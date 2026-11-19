@@ -125,7 +125,7 @@ export const SEO_LANDINGS: SeoLanding[] = [
       "Modification goes wrong for three reasons: parts that do not fit, work that cannot be undone, and nobody taking responsibility afterwards. We fix all three by checking fitment first, keeping work reversible and documenting all of it.",
     media: "garageSpotlit",
     cta: { href: "/build", label: "Configure your build" },
-    secondary: { href: "/garage", label: "Book the garage" },
+    secondary: { href: "/garage", label: "Book installation" },
     sections: [
       {
         heading: "A costed build sheet, not a vague quote",
@@ -152,8 +152,8 @@ export const SEO_LANDINGS: SeoLanding[] = [
       { label: "Build your car", href: "/build" },
       { label: "Body kits & facelifts", href: "/body-kits" },
       { label: "Custom interiors", href: "/interiors" },
-      { label: "Performance garage", href: "/performance" },
-      { label: "Off-road garage", href: "/off-road" },
+      { label: "Performance", href: "/performance" },
+      { label: "Off-road builds", href: "/off-road" },
       { label: "Riderzpro builds", href: "/builds" },
     ],
   },
@@ -211,7 +211,7 @@ export const SEO_LANDINGS: SeoLanding[] = [
     intro:
       "An SUV can be built three ways: for the trail, for the highway, or for the second row. We do all three, and the first question we ask is which one you actually want.",
     media: "defenderSaltFlat",
-    cta: { href: "/off-road", label: "Off-road garage" },
+    cta: { href: "/off-road", label: "Off-road builds" },
     secondary: { href: "/interiors", label: "Luxury interiors" },
     sections: [
       {
