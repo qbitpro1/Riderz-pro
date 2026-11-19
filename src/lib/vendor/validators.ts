@@ -11,7 +11,7 @@
  * No secrets, no database: client components may import this file.
  */
 
-import { z } from "zod";
+import { z } from "@/lib/zod";
 import { DEPARTMENTS, type DepartmentSlug } from "@/lib/data/taxonomy";
 import {
   BRAND_AUTH_TYPES,
@@ -91,7 +91,7 @@ const trimmed = (min: number, max: number, label: string) =>
     .min(min, `${label} is required`)
     .max(max, `${label} must be ${max} characters or fewer`);
 
-export const emailSchema = z.string().trim().toLowerCase().email("Enter a valid email address").max(254);
+export const emailSchema = z.string().trim().toLowerCase().pipe(z.email("Enter a valid email address").max(254));
 
 export const mobileSchema = z
   .string()
@@ -110,7 +110,7 @@ export const signUpSchema = z.object({
   email: emailSchema,
   mobile: mobileSchema,
   password: passwordSchema,
-  acceptTerms: z.literal(true, { errorMap: () => ({ message: "Accept the seller terms to continue" }) }),
+  acceptTerms: z.literal(true, { error: "Accept the seller terms to continue" }),
 });
 
 export const signInSchema = z.object({
@@ -233,7 +233,7 @@ export const documentsStepSchema = z.object({
     .array(z.object({ kind: z.enum(DOCUMENT_KINDS), fileId: z.string().min(1), name: trimmed(1, 120, "File name") }))
     .max(10),
   signatoryName: trimmed(2, 100, "Signatory name"),
-  acceptAgreement: z.literal(true, { errorMap: () => ({ message: "Accept the seller agreement to submit" }) }),
+  acceptAgreement: z.literal(true, { error: "Accept the seller agreement to submit" }),
 });
 
 /** Documents an application must include before it can be submitted. */

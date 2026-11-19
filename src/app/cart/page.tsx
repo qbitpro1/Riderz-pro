@@ -5,7 +5,7 @@ import { pageMeta } from "@/lib/data/seo";
 export const metadata: Metadata = {
   ...pageMeta({
     title: "Your Cart",
-    description: "Review your Riderzpro order, add installation, and pay online or check out over WhatsApp.",
+    description: "Review your Riderzpro order, add installation, and pay securely online.",
     path: "/cart",
   }),
   robots: { index: false, follow: false },

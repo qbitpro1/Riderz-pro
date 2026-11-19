@@ -1016,6 +1016,20 @@ UPDATE order_items i SET hsn = p.hsn, gst_rate = p.gst_rate, warranty_months = p
 `,
   },
   {
+    // Shop-screen sales (orders.channel = 'store') carry no commission (decision #10); new ones are
+    // written with commission_rate 0 (src/lib/server/store-sales.ts). This zeros the rate on older
+    // store sales that are not in a payout yet. Commission, its GST and the seller's net are worked
+    // out from commission_rate at payout time (settlementFor), so the rate is the only stored
+    // commission figure. Rows already in a payout keep what was paid. Re-running changes nothing.
+    id: "019_store_sales_zero_commission",
+    sql: `
+UPDATE vendor_orders vo SET commission_rate = 0, updated_at = now()
+  FROM orders o
+ WHERE o.id = vo.order_id AND o.channel = 'store'
+   AND vo.commission_rate <> 0 AND vo.payout_id IS NULL;
+`,
+  },
+  {
     // customer_carts      a signed-in shopper's cart, so it follows them across devices
     //                     (src/lib/server/customer-cart.ts). Lines are the browser's own, checked on read.
     // vendor_hold_messages the conversation while a seller's account is frozen (suspended): the admin's

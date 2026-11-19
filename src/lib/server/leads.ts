@@ -1,6 +1,6 @@
 import "server-only";
 
-import { z } from "zod";
+import { z } from "@/lib/zod";
 import { sql } from "@/lib/db/client";
 import { LEAD_KINDS, type LeadKind } from "@/lib/leads/types";
 import { ApiError } from "./http";

@@ -1,6 +1,6 @@
 import "server-only";
 
-import { z } from "zod";
+import { z } from "@/lib/zod";
 import { sql, sqlOne } from "@/lib/db/client";
 import { BUILD_TAGS, type Build } from "@/lib/data/community";
 import { fileHref } from "@/lib/vendor/types";

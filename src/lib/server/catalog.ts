@@ -1,6 +1,6 @@
 import "server-only";
 
-import { z } from "zod";
+import { z } from "@/lib/zod";
 import { sql, type Query } from "@/lib/db/client";
 import { BRANDS, LIVE_BRANDS, itemFits, tierFor, type BrandSlug, type CatalogItem } from "@/lib/catalog";
 import { CATEGORIES } from "@/lib/data/products";

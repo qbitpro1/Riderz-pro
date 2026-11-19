@@ -1,6 +1,6 @@
 import "server-only";
 
-import { z } from "zod";
+import { z } from "@/lib/zod";
 import { sql, type Query } from "@/lib/db/client";
 import { ApiError, rateLimit } from "./http";
 import { newId } from "./security";

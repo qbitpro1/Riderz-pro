@@ -1,7 +1,7 @@
 import "server-only";
 
 import { sql, sqlOne, transaction } from "@/lib/db/client";
-import { DEFAULT_COMMISSION_RATE, type VendorSelf } from "@/lib/vendor/types";
+import type { VendorSelf } from "@/lib/vendor/types";
 import { ApiError } from "./http";
 import { newId, sha256 } from "./security";
 import { audit, notifyVendor } from "./vendors";
@@ -26,8 +26,8 @@ import { SCREEN_PRODUCT_WHERE, SCREEN_TITLE_SQL } from "./store-screen";
  * Discounts: the seller decides (store_settings): bargaining on/off, the most % off and the most
  * rupees off one order. The AI can only create an offer within those limits (createOffer); the
  * checkout checks the offer again against the limits in force at that moment. The discount is
- * the seller's own: it lowers the item prices on the order, so the seller's invoice, commission
- * and payout follow the price actually paid.
+ * the seller's own: it lowers the item prices on the order, so the seller's invoice and payout
+ * follow the price actually paid. Shop-screen sales carry no commission (commission_rate 0).
  */
 
 export const OFFER_MINUTES = 20;
@@ -213,8 +213,8 @@ export async function placeStoreOrder(vendor: VendorSelf, input: StoreCheckoutIn
   const out = await transaction(async (q) => {
     // Lock and price every product (stock is taken below; a lost race rolls everything back).
     const ids = [...new Set(input.lines.map((l) => l.id))];
-    const rows = await q<{ id: string; title: string; price: number; stock: number; commission_rate: string | null }>(
-      `SELECT p.id, ${SCREEN_TITLE_SQL} AS title, p.price, p.stock, v.commission_rate FROM vendor_products p JOIN vendors v ON v.id = p.vendor_id
+    const rows = await q<{ id: string; title: string; price: number; stock: number }>(
+      `SELECT p.id, ${SCREEN_TITLE_SQL} AS title, p.price, p.stock FROM vendor_products p
         WHERE p.id = ANY($1) AND p.vendor_id = $2 AND ${SCREEN_PRODUCT_WHERE} ORDER BY p.id FOR UPDATE OF p`,
       [ids, vendor.id],
     );
@@ -276,7 +276,7 @@ export async function placeStoreOrder(vendor: VendorSelf, input: StoreCheckoutIn
     await q(
       `INSERT INTO vendor_orders (id, order_id, vendor_id, status, subtotal, commission_rate, accepted_at, collected_by)
        VALUES ($1,$2,$3,'accepted',$4,$5, now(), $6)`,
-      [vendorOrderId, orderId, vendor.id, total, rows[0]?.commission_rate == null ? DEFAULT_COMMISSION_RATE : Number(rows[0].commission_rate), input.pay === "counter" ? "seller" : "platform"],
+      [vendorOrderId, orderId, vendor.id, total, 0, input.pay === "counter" ? "seller" : "platform"], // 0% commission on Offline Store sales
     );
     const low: { title: string; stock: number }[] = [];
     for (const i of priced) {

@@ -1,6 +1,6 @@
 import "server-only";
 
-import { z } from "zod";
+import { z } from "@/lib/zod";
 import { sql, sqlOne } from "@/lib/db/client";
 import { BODY_TYPES, CAR_STATUSES, DRIVETRAINS, FUELS, TRANSMISSIONS, ownerLabel, type Car } from "@/lib/data/cars";
 import { fileHref, } from "@/lib/vendor/types";
