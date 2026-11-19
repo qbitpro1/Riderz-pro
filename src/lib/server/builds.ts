@@ -8,7 +8,13 @@ import { slugify } from "@/lib/vendor/validators";
 import { ApiError } from "./http";
 import { newId } from "./security";
 import { audit } from "./vendors";
-import { assertPhotos } from "./cars";
+
+/** Build photos must be files the team uploaded for builds. */
+async function assertPhotos(ids: string[], kind: "build_photo") {
+  if (ids.length === 0) return;
+  const rows = await sql<{ id: string }>("SELECT id FROM files WHERE id = ANY($1::text[]) AND kind = $2 AND vendor_id IS NULL", [ids, kind]);
+  if (rows.length !== new Set(ids).size) throw new ApiError(400, "bad_file", "One of the photos could not be found. Upload it again.");
+}
 
 /**
  * THE BUILD SHOWCASE (builds)

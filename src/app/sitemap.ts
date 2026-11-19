@@ -1,6 +1,5 @@
 import type { MetadataRoute } from "next";
 import { SITE } from "@/lib/data/site";
-import { publicCars } from "@/lib/server/cars";
 import { CATEGORIES } from "@/lib/data/products";
 import { liveBuilds } from "@/lib/server/builds";
 import { LANDING_MODELS } from "@/lib/data/vehicles";
@@ -24,7 +23,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const snap = await catalogSnapshot().catch(() => null);
   const CATALOG = snap?.items ?? [];
   const PRODUCT_DETAILS = snap ? [...snap.details.values()] : [];
-  const [CARS, BUILDS] = await Promise.all([publicCars(), liveBuilds()]);
+  const BUILDS = await liveBuilds();
   const url = (path: string) => `${SITE.url}${path}`;
 
   const entry = (
@@ -38,14 +37,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     entry("/be-6", 0.95, "weekly"),
     entry("/be-6/specifications", 0.85, "weekly"),
     entry("/be-6/limited-edition", 0.8, "weekly"),
-    entry("/cars", 0.9, "daily"),
-    entry("/cars/latest", 0.85, "daily"),
     entry("/autoform", 0.85),
     entry("/ppf/quote", 0.85),
     entry("/ppf/films", 0.8),
     entry("/ppf/guide", 0.75),
-    entry("/sell", 0.8),
-    entry("/partners", 0.6, "monthly"),
     entry("/vendor", 0.6, "monthly"),
     entry("/shop", 0.9),
     entry("/collections", 0.8),
@@ -78,7 +73,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...PRODUCT_DETAILS.filter((d) => d.indexable).map((d) => entry(productHref(d.slug), 0.65)),
     ...CATEGORIES.map((c) => entry(`/shop/${c.slug}`, 0.8)),
     ...LANDING_MODELS.map((m) => entry(`/accessories/${m.slug}`, 0.8)),
-    ...CARS.filter((c) => c.status === "live").map((c) => entry(`/cars/${c.slug}`, 0.7, "daily")),
     ...BUILDS.map((b) => entry(`/builds/${b.slug}`, 0.6)),
     ...market.map((m) => ({
       url: url(m.path),

@@ -115,39 +115,6 @@ export type SeoLanding = {
 
 export const SEO_LANDINGS: SeoLanding[] = [
   {
-    slug: "used-cars",
-    eyebrow: "Used cars",
-    h1: "USED CARS, WITHOUT THE ASTERISKS.",
-    title: "Used Cars for Sale in India — Riderzpro Certified",
-    description:
-      "Buy used cars from Riderzpro with RC and insurance verification and transparent pricing.",
-    intro:
-      "Most used-car problems are not mechanical, they are informational. You cannot see the accident history, the odometer truth or the pending loan — so you overpay for risk. Riderzpro publishes all of it before you call.",
-    media: "luxurySaloonMotion",
-    cta: { href: "/cars", label: "Browse used cars" },
-    secondary: { href: "/sell", label: "Sell your car" },
-    sections: [
-      {
-        heading: "Every car inspected on 200 points",
-        body: "Engine, transmission, suspension, electricals, body panel thickness and an OBD scan. The report is shared in full before any payment, not summarised into a star rating.",
-      },
-      {
-        heading: "Paperwork verified, not assumed",
-        body: "RC cross-checked against VAHAN, insurance status and claim history confirmed, service record pulled, ownership chain validated, and any outstanding loan settled directly with the lender.",
-      },
-      {
-        heading: "One price, published",
-        body: "No dealer margin games and no 'come and discuss'. The number on the listing is the number, and the same number is offered to everyone who walks in.",
-      },
-    ],
-    links: [
-      { label: "Browse all cars", href: "/cars" },
-      { label: "Sell your car", href: "/sell" },
-      { label: "EMI calculator", href: "/cars#listings" },
-      { label: "Why Riderzpro", href: "/why-riderzpro" },
-    ],
-  },
-  {
     slug: "car-modification",
     eyebrow: "Car modification",
     h1: "CAR MODIFICATION, DONE PROPERLY.",

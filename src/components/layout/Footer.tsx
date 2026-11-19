@@ -12,7 +12,7 @@ const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
   },
   { title: "Shop by", links: SHOP_BY_LINKS },
   { title: "Services", links: SERVICES_NAV.links },
-  { title: "Cars", links: CARS_NAV.links.filter((l) => l.href !== "/partners" && l.href !== "/vendor") },
+  { title: "BE 6", links: CARS_NAV.links.filter((l) => l.href !== "/vendor") },
   { title: "Partners", links: [...PARTNERS_NAV.links, { label: "Offline Store login", href: "/vendor/offline-store" }] },
   {
     title: "Support",
@@ -87,11 +87,6 @@ export function Footer() {
                 </Link>
               </li>
             ))}
-            <li>
-              <Link href="/used-cars" className="inline-flex min-h-11 items-center text-xs text-dim transition-colors hover:text-accent md:min-h-0">
-                Used cars
-              </Link>
-            </li>
             <li>
               <Link href="/car-modification" className="inline-flex min-h-11 items-center text-xs text-dim transition-colors hover:text-accent md:min-h-0">
                 Car modification near me

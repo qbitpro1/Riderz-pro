@@ -2,9 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
 import { BLOCKERS, READINESS, type Blocker } from "@/lib/catalog/readiness";
-import { SOURCES } from "@/lib/inventory/sources";
 import { adminPage } from "@/lib/server/admin-auth";
-import { publicCars } from "@/lib/server/cars";
 
 export const metadata: Metadata = {
   title: "Launch Readiness",
@@ -20,7 +18,6 @@ const OWNER_TONE: Record<Blocker["owner"], string> = {
 
 export default async function LaunchReadinessPage() {
   await adminPage("catalog", "/admin/launch");
-  const carsListed = (await publicCars()).filter((c) => c.status === "live").length;
   return (
     <section className="section pt-24 md:pt-32">
       <div className="shell">
@@ -33,12 +30,11 @@ export default async function LaunchReadinessPage() {
         </p>
 
         {/* live ---------------------------------------------------- */}
-        <ul className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-4">
+        <ul className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-3">
           {[
             { label: "Live products", value: READINESS.live.total },
             { label: "Held back", value: READINESS.heldBack },
             { label: "RECOIL coming soon", value: READINESS.recoil.comingSoon },
-            { label: "Cars listed", value: carsListed },
           ].map((s) => (
             <li key={s.label} className="card p-4">
               <p className="font-display text-2xl font-extrabold tnum">{s.value}</p>
@@ -121,63 +117,10 @@ export default async function LaunchReadinessPage() {
           ))}
         </div>
 
-        {/* cars ---------------------------------------------------- */}
-        <h2 className="display-2 mt-16">CARS.</h2>
-        <p className="mt-3 max-w-2xl text-sm leading-relaxed text-ash">
-          {carsListed} listings, {READINESS.cars.liveSources} permitted sources and{" "}
-          {READINESS.cars.blockedSources} sources blocked for want of a licence. Listings only ever
-          arrive through a source the registry permits — there is no path that adds cars without one.
-        </p>
-
-        <ul className="mt-6 space-y-2">
-          {SOURCES.map((s) => (
-            <li key={s.id} className="card flex flex-wrap items-center gap-x-4 gap-y-2 p-4">
-              <span className="font-display text-sm font-extrabold uppercase">{s.name}</span>
-              <span
-                className={`chip ${
-                  s.status === "LIVE" ? "border-accent/40 text-accent" : "border-danger/40 text-danger"
-                }`}
-              >
-                {s.status === "LIVE" ? "Permitted" : "No licence"}
-              </span>
-              <span className="w-full text-xs leading-relaxed text-dim md:w-auto md:flex-1">
-                {s.evidence.note}
-              </span>
-            </li>
-          ))}
-        </ul>
-
-        <div className="card mt-6 border-accent/30 bg-accent/5 p-5">
-          <p className="font-display text-sm font-extrabold uppercase text-accent">
-            The two ways the car count goes up
-          </p>
-          <ol className="mt-3 space-y-2 text-sm leading-relaxed text-chalk/85">
-            <li>
-              <span className="font-semibold">1. Own inventory.</span> Cars Riderzpro owns, has
-              consigned, or has inspected and photographed. Goes in through the{" "}
-              <code className="text-xs text-accent">riderzpro-direct</code> connector with no
-              third-party rights involved.
-            </li>
-            <li>
-              <span className="font-semibold">2. Partner dealers.</span> Sign the Dealer Inventory
-              Agreement, put its reference in{" "}
-              <code className="text-xs text-accent">data/inventory/dealer-feed.json</code>, and the
-              dealer pushes stock. Per-vehicle image rights are explicit.
-            </li>
-          </ol>
-          <p className="mt-4 text-xs leading-relaxed text-dim">
-            The aggregators above are blocked on cited robots.txt rules and the absence of any data
-            agreement. That position is enforced in code by{" "}
-            <code className="text-accent">src/lib/inventory/compliance.ts</code>, not by convention.
-          </p>
-        </div>
 
         <p className="mt-10 flex flex-wrap items-center gap-4 text-xs text-dim">
           <Link href="/admin/catalog" className="text-accent underline underline-offset-4">
             RECOIL import report
-          </Link>
-          <Link href="/admin/inventory" className="text-accent underline underline-offset-4">
-            Inventory report
           </Link>
           <Link href="/brands" className="text-accent underline underline-offset-4">
             Brands

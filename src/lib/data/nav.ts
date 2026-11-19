@@ -88,18 +88,15 @@ export const SERVICES_NAV: NavSection = {
 
 export const CARS_NAV: NavSection = {
   id: "cars",
-  title: "Cars",
+  title: "BE 6",
   links: [
-    { label: "Buy Cars", href: "/cars" },
-    { label: "Sell Your Car", href: "/sell" },
     { label: "BE 6", href: "/be-6" },
     { label: "BE 6 Limited Edition", href: "/be-6/limited-edition" },
-    { label: "List Your Cars", href: "/partners" },
     { label: "Sell on Riderzpro", href: "/vendor" },
   ],
 };
 
-/** Partner programmes: sellers, car dealers and delivery riders who work with Riderzpro. */
+/** Partner programmes: sellers and delivery riders who work with Riderzpro. */
 export const PARTNERS_NAV: NavSection = {
   id: "partners",
   title: "Partners",
@@ -107,7 +104,6 @@ export const PARTNERS_NAV: NavSection = {
     { label: "Sell on Riderzpro", href: "/vendor" },
     { label: "Vendor Sign In", href: "/vendor/auth" },
     { label: "Ride with Riderzpro", href: "/rider" },
-    { label: "List Your Cars", href: "/partners" },
   ],
 };
 

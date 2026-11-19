@@ -29,7 +29,6 @@ import {
   SUMMARY as BLAUPUNKT_SUMMARY,
   VERIFICATION_QUEUE as BLAUPUNKT_QUEUE,
 } from "@/lib/data/blaupunkt";
-import { SOURCES } from "@/lib/inventory/sources";
 import { BRANDS, type BrandSlug } from "./brands";
 import { FILE_CATALOG as CATALOG } from "./file-source";
 
@@ -206,12 +205,6 @@ export const READINESS = {
     accessoriesLive: AUTOFORM_SUMMARY.accessoriesPublishable,
     accessoriesHeld: ACCESSORIES.length - AUTOFORM_SUMMARY.accessoriesPublishable,
     mats: MATS.length,
-  },
-  cars: {
-    // Cars are in the database now (/admin/cars); this report covers the price lists only.
-    listed: 0,
-    liveSources: SOURCES.filter((s) => s.status === "LIVE").length,
-    blockedSources: SOURCES.filter((s) => s.status === "BLOCKED_NO_LICENCE").length,
   },
   heldBack: HELD_BACK_TOTAL,
 };

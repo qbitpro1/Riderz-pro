@@ -1,6 +1,5 @@
 import "server-only";
 
-import { publicCars } from "@/lib/server/cars";
 import { DEPARTMENTS, departmentHref } from "@/lib/data/taxonomy";
 import { AUDIO_PACKAGES, DETAIL_SERVICES, FACELIFT_CONVERSIONS } from "@/lib/data/services";
 import { liveBuilds } from "@/lib/server/builds";
@@ -9,7 +8,7 @@ import { BRANDS, type CatalogItem } from "@/lib/catalog";
 import { catalogSnapshot } from "@/lib/server/catalog";
 import { liveVendorItems } from "@/lib/server/marketplace";
 import { COLLECTIONS } from "@/lib/data/collections";
-import { lakh, rupees } from "@/lib/format";
+import { rupees } from "@/lib/format";
 import { productHref } from "@/lib/store/types";
 import { norm, type SearchBrand, type SearchEntry, type SearchIndex } from "./match";
 
@@ -43,8 +42,7 @@ function productEntry(i: CatalogItem): SearchEntry {
 
 /** The whole search index, built from the database (products) and the site's own pages. */
 export async function buildSearchIndex(): Promise<SearchIndex> {
-  const [{ items: CATALOG, byBrand: CATALOG_BY_BRAND }, allCars, BUILDS, SELLER_ITEMS] = await Promise.all([catalogSnapshot(), publicCars(), liveBuilds(), liveVendorItems()]);
-  const CARS = allCars.filter((c) => c.status === "live");
+  const [{ items: CATALOG, byBrand: CATALOG_BY_BRAND }, BUILDS, SELLER_ITEMS] = await Promise.all([catalogSnapshot(), liveBuilds(), liveVendorItems()]);
   const SEARCH_INDEX: SearchEntry[] = [
   // Brands come first in construction order so an exact brand name — "recoil",
   // "autoform", "blaupunkt" — always has a destination, whether or not that
@@ -60,16 +58,6 @@ export async function buildSearchIndex(): Promise<SearchIndex> {
       keywords: norm(`${b.name} ${b.position} ${b.tagline} ${b.categories.join(" ")} brand shop by brand`),
     };
   }),
-  ...CARS.map((c) => ({
-    id: `car-${c.slug}`,
-    kind: "Car" as const,
-    title: `${c.year} ${c.brand} ${c.model} ${c.variant}`,
-    meta: `${lakh(c.price)} · ${c.city}`,
-    href: `/cars/${c.slug}`,
-    keywords: norm(
-      `${c.brand} ${c.model} ${c.variant} ${c.body} ${c.fuel} ${c.transmission} ${c.city} used car buy`,
-    ),
-  })),
   ...CATALOG.map(productEntry),
   // Admin-approved products of approved sellers only (liveVendorItems applies the same gate as the shop).
   ...SELLER_ITEMS.map((i) => ({

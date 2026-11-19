@@ -131,6 +131,12 @@ const nextConfig: NextConfig = {
       { source: "/autoform/:design", destination: "/products/autoform-:design", permanent: true },
       // The garage locations page was demo content (no walk-in garages yet); visitors land on Contact.
       { source: "/locations", destination: "/contact", permanent: false },
+      // Car buying and selling was removed (19 Nov 2026); old links land on the shop.
+      { source: "/cars", destination: "/shop", permanent: false },
+      { source: "/cars/:path*", destination: "/shop", permanent: false },
+      { source: "/used-cars", destination: "/shop", permanent: false },
+      { source: "/sell", destination: "/shop", permanent: false },
+      { source: "/partners", destination: "/vendor", permanent: false },
       { source: "/ppf/ppf-in-hyderabad", destination: "/ppf", permanent: false },
       { source: "/ppf/ppf-in-pune", destination: "/ppf", permanent: false },
       // The compare feature was dropped; its URL goes to the shop.

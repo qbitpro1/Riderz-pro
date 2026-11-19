@@ -46,7 +46,7 @@ export const SEARCH_SUGGESTIONS = [
   "BMW ambient lighting",
   "7D mats",
   "Sound deadening",
-  "Used cars in Bengaluru",
+  "Car cover",
 ];
 
 export function searchAll(index: SearchEntry[], query: string, limit = 8): SearchEntry[] {

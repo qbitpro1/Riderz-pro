@@ -10,8 +10,6 @@ import { LANDING_MODELS, findModelBySlug } from "@/lib/data/vehicles";
 import { EMPTY_FILTERS, sortItems } from "@/lib/catalog";
 import { itemsForModel } from "@/lib/server/catalog";
 import { FACELIFT_CONVERSIONS } from "@/lib/data/services";
-import { publicCars } from "@/lib/server/cars";
-import { CarCard } from "@/components/cars/CarCard";
 import { rupees } from "@/lib/format";
 import type { MediaKey } from "@/lib/media";
 import { breadcrumbLd, itemListLd, ldJson, pageMeta } from "@/lib/data/seo";
@@ -77,7 +75,6 @@ export default async function VehicleAccessoriesPage({
 
   const products = await itemsForModel(model.slug);
   const facelift = FACELIFT_CONVERSIONS.filter((f) => f.modelSlug === model.slug);
-  const listings = (await publicCars()).filter((c) => c.status === "live" && c.model.toLowerCase() === model.name.toLowerCase()).slice(0, 3);
 
   const recommended = [
     "Floor mats and interior protection",
@@ -201,26 +198,6 @@ export default async function VehicleAccessoriesPage({
                   <EnquiryButton topic="fitment" message={`Hi Riderzpro, I want a quote for: ${f.to} on my ${f.from}.`} className="btn btn-outline btn-sm btn-block mt-5">
                     Get a quote
                   </EnquiryButton>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-      )}
-
-      {listings.length > 0 && (
-        <section className="section border-t border-tint/8 bg-carbon">
-          <div className="shell">
-            <SectionHead
-              eyebrow="In stock now"
-              title={`${model.name.toUpperCase()} FOR SALE.`}
-              href="/cars"
-              hrefLabel="All cars"
-            />
-            <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {listings.map((c) => (
-                <li key={c.slug}>
-                  <CarCard car={c} />
                 </li>
               ))}
             </ul>
