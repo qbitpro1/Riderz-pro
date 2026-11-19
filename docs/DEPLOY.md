@@ -94,14 +94,16 @@ Rate limits read the visitor's address from `x-vercel-forwarded-for` / `x-real-i
 - Switch the domain as in `Hema_work.md` §3. Keep the old site on a spare address for a week.
 - To roll back: point the domain back to the old site. The new database stays as it is; switching
   forward again needs nothing more.
-- Deploying a fix: merge the Pull Request into `old-deploy`, then follow section 6. Database changes
+- Deploying a fix: merge the Pull Request into `DB-new`, test it, move `stage` up to `DB-new`, then follow section 6. Database changes
   ship as new migrations and apply themselves on the next start (they never edit an old one).
 - Watch the host's logs for `[error]` lines (one per server error, without personal data) and for
   `[config]` warnings after each deploy.
 
-## 6. Redeploying the live server (old-deploy)
+## 6. Redeploying the live server (stage)
 
-riderzpro.com runs from the `old-deploy` branch on our Ubuntu server behind nginx. Fill in the real
+riderzpro.com runs from the `stage` branch on our Ubuntu server behind nginx (it was called
+`old-deploy` until 19 Nov 2026; a server still on `old-deploy` switches once with
+`git fetch origin && git checkout -B stage origin/stage`). Fill in the real
 folder and process name here the first time you run this: `/path/to/riderzpro` and `riderzpro` are
 placeholders, and use whichever of pm2 or systemd the server already uses.
 
@@ -114,8 +116,8 @@ cd /path/to/riderzpro
 git rev-parse --short HEAD | tee ~/riderzpro-last-deploy
 
 git fetch origin
-git checkout old-deploy
-git pull --ff-only origin old-deploy
+git checkout stage
+git pull --ff-only origin stage
 
 # The build needs the dev packages, even if the shell has NODE_ENV=production
 npm ci --include=dev

@@ -16,21 +16,25 @@ the company's garages.
   It is an add-on that makes in-shop sales easier; Riderzpro will charge sellers a **monthly fee** for
   it in future (billing not built yet).
 
-## Current status (9 Nov 2026)
+## Current status (19 Nov 2026)
 
-- **Live:** riderzpro.com runs the `old-deploy` branch on the team's Ubuntu server behind nginx
-  (runbook: `docs/DEPLOY.md`, sections 6–10). Data on the live site is real: the first sellers,
-  starting with Indus Enterprises, keep what they enter there. Never reset that database.
-- **`main` is ahead of the live site.** On 9 Nov it took in the live branch, Sathwik's payments and
-  deploy work and Harshitha's seller-portal work (see below), and was audited:
-  - typecheck, lint and production build pass;
-  - all 475 pages load with no server errors;
-  - test scripts pass: payments 29/29, invoices 22/22, payment signatures 18/18, SMS/OTP 18/18;
-  - seller, shop-screen, customer and admin journeys tested in a browser.
-- **Next release:** Sathwik moves `old-deploy` up to `main` once Razorpay test keys work on the
-  server (from then on checkout is online-only), then redeploys and runs the smoke test.
-- **Not merged yet:** Sathese's `customer-site-updates` (needs changes, see "Code still to do") and
-  Vamsi's PR #3 (waits for an owner decision).
+- **Two branches only:** `stage` (what riderzpro.com runs; was `old-deploy`) and `DB-new`
+  (development). Every other branch was merged in or kept as an `archive/...` tag on 19 Nov.
+- **19 Nov team merge:** `DB-new` (catalogue, reviews, builds, car listings and requests in the
+  database; JSON product upload; decline-and-resubmit for sellers; Next.js 16.4.6), Sathese's
+  customer-site work (no WhatsApp on the shopper site, Google Translate, filter sidebar, phone
+  fixes), and the Offline Store quick add (a product needs only a name, price and stock; SKU and MRP
+  are optional). Checked before merging into `stage`:
+  - typecheck, lint and production build pass; `npm ci` installs from the lock file;
+  - unit tests 27/27, payments 29/29, invoices 22/22, payment signatures 18/18, SMS/OTP 18/18;
+  - end-to-end flows 33/46: all 13 failures are order steps that still place WhatsApp orders, which
+    checkout now refuses. Update `scripts/test-e2e-flows.mjs` to online orders and run it with
+    Razorpay test keys.
+- **Live:** riderzpro.com on the team's Ubuntu server behind nginx (runbook: `docs/DEPLOY.md`). The
+  server must now pull `stage` (the old branch name `old-deploy` no longer exists). Data on the live
+  site is real: the first sellers, starting with Indus Enterprises, keep what they enter there. Never
+  reset that database. New tables (migrations 019-023) are added on start-up; the shop catalogue is
+  copied from the price lists into the database on the first start.
 - This repo replaces the old riderzpro.com (old repo `Viswanath5177/Riderzpro`, no real customers).
 
 ### What's new in November 2026
@@ -122,7 +126,8 @@ The task list per person is kept with the team (latest: task update of 9 Nov 202
 
 ### Server (Sathwik)
 
-- [ ] Move `old-deploy` up to `main` and redeploy (after Razorpay test keys work).
+- [ ] Switch the server from `old-deploy` to `stage` (`git fetch origin && git checkout -B stage origin/stage`),
+  redeploy, and run the smoke test (after Razorpay test keys work).
 - [ ] Settings: keep the current `VENDOR_DATA_KEY` (a new key would make saved bank details unreadable),
   `ADMIN_USER`, `ADMIN_PASSWORD`, `CRON_SECRET`, `NEXT_PUBLIC_SITE_URL`, the keys above; optionally
   `ANTHROPIC_API_KEY`, `SALESMAN_FULL_AI_SHOPS`, `SPEECH_TO_TEXT_PROVIDER` + `SARVAM_API_KEY`.
@@ -144,28 +149,20 @@ The task list per person is kept with the team (latest: task update of 9 Nov 202
 
 ### Code still to do
 
-- [ ] **Sathese (`customer-site-updates`)**: update to `main` and open a PR into `main`:
-  - keep `main`'s online-only checkout (remove "place order and pay later") and drop the duplicate
-    zod 4 change;
-  - Google Translate in the language menu: **approved**; add a line about it to the privacy policy;
-  - invoices keep an address until the registered office address is shared.
-- [ ] **Vamsi (PR #3, database catalogue)**: the direction is agreed, but the branch is not complete
-  yet, so it is not merged. It moves the shop to products stored in the database (JSON catalogue
-  upload, admin approval), adds account carts and a `DATABASE_SCHEMA` option. Before merging: finish
-  it, update it to `main` (5 small conflicts today), run `npm run build` and the test scripts, and
-  decide how Indus's `DEMO-` sample products are removed (today the branch deletes them on every
-  start-up).
+- [ ] End-to-end test: switch its orders from WhatsApp to online payment and run it with Razorpay
+  test keys (checkout, coupons, invoices, rider delivery and reviews are not covered until then).
+- [ ] Privacy policy: add a line about Google Translate (approved by the owner).
+- [ ] Invoices keep a placeholder address until the registered office address is shared.
+- [ ] Demo content still to go: car buying and selling (`/cars`, `/sell`, `/used-cars`, EMI), the
+  `/garage` page, "Motorbotz" and the demo GSTIN and phone number in the footer.
+- [ ] `/partners` dealer form: save the requests and list them in admin, or hide it.
+- [ ] Customer requests (quotes, bookings, fitment questions) now arrive in admin -> Customer support;
+  the admin Requests page (`/admin/leads`) only shows requests saved before 19 Nov.
 - [ ] Later: monthly Offline Store subscription for sellers (plans, billing, what happens when unpaid).
-- [ ] **Hima Bindu**: `/partners` dealer form (saves nothing today), remove used cars and "sell your car"
-  (`/used-cars`, `/cars`, `/sell`, EMI calculator, links, sitemap), remove WhatsApp from admin and
-  other pages, admin panel test.
-- [ ] **Harshitha**: Indus go-live with real KYC; Salesman AI bundle offers (free fitting, add-on
-  discounts), its log and test conversations; test the shop TV mic on the https site.
-- [ ] Demo content still on `main` until those branches land: garage locations, "12,400+ builds",
-  WhatsApp buttons outside checkout.
-- [ ] Delete the old `chore/zod-4` branch (zod 4 is on `main`).
-- [ ] Not built yet: header "Deliver to" picker, reviews and warranty claims, installation bookings,
-  mobile app.
+- [ ] Not built yet: header "Deliver to" picker, warranty claims, installation bookings, mobile app.
+- Not merged on purpose (kept as tags): Vamsi's "marketplace-only" shop, which removes Riderzpro's
+  own catalogue (against the business model), and Sathese's "place order, pay later" (checkout is
+  online only).
 
 ### Owner decisions
 
@@ -254,15 +251,14 @@ Tests (scripted, no real money or messages):
 
 ## Branches and history
 
-- `main`: development. **Start every task from `main` and open a Pull Request into `main`:**
-  `git fetch origin && git checkout -b <your-name>/<task> origin/main`. One teammate reviews it before
-  it is merged. Nobody pushes straight to `main` or `old-deploy`.
-- `old-deploy`: **the live site.** For each release, Sathwik moves it up to `main` and redeploys.
-  Never delete it. Tag `old-deploy-2026-11-05` marks where it started.
-- Open team branches (9 Nov 2026): `customer-site-updates` (Sathese), `vamsi` (PR #3, not complete
-  yet),
-  `sathwik/deploy-and-payments` and `harshitha/seller-portal-tasks` (both already merged into `main`;
-  close PR #2 without merging it into `old-deploy`: it lacks a shop-checkout fix that is on `main`).
+- `DB-new`: development. **Start every task from `DB-new` and open a Pull Request into `DB-new`:**
+  `git fetch origin && git checkout -b <your-name>/<task> origin/DB-new`. One teammate reviews it
+  before it is merged. Delete your branch after it is merged.
+- `stage`: **the live site** (renamed from `old-deploy` on 19 Nov 2026). For each release, `stage` is
+  moved up to `DB-new` after testing and Sathwik redeploys. Never delete it, never force-push it.
+- Earlier branches are kept as tags (`archive/main`, `archive/vamsi`, `archive/customer-site-updates`,
+  `archive/DB`, `archive/sathwik-deploy-and-payments`, `archive/harshitha-seller-portal-tasks`,
+  `archive/chore-zod-4`), plus `old-deploy-2026-11-05` where the live branch started.
 - Versions are tagged:
   - `v0.2`: Riderzpro rebrand and accessories store;
   - `v0.3`: seller portal, marketplace, Offline Store;
