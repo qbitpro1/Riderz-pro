@@ -53,8 +53,9 @@ const SAMPLE = `{
 }`;
 
 const FIELDS: [string, string][] = [
-  ["title, sku, price", "Required. Price and MRP in whole rupees, including GST."],
-  ["mrp, stock, lowStockAt", "Optional. MRP defaults to the price, stock to 0."],
+  ["title, price", "Required. Price and MRP in whole rupees, including GST."],
+  ["stock", "How many you have. Only products with stock show on your shop screen (left out = 0)."],
+  ["sku, mrp, lowStockAt", "Optional. Left out, we make an SKU from the title, and MRP is the price."],
   ["brand", "Optional. Defaults to your store name."],
   ["category", 'A category name such as "Seat covers" or "Floor mats". Or give "department" and "group" (see below).'],
   ["hsn, gstRate, warrantyMonths", "Optional. GST rate is one of 0, 5, 12, 18, 28 (default 18)."],
@@ -182,7 +183,7 @@ export function CatalogueImport({ readOnly, storeName }: { readOnly: boolean; st
               onChange={(e) => setJson(e.target.value)}
               spellCheck={false}
               rows={16}
-              placeholder={'{ "products": [ { "title": "…", "sku": "…", "price": 999 } ] }'}
+              placeholder={'{ "products": [ { "title": "…", "price": 999, "stock": 5 } ] }'}
               className="input mt-1.5 w-full font-mono text-xs leading-relaxed"
               disabled={readOnly || busy}
             />

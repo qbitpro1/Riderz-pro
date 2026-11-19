@@ -16,6 +16,7 @@ import {
 } from "./vendor-products";
 import {
   departmentSchema,
+  newProductCommercialSchema,
   productCommercialSchema,
   productContentSchema,
   productDraftSchema,
@@ -75,7 +76,8 @@ export type ContentPatch = z.infer<typeof contentPatchSchema>;
 
 export const createProductSchema = z.object({
   content: contentPatchSchema,
-  commercial: productCommercialSchema,
+  /** SKU and MRP may be blank: see newProductCommercialSchema. */
+  commercial: newProductCommercialSchema,
   submit: z.boolean().default(false),
   /** The seller's own shop category (Offline Store screen). Not part of the reviewed content. */
   storeCategoryId: z.string().min(1).max(80).nullable().optional(),
@@ -184,6 +186,20 @@ async function assertSkuFree(q: Query, vendorId: string, sku: string, exceptId?:
     [vendorId, sku, exceptId ?? null],
   );
   if (rows.length) throw skuTaken();
+}
+
+/**
+ * A free SKU for a product saved without one: letters from the title and a short random part
+ * (e.g. "SEATCU-7K2Q9"), checked against the seller's own SKUs.
+ */
+async function newSku(q: Query, vendorId: string, title: string): Promise<string> {
+  const stem = title.toUpperCase().replace(/[^A-Z0-9]+/g, "").slice(0, 6) || "ITEM";
+  for (let i = 0; i < 8; i++) {
+    const sku = `${stem}-${randomSuffix().slice(0, 5).toUpperCase()}`;
+    const rows = await q<{ id: string }>("SELECT id FROM vendor_products WHERE vendor_id = $1 AND lower(sku) = lower($2)", [vendorId, sku]);
+    if (!rows.length) return sku;
+  }
+  throw new ApiError(500, "sku_unavailable", "Could not make an SKU just now. Please type one.");
 }
 
 function randomSuffix(): string {
@@ -297,10 +313,11 @@ export async function createProduct(
 
   try {
     return await transaction(async (q) => {
-      await assertSkuFree(q, vendorId, input.commercial.sku);
+      const sku = input.commercial.sku || (await newSku(q, vendorId, finalContent.title));
+      await assertSkuFree(q, vendorId, sku);
       const id = newId("prd");
       const slug = await newSlug(q, finalContent.brand, finalContent.title);
-      const c = input.commercial;
+      const c = { ...input.commercial, sku };
       const rows = await q<VendorProductRow>(
         `INSERT INTO vendor_products
            (id, vendor_id, slug, status, title, brand, department, group_slug, sku, hsn, gst_rate, mrp, price, stock,

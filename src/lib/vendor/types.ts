@@ -264,3 +264,9 @@ export const vendorProductHref = (vendorSlug: string, productSlug: string) => `/
 /** The owner-only Offline Store screen for the seller's physical shop. */
 export const offlineStoreHref = (vendorSlug: string) => `/store/${vendorSlug}`;
 export const fileHref = (fileId: string) => `/api/files/${fileId}`;
+
+/** What the seller is told after saving a product: whether it is on their Offline Store screen now. */
+export function screenNotice(p: { status: string; stock: number }): string {
+  if (p.status === "archived" || p.status === "rejected") return "It is not on your shop screen.";
+  return p.stock > 0 ? "It is on your shop screen now." : "Add stock to show it on your shop screen.";
+}

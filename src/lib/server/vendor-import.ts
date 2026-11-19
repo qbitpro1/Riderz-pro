@@ -33,13 +33,14 @@ const text = (max: number) => z.string().trim().max(max);
 const num = z.union([z.number(), z.string().trim().regex(/^\d+(\.\d+)?$/).transform(Number)]);
 const intIn = (min: number, max: number) => num.transform((n) => Math.round(n)).pipe(z.number().int().min(min).max(max));
 
-/** One product as a seller writes it. Only title, sku and price are required. */
+/** One product as a seller writes it. Only title and price are required. */
 export const importItemSchema = z
   .object({
     title: text(120).min(1, "Title is required"),
+    /** Optional: left out, the server makes one from the title. */
     sku: text(40)
-      .min(1, "SKU is required")
-      .regex(/^[A-Za-z0-9._/-]+$/, "SKU: use letters, numbers and . _ / - only"),
+      .regex(/^[A-Za-z0-9._/-]*$/, "SKU: use letters, numbers and . _ / - only")
+      .optional(),
     price: intIn(1, 10_000_000),
     mrp: intIn(1, 10_000_000).optional(),
     stock: intIn(0, 100_000).default(0),
@@ -224,12 +225,12 @@ export async function importCatalogue(
       continue;
     }
     const item = parsed.data;
-    const skuKey = item.sku.toLowerCase();
-    if (seenSkus.has(skuKey)) {
+    const skuKey = item.sku?.toLowerCase();
+    if (skuKey && seenSkus.has(skuKey)) {
       results.push({ index, ...label, outcome: "failed", message: "This SKU appears earlier in the same file." });
       continue;
     }
-    seenSkus.add(skuKey);
+    if (skuKey) seenSkus.add(skuKey);
 
     // Photos: keep the ones that could be stored and say which could not.
     const images: string[] = [];
@@ -259,7 +260,7 @@ export async function importCatalogue(
       fitment: [...new Set(item.fitment.map((f) => f.toLowerCase()))],
       images,
     };
-    const commercial = { sku: item.sku, mrp: item.mrp ?? item.price, price: item.price, stock: item.stock, lowStockAt: item.lowStockAt };
+    const commercial = { sku: item.sku ?? "", mrp: item.mrp ?? item.price, price: item.price, stock: item.stock, lowStockAt: item.lowStockAt };
 
     // A complete product goes to review; an incomplete one is saved as a draft with the reason.
     const complete = productContentSchema.safeParse(content);
@@ -269,9 +270,10 @@ export async function importCatalogue(
       created.push(product);
       const notes = [...photoProblems];
       if (submit && !complete.success) notes.unshift(`saved as a draft: ${firstIssue(complete.error)}`);
+      if (product.stock === 0) notes.unshift("stock is 0, so it is not on your shop screen until you add stock");
       results.push({
         index,
-        sku: item.sku,
+        sku: product.sku,
         title: item.title,
         outcome: sendForReview ? "submitted" : "draft",
         productId: product.id,
@@ -280,7 +282,7 @@ export async function importCatalogue(
     } catch (err) {
       const message = err instanceof ApiError ? fieldsMessage(err) : "Could not be saved. Please try again.";
       if (!(err instanceof ApiError)) console.error("[import]", err instanceof Error ? err.message : err);
-      results.push({ index, sku: item.sku, title: item.title, outcome: "failed", message });
+      results.push({ index, sku: item.sku ?? null, title: item.title, outcome: "failed", message });
     }
   }
   return { results, created };

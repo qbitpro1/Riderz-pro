@@ -283,21 +283,42 @@ export const skuSchema = z
   .max(40)
   .regex(/^[A-Za-z0-9._/-]+$/, "Use letters, numbers and . _ / - only");
 
+/** A blank SKU on a new product means "make one for me" (the server picks a free one). */
+export const skuOrBlankSchema = z
+  .string()
+  .trim()
+  .max(40)
+  .regex(/^[A-Za-z0-9._/-]*$/, "Use letters, numbers and . _ / - only")
+  .optional()
+  .transform((v) => v ?? "");
+
+const commercialFields = {
+  /** Optional: blank means the MRP is the selling price. */
+  mrp: z.number().int().min(1).max(10_000_000).nullable().optional(),
+  price: z.number().int().min(1).max(10_000_000),
+  stock: z.number().int().min(0).max(100_000),
+  lowStockAt: z.number().int().min(0).max(10_000),
+  /** Lowest price Salesman AI may bargain down to on the shop screen. Omitted = unchanged on edit. */
+  minPrice: z.number().int().min(1, "Lowest price must be at least ₹1").max(10_000_000).nullable().optional(),
+};
+
+const withPriceRules = <T extends { mrp?: number | null; price: number; minPrice?: number | null }>(v: T) => ({ ...v, mrp: v.mrp ?? v.price });
+
 export const productCommercialSchema = z
-  .object({
-    sku: skuSchema,
-    mrp: z.number().int().min(1).max(10_000_000),
-    price: z.number().int().min(1).max(10_000_000),
-    stock: z.number().int().min(0).max(100_000),
-    lowStockAt: z.number().int().min(0).max(10_000),
-    /** Lowest price Salesman AI may bargain down to on the shop screen. Omitted = unchanged on edit. */
-    minPrice: z.number().int().min(1, "Lowest price must be at least ₹1").max(10_000_000).nullable().optional(),
-  })
+  .object({ sku: skuSchema, ...commercialFields })
+  .transform(withPriceRules)
+  .refine((v) => v.price <= v.mrp, { path: ["price"], message: "Selling price cannot be above MRP" })
+  .refine((v) => v.minPrice == null || v.minPrice <= v.price, { path: ["minPrice"], message: "Lowest price cannot be above the selling price" });
+
+/** A new product: SKU and MRP may be left blank, so a seller can add a product to their shop screen with just a name, price and stock. */
+export const newProductCommercialSchema = z
+  .object({ sku: skuOrBlankSchema, ...commercialFields })
+  .transform(withPriceRules)
   .refine((v) => v.price <= v.mrp, { path: ["price"], message: "Selling price cannot be above MRP" })
   .refine((v) => v.minPrice == null || v.minPrice <= v.price, { path: ["minPrice"], message: "Lowest price cannot be above the selling price" });
 
 /** Draft products may be saved incomplete; only these fields are required. */
 export const productDraftSchema = z.object({
   title: trimmed(1, 120, "Title"),
-  sku: skuSchema,
+  sku: skuOrBlankSchema,
 });

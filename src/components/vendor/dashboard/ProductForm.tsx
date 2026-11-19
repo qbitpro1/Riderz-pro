@@ -12,12 +12,13 @@ import {
   GST_RATES,
   PART_TYPES,
   PART_TYPE_LABELS,
+  screenNotice,
   settlementFor,
   type PartType,
   type VendorProduct,
   type VendorProductContent,
 } from "@/lib/vendor/types";
-import { productCommercialSchema, productContentSchema, productDraftSchema } from "@/lib/vendor/validators";
+import { newProductCommercialSchema, productCommercialSchema, productContentSchema, productDraftSchema } from "@/lib/vendor/validators";
 import { FitmentPicker } from "./FitmentPicker";
 import { StoreCategoryField } from "./StoreCategoryField";
 import { ProductImages } from "./ProductImages";
@@ -192,14 +193,17 @@ export function ProductForm({ product: initialProduct, commissionRate, readOnly,
       if (n === null) errs[key] = "Enter a whole number";
       return n;
     };
-    const mrp = num("mrp", f.mrp);
+    // Optional: blank means the MRP is the selling price.
+    const mrp = f.mrp.trim() === "" ? null : num("mrp", f.mrp);
     const price = num("price", f.price);
     const stock = num("stock", f.stock);
     const lowStockAt = num("lowStockAt", f.lowStockAt);
     // Optional: empty means no lowest price (Salesman AI then only keeps to the shop's % / ₹ limits).
     const minPrice = f.minPrice.trim() === "" ? null : num("minPrice", f.minPrice);
-    if (mrp === null || price === null || stock === null || lowStockAt === null || errs.minPrice) return { value: null, errs };
-    const parsed = productCommercialSchema.safeParse({ sku: f.sku, mrp, price, stock, lowStockAt, minPrice });
+    if (errs.mrp || price === null || stock === null || lowStockAt === null || errs.minPrice) return { value: null, errs };
+    // A new product may leave the SKU blank (the server makes one); a saved product keeps its SKU.
+    const schema = product ? productCommercialSchema : newProductCommercialSchema;
+    const parsed = schema.safeParse({ sku: f.sku, mrp, price, stock, lowStockAt, minPrice });
     if (!parsed.success) {
       for (const i of parsed.error.issues) errs[String(i.path[0])] ??= i.message;
       return { value: null, errs };
@@ -266,13 +270,13 @@ export function ProductForm({ product: initialProduct, commissionRate, readOnly,
       router.refresh();
       show(
         "ok",
-        mode === "submit"
-          ? "Submitted for review. We will notify you with the decision."
+        (mode === "submit"
+          ? "Submitted for review."
           : mode === "revision"
             ? "Changes sent for review. Your live listing stays as it is until they are approved."
             : mode === "commercial"
               ? "Price and stock saved."
-              : "Draft saved.",
+              : "Draft saved.") + ` ${screenNotice(saved)}`,
       );
     } catch (err) {
       if (err instanceof ApiFailure && Object.keys(err.fields).length) fail(fieldErrors(err.fields));
@@ -545,10 +549,10 @@ export function ProductForm({ product: initialProduct, commissionRate, readOnly,
         <legend className="sr-only">Price and stock</legend>
         <h2 className={h2}>Price and stock</h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-          <Field error={errors.sku} name="sku" label="SKU" className="sm:col-span-2 lg:col-span-1">
+          <Field error={errors.sku} name="sku" label="SKU" hint={isNew ? "Optional. Leave blank and we make one." : undefined} className="sm:col-span-2 lg:col-span-1">
             <input {...a("sku")} className={`field ${invalidCls("sku")}`} value={f.sku} maxLength={40} onChange={(e) => set("sku", e.target.value)} autoComplete="off" />
           </Field>
-          <Field error={errors.mrp} name="mrp" label="MRP (₹)" hint="Incl. GST">
+          <Field error={errors.mrp} name="mrp" label="MRP (₹)" hint="Incl. GST. Blank = same as selling price.">
             <input {...a("mrp")} className={`field ${invalidCls("mrp")}`} inputMode="numeric" value={f.mrp} onChange={(e) => set("mrp", e.target.value.replace(/\D/g, "").slice(0, 8))} />
           </Field>
           <Field error={errors.price} name="price" label="Selling price (₹)" hint="Incl. GST">
