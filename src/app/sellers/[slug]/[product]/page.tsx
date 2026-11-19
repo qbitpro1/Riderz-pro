@@ -43,7 +43,7 @@ export default async function VendorProductPage({ params }: { params: Params }) 
 
   const path = vendorProductHref(seller.slug, p.slug);
   const department = DEPARTMENT_BY_SLUG[p.department];
-  const inStock = p.stock > 0;
+  const inStock = p.stock > 0 && !p.comingSoon;
   const off = p.mrp > p.price ? Math.round(((p.mrp - p.price) / p.mrp) * 100) : 0;
   const images: ProductImage[] = p.images.map((id, i) => ({
     kind: "remote",
@@ -66,7 +66,7 @@ export default async function VendorProductPage({ params }: { params: Params }) 
       "@type": "Offer",
       price: p.price,
       priceCurrency: "INR",
-      availability: inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+      availability: p.comingSoon ? "https://schema.org/PreOrder" : inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
       url: absUrl(path),
       seller: { "@type": "Organization", name: seller.name, url: absUrl(storeHref(seller.slug)) },
     },
@@ -139,7 +139,7 @@ export default async function VendorProductPage({ params }: { params: Params }) 
 
               <p className="mt-4 flex items-center gap-2 text-sm">
                 <Icon name="check" size={15} className={inStock ? "text-accent" : "text-dim"} />
-                <span className={inStock ? "font-semibold" : "text-ash"}>{inStock ? "In stock" : "Out of stock"}</span>
+                <span className={inStock ? "font-semibold" : "text-ash"}>{p.comingSoon ? "Coming soon" : inStock ? "In stock" : "Out of stock"}</span>
                 {lowStock && <span className="text-xs text-gold">{lowStock}</span>}
               </p>
 
@@ -149,7 +149,8 @@ export default async function VendorProductPage({ params }: { params: Params }) 
                   href={path}
                   title={p.title}
                   price={p.price}
-                  stock={p.stock}
+                  stock={p.comingSoon ? 0 : p.stock}
+                  comingSoon={p.comingSoon}
                   image={images[0]?.kind === "remote" ? { src: images[0].src, alt: images[0].alt } : null}
                   seller={{ id: seller.id, name: seller.name, slug: seller.slug }}
                 />

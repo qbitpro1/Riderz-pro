@@ -1,4 +1,5 @@
 import "server-only";
+import { onSaleNow } from "@/lib/catalog/on-sale";
 
 import { z } from "@/lib/zod";
 import { sql, type Query } from "@/lib/db/client";
@@ -126,9 +127,17 @@ export function importCatalogFromFiles(): Promise<number> {
 
 /** The database row with the admin's price, MRP and stock and the real review ratings laid over the imported record. */
 function present(r: Row, rating: { rating: number; count: number } | undefined): { item: CatalogItem | null; detail: ProductDetail } {
-  const soldOut = r.stock === 0;
-  const comingSoon = r.detail.availability === "coming-soon";
-  const availability = soldOut ? "out-of-stock" : r.detail.availability === "out-of-stock" ? "in-stock" : r.detail.availability;
+  // Held back by the "only car covers for now" rule (src/lib/catalog/on-sale.ts): shown as Coming soon.
+  const held = !onSaleNow({ department: r.detail.department, group: r.detail.group, sub: r.item?.sub, title: r.detail.title });
+  const soldOut = !held && r.stock === 0;
+  const comingSoon = held || r.detail.availability === "coming-soon";
+  const availability = held
+    ? "coming-soon"
+    : soldOut
+      ? "out-of-stock"
+      : r.detail.availability === "out-of-stock"
+        ? "in-stock"
+        : r.detail.availability;
   const stars = rating ? Math.round(rating.rating * 10) / 10 : null;
   const detail: ProductDetail = {
     ...r.detail,
@@ -149,7 +158,11 @@ function present(r: Row, rating: { rating: number; count: number } | undefined):
     buyable: r.price !== null && !comingSoon && !soldOut && r.detail.indexable,
     rating: stars,
     reviews: rating?.count ?? null,
-    badges: soldOut ? [...r.item.badges.filter((b) => b !== "Made to order"), "Out of stock"] : r.item.badges,
+    badges: held
+      ? [...r.item.badges.filter((b) => b !== "Made to order" && b !== "Bestseller"), "Coming soon"]
+      : soldOut
+        ? [...r.item.badges.filter((b) => b !== "Made to order"), "Out of stock"]
+        : r.item.badges,
   };
   return { item, detail };
 }

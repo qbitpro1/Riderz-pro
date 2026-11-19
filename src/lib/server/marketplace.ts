@@ -4,6 +4,7 @@ import { DatabaseNotConfigured, sql } from "@/lib/db/client";
 import { DEPARTMENT_BY_SLUG, type DepartmentSlug } from "@/lib/data/taxonomy";
 import { tierFor, type ShopItem } from "@/lib/catalog/types";
 import { normalizeBrand } from "@/lib/catalog/brand-normalize";
+import { onSaleNow } from "@/lib/catalog/on-sale";
 import {
   fileHref,
   storeHref,
@@ -64,6 +65,8 @@ export type PublicVendorProduct = {
   mrp: number;
   price: number;
   stock: number;
+  /** Held back as "Coming soon" on the website (src/lib/catalog/on-sale.ts): shown, not buyable. */
+  comingSoon: boolean;
   warrantyMonths: number | null;
   summary: string | null;
   highlights: string[];
@@ -154,6 +157,7 @@ function toPublicProduct(r: VendorProductRow): PublicVendorProduct {
     mrp: r.mrp,
     price: r.price,
     stock: r.stock,
+    comingSoon: !onSaleNow({ department: r.department, group: r.group_slug, title: r.title }),
     warrantyMonths: r.warranty_months,
     summary: r.summary,
     highlights: r.highlights ?? [],
@@ -168,6 +172,7 @@ function toPublicProduct(r: VendorProductRow): PublicVendorProduct {
 /** The shop item for one live product. `buyable` means "has stock"; out-of-stock items stay listed. */
 function toShopItem(r: JoinedRow): ShopItem | null {
   if (!r.v_slug || !r.v_store_name) return null;
+  const held = !onSaleNow({ department: r.department, group: r.group_slug, title: r.title });
   const inStock = r.stock > 0;
   const href = vendorProductHref(r.v_slug, r.slug);
   const sub = groupName(r.department, r.group_slug);
@@ -198,8 +203,8 @@ function toShopItem(r: JoinedRow): ShopItem | null {
     rating: null,
     reviews: null,
     fitment: r.fitment ?? [],
-    availability: inStock ? "in-stock" : "out-of-stock",
-    buyable: inStock,
+    availability: held ? "coming-soon" : inStock ? "in-stock" : "out-of-stock",
+    buyable: inStock && !held,
     installation: false,
     bestseller: false,
     badges: ["Marketplace"],

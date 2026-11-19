@@ -12,6 +12,7 @@ import { ApiError } from "./http";
 import { invalidateCatalog, restoreHouseStock, takeHouseStock } from "./catalog";
 import { newId, sha256 } from "./security";
 import { LIVE_PRODUCT_WHERE } from "./vendor-products";
+import { onSaleNow } from "@/lib/catalog/on-sale";
 import { audit, notifyVendor, type Actor } from "./vendors";
 import { applyCoupon, recordRedemption } from "./coupons";
 import { onOrderConfirmedMessages } from "./order-emails";
@@ -51,6 +52,8 @@ type VendorProductLookup = {
   vendor_id: string;
   slug: string;
   title: string;
+  department: string;
+  group_slug: string;
   price: number;
   stock: number;
   commission_rate: string | null;
@@ -118,7 +121,7 @@ export async function priceCart(lines: PlaceOrderInput["lines"]) {
 
   if (vendorWanted.length > 0) {
     const rows = await sql<VendorProductLookup>(
-      `SELECT p.id, p.vendor_id, p.slug, p.title, p.price, p.stock, v.commission_rate
+      `SELECT p.id, p.vendor_id, p.slug, p.title, p.price, p.stock, p.department, p.group_slug, v.commission_rate
          FROM vendor_products p JOIN vendors v ON v.id = p.vendor_id
         WHERE p.slug = ANY($1) AND ${LIVE_PRODUCT_WHERE}`,
       [vendorWanted.map((w) => w.slug)],
@@ -126,6 +129,9 @@ export async function priceCart(lines: PlaceOrderInput["lines"]) {
     for (const w of vendorWanted) {
       const p = rows.find((r) => r.slug === w.slug);
       if (!p) throw new ApiError(409, "unavailable_item", "An item in your cart is no longer available.");
+      if (!onSaleNow({ department: p.department, group: p.group_slug, title: p.title })) {
+        throw new ApiError(409, "unavailable_item", `${p.title} is coming soon and can't be ordered yet.`);
+      }
       if (p.stock < w.qty) {
         throw new ApiError(409, "sold_out", p.stock === 0 ? `${p.title} just sold out.` : `Only ${p.stock} of ${p.title} left.`);
       }

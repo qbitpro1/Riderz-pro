@@ -100,7 +100,7 @@ export function Footer() {
             © {new Date().getFullYear()} {SITE.legalName} {SITE.name}® is a registered trademark of{" "}
             {SITE.legalName} All rights reserved.
           </p>
-          <p>Modifications are carried out in line with the Central Motor Vehicles Rules. GSTIN {SITE.gstin}.</p>
+          <p>Modifications are carried out in line with the Central Motor Vehicles Rules.</p>
         </div>
       </div>
     </footer>

@@ -112,7 +112,7 @@ export default function ContactPage() {
             <SectionHead
               eyebrow="Support"
               title="Everything else"
-              blurb={`${SITE.legalName}${SITE.registeredOffice ? ` Registered office: ${SITE.registeredOffice}.` : ""} GSTIN ${SITE.gstin}.`}
+              blurb={`${SITE.legalName}${SITE.registeredOffice ? ` Registered office: ${SITE.registeredOffice}.` : ""}`}
             />
             <ul className="space-y-2.5">
               {QUICK_LINKS.map((l) => (

@@ -19,6 +19,7 @@ export function VendorAddToCart({
   stock,
   image,
   seller,
+  comingSoon = false,
 }: {
   slug: string;
   href: string;
@@ -27,16 +28,18 @@ export function VendorAddToCart({
   stock: number;
   image: { src: string; alt: string } | null;
   seller: { id: string; name: string; slug: string };
+  /** Held back on the website for now (src/lib/catalog/on-sale.ts). */
+  comingSoon?: boolean;
 }) {
   const { add } = useCart();
   const cap = Math.min(stock, MAX_QTY);
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
 
-  if (stock <= 0) {
+  if (comingSoon || stock <= 0) {
     return (
       <button type="button" className="btn btn-outline btn-block min-h-12" disabled>
-        Out of stock
+        {comingSoon ? "Coming soon" : "Out of stock"}
       </button>
     );
   }
